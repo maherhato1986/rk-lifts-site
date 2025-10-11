@@ -1,0 +1,22 @@
+import fs from "fs";
+import fetch from "node-fetch";
+
+const images = [
+  { url: "https://images.unsplash.com/photo-1527443154391-507e9dc6c5cc", name: "cabin1.jpg" },
+  { url: "https://images.unsplash.com/photo-1570129477492-45c003edd2be", name: "maintenance1.jpg" },
+  { url: "https://images.unsplash.com/photo-1616628188506-1bbd5a2ffcc3", name: "machine1.jpg" },
+  { url: "https://images.unsplash.com/photo-1519681393784-d120267933ba", name: "glass1.jpg" }
+  // أكمل حتى 20 صورة لو تحب
+];
+
+const downloadImages = async () => {
+  for (const img of images) {
+    const res = await fetch(img.url);
+    const buffer = await res.arrayBuffer();
+    const path = `public/images/${img.name}`;
+    fs.writeFileSync(path, Buffer.from(buffer));
+    console.log(`✅ تم حفظ ${img.name}`);
+  }
+};
+
+downloadImages();
