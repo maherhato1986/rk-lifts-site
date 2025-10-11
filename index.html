@@ -73,9 +73,41 @@
     .seg button{border:none;background:transparent;padding:6px 12px;border-radius:999px;cursor:pointer;font-weight:700}
     .seg button.active{background:var(--brand);color:#fff}
 
-    /* Responsive */
-    @media (max-width: 900px){
-      .hero{grid-template-columns:1fr}
+    /* Responsive *//* ===== Responsive navbar tidy (mobile) ===== */
+@media (max-width: 900px){
+  /* الهيرو كما هو */
+  .hero{grid-template-columns:1fr; padding:36px 0}
+  .hero h1{font-size:32px}
+
+  /* تنظيم الهيدر */
+  .nav{flex-wrap:wrap; align-items:center; gap:8px}
+  .brand{order:0; flex:1 1 auto; display:flex; align-items:center; gap:10px}
+  .brand img{height:32px}
+  .brand .title{font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:60vw}
+
+  /* شريط الروابط: صف واحد قابِل للتمرير */
+  .menu{
+    order:3; width:100%;
+    display:flex; flex-wrap:nowrap; gap:8px; justify-content:flex-start;
+    overflow-x:auto; -webkit-overflow-scrolling:touch; padding:6px 0;
+  }
+  .menu a{
+    flex:0 0 auto;            /* لا تتمدد */
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:999px;
+    padding:8px 12px;
+    white-space:nowrap;
+  }
+
+  /* محوّل اللغة + زر واتساب */
+  .lang-toggle{order:2; margin-inline-start:auto; display:flex; align-items:center; gap:8px}
+  .lang-toggle .seg{order:1}
+  .lang-toggle .btn{order:2; padding:8px 12px; border-radius:10px}
+
+  /* زر واتساب العائم: أصغر ولا يغطي المحتوى */
+  .whats-floating{bottom:16px; inset-inline-end:16px; padding:10px 12px}
+}
     }
   </style>
   <!-- RKL Meta and Branding -->
@@ -295,4 +327,5 @@
   </script>
 </body>
 </html>
+
 
