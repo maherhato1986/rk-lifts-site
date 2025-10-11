@@ -3,29 +3,47 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <title>RKL للمصاعد والسلالم الكهربائية | RKL Lifts & Escalators</title>
   <meta name="description" content="آر كي ال RKL للمصاعد والسلالم الكهربائية – توريد وتركيب وتحديث وصيانة المصاعد وفق معايير EN 81-20/50. الرياض – السليمانية." />
+
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <meta property="og:image" content="logo.png">
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Leaflet CSS (for Saudi projects map) -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+
   <style>
     :root{
       --brand:#6a1b9a;          /* RKL Purple */
       --brand-600:#5b1685;
-      --accent:#0e9f6e;         /* Accent (green) */
+      --accent:#009688;         /* Accent (green) */
       --bg:#f7f7fb;
-      --text:#1f2937;           /* gray-800 */
-      --muted:#6b7280;          /* gray-500 */
+      --text:#1f2937;
+      --muted:#6b7280;
       --card:#ffffff;
       --border:#e5e7eb;
+      --radius:16px;
     }
-    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:"Cairo", system-ui, -apple-system, Segoe UI, Roboto, Arial, "Inter", sans-serif;}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:"Cairo",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
     a{color:var(--brand);text-decoration:none}
     a:hover{color:var(--brand-600)}
-    .container{width:min(1200px, 92%);margin-inline:auto}
+    .container{width:min(1200px,92%);margin-inline:auto}
+
+    /* Header */
     header{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--border);z-index:50}
     .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0}
-    .nav .brand{display:flex;align-items:center;gap:12px}
+    .brand{display:flex;align-items:center;gap:12px}
     .brand img{height:40px;width:auto}
     .brand .title{font-weight:700;color:var(--brand)}
     .menu{display:flex;flex-wrap:wrap;gap:14px}
@@ -34,91 +52,102 @@
     .btn-primary{background:var(--brand);color:#fff}
     .btn-primary:hover{background:var(--brand-600)}
     .btn-accent{background:var(--accent);color:#fff}
-    .badge{display:inline-flex;align-items:center;gap:6px;background:#efe7f6;color:var(--brand);padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700}
+
+    .lang-toggle{display:flex;gap:8px;align-items:center}
+    .seg{padding:6px 10px;border:1px solid var(--border);background:#fff;border-radius:999px}
+    .seg button{border:none;background:transparent;padding:6px 12px;border-radius:999px;cursor:pointer;font-weight:700}
+    .seg button.active{background:var(--brand);color:#fff}
 
     /* HERO */
     .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:24px;align-items:center;padding:40px 0}
     .hero h1{font-size:36px;line-height:1.25;margin:8px 0 10px}
     .hero p{color:var(--muted);font-size:18px}
     .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
-    .hero-card{background:linear-gradient(160deg, #ffffff 0%, #faf7ff 100%);border:1px solid var(--border);border-radius:18px;padding:16px}
+    .hero-card{background:linear-gradient(160deg,#ffffff 0%,#faf7ff 100%);border:1px solid var(--border);border-radius:18px;padding:16px}
 
-    /* SECTIONS */
+    /* Sections & Cards */
     section{padding:40px 0}
     .section-title{font-size:26px;margin:0 0 14px}
     .grid{display:grid;gap:16px}
-    .g-2{grid-template-columns:repeat(2, minmax(0,1fr))}
-    .g-3{grid-template-columns:repeat(3, minmax(0,1fr))}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px}
+    .g-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .g-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
     .muted{color:var(--muted)}
 
-    /* TABLE */
+    /* Table */
     table{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden}
     th,td{padding:12px 14px;border-bottom:1px solid var(--border);text-align:start}
     th{background:#faf7ff;color:var(--brand);font-weight:700}
     tr:last-child td{border-bottom:none}
 
-    /* PARTNERS */
+    /* Partners */
     .logos{display:flex;flex-wrap:wrap;gap:18px;align-items:center}
     .logos img{height:44px;filter:grayscale(0);opacity:.95}
 
-    /* FOOTER */
+    /* Footer */
     footer{background:#100a15;color:#e5e7eb;padding:28px 0;margin-top:40px}
     footer a{color:#e5e7eb}
     .small{font-size:13px}
 
-    /* LANGUAGE TOGGLE */
-    .lang-toggle{display:flex;gap:8px;align-items:center}
-    .seg{padding:6px 10px;border:1px solid var(--border);background:#fff;border-radius:999px}
-    .seg button{border:none;background:transparent;padding:6px 12px;border-radius:999px;cursor:pointer;font-weight:700}
-    .seg button.active{background:var(--brand);color:#fff}
+    /* ===== Responsive (mobile tidy) ===== */
+    @media (max-width:900px){
+      .hero{grid-template-columns:1fr;padding:36px 0}
+      .hero h1{font-size:32px}
+      .nav{flex-wrap:wrap;align-items:center;gap:8px}
+      .brand img{height:32px}
+      .brand .title{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60vw}
+      .menu{
+        order:3;width:100%;
+        display:flex;flex-wrap:nowrap;gap:8px;justify-content:flex-start;
+        overflow-x:auto;-webkit-overflow-scrolling:touch;padding:6px 0
+      }
+      .menu a{
+        flex:0 0 auto;background:#fff;border:1px solid var(--border);
+        border-radius:999px;padding:8px 12px;white-space:nowrap
+      }
+      .lang-toggle{order:2;margin-inline-start:auto;display:flex;align-items:center;gap:8px}
+      .lang-toggle .seg{order:1}
+      .lang-toggle .btn{order:2;padding:8px 12px;border-radius:10px}
+    }
 
-    /* Responsive *//* ===== Responsive navbar tidy (mobile) ===== */
-@media (max-width: 900px){
-  /* الهيرو كما هو */
-  .hero{grid-template-columns:1fr; padding:36px 0}
-  .hero h1{font-size:32px}
+    /* ==== Gallery styles ==== */
+    .rkl-wrap{font-family:"Cairo",system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+    .rkl-container{max-width:1200px;margin:auto;padding:48px 20px}
+    .rkl-title{font-weight:700;font-size:clamp(24px,3.2vw,34px);text-align:center;margin:0 0 8px}
+    .rkl-sub{opacity:.8;text-align:center;margin:0 0 28px}
+    .rkl-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+    .rkl-card{position:relative;border-radius:12px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.08);background:#fff}
+    .rkl-card img{width:100%;height:220px;object-fit:cover;display:block;transition:transform .35s ease, filter .35s ease}
+    .rkl-card:hover img{transform:scale(1.05);filter:contrast(1.05)}
+    .rkl-badge{position:absolute;inset:auto 10px 10px auto;background:var(--accent);color:#fff;font-size:12px;font-weight:600;padding:6px 10px;border-radius:20px}
+    .rkl-lightbox{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.75);z-index:9999;padding:20px}
+    .rkl-lightbox.open{display:grid}
+    .rkl-lightbox img{max-width:96vw;max-height:86vh;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+    .rkl-close{position:absolute;top:14px;left:14px;background:#fff;border:0;border-radius:10px;padding:8px 12px;font-weight:700;cursor:pointer}
 
-  /* تنظيم الهيدر */
-  .nav{flex-wrap:wrap; align-items:center; gap:8px}
-  .brand{order:0; flex:1 1 auto; display:flex; align-items:center; gap:10px}
-  .brand img{height:32px}
-  .brand .title{font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:60vw}
-
-  /* شريط الروابط: صف واحد قابِل للتمرير */
-  .menu{
-    order:3; width:100%;
-    display:flex; flex-wrap:nowrap; gap:8px; justify-content:flex-start;
-    overflow-x:auto; -webkit-overflow-scrolling:touch; padding:6px 0;
-  }
-  .menu a{
-    flex:0 0 auto;            /* لا تتمدد */
-    background:#fff;
-    border:1px solid var(--border);
-    border-radius:999px;
-    padding:8px 12px;
-    white-space:nowrap;
-  }
-
-  /* محوّل اللغة + زر واتساب */
-  .lang-toggle{order:2; margin-inline-start:auto; display:flex; align-items:center; gap:8px}
-  .lang-toggle .seg{order:1}
-  .lang-toggle .btn{order:2; padding:8px 12px; border-radius:10px}
-
-  /* زر واتساب العائم: أصغر ولا يغطي المحتوى */
-  .whats-floating{bottom:16px; inset-inline-end:16px; padding:10px 12px}
-}
+    /* ===== Saudi Map (Projects) ===== */
+    .sa-map-wrap{margin-top:16px}
+    #sa-map{
+      width:100%;
+      height:420px;
+      border:1px solid var(--border);
+      border-radius:16px;
+      overflow:hidden;
+      background:#eef2ff;
+    }
+    .sa-map-legend{
+      display:flex;gap:10px;flex-wrap:wrap;
+      margin-top:10px;color:var(--muted);font-size:14px
+    }
+    .sa-map-legend .tag{
+      background:#efe7f6;color:var(--brand);
+      padding:6px 10px;border-radius:999px;font-weight:700
     }
   </style>
-  <!-- RKL Meta and Branding -->
-<link rel="icon" href="favicon.ico" type="image/x-icon">
-<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-<meta property="og:image" content="logo.png">
-<title>RKL – Elevators & Escalators | آر كي ال للمصاعد والسلالم الكهربائية</title>
-<meta name="description" content="RKL for Elevators and Escalators – Supply, Modernization, and Maintenance Services across Saudi Arabia. آر كي ال للمصاعد والسلالم الكهربائية – توريد وتركيب وصيانة المصاعد.">
-
 </head>
+
 <body>
+  <!-- Header -->
   <header>
     <div class="container nav">
       <div class="brand">
@@ -131,6 +160,7 @@
         <a href="#partners">الشراكات</a>
         <a href="#projects">المشاريع</a>
         <a href="#certs">الشهادات</a>
+        <a href="#gallery">المعرض</a>
         <a href="#contact">اتصل بنا</a>
       </nav>
       <div class="lang-toggle" aria-label="Language selector">
@@ -144,7 +174,7 @@
     <!-- HERO -->
     <section class="container hero" id="home">
       <div>
-        <span class="badge">RKL Lifts & Escalators</span>
+        <span class="btn" style="background:#efe7f6;color:var(--brand);border-radius:999px;font-weight:700">RKL Lifts & Escalators</span>
         <h1 data-ar="نرتقي بك نحو الأمان والجودة" data-en="Elevating Safety & Performance">نرتقي بك نحو الأمان والجودة</h1>
         <p data-ar="مؤسسة سعودية متخصصة في توريد وتركيب وصيانة وتحديث المصاعد والسلالم الكهربائية، بخبرة تتجاوز عشر سنوات في أنحاء المملكة." data-en="A Saudi establishment specialized in supplying, installing, modernizing, and maintaining elevators & escalators across the Kingdom, with 10+ years of experience.">مؤسسة سعودية متخصصة في توريد وتركيب وصيانة وتحديث المصاعد والسلالم الكهربائية، بخبرة تتجاوز عشر سنوات في أنحاء المملكة.</p>
         <div class="actions">
@@ -212,7 +242,7 @@
           <p data-ar="نفخر بشراكاتنا الدولية التي تمكّننا من تقديم حلول عالية الجودة:" data-en="We are proud of our international alliances enabling premium solutions:">نفخر بشراكاتنا الدولية التي تمكّننا من تقديم حلول عالية الجودة:</p>
           <div class="logos" style="margin-top:8px">
             <img src="tresa.png" alt="TRESA"/>
-            <img src="wittur.png" alt="WITTUR"/>
+            <!-- أضف شعارات أخرى عند توفرها -->
           </div>
           <p class="small muted" style="margin-top:12px" data-ar="تُطبّق RKL معايير EN 81-20 و EN 81-50 لسلامة وجودة المصاعد." data-en="RKL applies EN 81-20 and EN 81-50 standards for safety and quality.">تُطبّق RKL معايير EN 81-20 و EN 81-50 لسلامة وجودة المصاعد.</p>
         </div>
@@ -249,6 +279,17 @@
             </tr>
           </tbody>
         </table>
+
+        <!-- Saudi Projects Map -->
+        <div class="sa-map-wrap" aria-labelledby="projects-map-title">
+          <h3 id="projects-map-title" class="section-title" style="margin:10px 0 8px">خريطة مواقع المشاريع</h3>
+          <div id="sa-map" role="region" aria-label="خريطة مشاريع RKL في السعودية"></div>
+          <div class="sa-map-legend">
+            <span class="tag">الرياض</span>
+            <span class="tag">المدينة المنورة</span>
+            <span class="tag">جدة</span>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -267,6 +308,74 @@
       </div>
     </section>
 
+    <!-- ==== Gallery ==== -->
+    <section id="gallery" class="rkl-wrap">
+      <div class="rkl-container">
+        <h2 class="rkl-title">معرض أعمال RKL</h2>
+        <p class="rkl-sub">كبائن حديثة • صيانة احترافية • غرف ماكينة • مصاعد زجاجية</p>
+
+        <div class="rkl-grid" id="rklGrid">
+          <!-- Cabins -->
+          <figure class="rkl-card">
+            <img src="/images/cabins/cabin01.jpg" alt="كابينة مصعد حديثة" loading="lazy">
+            <figcaption class="rkl-badge">Cabin</figcaption>
+          </figure>
+          <figure class="rkl-card">
+            <img src="/images/cabins/cabin02.jpg" alt="تصميم كابينة أنيق" loading="lazy">
+            <figcaption class="rkl-badge">Cabin</figcaption>
+          </figure>
+          <figure class="rkl-card">
+            <img src="/images/cabins/cabin03.jpg" alt="كابينة بلمسات معدنية" loading="lazy">
+            <figcaption class="rkl-badge">Cabin</figcaption>
+          </figure>
+
+          <!-- Maintenance -->
+          <figure class="rkl-card">
+            <img src="/images/maintenance/maint01.jpg" alt="فريق صيانة المصاعد" loading="lazy">
+            <figcaption class="rkl-badge">Maintenance</figcaption>
+          </figure>
+          <figure class="rkl-card">
+            <img src="/images/maintenance/maint02.jpg" alt="فحص دوري للمصعد" loading="lazy">
+            <figcaption class="rkl-badge">Maintenance</figcaption>
+          </figure>
+          <figure class="rkl-card">
+            <img src="/images/maintenance/maint03.jpg" alt="أعمال صيانة كهربائية" loading="lazy">
+            <figcaption class="rkl-badge">Maintenance</figcaption>
+          </figure>
+
+          <!-- Machine Room -->
+          <figure class="rkl-card">
+            <img src="/images/machine-room/machine01.jpg" alt="غرفة ماكينة المصعد" loading="lazy">
+            <figcaption class="rkl-badge">Machine Room</figcaption>
+          </figure>
+          <figure class="rkl-card">
+            <img src="/images/machine-room/machine02.jpg" alt="معدات التحكم بالمصعد" loading="lazy">
+            <figcaption class="rkl-badge">Machine Room</figcaption>
+          </figure>
+
+          <!-- Glass Elevators -->
+          <figure class="rkl-card">
+            <img src="/images/glass-elevators/glass01.jpg" alt="مصعد زجاجي بانورامي" loading="lazy">
+            <figcaption class="rkl-badge">Glass</figcaption>
+          </figure>
+          <figure class="rkl-card">
+            <img src="/images/glass-elevators/glass02.jpg" alt="واجهة بانورامية لمصعد" loading="lazy">
+            <figcaption class="rkl-badge">Glass</figcaption>
+          </figure>
+          <figure class="rkl-card">
+            <img src="/images/glass-elevators/glass03.jpg" alt="مصعد زجاجي في مجمع تجاري" loading="lazy">
+            <figcaption class="rkl-badge">Glass</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <!-- Lightbox -->
+      <div class="rkl-lightbox" id="rklLightbox" aria-hidden="true">
+        <button class="rkl-close" id="rklClose">إغلاق ✕</button>
+        <img id="rklPreview" alt="عرض الصورة">
+      </div>
+    </section>
+
     <!-- CONTACT -->
     <section id="contact">
       <div class="container">
@@ -279,7 +388,6 @@
             <p class="small">CR: 1010709355 · VAT: 302250422600003</p>
           </div>
           <div class="card">
-            <!-- ضع تضمين Google Forms هنا عند إنشائه -->
             <p class="muted" data-ar="سيظهر هنا نموذج طلب عرض السعر بعد إدراجه من Google Forms." data-en="A quotation request form will appear here after embedding from Google Forms.">سيظهر هنا نموذج طلب عرض السعر بعد إدراجه من Google Forms.</p>
           </div>
         </div>
@@ -287,6 +395,7 @@
     </section>
   </main>
 
+  <!-- Footer -->
   <footer>
     <div class="container">
       <div class="grid g-2">
@@ -302,11 +411,19 @@
     </div>
   </footer>
 
+  <!-- Leaflet JS -->
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+
+  <!-- Scripts -->
   <script>
     // Year
     document.getElementById('y').textContent = new Date().getFullYear();
 
-    // Simple AR/EN toggle: switches text of elements that have data-ar / data-en
+    // Simple AR/EN toggle
     const arBtn = document.getElementById('arBtn');
     const enBtn = document.getElementById('enBtn');
     const switchLang = (lang) => {
@@ -314,152 +431,83 @@
       els.forEach(el => {
         const ar = el.getAttribute('data-ar');
         const en = el.getAttribute('data-en');
-        if(!en) return; // skip if no EN
+        if(!en) return;
         el.textContent = (lang==='en') ? en : ar;
       });
       document.documentElement.lang = (lang==='en') ? 'en' : 'ar';
-      document.documentElement.dir = (lang==='en') ? 'ltr' : 'rtl';
+      document.documentElement.dir  = (lang==='en') ? 'ltr' : 'rtl';
       arBtn.classList.toggle('active', lang!=='en');
       enBtn.classList.toggle('active', lang==='en');
     };
     arBtn.addEventListener('click',()=>switchLang('ar'));
     enBtn.addEventListener('click',()=>switchLang('en'));
+
+    // Gallery Lightbox
+    const grid = document.getElementById('rklGrid');
+    const box  = document.getElementById('rklLightbox');
+    const img  = document.getElementById('rklPreview');
+    const cls  = document.getElementById('rklClose');
+
+    if (grid) {
+      grid.addEventListener('click',(e)=>{
+        const target = e.target.closest('.rkl-card img');
+        if(!target) return;
+        img.src = target.src;
+        img.alt = target.alt;
+        box.classList.add('open');
+        box.setAttribute('aria-hidden','false');
+      });
+    }
+    function closeBox(){
+      box.classList.remove('open');
+      box.setAttribute('aria-hidden','true');
+      img.src = ""; img.alt = "";
+    }
+    if (cls) cls.addEventListener('click', closeBox);
+    if (box) box.addEventListener('click', (e)=>{ if(e.target===box) closeBox(); });
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeBox(); });
+
+    // === Saudi Projects Map ===
+    const riyadh  = [24.7136, 46.6753];  // الرياض
+    const medina  = [24.5247, 39.5692];  // المدينة المنورة
+    const jeddah  = [21.4858, 39.1925];  // جدة
+
+    const projectsMarkers = [
+      {
+        coords: medina,
+        title: "مستشفى الأمير سلطان للقوات المسلحة – المدينة المنورة",
+        details: "عقد صيانة شامل لـ 80 مصعدًا (وقائي + طوارئ)."
+      },
+      {
+        coords: riyadh,
+        title: "مباني موبايلي – السليمانية (الرياض)",
+        details: "صيانة وتحديث مصاعد فوجي."
+      },
+      {
+        coords: jeddah,
+        title: "مجمع الفتيحي التجاري – جدة",
+        details: "تحديث الكابينات وأنظمة التحكم."
+      }
+    ];
+
+    const mapEl = document.getElementById('sa-map');
+    if (mapEl && window.L) {
+      const saMap = L.map('sa-map', { scrollWheelZoom: false });
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution:'&copy; OpenStreetMap contributors'
+      }).addTo(saMap);
+
+      const group = L.featureGroup(
+        projectsMarkers.map(p => L.marker(p.coords)
+          .bindPopup(`<strong>${p.title}</strong><br>${p.details}`)
+          .addTo(saMap))
+      );
+
+      saMap.fitBounds(group.getBounds(), { padding: [30, 30] });
+
+      group.eachLayer(m => m.on('click', () => m.openPopup()));
+    }
   </script>
-  <!-- ==== RKL Gallery Section ==== -->
-<style>
-  /* خط سريع وجمالي */
-  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
-
-  .rkl-wrap{font-family:"Cairo",system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-  .rkl-container{max-width:1200px;margin:auto;padding:48px 20px}
-  .rkl-title{font-weight:700;font-size:clamp(24px,3.2vw,34px);text-align:center;margin:0 0 8px}
-  .rkl-sub{opacity:.8;text-align:center;margin:0 0 28px}
-  .rkl-grid{
-    display:grid;gap:12px;
-    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-  }
-  .rkl-card{
-    position:relative;border-radius:12px;overflow:hidden;
-    box-shadow:0 6px 18px rgba(0,0,0,.08);background:#fff;
-  }
-  .rkl-card img{
-    width:100%;height:220px;object-fit:cover;display:block;
-    transition:transform .35s ease, filter .35s ease;
-  }
-  .rkl-card:hover img{transform:scale(1.05);filter:contrast(1.05)}
-  .rkl-badge{
-    position:absolute;inset:auto 10px 10px auto;
-    background:#009688;color:#fff;font-size:12px;font-weight:600;
-    padding:6px 10px;border-radius:20px
-  }
-
-  /* Lightbox */
-  .rkl-lightbox{
-    position:fixed;inset:0;display:none;place-items:center;
-    background:rgba(0,0,0,.75);z-index:9999;padding:20px
-  }
-  .rkl-lightbox.open{display:grid}
-  .rkl-lightbox img{max-width:96vw;max-height:86vh;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
-  .rkl-close{
-    position:absolute;top:14px;left:14px;background:#fff;border:0;
-    border-radius:10px;padding:8px 12px;font-weight:700;cursor:pointer
-  }
-</style>
-
-<section id="gallery" class="rkl-wrap">
-  <div class="rkl-container">
-    <h2 class="rkl-title">معرض أعمال RKL</h2>
-    <p class="rkl-sub">كبائن حديثة • صيانة احترافية • غرف ماكينة • مصاعد زجاجية</p>
-
-    <div class="rkl-grid" id="rklGrid">
-      <!-- Cabins -->
-      <figure class="rkl-card">
-        <img src="/images/cabins/cabin01.jpg" alt="كابينة مصعد حديثة" loading="lazy">
-        <figcaption class="rkl-badge">Cabin</figcaption>
-      </figure>
-      <figure class="rkl-card">
-        <img src="/images/cabins/cabin02.jpg" alt="تصميم كابينة أنيق" loading="lazy">
-        <figcaption class="rkl-badge">Cabin</figcaption>
-      </figure>
-      <figure class="rkl-card">
-        <img src="/images/cabins/cabin03.jpg" alt="كابينة بلمسات معدنية" loading="lazy">
-        <figcaption class="rkl-badge">Cabin</figcaption>
-      </figure>
-
-      <!-- Maintenance -->
-      <figure class="rkl-card">
-        <img src="/images/maintenance/maint01.jpg" alt="فريق صيانة المصاعد" loading="lazy">
-        <figcaption class="rkl-badge">Maintenance</figcaption>
-      </figure>
-      <figure class="rkl-card">
-        <img src="/images/maintenance/maint02.jpg" alt="فحص دوري للمصعد" loading="lazy">
-        <figcaption class="rkl-badge">Maintenance</figcaption>
-      </figure>
-      <figure class="rkl-card">
-        <img src="/images/maintenance/maint03.jpg" alt="أعمال صيانة كهربائية" loading="lazy">
-        <figcaption class="rkl-badge">Maintenance</figcaption>
-      </figure>
-
-      <!-- Machine Room -->
-      <figure class="rkl-card">
-        <img src="/images/machine-room/machine01.jpg" alt="غرفة ماكينة المصعد" loading="lazy">
-        <figcaption class="rkl-badge">Machine Room</figcaption>
-      </figure>
-      <figure class="rkl-card">
-        <img src="/images/machine-room/machine02.jpg" alt="معدات التحكم بالمصعد" loading="lazy">
-        <figcaption class="rkl-badge">Machine Room</figcaption>
-      </figure>
-
-      <!-- Glass Elevators -->
-      <figure class="rkl-card">
-        <img src="/images/glass-elevators/glass01.jpg" alt="مصعد زجاجي بانورامي" loading="lazy">
-        <figcaption class="rkl-badge">Glass</figcaption>
-      </figure>
-      <figure class="rkl-card">
-        <img src="/images/glass-elevators/glass02.jpg" alt="واجهة بانورامية لمصعد" loading="lazy">
-        <figcaption class="rkl-badge">Glass</figcaption>
-      </figure>
-      <figure class="rkl-card">
-        <img src="/images/glass-elevators/glass03.jpg" alt="مصعد زجاجي في مجمع تجاري" loading="lazy">
-        <figcaption class="rkl-badge">Glass</figcaption>
-      </figure>
-    </div>
-  </div>
-
-  <!-- Lightbox -->
-  <div class="rkl-lightbox" id="rklLightbox" aria-hidden="true">
-    <button class="rkl-close" id="rklClose">إغلاق ✕</button>
-    <img id="rklPreview" alt="عرض الصورة">
-  </div>
-</section>
-
-<script>
-  // فتح الصورة في Lightbox عند الضغط
-  const grid = document.getElementById('rklGrid');
-  const box  = document.getElementById('rklLightbox');
-  const img  = document.getElementById('rklPreview');
-  const cls  = document.getElementById('rklClose');
-
-  grid.addEventListener('click', (e)=>{
-    const target = e.target.closest('.rkl-card img');
-    if(!target) return;
-    img.src = target.src;
-    img.alt = target.alt;
-    box.classList.add('open');
-    box.setAttribute('aria-hidden','false');
-  });
-
-  function closeBox(){
-    box.classList.remove('open');
-    box.setAttribute('aria-hidden','true');
-    img.src = ""; img.alt="";
-  }
-  cls.addEventListener('click', closeBox);
-  box.addEventListener('click', (e)=>{ if(e.target===box) closeBox(); });
-  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeBox(); });
-</script>
-<!-- ==== /RKL Gallery Section ==== -->
 </body>
 </html>
-
-
