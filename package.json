@@ -1,0 +1,11 @@
+{
+  "name": "rk-lifts-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "fetch:images": "node scripts/upload-images.js"
+  },
+  "dependencies": {
+    "node-fetch": "3.3.2"
+  }
+}
