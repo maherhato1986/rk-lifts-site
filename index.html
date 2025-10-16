@@ -3,13 +3,30 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- SEO -->
   <title data-i18n="meta.title">RKL للمصاعد والسلالم الكهربائية | RKL Lifts & Escalators</title>
   <meta name="description" data-i18n="meta.description"
         content="آر كي ال RKL للمصاعد والسلالم الكهربائية – توريد وتركيب وتحديث وصيانة المصاعد والسلالم وفق معايير EN 81-20/50. الرياض – السليمانية.">
+  <meta name="theme-color" content="#6a1b9a" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="RKL Lifts & Escalators" />
+  <meta property="og:description" content="توريد وتركيب وتحديث وصيانة المصاعد والسلالم وفق EN 81-20/50." />
+  <meta property="og:image" content="public/images/hero.jpg" />
+  <meta property="og:url" content="https://rk-lifts.com" />
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Favicon -->
   <link rel="icon" type="image/png" href="public/images/logo.png" />
+
+  <!-- Styles -->
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -33,10 +50,10 @@
   <header class="header">
     <div class="container">
       <a class="brand" href="/">
-        <img src="public/images/logo.png" alt="RKL logo" />
+        <img src="public/images/logo.png" alt="RKL logo" width="38" height="38" />
         <span data-i18n="brand">RKL Lifts & Escalators</span>
       </a>
-      <nav class="nav">
+      <nav class="nav" aria-label="primary">
         <a href="#solutions" data-i18n="nav.solutions">الحلول</a>
         <a href="#sectors" data-i18n="nav.sectors">القطاعات</a>
         <a href="#products" data-i18n="nav.products">المنتجات</a>
@@ -44,12 +61,12 @@
         <a href="#about" data-i18n="nav.about">نبذة</a>
         <a class="btn primary" href="#contact" data-i18n="nav.quote">اطلب عرض سعر</a>
       </nav>
-      <button class="hamburger" id="hamburger" aria-label="Menu">☰</button>
+      <button class="hamburger" id="hamburger" aria-label="فتح القائمة">☰</button>
     </div>
   </header>
 
   <!-- Mobile Nav -->
-  <nav class="mobile-nav" id="mobileNav" hidden>
+  <nav class="mobile-nav" id="mobileNav" hidden aria-label="mobile">
     <a href="#solutions" data-i18n="nav.solutions">الحلول</a>
     <a href="#sectors" data-i18n="nav.sectors">القطاعات</a>
     <a href="#products" data-i18n="nav.products">المنتجات</a>
@@ -77,28 +94,32 @@
   <!-- Solutions -->
   <section id="solutions" class="section">
     <div class="container">
-      <h2>حلولنا</h2>
-      <p class="muted">حلول متكاملة للمصاعد والسلالم من الدراسة والتصميم إلى التركيب والصيانة الدورية والطوارئ.</p>
+      <h2 data-i18n="sections.solutions.title">حلولنا</h2>
+      <p class="muted" data-i18n="sections.solutions.lead">حلول متكاملة للمصاعد والسلالم من الدراسة والتصميم إلى التركيب والصيانة الدورية والطوارئ.</p>
+
       <div class="grid cards">
         <article class="card">
-          <h3>تحديث (Modernization)</h3>
-          <p>رفع السعة، استبدال الكنترول، تحسين الكابينة والإنارة والواجهات مع الحفاظ على البئر القائم.</p>
-          <a href="#contact" class="link">اطلب تقييم موقع</a>
+          <h3 data-i18n="solutions.modernization.title">تحديث (Modernization)</h3>
+          <p data-i18n="solutions.modernization.body">رفع السعة، استبدال الكنترول، تحسين الكابينة والإنارة والواجهات مع الحفاظ على البئر القائم.</p>
+          <a href="#contact" class="link" data-i18n="solutions.modernization.cta">اطلب تقييم موقع</a>
         </article>
+
         <article class="card">
-          <h3>توريد وتركيب</h3>
-          <p>MRL وMR، سرعات متعددة، حمولة 450–1600 كغ، أبواب أوتوماتيكية، مواصفات مخصصة للمستشفيات والتجاري.</p>
-          <a href="#products" class="link">اطلع على التشكيلة</a>
+          <h3 data-i18n="solutions.installation.title">توريد وتركيب</h3>
+          <p data-i18n="solutions.installation.body">MRL وMR، سرعات متعددة، حمولة 450–1600 كغ، أبواب أوتوماتيكية، مواصفات مخصصة للمستشفيات والتجاري.</p>
+          <a href="#products" class="link" data-i18n="solutions.installation.cta">اطلع على التشكيلة</a>
         </article>
+
         <article class="card">
-          <h3>صيانة وقائية</h3>
-          <p>عقود SLA، زيارات مجدولة، تقارير PDF موقعة، نظام تذاكر وبلاغات طوارئ عبر واتساب.</p>
-          <a href="#contact" class="link">ابدأ عقد صيانة</a>
+          <h3 data-i18n="solutions.maintenance.title">صيانة وقائية</h3>
+          <p data-i18n="solutions.maintenance.body">عقود SLA، زيارات مجدولة، تقارير PDF موقعة، نظام تذاكر وبلاغات طوارئ عبر واتساب.</p>
+          <a href="#contact" class="link" data-i18n="solutions.maintenance.cta">ابدأ عقد صيانة</a>
         </article>
+
         <article class="card">
-          <h3>السلالم & المشايات</h3>
-          <p>توريد وتركيب وصيانة سلالم ومشايات للمراكز التجارية والمطارات مع معايير أمان عالية.</p>
-          <a href="#contact" class="link">تواصل معنا</a>
+          <h3 data-i18n="solutions.escalators.title">السلالم & المشايات</h3>
+          <p data-i18n="solutions.escalators.body">توريد وتركيب وصيانة سلالم ومشايات للمراكز التجارية والمطارات مع معايير أمان عالية.</p>
+          <a href="#contact" class="link" data-i18n="solutions.escalators.cta">تواصل معنا</a>
         </article>
       </div>
     </div>
@@ -107,14 +128,14 @@
   <!-- Sectors -->
   <section id="sectors" class="section alt">
     <div class="container">
-      <h2>القطاعات التي نخدمها</h2>
-      <div class="grid logos">
-        <div class="logo-item">مستشفيات</div>
-        <div class="logo-item">تجاري</div>
-        <div class="logo-item">تعليمي</div>
-        <div class="logo-item">سكني</div>
-        <div class="logo-item">صناعي</div>
-        <div class="logo-item">القطاع الحكومي</div>
+      <h2 data-i18n="sections.sectors.title">القطاعات التي نخدمها</h2>
+      <div class="grid logos" role="list">
+        <div class="logo-item" role="listitem" data-i18n="sectors.health">مستشفيات</div>
+        <div class="logo-item" role="listitem" data-i18n="sectors.commercial">تجاري</div>
+        <div class="logo-item" role="listitem" data-i18n="sectors.education">تعليمي</div>
+        <div class="logo-item" role="listitem" data-i18n="sectors.residential">سكني</div>
+        <div class="logo-item" role="listitem" data-i18n="sectors.industrial">صناعي</div>
+        <div class="logo-item" role="listitem" data-i18n="sectors.gov">القطاع الحكومي</div>
       </div>
     </div>
   </section>
@@ -122,44 +143,48 @@
   <!-- Products -->
   <section id="products" class="section">
     <div class="container">
-      <h2>المنتجات</h2>
+      <h2 data-i18n="sections.products.title">المنتجات</h2>
+
       <div class="grid products">
         <article class="product">
-          <h3>مصعد MRL 630 كغ</h3>
+          <h3 data-i18n="products.mrl630.title">مصعد MRL 630 كغ</h3>
           <ul>
-            <li>1.0 م/ث | 3–8 وقفات</li>
-            <li>أبواب أوتوماتيكية 800–900 مم</li>
-            <li>خيارات تشطيب ستانلس/ديكورات</li>
+            <li data-i18n="products.mrl630.l1">1.0 م/ث | 3–8 وقفات</li>
+            <li data-i18n="products.mrl630.l2">أبواب أوتوماتيكية 800–900 مم</li>
+            <li data-i18n="products.mrl630.l3">خيارات تشطيب ستانلس/ديكورات</li>
           </ul>
-          <a class="btn ghost" href="#contact">اطلب تسعير</a>
+          <a class="btn ghost" href="#contact" data-i18n="cta.pricing">اطلب تسعير</a>
         </article>
+
         <article class="product">
-          <h3>مصعد تجاري 1000 كغ</h3>
+          <h3 data-i18n="products.commercial1000.title">مصعد تجاري 1000 كغ</h3>
           <ul>
-            <li>1.0–1.6 م/ث | 6–12 وقفة</li>
-            <li>كنترول VVVF متقدم</li>
-            <li>UPS اختياري ومضاد رجوع</li>
+            <li data-i18n="products.commercial1000.l1">1.0–1.6 م/ث | 6–12 وقفة</li>
+            <li data-i18n="products.commercial1000.l2">كنترول VVVF متقدم</li>
+            <li data-i18n="products.commercial1000.l3">UPS اختياري ومضاد رجوع</li>
           </ul>
-          <a class="btn ghost" href="#contact">اطلب تسعير</a>
+          <a class="btn ghost" href="#contact" data-i18n="cta.pricing">اطلب تسعير</a>
         </article>
+
         <article class="product">
-          <h3>سلم كهربائي</h3>
+          <h3 data-i18n="products.escalator.title">سلم كهربائي</h3>
           <ul>
-            <li>زاوية 30° | عرض درابزين 1000 مم</li>
-            <li>كفاءة طاقة عالية</li>
-            <li>تشطيبات حسب الهوية</li>
+            <li data-i18n="products.escalator.l1">زاوية 30° | عرض درابزين 1000 مم</li>
+            <li data-i18n="products.escalator.l2">كفاءة طاقة عالية</li>
+            <li data-i18n="products.escalator.l3">تشطيبات حسب الهوية</li>
           </ul>
-          <a class="btn ghost" href="#contact">اطلب تسعير</a>
+          <a class="btn ghost" href="#contact" data-i18n="cta.pricing">اطلب تسعير</a>
         </article>
       </div>
-      <p class="muted small">* تتوافر مواصفات خاصة للمستشفيات، الحمولة الثقيلة، وغرف الأجهزة.</p>
+
+      <p class="muted small" data-i18n="sections.products.note">* تتوافر مواصفات خاصة للمستشفيات، الحمولة الثقيلة، وغرف الأجهزة.</p>
     </div>
   </section>
 
   <!-- Projects -->
   <section id="projects" class="section alt">
     <div class="container">
-      <h2>مشاريع مختارة</h2>
+      <h2 data-i18n="sections.projects.title">مشاريع مختارة</h2>
       <div class="grid cards">
         <article class="card">
           <h3>Mobily – السليمانية</h3>
@@ -174,19 +199,19 @@
           <p>حلول تركيب وصيانة بعقود SLA ومعايير أمان EN 81-20/50.</p>
         </article>
       </div>
-      <a class="btn secondary" href="#contact">اطلب بروفايل المشاريع</a>
+      <a class="btn secondary" href="#contact" data-i18n="sections.projects.cta">اطلب بروفايل المشاريع</a>
     </div>
   </section>
 
   <!-- About -->
   <section id="about" class="section">
     <div class="container">
-      <h2>من نحن</h2>
-      <p>آر كي ال RKL للمصاعد والسلالم الكهربائية – مؤسسة سعودية معتمدة تقدم حلول التوريد والتركيب والتحديث والصيانة، مع ملف فني وشهادات ISO متعددة وشراكات مع مصانع عالمية منها <strong>TRESA Spain</strong>.</p>
+      <h2 data-i18n="sections.about.title">من نحن</h2>
+      <p data-i18n="sections.about.body">آر كي ال RKL للمصاعد والسلالم الكهربائية – مؤسسة سعودية معتمدة تقدم حلول التوريد والتركيب والتحديث والصيانة، مع ملف فني وشهادات ISO متعددة وشراكات مع مصانع عالمية منها <strong>TRESA Spain</strong>.</p>
       <div class="highlights">
-        <div><strong>300+</strong><span>مصعد/سلم تحت الخدمة</span></div>
-        <div><strong>40+</strong><span>مشروع منفذ</span></div>
-        <div><strong>24/7</strong><span>دعم الطوارئ</span></div>
+        <div><strong>300+</strong><span data-i18n="about.stats.s1">مصعد/سلم تحت الخدمة</span></div>
+        <div><strong>40+</strong><span data-i18n="about.stats.s2">مشروع منفذ</span></div>
+        <div><strong>24/7</strong><span data-i18n="about.stats.s3">دعم الطوارئ</span></div>
       </div>
     </div>
   </section>
@@ -194,27 +219,28 @@
   <!-- Contact -->
   <section id="contact" class="section contact">
     <div class="container">
-      <h2>تواصل معنا</h2>
-      <form class="contact-form" name="contact">
+      <h2 data-i18n="sections.contact.title">تواصل معنا</h2>
+      <form class="contact-form" name="contact" aria-label="contact">
         <div class="grid two">
-          <input type="text" name="name" placeholder="الاسم" required />
-          <input type="tel" name="phone" placeholder="رقم الجوال" required />
+          <input type="text" name="name" placeholder="الاسم" data-i18n="contact.name" required />
+          <input type="tel" name="phone" placeholder="رقم الجوال" data-i18n="contact.phone" required />
         </div>
-        <input type="email" name="email" placeholder="البريد الإلكتروني (اختياري)" />
-        <textarea name="message" rows="5" placeholder="صف مشروعك أو احتياجك (مصعد 630 كغ، عدد 6 وقفات...)" required></textarea>
+        <input type="email" name="email" placeholder="البريد الإلكتروني (اختياري)" data-i18n="contact.email" />
+        <textarea name="message" rows="5" placeholder="صف مشروعك أو احتياجك (مصعد 630 كغ، عدد 6 وقفات...)" data-i18n="contact.message" required></textarea>
         <div class="form-actions">
-          <button class="btn primary" type="submit">إرسال الطلب</button>
-          <a class="btn whats" target="_blank" rel="noopener" href="https://wa.me/966114774021">تواصل واتساب</a>
+          <button class="btn primary" type="submit" data-i18n="contact.submit">إرسال الطلب</button>
+          <a class="btn whats" target="_blank" rel="noopener" href="https://wa.me/966114774021" data-i18n="top.whatsapp">تواصل واتساب</a>
         </div>
-        <p class="form-note small">بإرسالك الطلب، توافق على التواصل بخصوص العروض والخدمات.</p>
+        <p class="form-note small" data-i18n="contact.note">بإرسالك الطلب، توافق على التواصل بخصوص العروض والخدمات.</p>
       </form>
     </div>
   </section>
 
+  <!-- Footer -->
   <footer class="footer">
     <div class="container footer-grid">
       <div class="foot-brand">
-        <img src="public/images/logo.png" alt="RKL logo" />
+        <img src="public/images/logo.png" alt="RKL logo" width="46" height="46" />
         <p data-i18n="footer.name">RKL للمصاعد والسلالم الكهربائية</p>
         <p class="small" data-i18n="footer.legal">السجل التجاري: 1010709355 – الرقم الضريبي: 302250422600003</p>
       </div>
@@ -241,8 +267,10 @@
     </div>
   </footer>
 
-  <!-- JSON-LD يحدّث نصيًا داخل السكريبت حسب اللغة -->
+  <!-- JSON-LD (يُملأ ديناميكيًا من main.js حسب اللغة) -->
   <script id="org-jsonld" type="application/ld+json"></script>
+
+  <!-- Scripts -->
   <script src="scripts/main.js"></script>
 </body>
 </html>
