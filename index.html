@@ -22,28 +22,45 @@
  ]
 }
 </script>
-  <style>
-  .whatsapp-fab{
-    position:fixed; right:16px; bottom:16px;
-    width:56px; height:56px; border-radius:50%;
-    background:#25D366; box-shadow:0 8px 24px rgba(0,0,0,.18);
-    display:flex; align-items:center; justify-content:center;
-    z-index:9999; cursor:pointer; transition:transform .2s ease, box-shadow .2s ease;
-    animation:fab-pop .6s ease;
-  }
-  .whatsapp-fab:hover{ transform:translateY(-2px); box-shadow:0 10px 28px rgba(0,0,0,.22); }
-  .whatsapp-fab svg{ width:28px; height:28px; fill:#fff; }
-  @keyframes fab-pop{ from{ transform:scale(.7); opacity:0 } to{ transform:scale(1); opacity:1 } }
-  /* هزّة خفيفة عند التمرير */
-  .whatsapp-fab.scroll-wiggle{ animation:wiggle .5s ease; }
-  @keyframes wiggle{
-    0%{ transform:translateY(0) }
-    50%{ transform:translateY(-5px) }
-    100%{ transform:translateY(0) }
-  }
-  /* مسافة إضافية على الشاشات الصغيرة */
-  @media (max-width:560px){ .whatsapp-fab{ right:12px; bottom:12px; width:54px; height:54px } }
-</style>
+<script>
+  (function(){
+    const phone = '966114774021'; // رقم المؤسسة بدون +
+    const msgs = {
+      ar: "مرحباً! 👋\nأهلاً بك في RKL للمصاعد والسلالم الكهربائية.\nتفضّل اكتب طلبك هنا وسنرد عليك بأسرع وقت ممكن.\nنحن من الشركات الرائدة في مجال المصاعد وتحديثها، ونقدّم خدمات عالية الجودة ومعايير أمان EN 81-20/50.\n— مرسل من موقع RKL",
+      en: "Hello! 👋\nWelcome to RKL Lifts & Escalators.\nPlease send your request here and we’ll reply as soon as possible.\nWe are a leading company in elevators & modernization, delivering high-quality services and EN 81-20/50 safety standards.\n— Sent from RKL website"
+    };
+
+    function getLang(){
+      const langAttr = document.documentElement.lang || 'ar';
+      return (langAttr.toLowerCase().startsWith('en')) ? 'en' : 'ar';
+    }
+
+    function buildWaLink(){
+      const lang = getLang();
+      const text = msgs[lang];
+      return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+    }
+
+    const fab = document.querySelector('.whatsapp-fab');
+    if (fab) fab.href = buildWaLink();
+
+    // لو عندك أزرار تبديل اللغة (arBtn / enBtn) حدّث الرابط بعد التبديل
+    ['arBtn','enBtn'].forEach(id=>{
+      const el = document.getElementById(id);
+      if(el){ el.addEventListener('click', ()=>{ if(fab) fab.href = buildWaLink(); }); }
+    });
+
+    // هزّة بسيطة عند التمرير (إن كان كودك السابق موجود)
+    let ticking = false;
+    window.addEventListener('scroll', function(){
+      if (!fab || ticking) return;
+      ticking = true;
+      fab.classList.add('scroll-wiggle');
+      setTimeout(()=>{ fab.classList.remove('scroll-wiggle'); ticking = false; }, 600);
+    }, { passive:true });
+  })();
+</script>
+
 
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
