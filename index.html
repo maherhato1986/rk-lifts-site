@@ -2,432 +2,366 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8" />
-  <link rel="manifest" href="/manifest.webmanifest">
-<link rel="search" type="application/opensearchdescription+xml" title="RKL Site Search" href="/opensearch.xml">
-<link rel="icon" type="image/png" href="/public/images/favicon.png">
-
-  <link rel="icon" type="image/x-icon" href="/public/images/favicon.ico">
-  <script type="application/ld+json">
-{
- "@context":"https://schema.org",
- "@type":"Organization",
- "name":"RKL Lifts & Escalators",
- "alternateName":["RKL","آر كي ال","RKL للمصاعد"],
- "url":"https://www.rk-lifts.com/",
- "logo":"https://www.rk-lifts.com/public/images/logo.png",
- "sameAs":[
-   "https://www.linkedin.com/company/rklifts",
-   "https://www.instagram.com/rk_lifts",
-   "https://x.com/rk_lifts"
- ]
-}
-</script>
-
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RKL للمصاعد والسلالم الكهربائية | RKL Lifts & Escalators</title>
-  <meta name="description" content="آر كي ال RKL للمصاعد والسلالم الكهربائية – توريد، تركيب، تحديث وصيانة المصاعد والسلالم وفق معايير EN 81-20/50.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta name="description" content="توريد وتركيب وتحديث وصيانة المصاعد والسلالم المتحركة في السعودية. التزام بمعايير EN 81‑20/50، دعم فني داخل المملكة، وشراكات تصنيع موثوقة.">
+  <link rel="canonical" href="https://www.rk-lifts.com/">
+  <meta name="theme-color" content="#178B5E">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="RKL Lifts & Escalators">
+  <meta property="og:description" content="حلول مصاعد وسلالم موثوقة: تصميم، توريد، تركيب، تحديث وصيانة.">
+  <meta property="og:url" content="https://www.rk-lifts.com/">
+  <meta property="og:image" content="/images/rkl_logo.png">
+  <meta name="twitter:card" content="summary_large_image">
   <style>
     :root{
-      --rkl-purple:#6a1b9a;
-      --rkl-green:#0e9f6e;
-      --ink:#0e0f13; --muted:#61646b; --bg:#ffffff; --bg-soft:#f6f7fb; --card:#ffffff;
-      --radius:18px;
+      --rkl-green:#178B5E; /* RKL green (similar to Al-Wehdat tone) */
+      --rkl-purple:#5B3FA3; /* RKL purple (brand accent) */
+      --ink:#111827; --muted:#6B7280; --bg:#ffffff; --bg-soft:#F8FAFC; --card:#ffffff; --ring: rgba(23,139,94,.25);
     }
-    *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:"Cairo", system-ui,-apple-system,"Segoe UI",Roboto,"Inter",Arial,sans-serif}
-    a{color:inherit;text-decoration:none}
-    img{max-width:100%;display:block}
-    .container{width:min(1200px, 92vw);margin-inline:auto}
-    .btn{display:inline-block;padding:.9rem 1.2rem;border-radius:999px;font-weight:700;letter-spacing:.2px}
-    .btn.primary{background:var(--rkl-purple);color:#fff}
-    .btn.ghost{border:1px solid #ddd}
-
-    /* Header */
-    header{position:sticky;top:0;background:#fff;z-index:40;box-shadow:0 1px 0 #eee}
-    .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 0}
-    .logo{display:flex;align-items:center;gap:10px}
-    .logo img{height:40px;width:auto}
-    .menu{display:flex;align-items:center;gap:20px}
-    .menu a{padding:10px 6px;border-radius:10px;color:#1f2230;font-weight:600}
-    .menu a:hover{background:var(--bg-soft)}
-    .lang-toggle{display:flex;gap:6px;align-items:center}
-    .lang-toggle button{border:0;background:#f0f0f5;padding:.4rem .7rem;border-radius:12px;font-weight:700;cursor:pointer}
-    .lang-toggle button.active{background:var(--rkl-green);color:#fff}
-    .burger{display:none;border:0;background:#f6f7fb;padding:.7rem;border-radius:12px}
-
-    /* Hero */
-    .hero{position:relative;overflow:hidden;border-radius:var(--radius);margin:16px 0}
-    .slides{position:relative;height:62vh;min-height:420px;border-radius:inherit}
-    .slide{position:absolute;inset:0;opacity:0;transition:opacity .6s ease}
-    .slide.active{opacity:1}
-    .slide .image{position:absolute;inset:0;background-size:cover;background-position:center}
-    .slide::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.4),rgba(0,0,0,.45))}
-    .hero .content{position:absolute;inset:0;display:grid;place-items:center;padding:clamp(16px,3vw,32px)}
-    .hero .card{width:min(980px, 92%);background:rgba(255,255,255,.08);backdrop-filter: blur(8px);border:1px solid rgba(255,255,255,.25);border-radius:24px;color:#fff;padding:clamp(16px,3vw,32px)}
-    .kicker{display:inline-flex;align-items:center;gap:8px;font-weight:700}
-    .kicker .dot{width:8px;height:8px;border-radius:999px;background:var(--rkl-green)}
-    .hero h1{margin:.4rem 0 1rem;font-size:clamp(28px,4vw,44px);line-height:1.2}
-    .hero p{margin:0 0 16px;color:#eef1f4;font-size:clamp(16px,2.1vw,18px)}
-
-    /* Strips */
-    .strip{padding:48px 0}
-    .strip.alt{background:var(--bg-soft)}
-    .section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:22px}
-    .section-head h2{font-size:clamp(22px,3.2vw,30px);margin:0}
-    .section-head p{color:var(--muted);margin:0}
-
-    /* Cards grid */
-    .grid{display:grid;grid-template-columns:repeat(12, 1fr);gap:18px}
-    .col-4{grid-column:span 4}
-    .col-3{grid-column:span 3}
-    .col-6{grid-column:span 6}
-    .card{background:var(--card);border:1px solid #eee;border-radius:var(--radius);overflow:hidden}
-    .card .media{position:relative;aspect-ratio:16/10;overflow:hidden}
-    /* Watermark utility – overlays RKL logo on any image that still carries Alapont mark */
-    .watermark::after{content:"";position:absolute;right:10px;bottom:10px;width:92px;height:30px;background:url('/public/images/logo.png') center/contain no-repeat;opacity:.92;filter: drop-shadow(0 1px 2px rgba(0,0,0,.25))}
-    .card .body{padding:16px}
-    .tag{display:inline-flex;align-items:center;gap:8px;background:#eef7f4;color:#0b6c50;border:1px solid #d9efe6;padding:.2rem .6rem;border-radius:999px;font-weight:700;font-size:12px}
-
-    /* CTA band */
-    .cta{position:relative;background:linear-gradient(135deg, #6a1b9a 0%, #0e9f6e 100%);border-radius:var(--radius);padding:28px;color:#fff;overflow:hidden}
-    .cta h3{margin:0 0 .6rem}
-
-    /* Footer */
-    footer{background:#0f1220;color:#dbe0ea;margin-top:48px}
-    .foot{padding:24px 0}
-    footer a{color:#cfe3ff}
-    .footlogo{display:flex;align-items:center;gap:10px}
-    .footlogo img{height:36px}
-
-    /* Responsive */
-    @media (max-width: 920px){
-      .menu{display:none}
-      .burger{display:inline-flex}
-      .col-4{grid-column:span 6}
-      .col-3{grid-column:span 6}
-      .col-6{grid-column:span 12}
-      .slides{height:58vh}
-    }
-    @media (max-width: 560px){
-      .col-4,.col-3{grid-column:span 12}
-      .slides{height:56vh;min-height:360px}
-    }
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Cairo",sans-serif;color:var(--ink);background:var(--bg)}
+    .container{max-width:1200px;margin:auto;padding:0 20px}
+    .stack{display:grid;gap:12px}
+    header{position:sticky;top:0;background:#fff;border-bottom:1px solid #eef2f7;z-index:50}
+    .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+    .nav a{color:var(--ink);text-decoration:none;margin:0 10px;font-weight:600}
+    .cta{background:var(--rkl-green);color:#fff;border:none;padding:12px 18px;border-radius:12px;font-weight:700;cursor:pointer}
+    .cta.secondary{background:transparent;color:var(--rkl-green);border:2px solid var(--rkl-green)}
+    .hero{padding:64px 0;background:linear-gradient(180deg,#fff, #f5f9f7)}
+    .hero h1{font-size:clamp(28px,3.2vw,44px);margin:0 0 10px}
+    .hero p{color:var(--muted);font-size:18px}
+    .badges{display:flex;gap:12px;flex-wrap:wrap}
+    .badge{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid #e5e7eb;padding:8px 12px;border-radius:999px;font-size:14px}
+    .grid{display:grid;gap:18px}
+    @media(min-width:900px){.grid.cols-3{grid-template-columns:repeat(3,1fr)}.grid.cols-4{grid-template-columns:repeat(4,1fr)}}
+    .card{background:var(--card);border:1px solid #e5e7eb;border-radius:16px;overflow:hidden}
+    .card .media{aspect-ratio:16/9;background:#e9eef2}
+    .card .pad{padding:16px}
+    .section{padding:48px 0}
+    .section h2{font-size:clamp(22px,2.4vw,32px);margin:0 0 8px}
+    .section p.lead{color:var(--muted)}
+    .features li{padding:8px 0}
+    .contact{display:grid;gap:18px}
+    @media(min-width:900px){.contact{grid-template-columns:1.2fr .8fr}}
+    input,textarea{width:100%;padding:12px 14px;border:1px solid #e5e7eb;border-radius:12px;font-family:inherit}
+    input:focus,textarea:focus{outline:2px solid var(--ring);border-color:var(--rkl-green)}
+    footer{padding:28px 0;border-top:1px solid #eef2f7;background:#fff;margin-top:40px}
+    .pill{border-radius:999px;background:#f1f5f9;padding:6px 10px;font-size:13px;color:#334155}
+    .lang-toggle{display:inline-flex;gap:8px;border:1px solid #e5e7eb;border-radius:999px;padding:6px}
+    .lang-toggle button{border:none;background:transparent;padding:6px 10px;border-radius:999px;cursor:pointer;font-weight:700}
+    .lang-toggle button.active{background:var(--rkl-purple);color:#fff}
+    /* floating WhatsApp */
+    .whatsapp{position:fixed;inset-inline-end:18px;inset-block-end:18px;background:#25D366;color:#fff;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;box-shadow:0 10px 25px rgba(0,0,0,.15);text-decoration:none;font-size:24px}
+    /* certificates strip */
+    .logos{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+    .logos img{height:36px;opacity:.9;filter:grayscale(20%)}
   </style>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"LocalBusiness",
+    "name":"RKL Lifts & Escalators",
+    "image":"https://www.rk-lifts.com/images/rkl_logo.png",
+    "telephone":"0114774021",
+    "email":"admin@rk-lifts.com",
+    "address":{"@type":"PostalAddress","streetAddress":"السليمانية","addressLocality":"الرياض","addressCountry":"SA"},
+    "url":"https://www.rk-lifts.com/",
+    "sameAs":["https://wa.me/966114774021"],
+    "areaServed":"SA",
+    "openingHours":"Mo-Su 00:00-23:59"
+  }
+  </script>
 </head>
 <body>
-  <!-- HEADER -->
   <header>
-    <div class="container nav" aria-label="Main navigation">
-      <a class="logo" href="#" aria-label="RKL Home">
-        <!-- Replace all occurrences of Alapont marks with our RKL logo -->
-        <img src="/public/images/logo.png" alt="RKL" />
-        <strong>RKL Lifts & Escalators</strong>
+    <div class="container nav">
+      <a href="#" class="stack" style="text-decoration:none">
+        <strong style="color:var(--rkl-green)">RKL</strong>
+        <small class="pill">CR 1010709355 • VAT 302250422600003</small>
       </a>
-      <nav class="menu" id="menu">
+      <nav>
         <a href="#solutions" data-i18n="nav_solutions">الحلول</a>
         <a href="#products" data-i18n="nav_products">المنتجات</a>
         <a href="#projects" data-i18n="nav_projects">المشاريع</a>
         <a href="#about" data-i18n="nav_about">من نحن</a>
         <a href="#contact" data-i18n="nav_contact">تواصل</a>
       </nav>
-      <div class="lang-toggle" role="group" aria-label="Language switcher">
-        <button id="arBtn" class="active" type="button">العربية</button>
-        <button id="enBtn" type="button">EN</button>
-        <button class="burger" id="burger" aria-label="Toggle menu">☰</button>
+      <div class="lang-toggle" aria-label="Language">
+        <button id="btn-ar" class="active">العربية</button>
+        <button id="btn-en">EN</button>
       </div>
     </div>
   </header>
 
-  <!-- HERO (Slider) -->
-  <section class="container hero" aria-label="Hero slider">
-    <div class="slides" id="slides">
-      <!-- TIP: ضع أسماء الصور الحقيقية التي رفعتها داخل مصفوفة HERO_IMAGES في الأسفل -->
-      <div class="slide active"><div class="image watermark" style="background-image:url('/public/images/hero_01.jpg')"></div></div>
-      <div class="slide"><div class="image watermark" style="background-image:url('/public/images/hero_02.jpg')"></div></div>
-      <div class="slide"><div class="image watermark" style="background-image:url('/public/images/hero_03.jpg')"></div></div>
-    </div>
-    <div class="content">
-      <div class="card">
-        <div class="kicker"><span class="dot"></span><span data-i18n="kicker">حلول مصاعد وسلالم موثوقة</span></div>
-        <h1 data-i18n="hero_h1">تصميم، توريد، تركيب وتحديث المصاعد والسلالم الكهربائية</h1>
-        <p data-i18n="hero_p">نقدم حلولاً متوافقة مع EN 81-20/50 ومعايير السلامة، مع دعم فني وخدمة ما بعد البيع داخل المملكة.</p>
+  <section class="hero">
+    <div class="container" style="display:grid;gap:18px;align-items:center">
+      <div class="stack">
+        <span class="pill" data-i18n="hero_tag">حلول مصاعد وسلالم موثوقة</span>
+        <h1 data-i18n="hero_title">تصميم، توريد، تركيب وتحديث المصاعد والسلالم الكهربائية</h1>
+        <p data-i18n="hero_sub">نلتزم بمعايير EN 81‑20/50 ومعايير السلامة الأوروبية، مع دعم فني وخدمة بعد البيع داخل المملكة.</p>
         <div style="display:flex;gap:12px;flex-wrap:wrap">
-          <a href="#contact" class="btn primary" data-i18n="cta_primary">اطلب عرض سعر</a>
-          <a href="#products" class="btn ghost" data-i18n="cta_secondary">تعرّف على منتجاتنا</a>
+          <a href="#contact" class="cta" data-i18n="cta_quote">اطلب عرض سعر</a>
+          <a href="#products" class="cta secondary" data-i18n="cta_products">تعرّف على منتجاتنا</a>
+        </div>
+        <div class="badges" aria-label="certifications">
+          <span class="badge">EN 81‑20/50</span>
+          <span class="badge">ISO 9001/14001/45001</span>
+          <span class="badge">ZATCA VAT</span>
+          <span class="badge">KSA Support</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- SOLUTIONS / INDUSTRIES -->
-  <section id="solutions" class="strip alt">
-    <div class="container">
-      <div class="section-head">
-        <h2 data-i18n="solutions_h2">حلول حسب القطاع</h2>
-        <p data-i18n="solutions_p">مبانٍ تجارية، طبية، سكنية، ومتعددة الاستخدام.</p>
-      </div>
-      <div class="grid">
-        <article class="card col-3">
-          <div class="media watermark"><img src="/public/images/sector_commercial.jpg" alt="Commercial"></div>
-          <div class="body"><span class="tag" data-i18n="commercial">تجاري</span><h3>MRL 1000kg</h3><p data-i18n="commercial_p">أداء عالٍ للمجمعات والمراكز التجارية.</p></div>
+  <section id="solutions" class="section">
+    <div class="container stack">
+      <h2 data-i18n="sec_solutions">حلول حسب القطاع</h2>
+      <p class="lead" data-i18n="sec_solutions_sub">مبانٍ تجارية، طبية، سكنية، ومتعددة الاستخدام.</p>
+      <div class="grid cols-4">
+        <article class="card">
+          <div class="media" style="background:url('/images/sector-commercial.jpg') center/cover"></div>
+          <div class="pad stack">
+            <strong data-i18n="sol_com_title">تجاري</strong>
+            <small class="muted" data-i18n="sol_com_desc">MRL 1000kg — أداء عالٍ للمجمعات التجارية.</small>
+          </div>
         </article>
-        <article class="card col-3">
-          <div class="media watermark"><img src="/public/images/sector_medical.jpg" alt="Medical"></div>
-          <div class="body"><span class="tag" data-i18n="medical">طبي</span><h3>Bed Lift 1600kg</h3><p data-i18n="medical_p">مصاعد أسرّة للمستشفيات بمعايير صارمة.</p></div>
+        <article class="card">
+          <div class="media" style="background:url('/images/sector-medical.jpg') center/cover"></div>
+          <div class="pad stack">
+            <strong data-i18n="sol_med_title">طبي</strong>
+            <small class="muted" data-i18n="sol_med_desc">Bed Lift 1600kg — مصاعد أسرّة بمعايير صارمة.</small>
+          </div>
         </article>
-        <article class="card col-3">
-          <div class="media watermark"><img src="/public/images/sector_residential.jpg" alt="Residential"></div>
-          <div class="body"><span class="tag" data-i18n="residential">سكني</span><h3>MRL 630kg</h3><p data-i18n="residential_p">حلول فعّالة لمباني السكن.</p></div>
+        <article class="card">
+          <div class="media" style="background:url('/images/sector-resi.jpg') center/cover"></div>
+          <div class="pad stack">
+            <strong data-i18n="sol_res_title">سكني</strong>
+            <small class="muted" data-i18n="sol_res_desc">MRL 630kg — حلول فعّالة لمباني السكن.</small>
+          </div>
         </article>
-        <article class="card col-3">
-          <div class="media watermark"><img src="/public/images/sector_mixed.jpg" alt="Mixed-use"></div>
-          <div class="body"><span class="tag" data-i18n="mixed">متعدد الاستخدام</span><h3>1.0 m/s</h3><p data-i18n="mixed_p">توازن الأداء والكلفة للمشاريع المختلطة.</p></div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- PRODUCTS -->
-  <section id="products" class="strip">
-    <div class="container">
-      <div class="section-head">
-        <h2 data-i18n="products_h2">المنتجات</h2>
-        <p data-i18n="products_p">مصاعد بدون غرفة ماكينة (MRL)، مصاعد أسرّة، سلالم متحركة، وممرات متحركة.</p>
-      </div>
-      <div class="grid">
-        <article class="card col-4">
-          <div class="media watermark"><img src="/public/images/product_mrl.jpg" alt="MRL"></div>
-          <div class="body"><h3 data-i18n="prod1_h3">مصاعد MRL</h3><p data-i18n="prod1_p">سعات 630–1000 كغ بسرعات حتى 1.6 م/ث.</p></div>
-        </article>
-        <article class="card col-4">
-          <div class="media watermark"><img src="/public/images/product_bedlift.jpg" alt="Bed lift"></div>
-          <div class="body"><h3 data-i18n="prod2_h3">مصاعد أسرّة</h3><p data-i18n="prod2_p">سعات 1600–2000 كغ للمستشفيات.</p></div>
-        </article>
-        <article class="card col-4">
-          <div class="media watermark"><img src="/public/images/product_escalator.jpg" alt="Escalator"></div>
-          <div class="body"><h3 data-i18n="prod3_h3">سلالم متحركة</h3><p data-i18n="prod3_p">زاوية 30°/35°، عرض درجات 600/800/1000 مم.</p></div>
+        <article class="card">
+          <div class="media" style="background:url('/images/sector-mixed.jpg') center/cover"></div>
+          <div class="pad stack">
+            <strong data-i18n="sol_mix_title">متعدد الاستخدام</strong>
+            <small class="muted" data-i18n="sol_mix_desc">1.0 m/s — توازن الأداء والكلفة.</small>
+          </div>
         </article>
       </div>
     </div>
   </section>
 
-  <!-- PROJECTS -->
-  <section id="projects" class="strip alt">
-    <div class="container">
-      <div class="section-head">
-        <h2 data-i18n="projects_h2">نماذج من مشاريعنا</h2>
-        <p data-i18n="projects_p"> Riyadh • Jeddah • Dammam • Madinah</p>
-      </div>
-      <div class="grid">
-        <article class="card col-6">
-          <div class="media watermark"><img src="/public/images/project_01.jpg" alt="Project 1"></div>
-          <div class="body"><h3>Mobily – Sulaymaniyah</h3><p data-i18n="proj1_p">تحديث 16 مصعد Otis Gen2 إلى 630 كغ.</p></div>
+  <section id="products" class="section" style="background:var(--bg-soft)">
+    <div class="container stack">
+      <h2 data-i18n="sec_products">المنتجات</h2>
+      <p class="lead" data-i18n="sec_products_sub">مصاعد بدون غرفة ماكينة (MRL)، مصاعد أسرّة، سلالم وممرات متحركة.</p>
+      <div class="grid cols-3">
+        <article class="card">
+          <div class="media" style="background:url('/images/product-mrl.jpg') center/cover"></div>
+          <div class="pad">
+            <h3 data-i18n="prod_mrl">مصاعد MRL</h3>
+            <p data-i18n="prod_mrl_desc">سعات 630–1000 كغ بسرعات حتى 1.6 م/ث.</p>
+          </div>
         </article>
-        <article class="card col-6">
-          <div class="media watermark"><img src="/public/images/project_02.jpg" alt="Project 2"></div>
-          <div class="body"><h3>Abanmi – Medical & Commercial</h3><p data-i18n="proj2_p">توريد 26 مصعد 630/1000 كغ.</p></div>
+        <article class="card">
+          <div class="media" style="background:url('/images/product-bedlift.jpg') center/cover"></div>
+          <div class="pad">
+            <h3 data-i18n="prod_bed">مصاعد أسرّة</h3>
+            <p data-i18n="prod_bed_desc">سعات 1600–2000 كغ للمستشفيات.</p>
+          </div>
+        </article>
+        <article class="card">
+          <div class="media" style="background:url('/images/product-escalator.jpg') center/cover"></div>
+          <div class="pad">
+            <h3 data-i18n="prod_escalator">سلالم متحركة</h3>
+            <p data-i18n="prod_escalator_desc">زاوية 30°/35°، عرض درجات 600/800/1000 مم.</p>
+          </div>
         </article>
       </div>
-      <div style="margin-top:16px" class="cta">
-        <h3 data-i18n="cta_h3">هل لديك مشروع جديد؟</h3>
-        <p data-i18n="cta_p">أرسل لنا المخططات وسنشاركك جدول مواصفات وسعرًا مبدئيًا خلال وقت قصير.</p>
-        <div style="margin-top:10px"><a href="#contact" class="btn" style="background:#fff;color:#111" data-i18n="cta_btn">ابدأ الآن</a></div>
+      <div class="logos" style="margin-top:10px">
+        <img src="/images/iso-9001.png" alt="ISO 9001" loading="lazy">
+        <img src="/images/iso-14001.png" alt="ISO 14001" loading="lazy">
+        <img src="/images/iso-45001.png" alt="ISO 45001" loading="lazy">
+        <img src="/images/en81.png" alt="EN 81-20/50 compliant" loading="lazy">
       </div>
     </div>
   </section>
 
-  <!-- ABOUT -->
-  <section id="about" class="strip">
-    <div class="container">
-      <div class="section-head"><h2 data-i18n="about_h2">من نحن</h2><p data-i18n="about_p">آر كي ال RKL – توريد وتركيب وصيانة المصاعد والسلالم الكهربائية.</p></div>
-      <div class="grid">
-        <div class="col-6">
-          <div class="card">
-            <div class="body">
-              <h3 data-i18n="about_title">معايير أوروبية، دعم محلّي</h3>
-              <p data-i18n="about_txt">نلتزم بمعايير EN 81‑20/50 ونعمل بشراكات تصنيع موثوقة لتقديم حلول عالية الجودة مع خدمة ما بعد البيع داخل المملكة.</p>
-              <ul>
-                <li data-i18n="about_li1">خدمة طوارئ وصيانة وقائية.</li>
-                <li data-i18n="about_li2">حلول تحديث للمصاعد القديمة (Modernization).</li>
-                <li data-i18n="about_li3">توريد سلالم وممرات متحركة.</li>
-              </ul>
-            </div>
+  <section id="projects" class="section">
+    <div class="container stack">
+      <h2 data-i18n="sec_projects">نماذج من مشاريعنا</h2>
+      <p class="lead">Riyadh • Jeddah • Dammam • Madinah</p>
+      <div class="grid cols-3">
+        <article class="card">
+          <div class="media" style="background:url('/images/project-mobily.jpg') center/cover"></div>
+          <div class="pad stack">
+            <strong>Mobily – Sulaymaniyah</strong>
+            <small data-i18n="proj_mobily">تحديث 16 مصعد Otis Gen2 إلى 630 كغ.</small>
+          </div>
+        </article>
+        <article class="card">
+          <div class="media" style="background:url('/images/project-abanmi.jpg') center/cover"></div>
+          <div class="pad stack">
+            <strong>Abanmi – Medical & Commercial</strong>
+            <small data-i18n="proj_abanmi">توريد 26 مصعد 630/1000 كغ.</small>
+          </div>
+        </article>
+        <article class="card">
+          <div class="media" style="background:url('/images/project-nwc.jpg') center/cover"></div>
+          <div class="pad stack">
+            <strong>NWC – Dammam</strong>
+            <small data-i18n="proj_nwc">توريد وتحديث مصاعد مباني القطاع الشرقي.</small>
+          </div>
+        </article>
+      </div>
+      <div style="margin-top:12px">
+        <a class="cta" href="#contact" data-i18n="cta_project">هل لديك مشروع جديد؟ ابدأ الآن</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="section" style="background:var(--bg-soft)">
+    <div class="container grid" style="grid-template-columns:1.1fr .9fr; gap:24px">
+      <div class="stack">
+        <h2 data-i18n="sec_about">من نحن</h2>
+        <h3 data-i18n="about_title">آر كي ال RKL – توريد وتركيب وصيانة المصاعد والسلالم الكهربائية</h3>
+        <p data-i18n="about_sub">نلتزم بمعايير EN 81‑20/50 ونعمل مع شراكات تصنيع موثوقة لتقديم حلول عالية الجودة مع خدمة ما بعد البيع داخل المملكة.</p>
+        <ul class="features">
+          <li data-i18n="about_f1">خدمة طوارئ وصيانة وقائية.</li>
+          <li data-i18n="about_f2">حلول تحديث للمصاعد القديمة (Modernization).</li>
+          <li data-i18n="about_f3">توريد سلالم وممرات متحركة.</li>
+        </ul>
+      </div>
+      <aside class="card">
+        <div class="media" style="background:url('/images/team.jpg') center/cover"></div>
+        <div class="pad stack">
+          <strong data-i18n="about_kpi">+80 مصعد تحت الإدارة</strong>
+          <small class="muted" data-i18n="about_kpi2">خبرة تنفيذ في مشاريع طبية وتجارية وسكنية.</small>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="contact" class="section">
+    <div class="container contact">
+      <form class="card stack" action="/api/contact" method="post">
+        <div class="pad stack">
+          <h2 data-i18n="sec_contact">تواصل معنا</h2>
+          <input name="name" placeholder="الاسم" required>
+          <input name="phone" placeholder="الهاتف" inputmode="tel">
+          <input name="email" placeholder="البريد الإلكتروني" inputmode="email">
+          <textarea name="message" rows="5" placeholder="رسالتك" required></textarea>
+          <input type="hidden" name="_honeypot" value=""> <!-- simple spam trap -->
+          <button class="cta" type="submit" data-i18n="btn_send">إرسال</button>
+          <small class="muted">بالنقر على إرسال، فأنت توافق على استخدام بياناتك لغرض التواصل فقط.</small>
+        </div>
+      </form>
+      <div class="stack">
+        <div class="card pad stack">
+          <strong data-i18n="hq">المقر الرئيسي</strong>
+          <div>RKL Lifts & Escalators – السليمانية – الرياض</div>
+          <div>0114774021 • ✉️ admin@rk-lifts.com • rk-lifts.com</div>
+          <div data-i18n="iban">بيانات التحويل (SNB): SA1710000001400005531406 – المستفيد: RKL</div>
+          <div class="stack" style="margin-top:8px">
+            <a class="cta secondary" href="https://wa.me/966545406661" target="_blank" rel="noopener" data-i18n="cta_whatsapp">تواصل واتساب</a>
+            <a class="cta secondary" href="https://maps.google.com/?q=RKL%20Lifts%20%26%20Escalators%20Riyadh" target="_blank" rel="noopener" data-i18n="cta_map">موقعنا على الخريطة</a>
           </div>
         </div>
-        <div class="col-6">
-          <div class="card">
-            <div class="media watermark"><img src="/public/images/about_team.jpg" alt="Team"></div>
-          </div>
+        <div class="card pad stack">
+          <strong data-i18n="docs">الوثائق والشهادات</strong>
+          <ul class="stack" style="list-style:disc;padding-inline-start:18px">
+            <li><a href="/docs/VAT_RKLIFTS.pdf" target="_blank">شهادة ضريبة القيمة المضافة</a></li>
+            <li><a href="/docs/ISO_14001.pdf" target="_blank">ISO 14001:2015</a></li>
+            <li><a href="/docs/ISO_45001.pdf" target="_blank">ISO 45001:2018</a></li>
+            <li><a href="/docs/ES155503ENACE.pdf" target="_blank">ISO/IEC 27001:2022</a></li>
+          </ul>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- CONTACT -->
-  <section id="contact" class="strip alt">
-    <div class="container">
-      <div class="section-head"><h2 data-i18n="contact_h2">تواصل معنا</h2><p data-i18n="contact_p">سليمانية – الرياض • 0114774021 • admin@rk-lifts.com</p></div>
-      <div class="grid">
-        <div class="col-6">
-          <div class="card">
-            <div class="body">
-              <form onsubmit="event.preventDefault(); alert(getText('form_success'));">
-                <div style="display:grid;gap:12px;grid-template-columns:1fr 1fr">
-                  <label><span data-i18n="f_name">الاسم</span><br><input required style="width:100%;padding:.8rem;border:1px solid #ddd;border-radius:12px"/></label>
-                  <label><span data-i18n="f_phone">الهاتف</span><br><input required style="width:100%;padding:.8rem;border:1px solid #ddd;border-radius:12px"/></label>
-                  <label class="col-6" style="grid-column:1/-1"><span data-i18n="f_email">البريد الإلكتروني</span><br><input type="email" required style="width:100%;padding:.8rem;border:1px solid #ddd;border-radius:12px"/></label>
-                  <label class="col-6" style="grid-column:1/-1"><span data-i18n="f_msg">رسالتك</span><br><textarea rows="5" style="width:100%;padding:.8rem;border:1px solid #ddd;border-radius:12px"></textarea></label>
-                </div>
-                <div style="margin-top:12px"><button class="btn primary" type="submit" data-i18n="send">إرسال</button></div>
-              </form>
-            </div>
-          </div>
-        </div>
-        <div class="col-6">
-          <div class="card">
-            <div class="body">
-              <h3 data-i18n="hq">المقر الرئيسي</h3>
-              <p>RKL Lifts & Escalators – <span data-i18n="hq_addr">السليمانية – الرياض</span></p>
-              <p>📞 0114774021 • ✉️ admin@rk-lifts.com • 🌐 rk-lifts.com</p>
-              <p data-i18n="bank">بيانات التحويل (SNB): SA1710000001400005531406 – المستفيد: RKL</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
   <footer>
-    <div class="container foot">
-      <div class="grid" style="align-items:center">
-        <div class="col-6">
-          <div class="footlogo"><img src="/public/images/logo.png" alt="RKL"><strong>RKL Lifts & Escalators</strong></div>
-          <p style="margin:.6rem 0 0;color:#9fb0c5">© <span id="year"></span> RKL. CR 1010709355 • VAT 302250422600003</p>
-        </div>
-        <div class="col-6" style="text-align:end">
-          <a href="#" class="btn" style="background:#1b1f35;color:#fff">WhatsApp Bot</a>
-        </div>
+    <div class="container" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center">
+      <div class="stack">
+        <strong>RKL Lifts & Escalators</strong>
+        <small>© <span id="y"></span> RKL. CR 1010709355 • VAT 302250422600003</small>
+      </div>
+      <div class="stack" style="align-items:flex-end">
+        <small><a href="/privacy.html">سياسة الخصوصية</a> • <a href="/terms.html">الشروط</a></small>
       </div>
     </div>
   </footer>
 
+  <a class="whatsapp" href="https://wa.me/966545406661" target="_blank" aria-label="WhatsApp">💬</a>
+
   <script>
-    // ===== YEAR =====
-    document.getElementById('year').textContent = new Date().getFullYear();
+  // Year
+  document.getElementById('y').textContent = new Date().getFullYear();
 
-    // ===== MOBILE MENU =====
-    const burger = document.getElementById('burger');
-    const menu = document.getElementById('menu');
-    if(burger){ burger.addEventListener('click',()=>{ menu.style.display = menu.style.display==='flex' ? 'none':'flex'; }); }
-
-    // ===== SIMPLE SLIDER =====
-    const slides = Array.from(document.querySelectorAll('.slide'));
-    let idx = 0; setInterval(()=>{ slides[idx].classList.remove('active'); idx=(idx+1)%slides.length; slides[idx].classList.add('active'); }, 5000);
-
-    // ===== WATERMARK NOTE =====
-    // أضف class="watermark" لأي صورة قد تحتوي شعار Alapont لتظهر فوقها علامة RKL تلقائياً.
-
-    // ===== i18n (AR/EN) =====
-    const AR = {
+  // Bilingual content (inline, no build tool). Default AR, toggles to EN and switches dir.
+  const dict = {
+    ar: {
       nav_solutions:"الحلول", nav_products:"المنتجات", nav_projects:"المشاريع", nav_about:"من نحن", nav_contact:"تواصل",
-      kicker:"حلول مصاعد وسلالم موثوقة",
-      hero_h1:"تصميم، توريد، تركيب وتحديث المصاعد والسلالم الكهربائية",
-      hero_p:"نقدم حلولاً متوافقة مع EN 81-20/50 ومعايير السلامة، مع دعم فني وخدمة ما بعد البيع داخل المملكة.",
-      cta_primary:"اطلب عرض سعر", cta_secondary:"تعرّف على منتجاتنا",
-      solutions_h2:"حلول حسب القطاع", solutions_p:"مبانٍ تجارية، طبية، سكنية، ومتعددة الاستخدام.",
-      commercial:"تجاري", commercial_p:"أداء عالٍ للمجمعات والمراكز التجارية.",
-      medical:"طبي", medical_p:"مصاعد أسرّة للمستشفيات بمعايير صارمة.",
-      residential:"سكني", residential_p:"حلول فعّالة لمباني السكن.",
-      mixed:"متعدد الاستخدام", mixed_p:"توازن الأداء والكلفة للمشاريع المختلطة.",
-      products_h2:"المنتجات", products_p:"مصاعد بدون غرفة ماكينة (MRL)، مصاعد أسرّة، سلالم متحركة، وممرات متحركة.",
-      prod1_h3:"مصاعد MRL", prod1_p:"سعات 630–1000 كغ بسرعات حتى 1.6 م/ث.",
-      prod2_h3:"مصاعد أسرّة", prod2_p:"سعات 1600–2000 كغ للمستشفيات.",
-      prod3_h3:"سلالم متحركة", prod3_p:"زاوية 30°/35°، عرض درجات 600/800/1000 مم.",
-      projects_h2:"نماذج من مشاريعنا", projects_p:" Riyadh • Jeddah • Dammam • Madinah",
-      proj1_p:"تحديث 16 مصعد Otis Gen2 إلى 630 كغ.", proj2_p:"توريد 26 مصعد 630/1000 كغ.",
-      cta_h3:"هل لديك مشروع جديد؟", cta_p:"أرسل لنا المخططات وسنشاركك جدول مواصفات وسعرًا مبدئيًا خلال وقت قصير.", cta_btn:"ابدأ الآن",
-      about_h2:"من نحن", about_p:"آر كي ال RKL – توريد وتركيب وصيانة المصاعد والسلالم الكهربائية.",
-      about_title:"معايير أوروبية، دعم محلّي", about_txt:"نلتزم بمعايير EN 81‑20/50 ونعمل بشراكات تصنيع موثوقة لتقديم حلول عالية الجودة مع خدمة ما بعد البيع داخل المملكة.",
-      about_li1:"خدمة طوارئ وصيانة وقائية.", about_li2:"حلول تحديث للمصاعد القديمة (Modernization).", about_li3:"توريد سلالم وممرات متحركة.",
-      contact_h2:"تواصل معنا", contact_p:"سليمانية – الرياض • 0114774021 • admin@rk-lifts.com",
-      f_name:"الاسم", f_phone:"الهاتف", f_email:"البريد الإلكتروني", f_msg:"رسالتك", send:"إرسال",
-      hq:"المقر الرئيسي", hq_addr:"السليمانية – الرياض",
-      bank:"بيانات التحويل (SNB): SA1710000001400005531406 – المستفيد: RKL",
-      form_success:"تم استلام رسالتك. سنتواصل معك قريباً."
-    };
-    const EN = {
+      hero_tag:"حلول مصاعد وسلالم موثوقة", hero_title:"تصميم، توريد، تركيب وتحديث المصاعد والسلالم الكهربائية",
+      hero_sub:"نلتزم بمعايير EN 81‑20/50 ومعايير السلامة الأوروبية، مع دعم فني وخدمة بعد البيع داخل المملكة.",
+      cta_quote:"اطلب عرض سعر", cta_products:"تعرّف على منتجاتنا",
+      sec_solutions:"حلول حسب القطاع", sec_solutions_sub:"مبانٍ تجارية، طبية، سكنية، ومتعددة الاستخدام.",
+      sol_com_title:"تجاري", sol_com_desc:"MRL 1000kg — أداء عالٍ للمجمعات التجارية.",
+      sol_med_title:"طبي", sol_med_desc:"Bed Lift 1600kg — مصاعد أسرّة بمعايير صارمة.",
+      sol_res_title:"سكني", sol_res_desc:"MRL 630kg — حلول فعّالة لمباني السكن.",
+      sol_mix_title:"متعدد الاستخدام", sol_mix_desc:"1.0 m/s — توازن الأداء والكلفة.",
+      sec_products:"المنتجات", sec_products_sub:"مصاعد بدون غرفة ماكينة (MRL)، مصاعد أسرّة، سلالم وممرات متحركة.",
+      prod_mrl:"مصاعد MRL", prod_mrl_desc:"سعات 630–1000 كغ بسرعات حتى 1.6 م/ث.",
+      prod_bed:"مصاعد أسرّة", prod_bed_desc:"سعات 1600–2000 كغ للمستشفيات.",
+      prod_escalator:"سلالم متحركة", prod_escalator_desc:"زاوية 30°/35°، عرض درجات 600/800/1000 مم.",
+      sec_projects:"نماذج من مشاريعنا", proj_mobily:"تحديث 16 مصعد Otis Gen2 إلى 630 كغ.", proj_abanmi:"توريد 26 مصعد 630/1000 كغ.", proj_nwc:"توريد وتحديث مصاعد مباني القطاع الشرقي.",
+      cta_project:"هل لديك مشروع جديد؟ ابدأ الآن",
+      sec_about:"من نحن", about_title:"آر كي ال RKL – توريد وتركيب وصيانة المصاعد والسلالم الكهربائية", about_sub:"نلتزم بمعايير EN 81‑20/50 ونعمل مع شراكات تصنيع موثوقة لتقديم حلول عالية الجودة مع خدمة ما بعد البيع داخل المملكة.",
+      about_f1:"خدمة طوارئ وصيانة وقائية.", about_f2:"حلول تحديث للمصاعد القديمة (Modernization).", about_f3:"توريد سلالم وممرات متحركة.", about_kpi:"+80 مصعد تحت الإدارة", about_kpi2:"خبرة تنفيذ في مشاريع طبية وتجارية وسكنية.",
+      sec_contact:"تواصل معنا", btn_send:"إرسال", hq:"المقر الرئيسي", iban:"بيانات التحويل (SNB): SA1710000001400005531406 – المستفيد: RKL",
+      docs:"الوثائق والشهادات", cta_whatsapp:"تواصل واتساب", cta_map:"موقعنا على الخريطة"
+    },
+    en: {
       nav_solutions:"Solutions", nav_products:"Products", nav_projects:"Projects", nav_about:"About", nav_contact:"Contact",
-      kicker:"Reliable Elevators & Escalators",
-      hero_h1:"Design, Supply, Installation & Modernization",
-      hero_p:"EN 81-20/50 compliant solutions with local after-sales service across KSA.",
-      cta_primary:"Request a Quote", cta_secondary:"Explore Products",
-      solutions_h2:"Solutions by Sector", solutions_p:"Commercial, Medical, Residential & Mixed-use.",
-      commercial:"Commercial", commercial_p:"High performance for malls & centers.",
-      medical:"Medical", medical_p:"Bed lifts for hospitals with strict standards.",
-      residential:"Residential", residential_p:"Efficient solutions for housing.",
-      mixed:"Mixed-use", mixed_p:"Balanced performance & cost.",
-      products_h2:"Products", products_p:"MRL lifts, Bed lifts, Escalators & Moving Walks.",
-      prod1_h3:"MRL Elevators", prod1_p:"630–1000 kg, up to 1.6 m/s.",
-      prod2_h3:"Bed Lifts", prod2_p:"1600–2000 kg for hospitals.",
-      prod3_h3:"Escalators", prod3_p:"30°/35°; 600/800/1000 mm step widths.",
-      projects_h2:"Selected Projects", projects_p:" Riyadh • Jeddah • Dammam • Madinah",
-      proj1_p:"Modernized 16 Otis Gen2 to 630 kg.", proj2_p:"Supplied 26 lifts 630/1000 kg.",
-      cta_h3:"Got a new project?", cta_p:"Share drawings and receive specs & a budgetary offer shortly.", cta_btn:"Start now",
-      about_h2:"About Us", about_p:"RKL – Supply, Installation & Maintenance of lifts & escalators.",
-      about_title:"European Standards, Local Support", about_txt:"We follow EN 81‑20/50 and partner with trusted manufacturers to deliver high‑quality solutions with local after‑sales.",
-      about_li1:"Emergency & preventive maintenance.", about_li2:"Modernization for legacy lifts.", about_li3:"Escalators & moving walks supply.",
-      contact_h2:"Contact Us", contact_p:"Sulaymaniyah – Riyadh • 0114774021 • admin@rk-lifts.com",
-      f_name:"Name", f_phone:"Phone", f_email:"Email", f_msg:"Message", send:"Send",
-      hq:"Head Office", hq_addr:"Sulaymaniyah – Riyadh",
-      bank:"Bank (SNB): SA1710000001400005531406 – Beneficiary: RKL",
-      form_success:"Thanks! We'll get back to you shortly."
-    };
-
-    const map = { ar: AR, en: EN };
-    let current = 'ar';
-    const $ = (s)=>Array.from(document.querySelectorAll(`[data-i18n="${s}"]`));
-    function setText(lang){
-      const dict = map[lang];
-      for(const k in dict){ $(k).forEach(el=> el.textContent = dict[k]); }
-      document.documentElement.lang = lang === 'ar' ? 'ar' : 'en';
-      document.documentElement.dir  = lang === 'ar' ? 'rtl' : 'ltr';
-      document.getElementById('arBtn').classList.toggle('active', lang==='ar');
-      document.getElementById('enBtn').classList.toggle('active', lang==='en');
+      hero_tag:"Reliable Lift & Escalator Solutions", hero_title:"Design, Supply, Installation & Modernization",
+      hero_sub:"EN 81‑20/50 compliant with in‑Kingdom support and after‑sales service.",
+      cta_quote:"Request a Quote", cta_products:"Explore Products",
+      sec_solutions:"Sector Solutions", sec_solutions_sub:"Commercial, Medical, Residential and Mixed‑use.",
+      sol_com_title:"Commercial", sol_com_desc:"MRL 1000kg — High performance for malls and centers.",
+      sol_med_title:"Medical", sol_med_desc:"Bed Lift 1600kg — Hospital‑grade.",
+      sol_res_title:"Residential", sol_res_desc:"MRL 630kg — Efficient for housing.",
+      sol_mix_title:"Mixed‑use", sol_mix_desc:"1.0 m/s — Balanced cost and performance.",
+      sec_products:"Products", sec_products_sub:"Machine‑Room‑Less (MRL) lifts, Bed lifts, Escalators and Walkways.",
+      prod_mrl:"MRL Lifts", prod_mrl_desc:"630–1000 kg with speeds up to 1.6 m/s.",
+      prod_bed:"Bed Lifts", prod_bed_desc:"1600–2000 kg for hospitals.",
+      prod_escalator:"Escalators", prod_escalator_desc:"30°/35°, 600/800/1000 mm step widths.",
+      sec_projects:"Selected Projects", proj_mobily:"Modernized 16 Otis Gen2 lifts to 630 kg.", proj_abanmi:"Supplied 26 lifts 630/1000 kg.", proj_nwc:"Supply & modernization for Eastern sector buildings.",
+      cta_project:"Have a new project? Start now",
+      sec_about:"About Us", about_title:"RKL – Lifts & Escalators", about_sub:"We adhere to EN 81‑20/50 and partner with trusted manufacturers to deliver high‑quality solutions with in‑Kingdom after‑sales service.",
+      about_f1:"Emergency & preventive maintenance.", about_f2:"Modernization for old lifts.", about_f3:"Escalators & moving walkways.", about_kpi:"80+ lifts under management", about_kpi2:"Experience in medical, commercial and residential projects.",
+      sec_contact:"Contact Us", btn_send:"Send", hq:"Head Office", iban:"Bank (SNB): SA1710000001400005531406 – Beneficiary: RKL",
+      docs:"Documents & Certificates", cta_whatsapp:"WhatsApp", cta_map:"Open Map"
     }
-    function getText(key){ return map[current][key] || key }
-    document.getElementById('arBtn').addEventListener('click', ()=>{ current='ar'; setText('ar'); });
-    document.getElementById('enBtn').addEventListener('click', ()=>{ current='en'; setText('en'); });
-    setText('ar');
-
-    // ===== HERO IMAGES QUICK SETUP =====
-    // استبدل أسماء الصور هنا لتتحكم في السلايدر دون تعديل الـ HTML
-    const HERO_IMAGES = [
-      '/public/images/hero_01.jpg',
-      '/public/images/hero_02.jpg',
-      '/public/images/hero_03.jpg'
-    ];
-    // تطبيع سريع: إذا غيرت القائمة أعلاه سنعكسها على الشرائح الحالية
-    (function syncSlides(){
-      const wrap = document.getElementById('slides');
-      if(!wrap) return;
-      wrap.innerHTML = HERO_IMAGES.map((src,i)=>`<div class="slide ${i===0?'active':''}"><div class="image watermark" style="background-image:url('${src}')"></div></div>`).join('');
-    })();
+  };
+  const setLang = (lang) => {
+    const rtls = lang==='ar';
+    document.documentElement.lang = lang;
+    document.documentElement.dir = rtls ? 'rtl' : 'ltr';
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const key = el.getAttribute('data-i18n');
+      if(dict[lang][key]) el.textContent = dict[lang][key];
+    });
+    document.getElementById('btn-ar').classList.toggle('active', lang==='ar');
+    document.getElementById('btn-en').classList.toggle('active', lang==='en');
+  };
+  document.getElementById('btn-ar').addEventListener('click', ()=>setLang('ar'));
+  document.getElementById('btn-en').addEventListener('click', ()=>setLang('en'));
+  // Persist last selection (optional)
+  const last = localStorage.getItem('rkl-lang');
+  if(last) setLang(last);
+  ['btn-ar','btn-en'].forEach(id=>document.getElementById(id).addEventListener('click',()=>{
+    localStorage.setItem('rkl-lang', document.documentElement.lang);
+  }));
   </script>
-  <a
-  href="https://wa.me/966114774021?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%20RKL%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%A7%D9%84%D8%AA%D9%88%D8%A7%D8%B5%D9%84"
-  class="whatsapp-fab"
-  aria-label="تواصل عبر واتساب"
-  target="_blank" rel="noopener"
->
-  <!-- أيقونة واتساب SVG -->
-  <svg viewBox="0 0 32 32" aria-hidden="true">
-    <path d="M19.1 17.4c-.3-.1-1.7-.8-1.9-.9-.2-.1-.4-.1-.6.1-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-1.7-.7-3-2.2-3.6-3.1-.3-.5 0-.5.2-.7.2-.2.3-.3.4-.5.2-.2.2-.3.3-.6.1-.2 0-.4 0-.6 0-.2-.6-1.6-.8-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.7s1.2 3.1 1.4 3.3c.2.2 2.3 3.5 5.6 4.8.8.3 1.5.5 2 .6.8.2 1.5.2 2 .1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.2-1.4 0-.1-.3-.2-.6-.3zM16 3C9.4 3 4 8.4 4 15c0 2.5.8 4.8 2.1 6.7L4 29l7.5-2C13.3 27.7 14.6 28 16 28c6.6 0 12-5.4 12-12S22.6 3 16 3zm0 22.1c-1.3 0-2.6-.4-3.6-.9l-.3-.2-4.5 1.2 1.2-4.4-.2-.3C7.8 19 7.4 17 7.4 15 7.4 9.9 11.9 5.4 17 5.4s9.6 4.5 9.6 9.6-4.5 9.1-9.6 9.1z"/>
-  </svg>
-</a>
-
 </body>
 </html>
