@@ -179,10 +179,10 @@
         </article>
       </div>
       <div class="logos" style="margin-top:10px">
-        <img src="/images/iso-9001.png" alt="ISO 9001" loading="lazy">
-        <img src="/images/iso-14001.png" alt="ISO 14001" loading="lazy">
-        <img src="/images/iso-45001.png" alt="ISO 45001" loading="lazy">
-        <img src="/images/en81.png" alt="EN 81-20/50 compliant" loading="lazy">
+        <img src="images/iso-9001.png?v=1761999646" alt="ISO 9001" loading="lazy">
+        <img src="images/iso-14001.png?v=1761999646" alt="ISO 14001" loading="lazy">
+        <img src="images/iso-45001.png?v=1761999646" alt="ISO 45001" loading="lazy">
+        <img src="images/en81.png?v=1761999646" alt="EN 81-20/50 compliant" loading="lazy">
       </div>
     </div>
   </section>
@@ -363,5 +363,33 @@
     localStorage.setItem('rkl-lang', document.documentElement.lang);
   }));
   </script>
+
+<!-- Fallback loader: try /public/images/ if /images/ fails -->
+<script>
+(function(){"use strict";
+  function swapToPublic(img){
+    try{ 
+      var u = new URL(img.src);
+      if(u.pathname.indexOf('/images/')===0 && u.pathname.indexOf('/public/images/')!==0){
+        u.pathname = '/public' + u.pathname;
+        img.src = u.toString();
+      }
+    }catch(e){}
+  }
+  document.addEventListener('error', function(e){
+    var t = e.target;
+    if(t && t.tagName==='IMG' && t.src.indexOf('/images/')>-1){
+      swapToPublic(t);
+    }
+  }, true);
+  // Also proactively test images that might be cached as broken
+  Array.prototype.forEach.call(document.images, function(img){
+    if(!img.complete || img.naturalWidth===0){
+      img.addEventListener('error', function(){ swapToPublic(img); });
+    }
+  });
+})();
+</script>
+
 </body>
 </html>
