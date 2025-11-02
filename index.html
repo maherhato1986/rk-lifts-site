@@ -426,6 +426,54 @@
       document.getElementById('y').textContent = new Date().getFullYear();
     </script>
   </footer>
+<!-- RKL WhatsApp Floating Logo -->
+<div class="rkl-whatsapp" id="rklWA">
+  <div class="rkl-wa-bubble" id="rklWABubble" aria-live="polite">
+    <b>مرحبًا بك في آر كي ال RKL</b> 👋 <br>
+    تواصل معنا عبر واتساب — نرد سريعًا.
+    <span class="en">Hello! Chat with <b>RKL Lifts &amp; Escalators</b> on WhatsApp.</span>
+  </div>
+
+  <a class="rkl-wa-btn" id="rklWAButton" aria-label="تواصل واتساب – RKL" rel="noopener" target="_blank">
+    <img src="public/images/rkl_logo.png" alt="RKL WhatsApp">
+  </a>
+</div>
+<!-- /RKL WhatsApp Floating Logo -->
+<script>
+  (function(){
+    // بدّل الرقم أدناه برقم واتساب الرسمي بصيغة دولية بدون + أو 00
+    // مثال: السعودية 9665XXXXXXXX
+    const PHONE = "9665XXXXXXXX";
+
+    // رسالة ترحيبية عربية/إنجليزية (يمكن تعديلها)
+    const msgAr = "مرحبًا 👋\nأرغب بالتواصل مع آر كي ال RKL بخصوص المصاعد/السلالم.\nفضلاً تزويدي بالتفاصيل.";
+    const msgEn = "Hello 👋\nI’d like to contact RKL about elevators/escalators.\nPlease share the details.";
+    const text = encodeURIComponent(msgAr + "\n— — —\n" + msgEn);
+
+    const isMobile = /Android|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const waBase = isMobile ? "https://wa.me/" : "https://web.whatsapp.com/send?phone=";
+
+    const waLink = `${waBase}${PHONE}${isMobile ? "" : ""}${isMobile ? `?text=${text}` : `&text=${text}`}`;
+
+    const btn = document.getElementById("rklWAButton");
+    const bubble = document.getElementById("rklWABubble");
+    const wrap = document.getElementById("rklWA");
+
+    // اربط الرابط
+    btn.href = waLink;
+
+    // ظهور البالون تلقائيًا بعد 1.2ث، ويختفي بعد 8ث أو عند المرور
+    setTimeout(()=> bubble.classList.add("visible"), 1200);
+    setTimeout(()=> bubble.classList.remove("visible"), 9000);
+
+    // أظهر/أخفِ عند التحويم
+    btn.addEventListener("mouseenter", ()=> bubble.classList.add("visible"));
+    btn.addEventListener("mouseleave", ()=> bubble.classList.remove("visible"));
+
+    // مثال لنقل الزر إلى اليسار إن أحببت:
+    // wrap.classList.add("rkl-left");
+  })();
+</script>
 
 </body>
 </html>
