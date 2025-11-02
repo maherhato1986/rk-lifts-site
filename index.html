@@ -91,6 +91,80 @@
     .copy{border-top:1px solid #1f2937;margin-top:20px;padding-top:14px;color:#9fb0c4;font-size:.9rem}
     .stamp{opacity:.09;position:absolute;inset:auto 0 -40px auto;text-align:center;pointer-events:none}
   </style>
+  <style>
+  :root{
+    --rkl-green:#0fb67a;
+    --rkl-dark:#0b2e2b;
+  }
+
+  /* الحاوية الطافية */
+  .rkl-whatsapp{
+    position:fixed;
+    inset:auto 20px 20px auto; /* أسفل-يمين، عدّلها لـ left إن أردت */
+    z-index:9999;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+
+  /* زر الشعار */
+  .rkl-wa-btn{
+    width:64px;height:64px;border-radius:50%;
+    background:#fff;
+    border:2px solid rgba(15,182,122,.25);
+    box-shadow:0 10px 30px rgba(15,182,122,.35), 0 2px 10px rgba(0,0,0,.08);
+    display:grid;place-items:center;
+    cursor:pointer;
+    animation:rkl-pulse 1.8s infinite ease-in-out;
+    position:relative;overflow:hidden;
+  }
+  .rkl-wa-btn::after{
+    content:"";
+    position:absolute;inset:-40%;border-radius:50%;
+    background:conic-gradient(from 180deg at 50% 50%, rgba(15,182,122,.0), rgba(15,182,122,.12), rgba(15,182,122,.0));
+    animation:rkl-rotate 5s linear infinite;
+  }
+  .rkl-wa-btn img{width:40px;height:40px;object-fit:contain;z-index:1}
+
+  /* بالون الترحيب */
+  .rkl-wa-bubble{
+    background:#0f172a;color:#e6f3ed;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:14px;
+    padding:10px 12px;max-width:280px;font:600 13px/1.5 "Cairo",sans-serif;
+    box-shadow:0 12px 30px rgba(2,6,23,.25);
+    transform-origin:100% 100%;
+    transform:scale(.98);
+    opacity:0;pointer-events:none;
+    transition:.35s ease;
+  }
+  .rkl-wa-bubble.visible{opacity:1;transform:scale(1)}
+  .rkl-wa-bubble b{color:#9ef0c7}
+  .rkl-wa-bubble .en{display:block;color:#c7d2fe;font-weight:600;margin-top:4px}
+
+  /* ذيل البالون */
+  .rkl-wa-bubble:after{
+    content:"";position:absolute;right:70px;bottom:-7px;
+    border:8px solid transparent;border-top-color:#0f172a;filter:drop-shadow(0 -1px 0 rgba(255,255,255,.08));
+  }
+
+  /* حركات */
+  @keyframes rkl-pulse{
+    0%,100%{transform:translateZ(0) scale(1)}
+    50%{transform:translateZ(0) scale(1.06)}
+  }
+  @keyframes rkl-rotate{to{transform:rotate(360deg)}}
+
+  /* وضع يسار الشاشة (اختياري) */
+  .rkl-left{inset:auto auto 20px 20px}
+  .rkl-left .rkl-wa-bubble:after{right:auto;left:70px}
+  
+  /* تحسينات هواتف صغيرة */
+  @media (max-width:480px){
+    .rkl-wa-bubble{max-width:78vw}
+  }
+</style>
+
 </head>
 <body>
 
