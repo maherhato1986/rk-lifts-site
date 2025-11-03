@@ -16,16 +16,50 @@
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 
   <style>
-    :root{
-  --rkl-green:#0FB67A;     /* الأخضر الأساسي - مائل للفخامة */
-  --rkl-purple:#5B4B8A;    /* البنفسجي الصناعي - لون مساند */
-  --rkl-dark:#1E1E1E;      /* اللون الداكن للنصوص والعناوين */
-  --rkl-gray:#FAFAFB;      /* الخلفية العامة الفاتحة */
-  --rkl-text:#24272B;      /* النص الأساسي */
-  --rkl-muted:#6B6F7A;     /* النص الثانوي */
-  --container:1200px;
-  --radius:18px;
+ :root{
+  --space-1: 8px; --space-2: 12px; --space-3: 16px;
+  --space-4: 24px; --space-5: 32px; --space-6: 48px; --space-7: 72px;
+  --radius-xl: 18px; --shadow-1: 0 8px 22px rgba(16,24,40,.06);
 }
+
+/* مسافات الأقسام الموحدة */
+section{ padding-block: var(--space-7) !important; }
+
+/* هرمية العناوين */
+.hero h1{ font-size: 2.25rem; line-height: 1.35; margin-bottom: var(--space-3); }
+.section-title{ font-size: 1.6rem; margin-bottom: var(--space-4); }
+
+/* أزرار موحّدة */
+.btn{ padding: .9rem 1.25rem; border-radius: 999px; font-weight: 800; }
+.btn-primary{ background: var(--rkl-green); border-color: var(--rkl-green); color:#fff; }
+.btn-outline{ background:#fff; border-color: var(--rkl-green); color: var(--rkl-green); }
+.btn:hover{ filter: saturate(1.1) brightness(0.98); }
+
+/* بطاقات متناسقة */
+.card{ min-height: 180px; border-radius: var(--radius-xl); box-shadow: var(--shadow-1); }
+.card .thumb{ width:96px; min-width:96px; height:96px; border-radius:14px; }
+
+/* شبكة المنتجات/القطاعات بمحاذاة ثابتة */
+.product, .card{ display: flex; flex-direction: row; }
+.product .image{ aspect-ratio: 16/10; }
+.product .body{ display:flex; flex-direction:column; justify-content:center; }
+.product .title{ font-weight: 800; margin-bottom: 6px; }
+
+/* تحسين الهيدر والروابط */
+nav a{ border-radius: 12px; padding:10px 12px; transition: .2s; }
+nav a:hover{ background:#eff3f6; }
+.lang-switch a.active{ background:#0f172a; color:#fff; }
+
+/* البطل: فصل الأزرار عن النص وتوسعة الفاصل مع الرسم */
+.hero-inner{ gap: var(--space-5); }
+.hero .hero-illustration{ margin-top: var(--space-4); }
+
+/* هواتف */
+@media (max-width: 960px){
+  .hero h1{ font-size: 1.8rem; }
+  .card{ min-height: auto; }
+}
+
 
 
     *{box-sizing:border-box}
