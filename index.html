@@ -463,19 +463,134 @@
       document.getElementById('y').textContent = new Date().getFullYear();
     </script>
   </footer>
-<!-- RKL WhatsApp Floating Logo -->
-<div class="rkl-whatsapp" id="rklWA">
-  <div class="rkl-wa-bubble" id="rklWABubble" aria-live="polite">
-    <b>مرحبًا بك في آر كي ال RKL</b> 👋 <br>
-    تواصل معنا عبر واتساب — نرد سريعًا.
-    <span class="en">Hello! Chat with <b>RKL Lifts &amp; Escalators</b> on WhatsApp.</span>
-  </div>
 
-  <a class="rkl-wa-btn" id="rklWAButton" aria-label="تواصل واتساب – RKL" rel="noopener" target="_blank">
-    <img src="public/images/rkl_logo.png" alt="RKL WhatsApp">
-  </a>
+        <!-- RKL WhatsApp mini-widget -->
+<style>
+  .rkl-wa { position: fixed; right: 16px; bottom: 16px; z-index: 9999; font-family: "Tajawal", system-ui, -apple-system, "Segoe UI", Roboto, Arial; direction: rtl; }
+  .rkl-wa-card { width: 320px; max-width: calc(100vw - 32px); background: #fff; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,.12); padding: 12px 12px 10px; }
+  .rkl-wa-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .rkl-wa-head img { width: 28px; height: 28px; }
+  .rkl-wa-head b { font-size: 15px; }
+  .rkl-wa-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+  .rkl-wa-input { width: 100%; resize: none; border: 1px solid #e5e7eb; border-radius: 12px; padding: 10px 12px; line-height: 1.5; min-height: 44px; font-size: 14px; }
+  .rkl-wa-btn { border: 0; border-radius: 12px; padding: 0 14px; min-width: 88px; font-weight: 600; cursor: pointer; }
+  .rkl-wa-btn { background: #25D366; color: #fff; }
+  .rkl-wa-meta { display:flex; gap:8px; margin:8px 0 10px; }
+  .rkl-wa-chip { font-size:12px; padding:6px 10px; border:1px solid #e5e7eb; border-radius:10px; cursor:pointer; user-select:none; }
+  .rkl-wa-select { width:100%; margin-bottom:8px; border:1px solid #e5e7eb; border-radius:10px; padding:8px 10px; font-size:13px; background:#fff; }
+  .rkl-wa-foot { font-size:11px; color:#6b7280; margin-top:6px; }
+  .rkl-wa-hide { display:none; }
+  @media (max-width:420px){ .rkl-wa-card { border-radius: 14px; } }
+</style>
+
+<div class="rkl-wa" id="rklWA">
+  <div class="rkl-wa-card" role="group" aria-label="راسلنا عبر واتساب">
+    <div class="rkl-wa-head">
+      <img src="public/images/rkl_logo.png" alt="RKL">
+      <b>راسل RKL عبر واتساب</b>
+    </div>
+
+    <!-- نوع الخدمة (اختياري للتقسيم الداخلي) -->
+    <select id="waTopic" class="rkl-wa-select" aria-label="نوع الخدمة">
+      <option value="">— اختر نوع الخدمة —</option>
+      <option value="مبيعات">مبيعات</option>
+      <option value="صيانة">صيانة</option>
+      <option value="طوارئ">طوارئ</option>
+      <option value="قطع غيار">قطع غيار</option>
+    </select>
+
+    <!-- اقتراحات سريعة -->
+    <div class="rkl-wa-meta">
+      <span class="rkl-wa-chip" data-fill="أريد عرض سعر لتحديث مصعد قديم.">عرض سعر تحديث</span>
+      <span class="rkl-wa-chip" data-fill="طلب صيانة وقائية مع عقد سنوي 12 زيارة.">صيانة وقائية</span>
+      <span class="rkl-wa-chip" data-fill="عطل طارئ – المصعد متوقف الآن.">عطل طارئ</span>
+    </div>
+
+    <div class="rkl-wa-row">
+      <textarea id="waMsg" class="rkl-wa-input" placeholder="اكتب رسالتك هنا ثم اضغط Enter للإرسال…" aria-label="رسالة واتساب"></textarea>
+      <button id="waSend" class="rkl-wa-btn" type="button" aria-label="إرسال إلى واتساب">إرسال</button>
+    </div>
+
+    <div class="rkl-wa-foot">
+      بالإرسال سيتم فتح واتساب الخاص بنا في تبويب جديد. رقمنا: 0114774021
+    </div>
+  </div>
 </div>
-<!-- /RKL WhatsApp Floating Logo -->
+
+<script>
+(function(){
+  // بدّل الرقم عند الحاجة (بدون +، مع كود الدولة). الرقم التالي يستخدم تنسيقكم الحالي:
+  const PHONE = "966114774021"; // مثال: 9665XXXXXXXX للجوال، أو رقم واتساب بزنس المربوط على الخط
+  const DEFAULT_TEXT = "مرحبًا، أود التواصل مع RKL بخصوص المصاعد/السلالم.";
+
+  const elMsg   = document.getElementById("waMsg");
+  const elSend  = document.getElementById("waSend");
+  const elTopic = document.getElementById("waTopic");
+  const chips   = document.querySelectorAll(".rkl-wa-chip");
+
+  // اقتراح بنقرة واحدة
+  chips.forEach(ch => ch.addEventListener("click", () => {
+    elMsg.value = ch.getAttribute("data-fill");
+    elMsg.focus();
+  }));
+
+  // بناء رابط واتساب حسب الجهاز
+  function buildWhatsAppURL(rawText){
+    const isMobile = /Android|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const text = encodeURIComponent(rawText || DEFAULT_TEXT);
+
+    // يمكنك إضافة UTM للتتبع إن رغبت:
+    const utm = encodeURIComponent("utm_source=rk_website&utm_medium=wa_widget&utm_campaign=contact");
+
+    if(isMobile){
+      // wa.me (جوال)
+      return `https://wa.me/${PHONE}?text=${text}%0A%0A${utm}`;
+    }else{
+      // web.whatsapp.com (سطح مكتب)
+      return `https://web.whatsapp.com/send?phone=${PHONE}&text=${text}%0A%0A${utm}`;
+    }
+  }
+
+  function send(){
+    const topic = (elTopic && elTopic.value) ? `[#${elTopic.value}] ` : "";
+    const msg   = (elMsg.value || "").trim();
+    const final = topic + (msg || DEFAULT_TEXT);
+
+    // فتح تبويب جديد للحفاظ على جلسة الموقع
+    const url = buildWhatsAppURL(final);
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+
+  // زر الإرسال
+  elSend.addEventListener("click", send);
+
+  // Enter للإرسال + Shift+Enter لسطر جديد
+  elMsg.addEventListener("keydown", function(e){
+    if(e.key === "Enter" && !e.shiftKey){
+      e.preventDefault();
+      send();
+    }
+  });
+
+  // تعبئة سياق تلقائي من صفحة المنتج/المصعد إن وجد
+  // مثال: ضع data-* على عنصر <body> أو بطاقة المصعد
+  // <body data-elevator="FITAHI-001" data-building="الفتيحي" data-capacity="1000kg">
+  try{
+    const host = document.body;
+    const parts = [];
+    if(host.dataset.elevator) parts.push(`Elevator ID: ${host.dataset.elevator}`);
+    if(host.dataset.building) parts.push(`Building: ${host.dataset.building}`);
+    if(host.dataset.capacity) parts.push(`Capacity: ${host.dataset.capacity}`);
+    if(parts.length && !elMsg.value){
+      elMsg.placeholder = `اكتب رسالتك… (${parts.join(" | ")})`;
+    }
+  }catch(_){}
+})();
+</script>
+<!-- /RKL WhatsApp mini-widget -->
+
+
+        
 <script>
   (function(){
     // بدّل الرقم أدناه برقم واتساب الرسمي بصيغة دولية بدون + أو 00
