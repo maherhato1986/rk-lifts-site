@@ -106,13 +106,18 @@
   margin-top: 40px;
   display: flex;
   justify-content: center;
+  background: rgba(255, 255, 255, 0.0); /* شفافية كاملة */
+  border-radius: 24px;
+  padding: 0; /* بدون خلفية أو حواف */
+  box-shadow: none; /* بدون ظل */
 }
 
 .hero .hero-illustration img {
   width: 400px;
-  border-radius: 24px;
-  box-shadow: 0 12px 40px rgba(15,182,122,.2);
+  border-radius: 0; /* اختياري لإزالة تقوّس الصورة */
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1); /* ظل بسيط فقط للصورة نفسها */
 }
+
 
 @media (max-width: 768px) {
   .hero {
