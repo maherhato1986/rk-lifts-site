@@ -11,22 +11,7 @@
   <title>RKL للمصاعد والسلالم الكهربائية | تصميم وتوريد وتركيب وتحديث</title>
   <meta name="description" content="RKL للمصاعد والسلالم الكهربائية: تصميم، توريد، تركيب، تحديث وصيانة وفق معايير EN 81-20/50 داخل المملكة العربية السعودية. دعم ما بعد البيع، خدمة العملاء، وفريق فني متخصص." />
 
-  .video-bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1; /* خلف كل العناصر */
-  overflow: hidden;
-  opacity: 0.25; /* شفافية الفيديو */
-}
 
-.video-bg video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
 
 
   <!-- خط Cairo -->
@@ -34,36 +19,117 @@
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 
   <style>
-    /* خلفية الفيديو داخل قسم البطل */
+ 
+ /* ===== Hero Section with Transparent Video ===== */
 .hero {
   position: relative;
   overflow: hidden;
   z-index: 1;
+  padding-block: 100px 80px;
+  text-align: center;
 }
 
+/* تدرج ناعم فوق الفيديو */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.1), #ffffff 80%);
+  z-index: 1;
+}
+
+/* الفيديو */
 .hero .video-bg {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   z-index: 0;
   overflow: hidden;
 }
-
 .hero .video-bg video {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.35; /* درجة الشفافية */
-  filter: brightness(0.85) contrast(1.1); /* تحسين الصورة */
+  opacity: 0.3;
+  filter: brightness(0.9) contrast(1.08);
 }
 
+/* النص والأزرار فوق الفيديو */
 .hero .container {
   position: relative;
-  z-index: 2; /* يجعل النص فوق الفيديو */
+  z-index: 2;
+  max-width: 850px;
+  margin: auto;
 }
 
+.hero h1 {
+  font-size: 2.4rem;
+  color: #093a2f;
+  font-weight: 900;
+  margin-bottom: 20px;
+}
+
+.hero p {
+  font-size: 1.05rem;
+  color: #144b3e;
+  margin-bottom: 32px;
+  background: rgba(255, 255, 255, 0.8);
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: 20px;
+}
+
+.hero .btn {
+  padding: 12px 20px;
+  border-radius: 30px;
+  font-weight: 700;
+  margin: 6px;
+}
+
+.hero .btn-primary {
+  background: #0fb67a;
+  color: #fff;
+  border: none;
+}
+
+.hero .btn-outline {
+  border: 2px solid #0fb67a;
+  background: #fff;
+  color: #0fb67a;
+}
+
+.hero .btn-outline:hover {
+  background: #0fb67a;
+  color: #fff;
+}
+
+.hero .hero-illustration {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.hero .hero-illustration img {
+  width: 400px;
+  border-radius: 24px;
+  box-shadow: 0 12px 40px rgba(15,182,122,.2);
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding-block: 80px 60px;
+  }
+  .hero h1 {
+    font-size: 1.9rem;
+  }
+  .hero .hero-illustration img {
+    width: 280px;
+  }
+}
+   
+
+
+
+    
  :root{
   --space-1: 8px; --space-2: 12px; --space-3: 16px;
   --space-4: 24px; --space-5: 32px; --space-6: 48px; --space-7: 72px;
