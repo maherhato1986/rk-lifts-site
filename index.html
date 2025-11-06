@@ -248,12 +248,106 @@ nav a:hover{ background:#eff3f6; }
     .product .body{padding:14px}
     .product .title{font-weight:800;margin:0 0 .35rem}
     .product .meta{font-size:.85rem;color:#6b7480;margin:0}
-    /* Footer */
-    footer{background:#0f172a;color:#dbe2ee;margin-top:40px}
-    footer .cols{display:grid;grid-template-columns:2fr 1.2fr 1.2fr;gap:22px}
-    footer a{color:#cfe4f5}
-    .copy{border-top:1px solid #1f2937;margin-top:20px;padding-top:14px;color:#9fb0c4;font-size:.9rem}
-    .stamp{opacity:.09;position:absolute;inset:auto 0 -40px auto;text-align:center;pointer-events:none}
+
+    /* ===== Footer ===== */
+footer{
+  background:#020617;
+  color:#e5e7eb;
+  margin-top:60px;
+  padding-block:40px 30px;
+}
+
+footer .container{
+  position:relative;
+}
+
+/* لوحة الفوتر الأساسية */
+.footer-panel{
+  background:rgba(15,23,42,0.96);
+  border-radius:24px;
+  padding:24px 26px 20px;
+  box-shadow:0 18px 45px rgba(15,23,42,.75);
+  border:1px solid rgba(148,163,184,.45);
+  position:relative;
+  overflow:hidden;
+}
+
+/* توزيع الأعمدة */
+footer .cols{
+  display:grid;
+  grid-template-columns:minmax(0,1.7fr) minmax(0,1.1fr) minmax(0,1.1fr);
+  gap:24px;
+  align-items:flex-start;
+}
+
+footer h3,
+footer h4{
+  margin:0 0 10px;
+  font-weight:800;
+  letter-spacing:.02em;
+}
+
+footer p{
+  margin:0 0 6px;
+  font-size:.9rem;
+  color:#cbd5f5;
+}
+
+/* الحبات (Pills) */
+.footer-pill{
+  display:inline-flex;
+  align-items:center;
+  padding:6px 12px;
+  margin-bottom:6px;
+  border-radius:999px;
+  background:rgba(15,23,42,.9);
+  border:1px solid rgba(148,163,184,.45);
+  font-size:.82rem;
+  color:#e5e7eb;
+}
+
+footer a{
+  color:#f9fafb;
+}
+
+/* سطر الحقوق */
+.copy{
+  border-top:1px solid rgba(148,163,184,.45);
+  margin-top:18px;
+  padding-top:10px;
+  color:#94a3b8;
+  font-size:.85rem;
+  text-align:center;
+}
+
+/* الشعار الخلفي */
+.stamp{
+  opacity:.05;
+  position:absolute;
+  inset:auto 0 -50px auto;
+  text-align:center;
+  pointer-events:none;
+}
+.stamp img{
+  width:260px;
+  margin-inline:auto;
+}
+
+/* موبايل */
+@media(max-width:768px){
+  .footer-panel{
+    padding:20px 18px 16px;
+  }
+  footer .cols{
+    grid-template-columns:1fr;
+  }
+  footer{
+    padding-block:30px 24px;
+  }
+}
+
+    
+    
   </style>
   <style>
 
