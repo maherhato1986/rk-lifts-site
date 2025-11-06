@@ -34,6 +34,36 @@
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 
   <style>
+    /* خلفية الفيديو داخل قسم البطل */
+.hero {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.hero .video-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.hero .video-bg video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.35; /* درجة الشفافية */
+  filter: brightness(0.85) contrast(1.1); /* تحسين الصورة */
+}
+
+.hero .container {
+  position: relative;
+  z-index: 2; /* يجعل النص فوق الفيديو */
+}
+
  :root{
   --space-1: 8px; --space-2: 12px; --space-3: 16px;
   --space-4: 24px; --space-5: 32px; --space-6: 48px; --space-7: 72px;
