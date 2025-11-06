@@ -683,40 +683,53 @@ footer a{
 
   <!-- Footer -->
   <footer aria-label="تذييل">
-    <div class="container" style="position:relative">
+    <div class="container">
+      <!-- خلفية الشعار الخفيفة -->
       <div class="stamp">
-        <!-- خلفية الشعار الخفيفة -->
-        <img src="public/images/logo.png" alt="" style="width:220px;margin-inline:auto;">
+        <img src="public/images/logo.png" alt="">
       </div>
 
-      <div class="cols" style="position:relative">
-        <div>
-          <h3 style="margin:0 0 10px">آر كي ال RKL للمصاعد والسلالم الكهربائية</h3>
-          <p style="margin:0 0 6px">السجل التجاري: 1010709355</p>
-          <p style="margin:0 0 6px">الرقم الضريبي: 302250422600003</p>
-          <p style="margin:0 0 6px">العنوان: السليمانية – الرياض</p>
-          <p style="margin:0 0 6px">الهاتف: 966114774021 — البريد: <a href="mailto:admin@rk-lifts.com">admin@rk-lifts.com</a></p>
+      <div class="footer-panel">
+        <div class="cols">
+          <!-- عمود بيانات المؤسسة -->
+          <div>
+            <h3>آر كي ال RKL للمصاعد والسلالم الكهربائية</h3>
+            <p class="footer-pill">السجل التجاري: 1010709355</p>
+            <p class="footer-pill">الرقم الضريبي: 302250422600003</p>
+            <p class="footer-pill">العنوان: السليمانية – الرياض</p>
+            <p class="footer-pill">
+              الهاتف: 966114774021 — البريد:
+              <a href="mailto:admin@rk-lifts.com">admin@rk-lifts.com</a>
+            </p>
+          </div>
+
+          <!-- عمود الروابط -->
+          <div>
+            <h4>روابط</h4>
+            <p class="footer-pill"><a href="#products">المنتجات</a></p>
+            <p class="footer-pill"><a href="#sectors">القطاعات</a></p>
+            <p class="footer-pill"><a href="#about">من نحن</a></p>
+          </div>
+
+          <!-- عمود الالتزام -->
+          <div>
+            <h4>الالتزام</h4>
+            <p class="footer-pill">EN 81-20/50 · ISO 9001/14001/45001</p>
+            <p class="footer-pill">دعم محلي داخل المملكة</p>
+            <p class="footer-pill">فواتير متوافقة مع ZATCA</p>
+          </div>
         </div>
-        <div>
-          <h4 style="margin-top:0">روابط</h4>
-          <p style="margin:0 0 6px"><a href="#products">المنتجات</a></p>
-          <p style="margin:0 0 6px"><a href="#sectors">القطاعات</a></p>
-          <p style="margin:0 0 6px"><a href="#about">من نحن</a></p>
-        </div>
-        <div>
-          <h4 style="margin-top:0">الالتزام</h4>
-          <p style="margin:0 0 6px">EN 81-20/50 · ISO 9001/14001/45001</p>
-          <p style="margin:0 0 6px">دعم محلي داخل المملكة</p>
-          <p style="margin:0 0 6px">فواتير متوافقة مع ZATCA</p>
+
+        <div class="copy">
+          © <span id="y"></span> RKL. جميع الحقوق محفوظة.
         </div>
       </div>
-
-      <div class="copy">© <span id="y"></span> RKL. جميع الحقوق محفوظة.</div>
     </div>
     <script>
       document.getElementById('y').textContent = new Date().getFullYear();
     </script>
   </footer>
+
 
         <!-- RKL WhatsApp mini-widget -->
 <style>
