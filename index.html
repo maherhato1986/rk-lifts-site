@@ -146,6 +146,34 @@
   }
 }
    
+/* كرت محتوى الهيرو فوق الفيديو */
+.hero-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  align-items: stretch;
+}
+
+.hero-inner > div:first-child {
+  background: rgba(255, 255, 255, 0.88); /* أبيض شبه شفاف */
+  padding: 26px 30px;
+  border-radius: 26px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+  backdrop-filter: blur(6px);
+}
+
+/* النص داخل الكرت */
+.hero h1 {
+  font-size: 2.3rem;
+  line-height: 1.5;
+  color: #0c2e28;
+  margin-bottom: 14px;
+}
+
+.hero p {
+  margin-bottom: 20px;
+  background: transparent;   /* إزالة الخلفية السابقة */
+  padding: 0;
+}
 
 
 
