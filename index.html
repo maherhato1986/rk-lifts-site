@@ -41,9 +41,15 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(255,255,255,0.1), #ffffff 80%);
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.80) 0%,
+    rgba(255, 255, 255, 0.92) 45%,
+    #ffffff 85%
+  );
   z-index: 1;
 }
+
 
 /* الفيديو */
 .hero .video-bg {
@@ -56,9 +62,10 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
- opacity: 0.55;
-  filter: brightness(1.1) contrast(1.1);
+  opacity: 0.45; /* أقل قليلاً حتى يبرز الكرت */
+  filter: brightness(1.05) contrast(1.08);
 }
+
 <script>
   document.addEventListener("DOMContentLoaded", function() {
     const video = document.querySelector(".video-bg video");
