@@ -980,33 +980,39 @@ footer a{
 </style>
 
 
-        <section id="map-projects" style="background:#f9fafb;padding:48px 0;">
-  <div class="container" style="max-width:1400px;margin:auto;display:grid;grid-template-columns:1.2fr 0.8fr;gap:24px;align-items:start;">
+<section id="map-projects">
+  <div class="container">
+    <div class="map-wrapper">
 
-    <div id="leafletMap" style="width:100%;height:520px;border-radius:14px;overflow:hidden;box-shadow:0 12px 30px rgba(15,182,122,.08)"></div>
+      <div id="leafletMap"></div>
 
-    <aside id="mapSidebar" style="background:#fff;border-radius:12px;padding:18px;border:1px solid #eef2f5;box-shadow:0 10px 24px rgba(2,6,23,.04)">
-      <h3 id="cityTitle" style="margin:0 0 8px;font-weight:800">اختر مدينة من الخريطة</h3>
-      <p id="citySummary" style="color:#4b5563;margin:0 0 12px;font-size:0.95rem;">عند الضغط على أي نقطة ستظهر معلومات المشاريع هنا.</p>
+      <aside id="mapSidebar">
+        <h3 id="cityTitle" style="margin:0 0 8px;font-weight:800">اختر مدينة من الخريطة</h3>
+        <p id="citySummary" style="color:#4b5563;margin:0 0 12px;font-size:0.95rem;">
+          عند الضغط على أي نقطة ستظهر معلومات المشاريع هنا.
+        </p>
 
-      <div style="display:flex;gap:10px;margin-bottom:12px;">
-        <div style="flex:1;background:#f6f9f7;border-radius:10px;padding:10px;text-align:center">
-          <div style="font-size:0.78rem;color:#6b7280">عدد المشاريع</div>
-          <div id="cityProjectsCount" style="font-weight:800;font-size:1.1rem">—</div>
+        <div style="display:flex;gap:10px;margin-bottom:12px;">
+          <div style="flex:1;background:#f6f9f7;border-radius:10px;padding:10px;text-align:center">
+            <div style="font-size:0.78rem;color:#6b7280">عدد المشاريع</div>
+            <div id="cityProjectsCount" style="font-weight:800;font-size:1.1rem">—</div>
+          </div>
+          <div style="flex:1;background:#f6f9f7;border-radius:10px;padding:10px;text-align:center">
+            <div style="font-size:0.78rem;color:#6b7280">إجمالي المصاعد</div>
+            <div id="cityLiftsCount" style="font-weight:800;font-size:1.1rem">—</div>
+          </div>
         </div>
-        <div style="flex:1;background:#f6f9f7;border-radius:10px;padding:10px;text-align:center">
-          <div style="font-size:0.78rem;color:#6b7280">إجمالي المصاعد</div>
-          <div id="cityLiftsCount" style="font-weight:800;font-size:1.1rem">—</div>
-        </div>
-      </div>
 
-      <h4 style="margin:0 0 8px;font-size:1rem;font-weight:700">قائمة المشاريع</h4>
-      <ul id="cityProjectsList" style="padding:0;margin:0;list-style:none;max-height:320px;overflow:auto">
-        <li style="color:#6b7280">اضغط على أي مدينة لعرض مشاريعها.</li>
-      </ul>
-    </aside>
+        <h4 style="margin:0 0 8px;font-size:1rem;font-weight:700">قائمة المشاريع</h4>
+        <ul id="cityProjectsList" style="padding:0;margin:0;list-style:none;max-height:320px;overflow:auto">
+          <li style="color:#6b7280">اضغط على أي مدينة لعرض مشاريعها.</li>
+        </ul>
+      </aside>
+
+    </div>
   </div>
 </section>
+
 
 
   <!-- Sectors -->
