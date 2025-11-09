@@ -638,8 +638,34 @@ footer a{
     lockScroll();
 
     // إغلاق تدريجي
+    // تفعيل وضع الهيرو الثابت بدون فيديو وتكبير البطاقة
+    function activateHeroStatic(){
+      const hero = document.querySelector('.hero');
+      if (!hero) return;
+
+      hero.classList.add('hero-static'); // يفعّل تنسيقات CSS أعلاه
+
+      // إيقاف فيديو الهيرو وإخفاؤه
+      const heroVideoWrapper = hero.querySelector('.video-bg');
+      if (heroVideoWrapper) {
+        const heroVideo = heroVideoWrapper.querySelector('video');
+        if (heroVideo) {
+          try {
+            heroVideo.pause();
+            heroVideo.currentTime = 0;
+          } catch(e){}
+        }
+        heroVideoWrapper.style.display = 'none';
+      }
+    }
+
+    // إغلاق تدريجي
     function closeIntro(){
       if(!overlay) return;
+
+      // تفعيل وضع الهيرو الثابت مباشرة مع بداية اختفاء المقدمة
+      activateHeroStatic();
+
       overlay.classList.add('fade-out');
       // إعادة التمرير بعد انتهاء التلاشي
       setTimeout(()=> {
@@ -647,6 +673,7 @@ footer a{
         unlockScroll();
       }, 900);
     }
+
 
     // زر التخطي
     skipBtn.addEventListener('click', closeIntro);
