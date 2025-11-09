@@ -177,6 +177,42 @@
   padding: 0;
 }
 
+/* بعد انتهاء المقدمة: إخفاء فيديو الهيرو وتكبير البطاقة */
+.hero.hero-static .video-bg {
+  display: none;             /* إخفاء فيديو الخلفية داخل قسم الهيرو */
+}
+
+.hero.hero-static {
+  background: #ffffff;       /* خلفية ثابتة بيضاء للهيرو بعد المقدمة */
+  padding-block: 80px 60px;  /* توازن المسافات فوق وتحت */
+}
+
+/* جعل محتوى الهيرو عمود واحد بعرض أكبر */
+.hero.hero-static .hero-inner {
+  grid-template-columns: 1fr;      /* صف واحد بدل عمودين */
+  max-width: 1200px;
+  width: min(100%, 1100px);
+}
+
+/* البطاقة الأساسية تأخذ كامل العرض داخل الحاوية */
+.hero.hero-static .hero-inner > div:first-child {
+  width: 100%;
+  border-radius: 32px;
+  padding: 40px 48px;
+}
+
+/* ترتيب صورة الـ GIF أسفل البطاقة وبالوسط */
+.hero.hero-static .hero-illustration {
+  margin-top: 28px;
+  justify-content: center;
+}
+
+/* ضبط الهواتف */
+@media (max-width: 768px) {
+  .hero.hero-static .hero-inner > div:first-child {
+    padding: 24px 18px;
+  }
+}
 
 
     
