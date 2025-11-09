@@ -467,6 +467,171 @@ footer a{
 
 </head>
 <body>
+  <!-- ==== Intro overlay (ضع هذا بعد <body>) ==== -->
+<style>
+  /* Overlay full-screen */
+  .rkl-intro-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 20000;
+    display: grid;
+    place-items: center;
+    background: rgba(10,10,10,0.25);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    overflow: hidden;
+  }
+  .rkl-intro-video {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .rkl-intro-video video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.45;
+    filter: brightness(1.06) contrast(1.05);
+  }
+
+  .rkl-intro-card {
+    position: relative;
+    z-index: 2;
+    max-width: 920px;
+    width: calc(100% - 48px);
+    background: rgba(255,255,255,0.92);
+    border-radius: 22px;
+    padding: 28px 32px;
+    box-shadow: 0 30px 70px rgba(4,20,12,0.18);
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 20px;
+    align-items: center;
+    transform: translateY(0);
+    transition: transform .6s ease, opacity .6s ease;
+  }
+
+  .rkl-intro-card h2 {
+    margin:0 0 10px;
+    font-family: "Cairo", sans-serif;
+    font-size: 1.8rem;
+    color: #0b3a2f;
+    font-weight: 800;
+  }
+  .rkl-intro-card p { margin:0; color:#24514a; font-size:1rem; line-height:1.45; }
+  .rkl-intro-card .logo-mini { width:120px; margin-bottom:12px; }
+
+  .rkl-intro-actions { margin-top:14px; display:flex; gap:10px; flex-wrap:wrap; }
+  .rkl-btn {
+    padding:10px 16px;border-radius:999px;font-weight:700;border:2px solid #0fb67a;background:#0fb67a;color:#fff;
+  }
+  .rkl-btn-outline { background:#fff;color:#0fb67a;border:2px solid #0fb67a; }
+
+  /* Skip button */
+  .rkl-intro-skip {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    z-index: 3;
+    background: rgba(255,255,255,0.9);
+    border-radius: 999px;
+    padding:8px 12px;
+    font-weight:700;
+    border:1px solid rgba(10,10,10,0.06);
+    cursor:pointer;
+    backdrop-filter: blur(2px);
+  }
+
+  /* Hidden class used to fade out */
+  .rkl-intro-overlay.fade-out { opacity: 0; pointer-events: none; transition: opacity .9s ease; }
+  .rkl-intro-card.shrink { transform: translateY(-10px) scale(.98); opacity:.9; }
+
+  /* Responsive */
+  @media (max-width:980px){
+    .rkl-intro-card { grid-template-columns: 1fr; text-align:center; padding:22px; gap:14px; }
+    .rkl-intro-card img.logo-mini { margin-inline:auto; }
+  }
+</style>
+
+<div id="rklIntro" class="rkl-intro-overlay" role="dialog" aria-modal="true" aria-label="مقدمة آر كي ال">
+  <div class="rkl-intro-video" aria-hidden="true">
+    <video id="rklIntroVideo" autoplay muted playsinline loop>
+      <source src="public/background.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <button id="rklIntroSkip" class="rkl-intro-skip" aria-label="تخطي العرض">تخطي ×</button>
+
+  <div class="rkl-intro-card" role="document">
+    <div>
+      <img src="public/images/logo.png" alt="RKL" class="logo-mini" />
+      <h2>آر كي ال — تصميم، توريد، تركيب وتحديث المصاعد</h2>
+      <p>
+        مؤسسة سعودية متخصصة في حلول المصاعد والسلالم الكهربائية مع دعم فني داخل المملكة والتزام بمعايير EN 81-20/50.
+        سجل تجاري: 1010709355 — الرقم الضريبي: 302250422600003
+      </p>
+
+      <div class="rkl-intro-actions">
+        <a class="rkl-btn" href="#quote">اطلب عرض سعر</a>
+        <a class="rkl-btn-outline" href="#about">من نحن</a>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:center;">
+      <!-- مكان لصورة أو GIF توضيحي أو رسم توضيحي -->
+      <img src="public/images/elevators-(01).gif" alt="رسم توضيحي" style="max-width:300px;width:100%;height:auto;"/>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function(){
+    const overlay = document.getElementById('rklIntro');
+    const skipBtn = document.getElementById('rklIntroSkip');
+    const video = document.getElementById('rklIntroVideo');
+    const displaySeconds = 20; // مدة العرض بالثواني — غيّرها هنا إن أردت
+
+    // عند وجود overlay نوقف تمرير الصفحة
+    function lockScroll(){ document.documentElement.style.overflow = 'hidden'; document.body.style.overflow = 'hidden'; }
+    function unlockScroll(){ document.documentElement.style.overflow = ''; document.body.style.overflow = ''; }
+
+    // تشغيل الفيديو بطيئة (توافق)
+    try { if(video){ video.playbackRate = 0.7; } } catch(e){}
+
+    lockScroll();
+
+    // إغلاق تدريجي
+    function closeIntro(){
+      if(!overlay) return;
+      overlay.classList.add('fade-out');
+      // إعادة التمرير بعد انتهاء التلاشي
+      setTimeout(()=> {
+        if(overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
+        unlockScroll();
+      }, 900);
+    }
+
+    // زر التخطي
+    skipBtn.addEventListener('click', closeIntro);
+
+    // إغلاق بعد المهلة المحددة
+    const timer = setTimeout(closeIntro, displaySeconds * 1000);
+
+    // إغلاق بـ Esc
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape') { clearTimeout(timer); closeIntro(); }
+    });
+
+    // لو فتح المستخدم الروابط داخل البطاقة لا نمنع ذلك
+    overlay.addEventListener('click', function(e){
+      // لو ضغط خارج البطاقة، يمكن اعتبارها تخطي أيضاً (اختياري)
+      if(e.target === overlay) { clearTimeout(timer); closeIntro(); }
+    });
+  })();
+</script>
+<!-- ==== End Intro overlay ==== -->
+
 
   <!-- Header -->
   <header>
