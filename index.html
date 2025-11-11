@@ -1434,5 +1434,39 @@ footer a{
 </script>
 <script src="public/rkl-map.js"></script>
 
+        <script>
+  (function () {
+    // دالة مشتركة: تضغط زر "إرسال" في ويدجت واتساب إن وجد
+    function triggerWhatsAppSend() {
+      var waSendBtn = document.getElementById("waSend");
+
+      if (waSendBtn) {
+        // كأن المستخدم ضغط على زر إرسال في الويدجت
+        waSendBtn.click();
+      } else {
+        // في حال لأي سبب الويدجت غير موجود، افتح رابط واتساب مباشر
+        var fallbackPhone = "966114774021"; // عدل الرقم عند الحاجة
+        var text = encodeURIComponent("مرحبًا، أود طلب عرض سعر من مؤسسة آر كي ال RKL.");
+        var isMobile = /Android|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+        var url = isMobile
+          ? "https://wa.me/" + fallbackPhone + "?text=" + text
+          : "https://web.whatsapp.com/send?phone=" + fallbackPhone + "&text=" + text;
+
+        window.open(url, "_blank", "noopener,noreferrer");
+      }
+    }
+
+    // ربط جميع الأزرار التي عليها الكلاس wa-cta
+    document.querySelectorAll(".wa-cta").forEach(function (btn) {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();      // منع السحب إلى #quote أو #about
+        triggerWhatsAppSend();   // إرسال واتساب مباشرة
+      });
+    });
+  })();
+</script>
+
+
 </body>
 </html>
