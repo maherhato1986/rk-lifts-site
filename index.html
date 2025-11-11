@@ -866,14 +866,7 @@ footer a{
 
     </div>
 
-    <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    const video = document.querySelector(".video-bg video");
-    if (video) {
-      video.playbackRate = 0.6; // تبطيء حركة الفيديو
-    }
-  });
-</script>
+
 
   </header>
 
@@ -1435,6 +1428,40 @@ document.addEventListener("DOMContentLoaded", function () {
   setTimeout(closeIntro, 20000);
 });
 </script>
+<script>
+(function(){
+  const overlay = document.getElementById('rklIntro');
+  const skipBtn = document.getElementById('rklIntroSkip');
+  const video = document.getElementById('rklIntroVideo');
+  const displaySeconds = 20;
 
+  function lockScroll(){
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+  }
+  function unlockScroll(){
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
+  }
+
+  function closeIntro(){
+    if(!overlay) return;
+    overlay.classList.add('fade-out');
+    setTimeout(()=>{
+      overlay.remove();
+      unlockScroll();
+      // تشغيل فيديو الهيرو بعد الإزالة
+      const heroVideo = document.querySelector('.hero .video-bg video');
+      if(heroVideo) heroVideo.play();
+    }, 800);
+  }
+
+  lockScroll();
+  skipBtn.addEventListener('click', closeIntro);
+  setTimeout(closeIntro, displaySeconds * 1000);
+})();
+</script>
+
+        
 </body>
 </html>
