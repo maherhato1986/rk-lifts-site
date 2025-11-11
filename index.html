@@ -1396,77 +1396,45 @@ footer a{
 <!-- /RKL WhatsApp mini-widget -->
 
 
-        
-<script>
-  (function(){
-    // بدّل الرقم أدناه برقم واتساب الرسمي بصيغة دولية بدون + أو 00
-    // مثال: السعودية 9665XXXXXXXX
-    const PHONE = "966114774021";
+ <script>
+document.addEventListener("DOMContentLoaded", function () {
+  const overlay = document.getElementById("rklIntro");
+  const skipBtn = document.getElementById("rklIntroSkip");
+  const video = document.getElementById("rklIntroVideo");
 
-    // رسالة ترحيبية عربية/إنجليزية (يمكن تعديلها)
-    const msgAr = "مرحبًا 👋\nأرغب بالتواصل مع آر كي ال RKL بخصوص المصاعد/السلالم.\nفضلاً تزويدي بالتفاصيل.";
-    const msgEn = "Hello 👋\nI’d like to contact RKL about elevators/escalators.\nPlease share the details.";
-    const text = encodeURIComponent(msgAr + "\n— — —\n" + msgEn);
+  // منع التمرير مؤقتًا أثناء المقدمة
+  document.documentElement.style.overflow = 'hidden';
+  document.body.style.overflow = 'hidden';
 
-    const isMobile = /Android|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    const waBase = isMobile ? "https://wa.me/" : "https://web.whatsapp.com/send?phone=";
+  // دالة لإغلاق المقدمة وإعادة الصفحة
+  function closeIntro() {
+    if (!overlay) return;
 
-    const waLink = `${waBase}${PHONE}${isMobile ? "" : ""}${isMobile ? `?text=${text}` : `&text=${text}`}`;
+    overlay.classList.add("fade-out");
 
-    const btn = document.getElementById("rklWAButton");
-    const bubble = document.getElementById("rklWABubble");
-    const wrap = document.getElementById("rklWA");
+    setTimeout(() => {
+      // إزالة طبقة المقدمة
+      overlay.remove();
 
-    // اربط الرابط
-    btn.href = waLink;
+      // إعادة التمرير والصفحة إلى وضعها الطبيعي
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
 
-    // ظهور البالون تلقائيًا بعد 1.2ث، ويختفي بعد 8ث أو عند المرور
-    setTimeout(()=> bubble.classList.add("visible"), 1200);
-    setTimeout(()=> bubble.classList.remove("visible"), 9000);
-
-    // أظهر/أخفِ عند التحويم
-    btn.addEventListener("mouseenter", ()=> bubble.classList.add("visible"));
-    btn.addEventListener("mouseleave", ()=> bubble.classList.remove("visible"));
-
-    // مثال لنقل الزر إلى اليسار إن أحببت:
-    // wrap.classList.add("rkl-left");
-  })();
-</script>
-<script src="public/rkl-map.js"></script>
-
-        <script>
-  (function () {
-    // دالة مشتركة: تضغط زر "إرسال" في ويدجت واتساب إن وجد
-    function triggerWhatsAppSend() {
-      var waSendBtn = document.getElementById("waSend");
-
-      if (waSendBtn) {
-        // كأن المستخدم ضغط على زر إرسال في الويدجت
-        waSendBtn.click();
-      } else {
-        // في حال لأي سبب الويدجت غير موجود، افتح رابط واتساب مباشر
-        var fallbackPhone = "966114774021"; // عدل الرقم عند الحاجة
-        var text = encodeURIComponent("مرحبًا، أود طلب عرض سعر من مؤسسة آر كي ال RKL.");
-        var isMobile = /Android|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-        var url = isMobile
-          ? "https://wa.me/" + fallbackPhone + "?text=" + text
-          : "https://web.whatsapp.com/send?phone=" + fallbackPhone + "&text=" + text;
-
-        window.open(url, "_blank", "noopener,noreferrer");
+      // في حال كان لديك قسم hero به فيديو، يتم إيقافه
+      const heroVideo = document.querySelector('.hero .video-bg video');
+      if (heroVideo) {
+        heroVideo.play();
       }
-    }
+    }, 700);
+  }
 
-    // ربط جميع الأزرار التي عليها الكلاس wa-cta
-    document.querySelectorAll(".wa-cta").forEach(function (btn) {
-      btn.addEventListener("click", function (e) {
-        e.preventDefault();      // منع السحب إلى #quote أو #about
-        triggerWhatsAppSend();   // إرسال واتساب مباشرة
-      });
-    });
-  })();
+  // ربط زر "تخطي"
+  skipBtn?.addEventListener("click", closeIntro);
+
+  // إغلاق تلقائي بعد 20 ثانية
+  setTimeout(closeIntro, 20000);
+});
 </script>
-
 
 </body>
 </html>
