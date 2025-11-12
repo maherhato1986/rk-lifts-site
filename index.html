@@ -1318,39 +1318,7 @@ footer a{
 
 
         
-<script>
-(function(){
-  const overlay  = document.getElementById('rklIntro');
-  const skipBtn  = document.getElementById('rklIntroSkip');
-  const heroVid  = document.querySelector('.hero .video-bg video');
-  const DISPLAY_SECONDS = 20;
 
-  // اقفل التمرير أثناء العرض
-  document.documentElement.style.overflow = 'hidden';
-  document.body.style.overflow = 'hidden';
-
-  function closeIntro(){
-    if(!overlay) return;
-    overlay.classList.add('fade-out');
-
-    // لا نخفي .video-bg نهائياً (نتجنب display:none)
-    // خيار: إيقاف فيديو المقدّمة فقط إن رغبت
-    try { document.getElementById('rklIntroVideo')?.pause(); } catch(e){}
-
-    setTimeout(function(){
-      overlay.remove();
-      // أعد التمرير دائماً من نفس السكربت
-      document.documentElement.style.overflow = '';
-      document.body.style.overflow = '';
-      // شغّل فيديو الهيرو إن كان موجوداً
-      try { heroVid?.play(); } catch(e){}
-    }, 800);
-  }
-
-  skipBtn?.addEventListener('click', closeIntro);
-  setTimeout(closeIntro, DISPLAY_SECONDS * 1000);
-})();
-</script>
 
 
         
