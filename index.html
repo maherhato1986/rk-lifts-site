@@ -864,13 +864,20 @@ footer a{
     box-shadow:0 12px 30px rgba(15,182,122,.08);
   }
 
-  #mapSidebar{
-    background:#fff;
-    border-radius:12px;
-    padding:18px;
-    border:1px solid #eef2f5;
-    box-shadow:0 10px 24px rgba(2,6,23,.04);
-  }
+#mapSidebar {
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px;
+  border: 1px solid #dde3e8;
+  box-shadow: 0 12px 40px rgba(15, 182, 122, 0.1);
+  width: 100%;
+  transform: scale(1.05);   /* يعطي شعوراً أكبر */
+  transition: transform 0.3s ease;
+}
+#mapSidebar:hover {
+  transform: scale(1.08);
+}
+
 
   /* استجابة التابلت والجوال: عمود واحد بدل عمودين */
   @media (max-width: 960px){
