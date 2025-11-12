@@ -69,10 +69,11 @@
 .hero .container {
   position: relative;
   z-index: 2;
-  max-width: 1200px;   /* توسعة بسيطة عند 100% */
-  width: 90%;
+  max-width: 1400px;      /* ↑ كان 1200px */
+  width: min(96%, 1400px); /* اشغل عرضًا أكبر مع هامش آمن */
   margin: 0 auto;
 }
+
 
 
 
