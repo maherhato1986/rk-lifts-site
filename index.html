@@ -1430,37 +1430,38 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 <script>
 (function(){
-  const overlay = document.getElementById('rklIntro');
-  const skipBtn = document.getElementById('rklIntroSkip');
-  const video = document.getElementById('rklIntroVideo');
-  const displaySeconds = 20;
+  const overlay  = document.getElementById('rklIntro');
+  const skipBtn  = document.getElementById('rklIntroSkip');
+  const heroVid  = document.querySelector('.hero .video-bg video');
+  const DISPLAY_SECONDS = 20;
 
-  function lockScroll(){
-    document.documentElement.style.overflow = 'hidden';
-    document.body.style.overflow = 'hidden';
-  }
-  function unlockScroll(){
-    document.documentElement.style.overflow = '';
-    document.body.style.overflow = '';
-  }
+  // اقفل التمرير أثناء العرض
+  document.documentElement.style.overflow = 'hidden';
+  document.body.style.overflow = 'hidden';
 
   function closeIntro(){
     if(!overlay) return;
     overlay.classList.add('fade-out');
-    setTimeout(()=>{
+
+    // لا نخفي .video-bg نهائياً (نتجنب display:none)
+    // خيار: إيقاف فيديو المقدّمة فقط إن رغبت
+    try { document.getElementById('rklIntroVideo')?.pause(); } catch(e){}
+
+    setTimeout(function(){
       overlay.remove();
-      unlockScroll();
-      // تشغيل فيديو الهيرو بعد الإزالة
-      const heroVideo = document.querySelector('.hero .video-bg video');
-      if(heroVideo) heroVideo.play();
+      // أعد التمرير دائماً من نفس السكربت
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+      // شغّل فيديو الهيرو إن كان موجوداً
+      try { heroVid?.play(); } catch(e){}
     }, 800);
   }
 
-  lockScroll();
-  skipBtn.addEventListener('click', closeIntro);
-  setTimeout(closeIntro, displaySeconds * 1000);
+  skipBtn?.addEventListener('click', closeIntro);
+  setTimeout(closeIntro, DISPLAY_SECONDS * 1000);
 })();
 </script>
+
 
         
 </body>
