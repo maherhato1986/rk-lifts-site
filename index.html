@@ -1317,45 +1317,7 @@ footer a{
 <!-- /RKL WhatsApp mini-widget -->
 
 
- <script>
-document.addEventListener("DOMContentLoaded", function () {
-  const overlay = document.getElementById("rklIntro");
-  const skipBtn = document.getElementById("rklIntroSkip");
-  const video = document.getElementById("rklIntroVideo");
-
-  // منع التمرير مؤقتًا أثناء المقدمة
-  document.documentElement.style.overflow = 'hidden';
-  document.body.style.overflow = 'hidden';
-
-  // دالة لإغلاق المقدمة وإعادة الصفحة
-  function closeIntro() {
-    if (!overlay) return;
-
-    overlay.classList.add("fade-out");
-
-    setTimeout(() => {
-      // إزالة طبقة المقدمة
-      overlay.remove();
-
-      // إعادة التمرير والصفحة إلى وضعها الطبيعي
-      document.documentElement.style.overflow = '';
-      document.body.style.overflow = '';
-
-      // في حال كان لديك قسم hero به فيديو، يتم إيقافه
-      const heroVideo = document.querySelector('.hero .video-bg video');
-      if (heroVideo) {
-        heroVideo.play();
-      }
-    }, 700);
-  }
-
-  // ربط زر "تخطي"
-  skipBtn?.addEventListener("click", closeIntro);
-
-  // إغلاق تلقائي بعد 20 ثانية
-  setTimeout(closeIntro, 20000);
-});
-</script>
+        
 <script>
 (function(){
   const overlay  = document.getElementById('rklIntro');
