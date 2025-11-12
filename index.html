@@ -877,16 +877,12 @@ footer a{
 
   /* استجابة التابلت والجوال: عمود واحد بدل عمودين */
   @media (max-width: 960px){
-    #map-projects .map-wrapper{
-      grid-template-columns:1fr;
-    }
-    #leafletMap{
-      height:360px;
-    }
-    #mapSidebar{
-      margin-top:16px;
-    }
-  }
+ #map-projects .map-wrapper{
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.35fr); /* الكرت أعرض */
+  gap: 40px;
+  align-items: start;
+}
 
           #map-projects .container{
   max-width:1500px; /* ← هذا يكسر القيد الافتراضي 1200px للحاوية */
