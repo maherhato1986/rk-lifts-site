@@ -844,14 +844,16 @@ footer a{
     padding:48px 0;
   }
 
-  #map-projects .map-wrapper{
-    max-width:1400px;
-    margin:auto;
-    display:grid;
-    grid-template-columns:minmax(0,1.2fr) minmax(0,0.8fr);
-    gap:24px;
-    align-items:flex-start;
-  }
+#map-projects .map-wrapper{
+  max-width:1400px;
+  margin:auto;
+  display:grid;
+  /* توسيع الكرت الجانبي بنسبة أكبر من السابق */
+  grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);
+  gap:32px;
+  align-items:flex-start;
+}
+
 
   #leafletMap{
     width:100%;
