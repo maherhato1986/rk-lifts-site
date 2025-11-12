@@ -1315,6 +1315,49 @@ footer a{
 })();
 </script>
 <!-- /RKL WhatsApp mini-widget -->
+        <script>
+(function () {
+  const overlay  = document.getElementById('rklIntro');
+  if (!overlay) return;
+
+  const skipBtn  = document.getElementById('rklIntroSkip');
+  const introVid = document.getElementById('rklIntroVideo');
+  const heroVid  = document.querySelector('.hero .video-bg video');
+  const DISPLAY_SECONDS = 20; // إغلاق تلقائي بعد 20 ثانية
+
+  function lockScroll(){
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+  }
+  function unlockScroll(){
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
+  }
+
+  function closeIntro(){
+    // مؤثر اختفاء الطبقة
+    overlay.classList.add('fade-out');
+    // إيقاف فيديو المقدّمة (اختياري)
+    try { introVid?.pause(); } catch(e){}
+    // إزالة الطبقة وإرجاع التمرير وتشغيل فيديو الهيرو إن وُجد
+    setTimeout(function(){
+      try { overlay.remove(); } catch(e){}
+      unlockScroll();
+      try { heroVid?.play(); } catch(e){}
+    }, 900); // يطابق مدة transition في CSS
+  }
+
+  // عند التحميل: امنع التمرير أثناء المقدّمة
+  lockScroll();
+
+  // زر "تخطي"
+  skipBtn?.addEventListener('click', closeIntro);
+
+  // غلق تلقائي بعد مدة
+  setTimeout(closeIntro, DISPLAY_SECONDS * 1000);
+})();
+</script>
+
 
 
         
@@ -1322,5 +1365,6 @@ footer a{
 
 
         
-</body>
+
+      </body>
 </html>
