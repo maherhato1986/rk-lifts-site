@@ -888,6 +888,10 @@ footer a{
     }
   }
 
+          #map-projects .container{
+  max-width:1500px; /* ← هذا يكسر القيد الافتراضي 1200px للحاوية */
+}
+
   /* جوال صغير جدًا */
   @media (max-width: 600px){
     #map-projects{
@@ -1366,7 +1370,66 @@ footer a{
 
 
 
-        
+        <script>
+document.addEventListener('DOMContentLoaded', function(){
+  const mapEl = document.getElementById('leafletMap');
+  if(!mapEl) return;
+
+  // إنشاء الخريطة على السعودية
+  const map = L.map('leafletMap', { zoomControl: true }).setView([23.8859, 45.0792], 5);
+
+  // طبقة بلاط OpenStreetMap
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap'
+  }).addTo(map);
+
+  // المدن والعلامات
+  const cities = [
+    {
+      name: 'الرياض', coords: [24.7136, 46.6753],
+      projects: [{name:'مشروع الفتيحي – مصعد خدمة', lifts:1}, {name:'مجمع تجاري C1', lifts:2}],
+      liftsTotal: 3
+    },
+    {
+      name: 'جدة', coords: [21.4858, 39.1925],
+      projects: [{name:'AGS School – UPS 9 مصاعد', lifts:9}],
+      liftsTotal: 9
+    },
+    {
+      name: 'الدمام', coords: [26.4207, 50.0888],
+      projects: [{name:'شركة المياه الوطنية – تحديث مصاعد', lifts:6}],
+      liftsTotal: 6
+    }
+  ];
+
+  // عناصر واجهة العرض
+  const cityTitle   = document.getElementById('cityTitle');
+  const citySummary = document.getElementById('citySummary');
+  const projectsCnt = document.getElementById('cityProjectsCount');
+  const liftsCnt    = document.getElementById('cityLiftsCount');
+  const projectsUl  = document.getElementById('cityProjectsList');
+
+  function showCity(info){
+    cityTitle.textContent = info.name;
+    citySummary.textContent = 'تفاصيل المشاريع في هذه المدينة:';
+    projectsCnt.textContent = info.projects.length;
+    liftsCnt.textContent = info.liftsTotal ?? '—';
+    projectsUl.innerHTML = '';
+    info.projects.forEach(p=>{
+      const li=document.createElement('li');
+      li.textContent=`${p.name} — ${p.lifts} مصعد`;
+      projectsUl.appendChild(li);
+    });
+  }
+
+  cities.forEach(c=>{
+    const marker=L.marker(c.coords).addTo(map);
+    marker.bindPopup(c.name);
+    marker.on('click',()=>showCity(c));
+  });
+});
+</script>
+
 
 
 
