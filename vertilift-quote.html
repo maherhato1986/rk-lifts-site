@@ -242,7 +242,7 @@ Prepared by: Nihad
 
   async function loadPrices() {
     try {
-      const res = await fetch('data/vertilift_mrl_prices.json');
+      const res = await fetch('vertilift_mrl_prices.json');
       pricesData = await res.json();
 
       const select = document.getElementById('modelSelect');
