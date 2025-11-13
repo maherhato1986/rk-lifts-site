@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>نموذج عرض سعر مصاعد VertiLift - RKL</title>
+  <style>
+    body {
+      font-family: Tahoma, Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+      direction: rtl;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 20px 25px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    h1, h2 {
+      margin-top: 0;
+      color: #333;
+    }
+    label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 6px 8px;
+      margin-bottom: 8px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+    .row {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .col-4 { flex: 1 1 30%; min-width: 220px; }
+    .col-6 { flex: 1 1 45%; min-width: 260px; }
+    .col-12 { flex: 1 1 100%; }
+
+    .summary-box {
+      background: #fafafa;
+      border: 1px solid #ddd;
+      padding: 10px 12px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    .summary-line {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+    .btn {
+      padding: 6px 14px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      margin-top: 8px;
+    }
+    .btn-print {
+      background: #1976d2;
+      color: #fff;
+      float: left;
+    }
+    .note {
+      font-size: 12px;
+      color: #777;
+      margin-top: -4px;
+      margin-bottom: 8px;
+    }
+    @media print {
+      body { background: #fff; padding: 0; }
+      .container { box-shadow: none; border-radius: 0; }
+      .btn-print { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <button class="btn btn-print" onclick="window.print()">طباعة العرض</button>
+
+  <h1>عرض سعر توريد وتركيب مصعد VertiLift</h1>
+  <p>آر كي ال RKL للمصاعد والسلالم الكهربائية</p>
+
+  <!-- بيانات العميل -->
+  <h2>بيانات العميل والمشروع</h2>
+  <div class="row">
+    <div class="col-4">
+      <label>اسم العميل / الجهة</label>
+      <input type="text" id="clientName">
+    </div>
+    <div class="col-4">
+      <label>اسم المشروع</label>
+      <input type="text" id="projectName">
+    </div>
+    <div class="col-4">
+      <label>موقع المشروع</label>
+      <input type="text" id="projectLocation">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-4">
+      <label>تاريخ العرض</label>
+      <input type="date" id="quoteDate">
+    </div>
+    <div class="col-4">
+      <label>رقم العرض المرجعي</label>
+      <input type="text" id="quoteRef">
+    </div>
+    <div class="col-4">
+      <label>اسم المندوب</label>
+      <input type="text" id="salesName" value="نهاد">
+    </div>
+  </div>
+
+  <!-- اختيار الموديل من قائمة الأسعار -->
+  <h2>اختيار موديل المصعد من قائمة VertiLift</h2>
+  <label>موديل المصعد (من قائمة الأسعار المرفوعة على الموقع)</label>
+  <select id="modelSelect">
+    <option value="">— اختر الموديل / السعة / السرعة / عدد الطوابق —</option>
+  </select>
+  <div class="note">
+    يتم تحميل هذه القائمة تلقائيًا من الملف:
+    <code>data/vertilift_mrl_prices.json</code>
+  </div>
+
+  <div class="row">
+    <div class="col-4">
+      <label>الحمولة</label>
+      <input type="text" id="capacity" readonly>
+    </div>
+    <div class="col-4">
+      <label>السرعة</label>
+      <input type="text" id="speed" readonly>
+    </div>
+    <div class="col-4">
+      <label>عدد الطوابق / التوقفات</label>
+      <input type="text" id="floors" readonly>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-4">
+      <label>السعر الأساسي للمصعد (بالدولار USD)</label>
+      <input type="text" id="priceUsd" readonly>
+    </div>
+    <div class="col-4">
+      <label>سعر الصرف من دولار إلى ريال</label>
+      <input type="number" id="usdToSar" value="3.75" step="0.01">
+      <div class="note">يمكن تغييرها حسب سعر الصرف الحالي.</div>
+    </div>
+    <div class="col-4">
+      <label>الكمية (عدد المصاعد)</label>
+      <input type="number" id="qty" value="1" min="1" step="1">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-4">
+      <label>نسبة ربح المؤسسة (%)</label>
+      <input type="number" id="marginPercent" value="45" min="0" step="1">
+      <div class="note">يتم احتساب ربح 45٪ فوق التكلفة تلقائيًا.</div>
+    </div>
+    <div class="col-4">
+      <label>تكاليف إضافية للوحدة (شحن، جمارك، تركيب) بالريال</label>
+      <input type="number" id="extraPerUnit" value="0" step="1">
+    </div>
+    <div class="col-4">
+      <label>ملاحظات على المواصفات</label>
+      <input type="text" id="notesShort" placeholder="مثال: كابينة ستانلس، فتحة مركزية...">
+    </div>
+  </div>
+
+  <!-- ملخص الأسعار -->
+  <h2>ملخص الأسعار</h2>
+  <div class="summary-box">
+    <div class="summary-line">
+      <span>إجمالي تكلفة المصاعد (بالريال) قبل ربح المؤسسة:</span>
+      <span id="totalCostSar">0 ريال</span>
+    </div>
+    <div class="summary-line">
+      <span>إجمالي سعر البيع بعد إضافة ربح المؤسسة:</span>
+      <span id="totalSelling">0 ريال</span>
+    </div>
+    <div class="summary-line">
+      <span>ضريبة القيمة المضافة 15٪:</span>
+      <span id="vatAmount">0 ريال</span>
+    </div>
+    <div class="summary-line">
+      <strong>الإجمالي النهائي شامل الضريبة:</strong>
+      <strong id="grandTotal">0 ريال</strong>
+    </div>
+  </div>
+
+  <!-- الشروط والاختام -->
+  <h2>الشروط والملاحظات</h2>
+  <div class="row">
+    <div class="col-6">
+      <label>الشروط بالعربية</label>
+      <textarea id="termsAr">الأسعار أعلاه بالريال السعودي وتشمل توريد وتركيب وتشغيل المصعد حسب المواصفات الفنية المتفق عليها. لا تشمل الأسعار أي أعمال مدنية أو كهربائية خارج حدود فتحة البئر وغرفة الماكينة. صلاحية هذا العرض 30 يومًا من تاريخه.</textarea>
+    </div>
+    <div class="col-6">
+      <label>Terms in English</label>
+      <textarea id="termsEn">Prices are quoted in Saudi Riyals and include supply, installation, testing and commissioning of the elevator according to the agreed technical specifications. Civil and external electrical works are excluded from this offer. Offer validity is 30 days from the date of this quotation.</textarea>
+    </div>
+  </div>
+
+  <h2>بيانات التواصل</h2>
+  <textarea readonly>
+آر كي ال RKL للمصاعد والسلالم الكهربائية
+الهاتف: 0114774021
+البريد الإلكتروني: admin@rk-lifts.com
+الموقع الإلكتروني: www.rk-lifts.com
+
+Prepared by: Nihad
+  </textarea>
+
+</div>
+
+<script>
+  let pricesData = [];
+  let selectedModel = null;
+
+  async function loadPrices() {
+    try {
+      const res = await fetch('data/vertilift_mrl_prices.json');
+      pricesData = await res.json();
+
+      const select = document.getElementById('modelSelect');
+      pricesData.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item.id;
+        opt.textContent =
+          item.door_type + ' | ' +
+          item.capacity + ' | ' +
+          item.speed + ' | ' +
+          item.floors + ' floors | ' +
+          item.price_usd + ' USD';
+        select.appendChild(opt);
+      });
+    } catch (e) {
+      console.error('خطأ في تحميل قائمة الأسعار', e);
+      alert('تعذّر تحميل قائمة الأسعار. تأكد من وجود الملف data/vertilift_mrl_prices.json في نفس الموقع.');
+    }
+  }
+
+  function onModelChange() {
+    const id = document.getElementById('modelSelect').value;
+    selectedModel = pricesData.find(m => m.id === id) || null;
+
+    if (!selectedModel) {
+      document.getElementById('capacity').value = '';
+      document.getElementById('speed').value = '';
+      document.getElementById('floors').value = '';
+      document.getElementById('priceUsd').value = '';
+      recalc();
+      return;
+    }
+
+    document.getElementById('capacity').value = selectedModel.capacity || '';
+    document.getElementById('speed').value = selectedModel.speed || '';
+    document.getElementById('floors').value = selectedModel.floors || '';
+    document.getElementById('priceUsd').value = selectedModel.price_usd || '';
+    recalc();
+  }
+
+  function parseNum(v) {
+    const n = parseFloat(v);
+    return isNaN(n) ? 0 : n;
+  }
+
+  function recalc() {
+    if (!selectedModel) {
+      document.getElementById('totalCostSar').textContent = '0 ريال';
+      document.getElementById('totalSelling').textContent = '0 ريال';
+      document.getElementById('vatAmount').textContent = '0 ريال';
+      document.getElementById('grandTotal').textContent = '0 ريال';
+      return;
+    }
+
+    const priceUsd = parseNum(selectedModel.price_usd);
+    const rate = parseNum(document.getElementById('usdToSar').value);
+    const qty = parseNum(document.getElementById('qty').value);
+    const margin = parseNum(document.getElementById('marginPercent').value);
+    const extra = parseNum(document.getElementById('extraPerUnit').value);
+
+    const unitCostSar = priceUsd * rate + extra; // تكلفة المصعد الواحد بالريال
+    const totalCostSar = unitCostSar * qty;      // إجمالي التكلفة قبل الربح
+    const totalSelling = totalCostSar * (1 + margin / 100); // بعد ربح المؤسسة
+    const vat = totalSelling * 0.15;
+    const grand = totalSelling + vat;
+
+    document.getElementById('totalCostSar').textContent = totalCostSar.toFixed(2) + ' ريال';
+    document.getElementById('totalSelling').textContent = totalSelling.toFixed(2) + ' ريال';
+    document.getElementById('vatAmount').textContent = vat.toFixed(2) + ' ريال';
+    document.getElementById('grandTotal').textContent = grand.toFixed(2) + ' ريال';
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    loadPrices();
+    document.getElementById('modelSelect').addEventListener('change', onModelChange);
+    document.getElementById('usdToSar').addEventListener('input', recalc);
+    document.getElementById('qty').addEventListener('input', recalc);
+    document.getElementById('marginPercent').addEventListener('input', recalc);
+    document.getElementById('extraPerUnit').addEventListener('input', recalc);
+  });
+</script>
+</body>
+</html>
