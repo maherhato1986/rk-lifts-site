@@ -856,77 +856,90 @@ footer a{
   <!-- صورة متحركة لمبنى المصاعد -->
   <img src="public/images/elevators-(01).gif" alt="RKL Lifts Animation" loading="eager">
 </div>
-        <style>
-  /* تنسيق عام للخريطة */
- #map-projects{
-  background: linear-gradient(180deg, #f7faf9 0%, #ffffff 100%);
-  padding: 56px 0 48px;
-}
-
-#map-projects .map-wrapper {
-  max-width: 1500px; /* توسيع الحاوية الكلية */
-  margin: auto;
-  display: grid;
-  /* زيادة عرض الكرت الجانبي */
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
-  gap: 40px;
-  align-items: flex-start;
-}
-
-
-#leafletMap{
-  height: 520px;
-  border-radius: 18px;
-  border: 1px solid #e7ecef;
-  box-shadow: 0 10px 34px rgba(15, 182, 122, .08);
-  overflow: hidden;
-}
-
-#mapSidebar {
-  background: #fff;
-  border-radius: 20px;
-  padding: 32px;
-  border: 1px solid #dde3e8;
-  box-shadow: 0 12px 40px rgba(15, 182, 122, 0.1);
-  width: 100%;
-  /* احذف الـ transform */
-}
-
-/* لو تحب تأثير بسيط */
-#mapSidebar:hover {
-  transform: translateY(-4px); /* حركة خفيفة فقط */
-}
-
-
-@media (max-width: 960px){
-  #map-projects .map-wrapper{
-    grid-template-columns: 1fr; /* عمود واحد في التابلت والموبايل */
-  }
-  #mapSidebar{
-    margin-top: 20px;
-    transform: none;
-  }
-}
-
-/* جوال صغير جدًا */
-@media (max-width: 600px){
+  <style>
+  /* تنسيق قسم الخريطة بالكامل */
   #map-projects{
-    padding:32px 0;
+    background: linear-gradient(180deg, #f7faf9 0%, #ffffff 100%);
+    padding: 64px 0 56px;
   }
+
+  /* نوسّع الـ container في هذا القسم فقط ليصبح أعرض من باقي الصفحة */
+  #map-projects .container{
+    max-width: 1400px;   /* أكبر من القيمة الافتراضية 1200 */
+  }
+
+  /* الحاوية التي تضم الخريطة + كرت المشاريع */
+  #map-projects .map-wrapper {
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.25fr); /* تكبير الكرت والخرطة معًا */
+    gap: 40px;
+    align-items: stretch;   /* يجعل الكرت بنفس ارتفاع الخريطة تقريبًا */
+  }
+
+  /* الخريطة */
   #leafletMap{
-    height:280px;
+    height: 600px;              /* تكبير ارتفاع الخريطة */
+    border-radius: 20px;
+    border: 1px solid #e7ecef;
+    box-shadow: 0 14px 40px rgba(15, 182, 122, .10);
+    overflow: hidden;
   }
+
+  /* كرت قائمة المشاريع */
+  #mapSidebar {
+    background: #fff;
+    border-radius: 22px;
+    padding: 32px 28px;
+    border: 1px solid #dde3e8;
+    box-shadow: 0 14px 40px rgba(15, 182, 122, 0.12);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 600px;         /* نفس ارتفاع الخريطة تقريبًا */
+  }
+
   #mapSidebar h3{
-    font-size:0.98rem;
+    font-size: 1.1rem;
+    margin-bottom: 6px;
   }
+
   #mapSidebar p,
   #mapSidebar li{
-    font-size:0.85rem;
+    font-size: .9rem;
   }
-}
 
+  /* حركة خفيفة عند المرور بالفأرة */
+  #mapSidebar:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 48px rgba(15, 182, 122, 0.16);
+  }
+
+  /* تكديس عمودي على الجوال والتابلت */
+  @media (max-width: 960px){
+    #map-projects .map-wrapper{
+      grid-template-columns: 1fr;
+    }
+    #leafletMap{
+      height: 360px;
+    }
+    #mapSidebar{
+      min-height: auto;
+      margin-top: 20px;
+      transform: none;
+    }
+  }
+
+  @media (max-width: 600px){
+    #map-projects{
+      padding: 40px 0 36px;
+    }
+    #leafletMap{
+      height: 280px;
+    }
+  }
 </style>
-
+     
 
 <section id="map-projects">
   <div class="container">
