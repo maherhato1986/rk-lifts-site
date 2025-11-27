@@ -895,34 +895,33 @@ footer a{
 }
 
 
-  /* استجابة التابلت والجوال: عمود واحد بدل عمودين */
-  @media (max-width: 960px){
- #map-projects .map-wrapper{
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.35fr); /* الكرت أعرض */
-  gap: 40px;
-  align-items: start;
-}
-#map-projects .container{
-  max-width: 1500px;
+@media (max-width: 960px){
+  #map-projects .map-wrapper{
+    grid-template-columns: 1fr; /* عمود واحد في التابلت والموبايل */
+  }
+  #mapSidebar{
+    margin-top: 20px;
+    transform: none;
+  }
 }
 
-  /* جوال صغير جدًا */
-  @media (max-width: 600px){
-    #map-projects{
-      padding:32px 0;
-    }
-    #leafletMap{
-      height:280px;
-    }
-    #mapSidebar h3{
-      font-size:0.98rem;
-    }
-    #mapSidebar p,
-    #mapSidebar li{
-      font-size:0.85rem;
-    }
+/* جوال صغير جدًا */
+@media (max-width: 600px){
+  #map-projects{
+    padding:32px 0;
   }
+  #leafletMap{
+    height:280px;
+  }
+  #mapSidebar h3{
+    font-size:0.98rem;
+  }
+  #mapSidebar p,
+  #mapSidebar li{
+    font-size:0.85rem;
+  }
+}
+
 </style>
 
 
