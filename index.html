@@ -1349,67 +1349,59 @@ footer a{
 </div>
 
 <script>
-(function(){
-  // بدّل الرقم عند الحاجة (بدون +، مع كود الدولة). الرقم التالي يستخدم تنسيقكم الحالي:
-  const PHONE = "966114774021"; // مثال: 9665XXXXXXXX للجوال، أو رقم واتساب بزنس المربوط على الخط
-  const DEFAULT_TEXT = "مرحبًا، أود التواصل مع RKL بخصوص المصاعد/السلالم.";
+(function () {
+  // رقم الواتساب (بدون +)
+  const PHONE = "966114774021";
 
-  const elMsg   = document.getElementById("waMsg");
-  const elSend  = document.getElementById("waSend");
-  const elTopic = document.getElementById("waTopic");
-  const chips   = document.querySelectorAll(".rkl-wa-chip");
-
-  // اقتراح بنقرة واحدة
-  chips.forEach(ch => ch.addEventListener("click", () => {
-    elMsg.value = ch.getAttribute("data-fill");
-    elMsg.focus();
-  }));
-
-  // بناء رابط واتساب حسب الجهاز
- 
-function buildWhatsAppURL(rawText){
-  const text = encodeURIComponent(rawText || DEFAULT_TEXT);
-  return `whatsapp://send?phone=${PHONE}&text=${text}`;
-}
-
-  
-
-  function send(){
-    const topic = (elTopic && elTopic.value) ? `[#${elTopic.value}] ` : "";
-    const msg   = (elMsg.value || "").trim();
-    const final = topic + (msg || DEFAULT_TEXT);
-
-    // فتح تبويب جديد للحفاظ على جلسة الموقع
-    const url = buildWhatsAppURL(final);
-    window.open(url, "_blank", "noopener,noreferrer");
+  function buildWhatsAppURL(text){
+    const msg = encodeURIComponent(text);
+    return `https://wa.me/${PHONE}?text=${msg}`;
   }
 
-  // زر الإرسال
-  elSend.addEventListener("click", send);
+  function openWhatsApp(msg){
+    window.open(buildWhatsAppURL(msg), "_blank", "noopener,noreferrer");
+  }
 
-  // Enter للإرسال + Shift+Enter لسطر جديد
-  elMsg.addEventListener("keydown", function(e){
-    if(e.key === "Enter" && !e.shiftKey){
+  document.querySelectorAll(".wa-cta").forEach(btn => {
+    btn.addEventListener("click", e => {
       e.preventDefault();
-      send();
-    }
-  });
 
-  // تعبئة سياق تلقائي من صفحة المنتج/المصعد إن وجد
-  // مثال: ضع data-* على عنصر <body> أو بطاقة المصعد
-  // <body data-elevator="FITAHI-001" data-building="الفتيحي" data-capacity="1000kg">
-  try{
-    const host = document.body;
-    const parts = [];
-    if(host.dataset.elevator) parts.push(`Elevator ID: ${host.dataset.elevator}`);
-    if(host.dataset.building) parts.push(`Building: ${host.dataset.building}`);
-    if(host.dataset.capacity) parts.push(`Capacity: ${host.dataset.capacity}`);
-    if(parts.length && !elMsg.value){
-      elMsg.placeholder = `اكتب رسالتك… (${parts.join(" | ")})`;
-    }
-  }catch(_){}
+      const label = btn.textContent.trim();
+      const href  = btn.getAttribute("href") || "#";
+
+      // نحدد موضوع الطلب حسب الزر
+      let topic = "خدمة المصاعد والسلالم";
+
+      if (label.includes("VertiLift") || label.includes("VERTILIFT")) {
+        topic = "نموذج تسعير مصاعد VertiLift";
+      } else if (label.includes("FUJI") || label.includes("FUJI")) {
+        topic = "كتالوج FUJI والاعتماد لدى مصنع فوجي";
+      } else if (label.includes("اطلب عرض سعر")) {
+        topic = "عرض سعر لمشروع مصاعد";
+      } else if (label.includes("تعرّف على منتجاتنا")) {
+        topic = "منتجاتكم في المصاعد والسلالم الكهربائية";
+      }
+
+      // نص الرسالة الجاهز
+      const text =
+`السلام عليكم ورحمة الله وبركاته،
+معكم [اكتب اسمك هنا]، رقم الجوال: [اكتب رقمك].
+
+أرغب في التعامل معكم، وياليت تزودوني بمعلومات أكثر عن:
+${topic}.
+
+شكرًا لكم.`;
+
+      openWhatsApp(text);
+
+      // لو حاب تفتح كمان الرابط الأصلي (مثلاً كتالوج PDF) مع الواتساب، فعّل السطر التالي:
+      // if (href && href !== "#") window.open(href, "_blank", "noopener,noreferrer");
+    });
+  });
 })();
 </script>
+
+        
 <!-- /RKL WhatsApp mini-widget -->
         <script>
 (function () {
