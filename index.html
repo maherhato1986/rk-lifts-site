@@ -831,12 +831,12 @@ footer a{
         </p>
       
         <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
-          <a class="btn btn-outline" href="vertilift-quote.html">
+          <a class="btn btn-outline wa-cta" href="vertilift-quote.html">
     نموذج تسعير مصاعد VertiLift
 </a>
 
-  <a class="btn btn-primary wa-cta" href="#quote">اطلب عرض سعر</a>
-  <a class="btn btn-primary wa-cta" href="#products">تعرّف على منتجاتنا</a>
+  <a class="btn btn-outline wa-cta" href="#quote">اطلب عرض سعر</a>
+  <a class="btn btn-outline wa-cta" href="#products">تعرّف على منتجاتنا</a>
   <a class="btn btn-primary wa-cta" href="public/catalogo_tresa_RKL.pdf" target="_blank" rel="noopener">
   Cataloge TRESA Spain
   </a>
@@ -1409,6 +1409,40 @@ function buildWhatsAppURL(rawText){
   }
 </script>
 
+<script>
+(function () {
+  const PHONE = "966114774021";
+
+  function buildWhatsAppURL(text){
+    const msg = encodeURIComponent(text || "مرحبًا، أود التواصل مع RKL.");
+    return `https://wa.me/${PHONE}?text=${msg}`;
+  }
+
+  function openWhatsApp(msg){
+    window.open(buildWhatsAppURL(msg), "_blank", "noopener");
+  }
+
+  document.querySelectorAll(".wa-cta").forEach(btn => {
+    btn.addEventListener("click", e => {
+      e.preventDefault();
+      const label = btn.textContent.trim();
+      let text = "مرحبًا، أود التواصل مع RKL.";
+
+      if (label.includes("VertiLift")) {
+        text = "مرحبًا، أود الحصول على نموذج تسعير VertiLift.";
+      }
+      else if (label.includes("اطلب عرض سعر")) {
+        text = "مرحبًا، أود طلب عرض سعر لمشروع مصاعد.";
+      }
+      else if (label.includes("تعرّف على منتجاتنا")) {
+        text = "مرحبًا، أود التعرف على منتجات RKL.";
+      }
+
+      openWhatsApp(text);
+    });
+  });
+})();
+</script>
 
         
 
