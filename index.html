@@ -1286,21 +1286,13 @@ footer a{
   }));
 
   // بناء رابط واتساب حسب الجهاز
-  function buildWhatsAppURL(rawText){
-    const isMobile = /Android|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    const text = encodeURIComponent(rawText || DEFAULT_TEXT);
+ 
+function buildWhatsAppURL(rawText){
+  const text = encodeURIComponent(rawText || DEFAULT_TEXT);
+  return `whatsapp://send?phone=${PHONE}&text=${text}`;
+}
 
-    // يمكنك إضافة UTM للتتبع إن رغبت:
-    const utm = encodeURIComponent("utm_source=rk_website&utm_medium=wa_widget&utm_campaign=contact");
-
-    if(isMobile){
-      // wa.me (جوال)
-      return `https://wa.me/${PHONE}?text=${text}%0A%0A${utm}`;
-    }else{
-      // web.whatsapp.com (سطح مكتب)
-      return `https://web.whatsapp.com/send?phone=${PHONE}&text=${text}%0A%0A${utm}`;
-    }
-  }
+  
 
   function send(){
     const topic = (elTopic && elTopic.value) ? `[#${elTopic.value}] ` : "";
