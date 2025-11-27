@@ -295,7 +295,16 @@ nav a:hover{ background:#eff3f6; }
   background:#fff;
 }
 
-    .hero-inner{display:grid;grid-template-columns:1.2fr .8fr;gap:28px;align-items:center;padding-block:48px}
+    .hero-inner{
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  gap:28px;
+  align-items:center;
+  padding-block:48px;
+  max-width: 1600px;    /* التكبير الفعلي */
+  margin: 0 auto;        /* التوسيط */
+}
+
     .hero h1{font-size:2rem;line-height:1.4;margin:0 0 .75rem;font-weight:900;color:#0c2e28}
     .hero p{margin:0 0 1.25rem;color:#425161}
     .hero-badges{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
