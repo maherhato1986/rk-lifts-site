@@ -738,6 +738,57 @@ footer a{
   }
 </style>
 
+  <style>
+  /* تحسين كرت المقدمة على الجوال */
+  @media (max-width: 768px) {
+    .rkl-intro-card {
+      grid-template-columns: 1fr;      /* عمود واحد بدل عمودين */
+      padding: 18px 16px 16px;         /* تقليل الحواف */
+      gap: 14px;
+    }
+
+    .rkl-intro-main {
+      gap: 6px;
+    }
+
+    .rkl-intro-card h2 {
+      font-size: 1.25rem;
+      line-height: 1.4;
+    }
+
+    .rkl-intro-card p,
+    .rkl-intro-list {
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+
+    .rkl-intro-kicker {
+      font-size: 0.78rem;
+      padding: 3px 8px;
+      max-width: 100%;
+      text-align: center;
+    }
+
+    .rkl-intro-side img {
+      max-width: 220px;
+    }
+
+    .rkl-intro-badge {
+      font-size: 0.78rem;
+      padding: 5px 9px;
+      text-align: center;
+    }
+  }
+
+  /* شاشات أصغر (مثل بعض جوالات الآيفون الصغيرة) */
+  @media (max-width: 480px) {
+    .rkl-intro-card {
+      width: min(100% - 20px, 420px);
+    }
+  }
+</style>
+
+
 <div id="rklIntro" class="rkl-intro-overlay" role="dialog" aria-modal="true" aria-label="مقدمة آر كي ال">
   <div class="rkl-intro-video" aria-hidden="true">
     <video id="rklIntroVideo" autoplay muted playsinline loop>
