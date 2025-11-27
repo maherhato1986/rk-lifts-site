@@ -1449,6 +1449,65 @@ ${topic}.
 
         <script src="public/rkl-map.js?v=1"></script>
 
+<script>
+(function () {
+  const PHONE = "966114774021";
+
+  function buildWhatsAppURL(text){
+    const msg = encodeURIComponent(text);
+    return `https://wa.me/${PHONE}?text=${msg}`;
+  }
+
+  function openWhatsApp(text){
+    window.open(buildWhatsAppURL(text), "_blank", "noopener,noreferrer");
+  }
+
+  const msgInput   = document.getElementById("waMsg");
+  const topicSelect = document.getElementById("waTopic");
+  const sendBtn    = document.getElementById("waSend");
+  const chips      = document.querySelectorAll(".rkl-wa-chip");
+
+  // لو لسبب ما ما لقى العناصر، يطلع بهدوء
+  if (!msgInput || !sendBtn) return;
+
+  // تعبئة الرسالة عند الضغط على الاختصارات
+  chips.forEach(chip => {
+    chip.addEventListener("click", () => {
+      const fill = chip.getAttribute("data-fill") || "";
+      msgInput.value = fill;
+      msgInput.focus();
+    });
+  });
+
+  function sendWhatsApp(){
+    const raw   = (msgInput.value || "").trim();
+    const topic = (topicSelect && topicSelect.value)
+      ? `نوع الخدمة: ${topicSelect.value}\n`
+      : "";
+
+    const finalMessage =
+`السلام عليكم ورحمة الله وبركاته،
+أرغب في التواصل معكم من خلال موقع RKL.
+
+${topic}${raw || "أحتاج لمعلومات عن خدمات المصاعد لديكم."}
+
+شكرًا لكم.`;
+
+    openWhatsApp(finalMessage);
+  }
+
+  // زر الإرسال
+  sendBtn.addEventListener("click", sendWhatsApp);
+
+  // إرسال عند الضغط Enter بدون Shift
+  msgInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendWhatsApp();
+    }
+  });
+})();
+</script>
 
 
 <script>
