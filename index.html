@@ -886,11 +886,12 @@ footer a{
   border: 1px solid #dde3e8;
   box-shadow: 0 12px 40px rgba(15, 182, 122, 0.1);
   width: 100%;
-  transform: scale(1.05);   /* يعطي شعوراً أكبر */
-  transition: transform 0.3s ease;
+  /* احذف الـ transform */
 }
+
+/* لو تحب تأثير بسيط */
 #mapSidebar:hover {
-  transform: scale(1.08);
+  transform: translateY(-4px); /* حركة خفيفة فقط */
 }
 
 
