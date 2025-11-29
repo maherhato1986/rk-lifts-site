@@ -353,100 +353,53 @@ nav a:hover{ background:#eff3f6; }
     .product .meta{font-size:.85rem;color:#6b7480;margin:0}
 
     /* ===== Footer ===== */
-/* ===== Footer (نسخة محسّنة بالأخضر الغامق) ===== */
-footer{
-  background: #063d33;    /* خلفية موحدة بلون الموقع */
-  color:#e5f3ff;
-  margin-top:60px;
-  padding-block:40px 30px;
-}
+<footer>
+  <div class="footer-container">
+    <!-- عمود تعريف المؤسسة -->
+    <div class="footer-col">
+      <h3>آر كي ال RKL للمصاعد والسلالم الكهربائية</h3>
+      <p>
+        Elevators &amp; Escalators · Design · Supply · Installation ·
+        Modernization &amp; Maintenance
+      </p>
+      <div style="margin-top:6px;">
+        <span class="footer-badge">السجل التجاري: 1010709355</span>
+        <span class="footer-badge">الرقم الضريبي: 302250422600003</span>
+      </div>
+    </div>
 
-.footer-panel{
-  background:#0a4a3e !important;   /* لوحة داخلية متناسقة مع الأخضر */
-  border-radius:24px;
-  padding:24px 26px 20px;
-  box-shadow:0 18px 45px rgba(0,0,0,.35);
-  border:1px solid rgba(255,255,255,.15);
-  position:relative;
-  overflow:hidden;
-}
+    <!-- عمود الروابط السريعة -->
+    <div class="footer-col">
+      <h4>روابط سريعة</h4>
+      <ul>
+        <li><a href="#products">المنتجات</a></li>
+        <li><a href="#sectors">القطاعات</a></li>
+        <li><a href="#projects">المشاريع</a></li>
+        <li><a href="#about">من نحن</a></li>
+        <li><a href="#contact">تواصل معنا</a></li>
+      </ul>
+    </div>
 
+    <!-- عمود بيانات التواصل -->
+    <div class="footer-col">
+      <h4>تواصل</h4>
+      <p>الهاتف: 0114774021</p>
+      <p>
+        البريد الإلكتروني:
+        <a href="mailto:admin@rk-lifts.com">admin@rk-lifts.com</a>
+      </p>
+      <p>العنوان: السليمانية – الرياض، المملكة العربية السعودية</p>
+    </div>
+  </div>
 
-/* توزيع الأعمدة */
-footer .cols{
-  display:grid;
-  grid-template-columns:minmax(0,1.7fr) minmax(0,1.1fr) minmax(0,1.1fr);
-  gap: 40px;
-  align-items:flex-start;
-}
+  <div class="footer-bottom">
+    © <span id="y"></span> RKL. جميع الحقوق محفوظة.
+  </div>
+</footer>
 
-footer h3,
-footer h4{
-  margin:0 0 10px;
-  font-weight:800;
-  letter-spacing:.02em;
-  color:#f9fafb;
-}
-
-footer p{
-  margin:0 0 6px;
-  font-size:.9rem;
-  color:#d1fae5;
-}
-
-/* الحبات (Pills) */
-.footer-pill{
-  display:inline-flex;
-  align-items:center;
-  padding:6px 12px;
-  margin-bottom:6px;
-  border-radius:999px;
-  background:rgba(15,118,110,.18);             /* خلفية خضراء شفافة */
-  border:1px solid rgba(45,212,191,.55);       /* إطار أخضر فاتح */
-  font-size:.82rem;
-  color:#e2fdf7;
-}
-
-footer a{
-  color:#bbf7d0;
-}
-
-/* سطر الحقوق */
-.copy{
-  border-top:1px solid rgba(45,212,191,.35);
-  margin-top:18px;
-  padding-top:10px;
-  color:#a5f3fc;
-  font-size:.85rem;
-  text-align:center;
-}
-
-/* الشعار الخلفي */
-.stamp{
-  opacity:.07;
-  position:absolute;
-  inset:auto 0 -40px auto;
-  text-align:center;
-  pointer-events:none;
-}
-.stamp img{
-  width:260px;
-  margin-inline:auto;
-}
-
-/* موبايل */
-@media(max-width:768px){
-  .footer-panel{
-    padding:20px 18px 16px;
-  }
-  footer .cols{
-    grid-template-columns:1fr;
-  }
-  footer{
-    padding-block:30px 24px;
-  }
-}
-
+<script>
+  document.getElementById('y').textContent = new Date().getFullYear();
+</script>
 
     
     
