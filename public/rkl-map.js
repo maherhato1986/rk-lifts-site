@@ -282,7 +282,7 @@ function rklInitMap() {
     }
 
     if (titleEl) {
-      titleEl.textContent = `مشاريع RKL في ${city.name}`;
+      titleEl.textContent = `RKL Elevator Installations & Maintenance Projects in Saudi Arabia`;
     }
 
     if (summaryEl) {
