@@ -1,0 +1,1474 @@
+<!doctype html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Favicon -->
+<link rel="icon" type="image/png" href="public/images/favicon.png" />
+<link rel="apple-touch-icon" href="public/images/favicon.png" />
+<meta name="theme-color" content="#0fb67a">
+
+<link rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      crossorigin=""/>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        crossorigin="">
+</script>
+
+  <title>RKL اّر كي ال المصاعد و السلالم الكهربائية  توريد و تركيب و صيانة و تحديث</title>
+
+
+  <!-- خط Cairo -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
+  <style>
+ 
+ /* ===== Hero Section with Transparent Video ===== */
+.hero {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  padding-block: 100px 80px;
+  text-align: center;
+}
+
+/* تدرج ناعم فوق الفيديو */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.80) 0%,
+    rgba(255, 255, 255, 0.92) 45%,
+    #ffffff 85%
+  );
+  z-index: 1;
+}
+
+
+/* الفيديو */
+.hero .video-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+.hero .video-bg video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.45; /* أقل قليلاً حتى يبرز الكرت */
+  filter: brightness(1.05) contrast(1.08);
+}
+
+
+.hero .container {
+  position: relative;
+  z-index: 2;
+  max-width: var(--container);   /* نفس عرض بقية الصفحات */
+  margin-inline: auto;
+  padding-inline: 16px;          /* نفس الـ container العادي */
+}
+
+
+.hero-inner {
+  justify-content: center !important;
+}
+
+
+
+.hero h1 {
+  font-size: 2.4rem;
+  color: #093a2f;
+  font-weight: 900;
+  margin-bottom: 20px;
+}
+
+.hero p {
+  font-size: 1.05rem;
+  color: #144b3e;
+  margin-bottom: 32px;
+  background: rgba(255, 255, 255, 0.8);
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: 20px;
+}
+
+.hero .btn {
+  padding: 12px 20px;
+  border-radius: 30px;
+  font-weight: 700;
+   margin: 8px 6px;
+}
+
+.hero .btn-primary {
+  background: #0fb67a;
+  color: #fff;
+  border: none;
+}
+
+.hero .btn-outline {
+  border: 2px solid #0fb67a;
+  background: #fff;
+  color: #0fb67a;
+}
+
+.hero .btn-outline:hover {
+  background: #0fb67a;
+  color: #fff;
+}
+
+.hero .hero-illustration {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.0); /* شفافية كاملة */
+  border-radius: 24px;
+  padding: 0; /* بدون خلفية أو حواف */
+  box-shadow: none; /* بدون ظل */
+   overflow-x: hidden; /* يمنع أي تمدد يمين/يسار */
+}
+
+.hero .hero-illustration img {
+  width: 400px;
+  border-radius: 0; /* اختياري لإزالة تقوّس الصورة */
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1); /* ظل بسيط فقط للصورة نفسها */
+}
+
+
+@media (max-width: 768px) {
+  .hero {
+    padding-block: 80px 60px;
+  }
+  .hero h1 {
+    font-size: 1.9rem;
+  }
+  .hero .hero-illustration img {
+    width: 280px;
+  }
+}
+   
+
+.hero-inner {
+  padding-top: 140px;   /* لو حاب تحافظ على المسافة من فوق */
+}
+
+
+
+
+
+/* النص داخل الكرت */
+.hero h1 {
+  font-size: 2.3rem;
+  line-height: 1.5;
+  color: #0c2e28;
+  margin-bottom: 14px;
+}
+
+.hero p {
+  margin-bottom: 20px;
+  background: transparent;   /* إزالة الخلفية السابقة */
+  padding: 0;
+}
+
+/* بعد انتهاء المقدمة: إخفاء فيديو الهيرو وتكبير البطاقة */
+.hero.hero-static .video-bg {
+  display: none;             /* إخفاء فيديو الخلفية داخل قسم الهيرو */
+}
+
+.hero.hero-static {
+  background: #ffffff;       /* خلفية ثابتة بيضاء للهيرو بعد المقدمة */
+  padding-block: 80px 60px;  /* توازن المسافات فوق وتحت */
+}
+
+/* جعل محتوى الهيرو عمود واحد بعرض أكبر */
+.hero.hero-static .hero-inner {
+  grid-template-columns: 1fr;      /* صف واحد بدل عمودين */
+  max-width: 1600px;
+  width: min(100%, 1100px);
+}
+
+/* البطاقة الأساسية تأخذ كامل العرض داخل الحاوية */
+.hero.hero-static .hero-inner > div:first-child {
+  width: 100%;
+  border-radius: 32px;
+  padding: 40px 48px;
+}
+
+/* ترتيب صورة الـ GIF أسفل البطاقة وبالوسط */
+.hero.hero-static .hero-illustration {
+  margin-top: 28px;
+  justify-content: center;
+}
+
+/* ضبط الهواتف */
+@media (max-width: 768px) {
+  .hero.hero-static .hero-inner > div:first-child {
+    padding: 24px 18px;
+  }
+}
+.hero-inner > div:first-child {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+
+:root{
+  /* الألوان الأساسية */
+  --rkl-green:       #0fb67a;
+  --rkl-green-dark:  #0a8a5a;
+  --rkl-purple:      #6b4df6;
+
+  /* الخلفيات والحدود */
+  --rkl-bg-soft:     #f8fafc;
+  --rkl-gray:        #f5f7fb;
+  --rkl-border:      #e2e8f0;
+
+  /* النصوص */
+  --rkl-text:        #0f172a;
+  --rkl-text-muted:  #64748b;
+
+  /* 👈 هذا الجديد */
+  --container: 1200px;
+}
+
+
+
+
+/* مسافات الأقسام الموحدة */
+section{ padding-block: var(--space-7) !important; }
+
+/* هرمية العناوين */
+.hero h1{ font-size: 2.25rem; line-height: 1.35; margin-bottom: var(--space-3); }
+.section-title{ font-size: 1.6rem; margin-bottom: var(--space-4); }
+
+/* أزرار موحّدة */
+.btn{ padding: .9rem 1.25rem; border-radius: 999px; font-weight: 800; }
+.btn-primary{ background: var(--rkl-green); border-color: var(--rkl-green); color:#fff; }
+.btn-outline{ background:#fff; border-color: var(--rkl-green); color: var(--rkl-green); }
+.btn:hover{ filter: saturate(1.1) brightness(0.98); }
+
+/* بطاقات متناسقة */
+.card{ min-height: 180px; border-radius: var(--radius-xl); box-shadow: var(--shadow-1); }
+.card .thumb{ width:96px; min-width:96px; height:96px; border-radius:14px; }
+
+/* شبكة المنتجات/القطاعات بمحاذاة ثابتة */
+.product, .card{ display: flex; flex-direction: row; }
+.product .image{ aspect-ratio: 4/3; }
+.product .body{ display:flex; flex-direction:column; justify-content:center; }
+.product .title{ font-weight: 800; margin-bottom: 6px; }
+
+/* تحسين الهيدر والروابط */
+nav a{ border-radius: 12px; padding:10px 12px; transition: .2s; }
+nav a:hover{ background:#eff3f6; }
+.lang-switch a.active{ background:#0f172a; color:#fff; }
+
+/* البطل: فصل الأزرار عن النص وتوسعة الفاصل مع الرسم */
+.hero-inner{ gap: var(--space-5); }
+.hero .hero-illustration{ margin-top: var(--space-4); }
+
+/* هواتف */
+@media (max-width: 960px){
+  .hero h1{ font-size: 1.8rem; }
+  .card{ min-height: auto; }
+}
+
+
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:#fff;color:var(--rkl-text);font-family:"Tajawal", "Cairo", system-ui, -apple-system, Segoe UI, Roboto, Arial;}
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block}
+    .container{max-width:var(--container);padding-inline:16px;margin-inline:auto}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.9rem 1.25rem;border-radius:999px;border:1px solid transparent;font-weight:700}
+    .btn-primary{background:var(--rkl-green);color:#fff}
+    .btn-outline{border-color:var(--rkl-green);color:var(--rkl-green);background:#fff}
+    header{position:sticky;top:0;z-index:40;background:#fff;border-bottom:1px solid #eef0f2}
+    .topbar{font-size:.8rem;color:#637083;background:var(--rkl-gray)}
+    .topbar .container{display:flex;justify-content:space-between;align-items:center;padding-block:.35rem}
+    .brand{display:flex;align-items:center;gap:.75rem;padding-block:10px}
+    .brand img{height:42px;width:auto}
+    nav{display:flex;gap:18px;align-items:center}
+    nav a{padding:8px 10px;border-radius:10px;color:#2b3137}
+    nav a:hover{background:#eff3f6}
+    .header-row{display:flex;justify-content:space-between;align-items:center}
+    .lang-switch{display:flex;gap:8px}
+    .lang-switch a{font-weight:700;color:#5b6470;padding:6px 10px;border-radius:10px}
+    .lang-switch a.active{color:#fff;background:#0f172a}
+    /* Hero */
+    .btn-outline {
+  border-color: var(--rkl-purple);
+  color: var(--rkl-purple);
+  background:#fff;
+}
+
+
+
+
+
+
+    .hero h1{font-size:2rem;line-height:1.4;margin:0 0 .75rem;font-weight:900;color:#0c2e28}
+    .hero p{margin:0 0 1.25rem;color:#425161}
+    .hero-badges{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+    .badge{font-size:.8rem;background:#f0f6f4;color:#0a3a32;border:1px dashed #b8e7d7;padding:.35rem .6rem;border-radius:999px}
+    .hero-illustration{
+      background:#eaf7f2;border:1px solid #d7eee6;border-radius:28px;padding:10px;
+      box-shadow:0 10px 30px rgba(15,182,122,.08)
+    }
+
+
+
+    /* Sections */
+    section{padding-block:44px}
+    .section-title{font-size:1.35rem;font-weight:900;margin:0 0 18px;color:#0b2e2b}
+    .grid{display:grid;gap:16px}
+    .grid.cols-3{grid-template-columns:repeat(3,1fr)}
+    .grid.cols-4{grid-template-columns:repeat(4,1fr)}
+    @media (max-width:960px){
+      .hero-inner{grid-template-columns:1fr}
+      .grid.cols-4{grid-template-columns:repeat(2,1fr)}
+      .grid.cols-3{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (max-width:620px){
+      .grid.cols-4,.grid.cols-3{grid-template-columns:1fr}
+    }
+    .card{
+      background:#fff;border:1px solid #ecf0f3;border-radius:var(--radius);
+      padding:16px;transition:.2s;min-height:140px;display:flex;gap:14px
+    }
+    .card:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(16,24,40,.06)}
+    .card .thumb{width:88px;min-width:88px;height:88px;border-radius:14px;overflow:hidden;background:#f4faf7;border:1px solid #e6f3ed}
+    .card h3{margin:.2rem 0 .35rem;font-size:1rem}
+    .card p{margin:0;color:#667789;font-size:.9rem}
+    /* Products row */
+    .product{background:#fff;border:1px solid #ecf0f3;border-radius:var(--radius);overflow:hidden}
+    .product .image{aspect-ratio:16/10;overflow:hidden;background:#f3f7f5}
+    .product .body{padding:14px}
+    .product .title{font-weight:800;margin:0 0 .35rem}
+    .product .meta{font-size:.85rem;color:#6b7480;margin:0}
+
+    /* ===== Footer ===== */
+<footer>
+  <div class="footer-container">
+    <!-- عمود تعريف المؤسسة -->
+    <div class="footer-col">
+      <h3>آر كي ال RKL للمصاعد والسلالم الكهربائية</h3>
+      <p>
+        Elevators &amp; Escalators · Design · Supply · Installation ·
+        Modernization &amp; Maintenance
+      </p>
+      <div style="margin-top:6px;">
+        <span class="footer-badge">السجل التجاري: 1010709355</span>
+        <span class="footer-badge">الرقم الضريبي: 302250422600003</span>
+      </div>
+    </div>
+
+    <!-- عمود الروابط السريعة -->
+    <div class="footer-col">
+      <h4>روابط سريعة</h4>
+      <ul>
+        <li><a href="#products">المنتجات</a></li>
+        <li><a href="#sectors">القطاعات</a></li>
+        <li><a href="#projects">المشاريع</a></li>
+        <li><a href="#about">من نحن</a></li>
+        <li><a href="#contact">تواصل معنا</a></li>
+      </ul>
+    </div>
+
+    <!-- عمود بيانات التواصل -->
+    <div class="footer-col">
+      <h4>تواصل</h4>
+      <p>الهاتف: 0114774021</p>
+      <p>
+        البريد الإلكتروني:
+        <a href="mailto:admin@rk-lifts.com">admin@rk-lifts.com</a>
+      </p>
+      <p>العنوان: السليمانية – الرياض، المملكة العربية السعودية</p>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    © <span id="y"></span> RKL. جميع الحقوق محفوظة.
+  </div>
+</footer>
+
+<script>
+  document.getElementById('y').textContent = new Date().getFullYear();
+</script>
+
+    
+    
+  </style>
+  <style>
+
+
+  /* الحاوية الطافية */
+  .rkl-whatsapp{
+    position:fixed;
+    inset:auto 20px 20px auto; /* أسفل-يمين، عدّلها لـ left إن أردت */
+    z-index:9999;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+
+  /* زر الشعار */
+  .rkl-wa-btn{
+    width:64px;height:64px;border-radius:50%;
+    background:#fff;
+    border:2px solid rgba(15,182,122,.25);
+    box-shadow:0 10px 30px rgba(15,182,122,.35), 0 2px 10px rgba(0,0,0,.08);
+    display:grid;place-items:center;
+    cursor:pointer;
+    animation:rkl-pulse 1.8s infinite ease-in-out;
+    position:relative;overflow:hidden;
+  }
+  .rkl-wa-btn::after{
+    content:"";
+    position:absolute;inset:-40%;border-radius:50%;
+    background:conic-gradient(from 180deg at 50% 50%, rgba(15,182,122,.0), rgba(15,182,122,.12), rgba(15,182,122,.0));
+    animation:rkl-rotate 5s linear infinite;
+  }
+  .rkl-wa-btn img{width:40px;height:40px;object-fit:contain;z-index:1}
+
+  /* بالون الترحيب */
+  .rkl-wa-bubble{
+    background:#0f172a;color:#e6f3ed;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:14px;
+    padding:10px 12px;max-width:280px;font:600 13px/1.5 "Cairo",sans-serif;
+    box-shadow:0 12px 30px rgba(2,6,23,.25);
+    transform-origin:100% 100%;
+    transform:scale(.98);
+    opacity:0;pointer-events:none;
+    transition:.35s ease;
+  }
+  .rkl-wa-bubble.visible{opacity:1;transform:scale(1)}
+  .rkl-wa-bubble b{color:#9ef0c7}
+  .rkl-wa-bubble .en{display:block;color:#c7d2fe;font-weight:600;margin-top:4px}
+
+  /* ذيل البالون */
+  .rkl-wa-bubble:after{
+    content:"";position:absolute;right:70px;bottom:-7px;
+    border:8px solid transparent;border-top-color:#0f172a;filter:drop-shadow(0 -1px 0 rgba(255,255,255,.08));
+  }
+
+  /* حركات */
+  @keyframes rkl-pulse{
+    0%,100%{transform:translateZ(0) scale(1)}
+    50%{transform:translateZ(0) scale(1.06)}
+  }
+  @keyframes rkl-rotate{to{transform:rotate(360deg)}}
+
+  /* وضع يسار الشاشة (اختياري) */
+  .rkl-left{inset:auto auto 20px 20px}
+  .rkl-left .rkl-wa-bubble:after{right:auto;left:70px}
+  
+  /* تحسينات هواتف صغيرة */
+  @media (max-width:480px){
+    .rkl-wa-bubble{max-width:78vw}
+  }
+</style>
+
+</head>
+<body>
+  <!-- ==== Intro overlay (ضع هذا بعد <body>) ==== -->
+<!-- ==== Intro overlay (تصميم محدث) ==== -->
+<style>
+  .rkl-intro-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 20000;
+    display: grid;
+    place-items: center;
+    background: rgba(15,23,42,0.45);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    overflow: hidden;
+  }
+
+  .rkl-intro-video {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .rkl-intro-video video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.40;
+    filter: brightness(1.05) contrast(1.04);
+  }
+
+  .rkl-intro-card {
+    position: relative;
+    z-index: 2;
+    max-width: 1040px;
+    width: min(100% - 40px, 1040px);
+    background: rgba(255,255,255,0.96);
+    border-radius: 28px;
+    padding: 30px 34px 26px;
+    box-shadow: 0 26px 70px rgba(15,23,42,0.35);
+    border: 1px solid rgba(148,163,184,0.35);
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(260px, 0.9fr);
+    gap: 26px;
+    align-items: center;
+    transform: translateY(0);
+    transition: transform .6s ease, opacity .6s ease;
+    direction: rtl;
+  }
+
+  .rkl-intro-main {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .rkl-intro-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+
+  .rkl-intro-card .logo-mini {
+    width: 70px;
+    height: auto;
+  }
+
+  .rkl-intro-kicker {
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(15,182,122,0.08);
+    color: #0f766e;
+    font-size: .82rem;
+    font-weight: 700;
+    border: 1px solid rgba(45,212,191,0.45);
+  }
+
+  .rkl-intro-card h2 {
+    margin: 0;
+    font-family: "Cairo", system-ui, sans-serif;
+    font-size: 1.6rem;
+    line-height: 1.35;
+    color: #0b3a2f;
+    font-weight: 800;
+  }
+
+  .rkl-intro-card p {
+    margin: 0;
+    color: #334155;
+    font-size: .95rem;
+    line-height: 1.6;
+  }
+
+  .rkl-intro-list {
+    margin: 6px 0 0;
+    padding-right: 18px;
+    list-style: disc;
+    color: #475569;
+    font-size: .9rem;
+    line-height: 1.6;
+  }
+
+  .rkl-intro-meta {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    font-size: .82rem;
+    color: #64748b;
+  }
+
+  .rkl-intro-actions {
+    margin-top: 14px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .rkl-btn {
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-weight: 800;
+    border: 2px solid #0fb67a;
+    background: #0fb67a;
+    color: #fff;
+    font-size: .92rem;
+  }
+  .rkl-btn-outline {
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-weight: 700;
+    border: 2px solid #0fb67a;
+    background: #ffffff;
+    color: #0fb67a;
+    font-size: .9rem;
+  }
+
+  .rkl-intro-side {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .rkl-intro-badge {
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(79,70,229,0.09);
+    color: #4338ca;
+    font-size: .8rem;
+    font-weight: 700;
+    border: 1px solid rgba(129,140,248,0.6);
+    text-align: center;
+  }
+
+  .rkl-intro-side img {
+    max-width: 300px;
+    width: 100%;
+    height: auto;
+    border-radius: 18px;
+  }
+
+  /* Skip button */
+  .rkl-intro-skip {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    z-index: 3;
+    background: rgba(255,255,255,0.94);
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-weight: 700;
+    border: 1px solid rgba(148,163,184,0.6);
+    cursor: pointer;
+    backdrop-filter: blur(2px);
+  }
+
+  /* Hidden class used to fade out */
+  .rkl-intro-overlay.fade-out {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .9s ease;
+  }
+  .rkl-intro-card.shrink {
+    transform: translateY(-10px) scale(.98);
+    opacity: .9;
+  }
+
+@media (max-width: 960px) {
+  #map-projects .map-wrapper {
+    grid-template-columns: 1fr;
+  }
+  #mapSidebar {
+    transform: none;
+    width: 100%;
+    margin-top: 20px;
+  }
+}
+
+
+  @media (max-width: 640px) {
+    .rkl-intro-meta {
+      flex-direction: column;
+    }
+    .rkl-intro-actions {
+      flex-direction: column;
+    }
+    .rkl-btn, .rkl-btn-outline {
+      width: 100%;
+      text-align: center;
+    }
+  }
+</style>
+
+  <style>
+  /* تحسين كرت المقدمة على الجوال */
+  @media (max-width: 768px) {
+    .rkl-intro-card {
+      grid-template-columns: 1fr;      /* عمود واحد بدل عمودين */
+      padding: 18px 16px 16px;         /* تقليل الحواف */
+      gap: 14px;
+    }
+
+    .rkl-intro-main {
+      gap: 6px;
+    }
+
+    .rkl-intro-card h2 {
+      font-size: 1.25rem;
+      line-height: 1.4;
+    }
+
+    .rkl-intro-card p,
+    .rkl-intro-list {
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+
+    .rkl-intro-kicker {
+      font-size: 0.78rem;
+      padding: 3px 8px;
+      max-width: 100%;
+      text-align: center;
+    }
+
+    .rkl-intro-side img {
+      max-width: 220px;
+    }
+
+    .rkl-intro-badge {
+      font-size: 0.78rem;
+      padding: 5px 9px;
+      text-align: center;
+    }
+  }
+
+  /* شاشات أصغر (مثل بعض جوالات الآيفون الصغيرة) */
+  @media (max-width: 480px) {
+    .rkl-intro-card {
+      width: min(100% - 20px, 420px);
+    }
+  }
+</style>
+
+
+<div id="rklIntro" class="rkl-intro-overlay" role="dialog" aria-modal="true" aria-label="مقدمة آر كي ال">
+  <div class="rkl-intro-video" aria-hidden="true">
+    <video id="rklIntroVideo" autoplay muted playsinline loop>
+      <source src="public/background.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <button id="rklIntroSkip" class="rkl-intro-skip" aria-label="تخطي العرض">تخطي ×</button>
+
+  <div class="rkl-intro-card" role="document">
+    <div class="rkl-intro-main">
+      <div class="rkl-intro-header">
+        <img src="public/images/logo.png" alt="RKL" class="logo-mini" />
+        <span class="rkl-intro-kicker">مرحبًا بك في آر كي ال RKL للمصاعد</span>
+      </div>
+
+      <h2>حلول المصاعد والسلالم الكهربائية من التصميم حتى الصيانة الدورية</h2>
+
+      <p>
+        مؤسسة سعودية متخصصة في تصميم وتوريد وتركيب وتحديث المصاعد والسلالم الكهربائية
+        وفق معايير EN 81-20/50، مع فريق دعم فني وزيارات وقائية وطوارئ داخل المملكة.
+      </p>
+
+      <ul class="rkl-intro-list">
+        <li>توريد وتركيب مصاعد جديدة للقطاعين التجاري والصحي والتعليمي.</li>
+        <li>تحديث أنظمة التحكم والسرعة والكبائن والأبواب للمصاعد القائمة.</li>
+        <li>عقود صيانة وقائية وطوارئ تغطي أغلب مدن المملكة العربية السعودية.</li>
+      </ul>
+
+      
+   
+</div>
+
+    <div class="rkl-intro-side">
+      <div class="rkl-intro-badge">
+       
+      </div>
+      <img src="public/images/elevators-(01).gif" alt="رسم توضيحي لحلول المصاعد من آر كي ال" />
+    </div>
+  </div>
+</div>
+<!-- (أبْقِ سكربت المقدّمة الحالي كما هو بعد هذا القسم) -->
+
+
+
+
+
+  <!-- Header -->
+  <header>
+ 
+    <div class="container header-row">
+      <a class="brand" href="/">
+        <!-- الشعار من المجلد public/images -->
+        <img src="public/images/logo.png" alt="RKL Logo" loading="eager">
+        <strong>RKL</strong>
+      </a>
+      <nav aria-label="التنقل">
+        <a href="#about">عنّا</a>
+        <a href="#projects">المشاريع</a>
+        <a href="#products">المنتجات</a>
+        <a href="#contact">تواصل</a>
+      </nav>
+      
+      
+
+    </div>
+
+
+
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <!-- خلفية الفيديو لقسم البطل -->
+<div class="video-bg">
+  <video autoplay muted loop playsinline>
+    <source src="public/background.mp4" type="video/mp4">
+  </video>
+</div>
+
+    <div class="container hero-inner">
+      <div>
+        <h1> حلول متكاملة للمصاعد والسلالم الكهربائية</h1>
+        <h1>تصميم، توريد، تركيب، وتحديث مصاعد المباني السكنية، التجارية، الصحية، والتعليمية مع دعم فني داخل المملكة.</h1>
+        <h1>Elevators & Escalators · Supply, Installation, Modernization & Maintenance</h1>
+
+        <ul style="list-style:none;padding:0;margin:10px 0 20px;display:flex;gap:16px;flex-wrap:wrap;justify-content:center;font-size:0.9rem;color:#355056;">
+  <li>✅ توريد وتركيب مصاعد جديدة</li>
+  <li>✅ تحديث ورفع كفاءة المصاعد القائمة</li>
+  <li>✅ عقود صيانة وقائية وطوارئ</li>
+</ul>
+
+        <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
+          
+
+  <a class="btn btn-outline wa-cta" href="#quote">اطلب عرض سعر</a>
+  <a class="btn btn-outline wa-cta" href="#products">تعرّف على منتجاتنا</a>
+  <a class="btn btn-primary wa-cta" href="public/catalogo_FUJI_RKL.pdf" target="_blank" rel="noopener">
+   Cataloge FUJI </a>
+ <a class="btn btn-primary wa-cta" href="public/fuji-approval.pdf" target="_blank" rel="noopener">
+   وكيل متعمد من FUJI
+  </a>
+  <a class="btn btn-primary wa-cta" href="public/Agency Certificate VERTILIFT ITLY-signed.pdf" target="_blank" rel="noopener">
+    وكيل معتمد من VERTILIFT ITLY
+  </a>
+     <a class="btn btn-primary wa-cta" href="public/catalogo_VERTILIFT_RKL.pdf" target="_blank" rel="noopener">
+   Cataloge  VERTILIFT ITLY </a>
+</div>
+
+
+   <div class="hero-illustration">
+  <!-- صورة متحركة لمبنى المصاعد -->
+  <img src="public/images/elevators-(01).gif" alt="RKL Lifts Animation" loading="eager">
+</div>
+  <style>
+  /* تنسيق قسم الخريطة بالكامل */
+  #map-projects{
+    background: linear-gradient(180deg, #f7faf9 0%, #ffffff 100%);
+    padding: 64px 0 56px;
+  }
+
+  /* نوسّع الـ container في هذا القسم فقط ليصبح أعرض من باقي الصفحة */
+  #map-projects .container{
+    max-width: 1400px;   /* أكبر من القيمة الافتراضية 1200 */
+  }
+
+  /* الحاوية التي تضم الخريطة + كرت المشاريع */
+  #map-projects .map-wrapper {
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.25fr); /* تكبير الكرت والخرطة معًا */
+    gap: 40px;
+    align-items: stretch;   /* يجعل الكرت بنفس ارتفاع الخريطة تقريبًا */
+  }
+
+  /* الخريطة */
+  #leafletMap{
+    height: 600px;              /* تكبير ارتفاع الخريطة */
+    border-radius: 20px;
+    border: 1px solid #e7ecef;
+    box-shadow: 0 14px 40px rgba(15, 182, 122, .10);
+    overflow: hidden;
+  }
+
+  /* كرت قائمة المشاريع */
+  #mapSidebar {
+    background: #fff;
+    border-radius: 22px;
+    padding: 32px 28px;
+    border: 1px solid #dde3e8;
+    box-shadow: 0 14px 40px rgba(15, 182, 122, 0.12);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 600px;         /* نفس ارتفاع الخريطة تقريبًا */
+  }
+
+  #mapSidebar h3{
+    font-size: 1.1rem;
+    margin-bottom: 6px;
+  }
+
+  #mapSidebar p,
+  #mapSidebar li{
+    font-size: .9rem;
+  }
+
+  /* حركة خفيفة عند المرور بالفأرة */
+  #mapSidebar:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 48px rgba(15, 182, 122, 0.16);
+  }
+
+  /* تكديس عمودي على الجوال والتابلت */
+  @media (max-width: 960px){
+    #map-projects .map-wrapper{
+      grid-template-columns: 1fr;
+    }
+    #leafletMap{
+      height: 360px;
+    }
+    #mapSidebar{
+      min-height: auto;
+      margin-top: 20px;
+      transform: none;
+    }
+  }
+
+  @media (max-width: 600px){
+    #map-projects{
+      padding: 40px 0 36px;
+    }
+    #leafletMap{
+      height: 280px;
+    }
+  }
+</style>
+     
+
+<section id="map-projects">
+  <div class="container">
+    <div class="map-wrapper">
+
+      <div id="leafletMap"></div>
+
+      <aside id="mapSidebar">
+        <h3 id="cityTitle" style="margin:0 0 8px;font-weight:800">اختر مدينة من الخريطة</h3>
+        <p id="citySummary" style="color:#4b5563;margin:0 0 12px;font-size:0.95rem;">
+          عند الضغط على أي نقطة ستظهر معلومات المشاريع هنا.
+        </p>
+
+        <div style="display:flex;gap:10px;margin-bottom:12px;">
+          <div style="flex:1;background:#f6f9f7;border-radius:10px;padding:10px;text-align:center">
+            <div style="font-size:0.78rem;color:#6b7280">عدد المشاريع</div>
+            <div id="cityProjectsCount" style="font-weight:800;font-size:1.1rem">—</div>
+          </div>
+          <div style="flex:1;background:#f6f9f7;border-radius:10px;padding:10px;text-align:center">
+            <div style="font-size:0.78rem;color:#6b7280">إجمالي المصاعد</div>
+            <div id="cityLiftsCount" style="font-weight:800;font-size:1.1rem">—</div>
+          </div>
+        </div>
+
+        <h4 style="margin:0 0 8px;font-size:1rem;font-weight:700">قائمة المشاريع</h4>
+        <ul id="cityProjectsList" style="padding:0;margin:0;list-style:none;max-height:320px;overflow:auto">
+          <li style="color:#6b7280">اضغط على أي مدينة لعرض مشاريعها.</li>
+        </ul>
+      </aside>
+
+    </div>
+  </div>
+</section>
+
+
+
+  <!-- Sectors -->
+  <section id="sectors">
+    <div class="container">
+      <h2 class="section-title">حلول حسب القطاع</h2>
+      <div class="grid cols-3">
+        <!-- بطاقات القطاعات: تأكد من وجود الصور التالية داخل public/images/ -->
+        <div class="card">
+          <div class="thumb">
+            <img src="public/images/sector-multi.jpg" alt="متعدد الاستخدام" loading="lazy">
+          </div>
+          <div>
+            <h3>متعدد الاستخدام</h3>
+            <p>سرعة حتى 1.0 م/ث — توازن الأداء والتكلفة للمباني المتعددة.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="thumb">
+            <img src="public/images/sector-residential.jpg" alt="سكني" loading="lazy">
+          </div>
+          <div>
+            <h3>سكني</h3>
+            <p>M RL 630kg — حلول فاخرة للمباني السكنية.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="thumb">
+            <img src="public/images/sector-hospital.jpg" alt="طبي" loading="lazy">
+          </div>
+          <div>
+            <h3>طبي</h3>
+            <p>Bed Lift 1600kg — مصاعد أسِرّة بمطابقة صارمة للمستشفيات.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="thumb">
+            <img src="public/images/sector-commercial.jpg" alt="تجاري" loading="lazy">
+          </div>
+          <div>
+            <h3>تجاري</h3>
+            <p>M RL 1000kg — أداء عالٍ للمجمعات التجارية.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="thumb">
+            <img src="public/images/sector-hotel.jpg" alt="فندقي" loading="lazy">
+          </div>
+          <div>
+            <h3>فندقي</h3>
+            <p>تشطيبات راقية وتجربة ركاب هادئة.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="thumb">
+            <img src="public/images/sector-industrial.jpg" alt="صناعي" loading="lazy">
+          </div>
+          <div>
+            <h3>صناعي</h3>
+            <p>مصاعد بضائع ومصاعد خدمة لقدرات عالية.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+      <!-- ===== Our Works Section ===== -->
+<section id="works" style="background: var(--rkl-bg-soft);padding:60px 0;">
+  <div class="container" style="text-align:center;">
+    <h2 style="color:#004d40;font-weight:700;margin-bottom:40px;">من أعمالنا</h2>
+    <div style="display:flex;justify-content:center;flex-wrap:wrap;gap:20px;">
+      <div style="width:320px;border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.1);background:#fff;">
+        <img src="public/images/work1.jpg" alt="مشروع مصعد 1" style="width:100%;height:220px;object-fit:cover;">
+        <div style="padding:15px;">
+          <h3 style="margin:0;color:#333;">تحديث مصعد ركاب</h3>
+          <p style="color:#666;font-size:14px;">استبدال نظام الكنترول والأبواب في مبنى سكني بالرياض.</p>
+        </div>
+      </div>
+
+      <div style="width:320px;border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.1);background:#fff;">
+        <img src="public/images/work2.jpg" alt="مشروع مصعد 2" style="width:100%;height:220px;object-fit:cover;">
+        <div style="padding:15px;">
+          <h3 style="margin:0;color:#333;">مصعد مستشفى 10 أشخاص</h3>
+          <p style="color:#666;font-size:14px;">تصميم وتنفيذ مصعد حمولة 800كجم بمعايير EN81.</p>
+        </div>
+      </div>
+
+      <div style="width:320px;border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.1);background:#fff;">
+        <img src="public/images/work3.jpg" alt="مشروع مصعد 3" style="width:100%;height:220px;object-fit:cover;">
+        <div style="padding:15px;">
+          <h3 style="margin:0;color:#333;">مصعد فندقي حديث</h3>
+          <p style="color:#666;font-size:14px;">توريد وتركيب مصعد فاخر في فندق بمكة المكرمة.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+  <!-- Products -->
+  <section id="products" style="background:var(--rkl-gray);">
+    <div class="container">
+      <h2 class="section-title">المنتجات</h2>
+      <div class="grid cols-4">
+        <!-- منتج 1 -->
+        <div class="product">
+          <div class="image">
+            <img src="public/images/product-mrl.jpg" alt="مصعد بدون غرفة ماكينة (MRL)" loading="lazy">
+          </div>
+          <div class="body">
+            <p class="title">مصعد بدون غرفة ماكينة (MRL)</p>
+            <p class="meta">كفاءة عالية وتوفير للمساحة، حلول حتى 20 طابقًا.</p>
+          </div>
+        </div>
+        <!-- منتج 2 -->
+        <div class="product">
+          <div class="image">
+            <img src="public/images/product-machine-room.jpg" alt="مصعد بغرفة ماكينة" loading="lazy">
+          </div>
+          <div class="body">
+            <p class="title">مصعد بغرفة ماكينة</p>
+            <p class="meta">اعتمادية وسهولة صيانة للمنشآت المتوسطة والكبيرة.</p>
+          </div>
+        </div>
+        <!-- منتج 3 -->
+        <div class="product">
+          <div class="image">
+            <img src="public/images/product-escalator.jpg" alt="سلالم كهربائية" loading="lazy">
+          </div>
+          <div class="body">
+            <p class="title">سلالم كهربائية</p>
+            <p class="meta">حلول للمالتي مول والمجمعات مع مواصفات سلامة EN.</p>
+          </div>
+        </div>
+        <!-- منتج 4 -->
+        <div class="product">
+          <div class="image">
+            <img src="public/images/product-modernization.jpg" alt="تحديث أنظمة المصاعد" loading="lazy">
+          </div>
+          <div class="body">
+            <p class="title">تحديث أنظمة المصاعد</p>
+            <p class="meta">استبدال الكنترول والمحركات والأبواب لرفع الأداء.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about">
+    <div class="container">
+      <h2 class="section-title">من نحن</h2>
+      <p style="margin:0;color:#4b5563;max-width:80ch">
+        آر كي ال RKL للمصاعد والسلالم الكهربائية — مؤسسة سعودية تقدم حلول التصميم، التوريد، التركيب، التحديث والصيانة الشاملة،
+        بدعم فني داخل المملكة والتزام تام بمعايير EN 81-20/50 واشتراطات الجودة والاعتماد.
+      </p>
+    </div>
+  </section>
+
+  <!-- Contact / Quote -->
+  <section id="contact">
+    <div class="container">
+      <h2 class="section-title">تواصل معنا</h2>
+      <div class="grid cols-3">
+        <div class="card">
+          <div class="thumb">
+            <img src="public/images/contact-phone.jpg" alt="هاتف" loading="lazy">
+          </div>
+          <div>
+            <h3>الهاتف</h3>
+            <p>00966 11 4774021</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="thumb">
+            <img src="public/images/contact-email.jpg" alt="البريد الإلكتروني" loading="lazy">
+          </div>
+          <div>
+            <h3>البريد الإلكتروني</h3>
+            <p>admin@rk-lifts.com</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="thumb">
+            <img src="public/images/contact-location.jpg" alt="العنوان" loading="lazy">
+          </div>
+          <div>
+            <h3>العنوان</h3>
+            <p>السليمانية – الرياض</p>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <a class="btn btn-primary wa-cta" id="quote" href="#">
+  اطلب عرض سعر الآن
+</a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer aria-label="تذييل">
+    <div class="container">
+
+
+      <div class="footer-panel">
+        <div class="cols">
+          <!-- عمود بيانات المؤسسة -->
+          <div>
+            <h3>آر كي ال RKL للمصاعد والسلالم الكهربائية</h3>
+            <p class="footer-pill">السجل التجاري: 1010709355</p>
+            <p class="footer-pill">الرقم الضريبي: 302250422600003</p>
+            <p class="footer-pill">العنوان: السليمانية – الرياض</p>
+            <p class="footer-pill">
+              الهاتف: 966114774021 — البريد:
+              <a href="mailto:admin@rk-lifts.com">admin@rk-lifts.com</a>
+            </p>
+          </div>
+
+          <!-- عمود الروابط -->
+          <div>
+            <h4>روابط</h4>
+            <p class="footer-pill"><a href="#products">المنتجات</a></p>
+            <p class="footer-pill"><a href="#sectors">القطاعات</a></p>
+            <p class="footer-pill"><a href="#about">من نحن</a></p>
+          </div>
+
+          <!-- عمود الالتزام -->
+          <div>
+            <h4>الالتزام</h4>
+            <p class="footer-pill">EN 81-20/50 · ISO 9001/14001/45001</p>
+            <p class="footer-pill">دعم محلي داخل المملكة</p>
+            <p class="footer-pill">فواتير متوافقة مع ZATCA</p>
+          </div>
+        </div>
+
+        <div class="copy">
+          © <span id="y"></span> RKL. جميع الحقوق محفوظة.
+        </div>
+      </div>
+    </div>
+    <script>
+      document.getElementById('y').textContent = new Date().getFullYear();
+    </script>
+  </footer>
+
+
+        <!-- RKL WhatsApp mini-widget -->
+<style>
+  .rkl-wa { position: fixed; right: 16px; bottom: 16px; z-index: 9999; font-family: "Tajawal", system-ui, -apple-system, "Segoe UI", Roboto, Arial; direction: rtl; }
+  .rkl-wa-card { width: 320px; max-width: calc(100vw - 32px); background: #fff; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,.12); padding: 12px 12px 10px; }
+  .rkl-wa-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .rkl-wa-head img { width: 28px; height: 28px; }
+  .rkl-wa-head b { font-size: 15px; }
+  .rkl-wa-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+  .rkl-wa-input { width: 100%; resize: none; border: 1px solid #e5e7eb; border-radius: 12px; padding: 10px 12px; line-height: 1.5; min-height: 44px; font-size: 14px; }
+  .rkl-wa-btn { border: 0; border-radius: 12px; padding: 0 14px; min-width: 88px; font-weight: 600; cursor: pointer; }
+  .rkl-wa-btn { background: #25D366; color: #fff; }
+  .rkl-wa-meta { display:flex; gap:8px; margin:8px 0 10px; }
+  .rkl-wa-chip { font-size:12px; padding:6px 10px; border:1px solid #e5e7eb; border-radius:10px; cursor:pointer; user-select:none; }
+  .rkl-wa-select { width:100%; margin-bottom:8px; border:1px solid #e5e7eb; border-radius:10px; padding:8px 10px; font-size:13px; background:#fff; }
+  .rkl-wa-foot { font-size:11px; color:#6b7280; margin-top:6px; }
+  .rkl-wa-hide { display:none; }
+  @media (max-width:420px){ .rkl-wa-card { border-radius: 14px; } }
+
+<style>
+/* تعديل تموضع الكرت */
+.hero-inner {
+  justify-content: center !important;  /* أو margin-right حسب اختيارك */
+}
+</style>
+
+
+  
+</style>
+
+<div class="rkl-wa" id="rklWA">
+  <div class="rkl-wa-card" role="group" aria-label="راسلنا عبر واتساب">
+    <div class="rkl-wa-head">
+      <img src="public/images/rkl_logo.png" alt="RKL">
+      <b>راسل RKL عبر واتساب</b>
+    </div>
+
+    <!-- نوع الخدمة (اختياري للتقسيم الداخلي) -->
+    <select id="waTopic" class="rkl-wa-select" aria-label="نوع الخدمة">
+      <option value="">— اختر نوع الخدمة —</option>
+      <option value="مبيعات">مبيعات</option>
+      <option value="صيانة">صيانة</option>
+      <option value="طوارئ">طوارئ</option>
+      <option value="قطع غيار">قطع غيار</option>
+    </select>
+
+    <!-- اقتراحات سريعة -->
+    <div class="rkl-wa-meta">
+      <span class="rkl-wa-chip" data-fill="أريد عرض سعر لتحديث مصعد قديم.">عرض سعر تحديث</span>
+      <span class="rkl-wa-chip" data-fill="طلب صيانة وقائية مع عقد سنوي 12 زيارة.">صيانة وقائية</span>
+      <span class="rkl-wa-chip" data-fill="عطل طارئ – المصعد متوقف الآن.">عطل طارئ</span>
+    </div>
+
+    <div class="rkl-wa-row">
+      <textarea id="waMsg" class="rkl-wa-input" placeholder="اكتب رسالتك هنا ثم اضغط Enter للإرسال…" aria-label="رسالة واتساب"></textarea>
+      <button id="waSend" class="rkl-wa-btn" type="button" aria-label="إرسال إلى واتساب">إرسال</button>
+    </div>
+
+    <div class="rkl-wa-foot">
+      بالإرسال سيتم فتح واتساب الخاص بنا في تبويب جديد. رقمنا: 0114774021
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  // رقم الواتساب (بدون +)
+  const PHONE = "966114774021";
+
+  function buildWhatsAppURL(text){
+    const msg = encodeURIComponent(text);
+    return `https://wa.me/${PHONE}?text=${msg}`;
+  }
+
+  function openWhatsApp(msg){
+    window.open(buildWhatsAppURL(msg), "_blank", "noopener,noreferrer");
+  }
+
+  document.querySelectorAll(".wa-cta").forEach(btn => {
+    btn.addEventListener("click", e => {
+      e.preventDefault();
+
+      const label = btn.textContent.trim();
+      const href  = btn.getAttribute("href") || "#";
+
+      // نحدد موضوع الطلب حسب الزر
+      let topic = "خدمة المصاعد والسلالم";
+
+      if (label.includes("VertiLift") || label.includes("VERTILIFT")) {
+        topic = "نموذج تسعير مصاعد VertiLift";
+      } else if (label.includes("FUJI") || label.includes("FUJI")) {
+        topic = "كتالوج FUJI والاعتماد لدى مصنع فوجي";
+      } else if (label.includes("اطلب عرض سعر")) {
+        topic = "عرض سعر لمشروع مصاعد";
+      } else if (label.includes("تعرّف على منتجاتنا")) {
+        topic = "منتجاتكم في المصاعد والسلالم الكهربائية";
+      }
+
+      // نص الرسالة الجاهز
+      const text =
+`السلام عليكم ورحمة الله وبركاته،
+معكم [اكتب اسمك هنا]، رقم الجوال: [اكتب رقمك].
+
+أرغب في التعامل معكم، وياليت تزودوني بمعلومات أكثر عن:
+${topic}.
+
+شكرًا لكم.`;
+
+      openWhatsApp(text);
+
+      // لو حاب تفتح كمان الرابط الأصلي (مثلاً كتالوج PDF) مع الواتساب، فعّل السطر التالي:
+      // if (href && href !== "#") window.open(href, "_blank", "noopener,noreferrer");
+    });
+  });
+})();
+</script>
+
+        
+<!-- /RKL WhatsApp mini-widget -->
+        <script>
+(function () {
+  const overlay  = document.getElementById('rklIntro');
+  if (!overlay) return;
+
+  const skipBtn  = document.getElementById('rklIntroSkip');
+  const introVid = document.getElementById('rklIntroVideo');
+  const heroVid  = document.querySelector('.hero .video-bg video');
+  const DISPLAY_SECONDS = 20; // إغلاق تلقائي بعد 20 ثانية
+
+  function lockScroll(){
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+  }
+  function unlockScroll(){
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
+  }
+
+  function closeIntro(){
+    // مؤثر اختفاء الطبقة
+    overlay.classList.add('fade-out');
+    // إيقاف فيديو المقدّمة (اختياري)
+    try { introVid?.pause(); } catch(e){}
+    // إزالة الطبقة وإرجاع التمرير وتشغيل فيديو الهيرو إن وُجد
+    setTimeout(function(){
+      try { overlay.remove(); } catch(e){}
+      unlockScroll();
+      try { heroVid?.play(); } catch(e){}
+    }, 900); // يطابق مدة transition في CSS
+  }
+
+  // عند التحميل: امنع التمرير أثناء المقدّمة
+  lockScroll();
+
+  // زر "تخطي"
+  skipBtn?.addEventListener('click', closeIntro);
+
+  // غلق تلقائي بعد مدة
+  setTimeout(closeIntro, DISPLAY_SECONDS * 1000);
+})();
+</script>
+
+
+        <script src="public/rkl-map.js?v=1"></script>
+
+<script>
+(function () {
+  const PHONE = "966114774021";
+
+  function buildWhatsAppURL(text){
+    const msg = encodeURIComponent(text);
+    return `https://wa.me/${PHONE}?text=${msg}`;
+  }
+
+  function openWhatsApp(text){
+    window.open(buildWhatsAppURL(text), "_blank", "noopener,noreferrer");
+  }
+
+  const msgInput   = document.getElementById("waMsg");
+  const topicSelect = document.getElementById("waTopic");
+  const sendBtn    = document.getElementById("waSend");
+  const chips      = document.querySelectorAll(".rkl-wa-chip");
+
+  // لو لسبب ما ما لقى العناصر، يطلع بهدوء
+  if (!msgInput || !sendBtn) return;
+
+  // تعبئة الرسالة عند الضغط على الاختصارات
+  chips.forEach(chip => {
+    chip.addEventListener("click", () => {
+      const fill = chip.getAttribute("data-fill") || "";
+      msgInput.value = fill;
+      msgInput.focus();
+    });
+  });
+
+  function sendWhatsApp(){
+    const raw   = (msgInput.value || "").trim();
+    const topic = (topicSelect && topicSelect.value)
+      ? `نوع الخدمة: ${topicSelect.value}\n`
+      : "";
+
+    const finalMessage =
+`السلام عليكم ورحمة الله وبركاته،
+أرغب في التواصل معكم من خلال موقع RKL.
+
+${topic}${raw || "أحتاج لمعلومات عن خدمات المصاعد لديكم."}
+
+شكرًا لكم.`;
+
+    openWhatsApp(finalMessage);
+  }
+
+  // زر الإرسال
+  sendBtn.addEventListener("click", sendWhatsApp);
+
+  // إرسال عند الضغط Enter بدون Shift
+  msgInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendWhatsApp();
+    }
+  });
+})();
+</script>
+
+
+<script>
+  // إبطاء فيديو الهيرو
+  const heroVideo = document.querySelector(".hero .video-bg video");
+  if(heroVideo){
+    heroVideo.playbackRate = 0.45; // يمكنك تخفيضه أكثر (0.4 – 0.6)
+  }
+
+  // إبطاء فيديو شاشة الترحيب
+  const introVideo = document.getElementById("rklIntroVideo");
+  if(introVideo){
+    introVideo.playbackRate = 0.55;
+  }
+</script>
+
+
+
+        
+
+      </body>
+</html>
