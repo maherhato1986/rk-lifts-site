@@ -1,0 +1,128 @@
+{
+  "brand": "FUJI",
+  "series": "MRL Passenger",
+  "exchangeRateToSAR": 7.11,
+  "models": [
+    {
+      "code": "FJ-MRL-320-0.4",
+      "capacityKg": "320-450",
+      "speedMps": 0.4,
+      "baseFloors": 2,
+      "basePriceUsd": 5350,
+      "extraPerFloorUsd": 240,
+      "machineType": "MRL",
+      "doorType": "Standard",
+      "notes": "FOB Shanghai"
+    },
+    {
+      "code": "FJ-MRL-320-1.0",
+      "capacityKg": "320-450",
+      "speedMps": 1.0,
+      "baseFloors": 2,
+      "basePriceUsd": 5420,
+      "extraPerFloorUsd": 270,
+      "machineType": "MRL",
+      "doorType": "Standard",
+      "notes": "FOB Shanghai"
+    },
+    {
+      "code": "FJ-MRL-630-1.0",
+      "capacityKg": "630",
+      "speedMps": 1.0,
+      "baseFloors": 2,
+      "basePriceUsd": 5510,
+      "extraPerFloorUsd": 250,
+      "machineType": "MRL",
+      "doorType": "Standard",
+      "notes": "FOB Shanghai"
+    },
+    {
+      "code": "FJ-MRL-630-1.5",
+      "capacityKg": "630",
+      "speedMps": 1.5,
+      "baseFloors": 2,
+      "basePriceUsd": 5740,
+      "extraPerFloorUsd": 250,
+      "machineType": "MRL",
+      "doorType": "Standard",
+      "notes": "FOB Shanghai"
+    },
+    {
+      "code": "FJ-MRL-630-1.75",
+      "capacityKg": "630",
+      "speedMps": 1.75,
+      "baseFloors": 2,
+      "basePriceUsd": 6060,
+      "extraPerFloorUsd": 250,
+      "machineType": "MRL",
+      "doorType": "Standard",
+      "notes": "FOB Shanghai"
+    },
+    {
+      "code": "FJ-MRL-800-1.0",
+      "capacityKg": "800",
+      "speedMps": 1.0,
+      "baseFloors": 2,
+      "basePriceUsd": 5610,
+      "extraPerFloorUsd": 250,
+      "machineType": "MRL",
+      "doorType": "Standard",
+      "notes": "FOB Shanghai"
+    },
+    {
+      "code": "FJ-MRL-800-1.5",
+      "capacityKg": "800",
+      "speedMps": 1.5,
+      "baseFloors": 2,
+      "basePriceUsd": 5860,
+      "extraPerFloorUsd": 250,
+      "machineType": "MRL",
+      "doorType": "Standard",
+      "notes": "FOB Shanghai"
+    },
+    {
+      "code": "FJ-MRL-800-1.75",
+      "capacityKg": "800",
+      "speedMps": 1.75,
+      "baseFloors": 2,
+      "basePriceUsd": 6280,
+      "extraPerFloorUsd": 250,
+      "machineType": "MRL",
+      "doorType": "Standard",
+      "notes": "FOB Shanghai"
+    },
+    {
+      "code": "FJ-MRL-1000-1.0",
+      "capacityKg": "1000",
+      "speedMps": 1.0,
+      "baseFloors": 2,
+      "basePriceUsd": 7650,
+      "extraPerFloorUsd": 250,
+      "machineType": "MRL",
+      "doorType": "Standard",
+      "notes": "FOB Shanghai"
+    },
+    {
+      "code": "FJ-MRL-1000-1.5",
+      "capacityKg": "1000",
+      "speedMps": 1.5,
+      "baseFloors": 2,
+      "basePriceUsd": 7890,
+      "extraPerFloorUsd": 250,
+      "machineType": "MRL",
+      "doorType": "Standard",
+      "notes": "FOB Shanghai"
+    },
+    {
+      "code": "FJ-MRL-1000-1.75",
+      "capacityKg": "1000",
+      "speedMps": 1.75,
+      "baseFloors": 2,
+      "basePriceUsd": 8310,
+      "extraPerFloorUsd": 250,
+      "machineType": "MRL",
+      "doorType": "Standard",
+      "notes": "FOB Shanghai"
+    }
+  ]
+}
