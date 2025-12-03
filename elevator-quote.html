@@ -341,19 +341,98 @@
         </div>
     </div>
 </div>
-
 <script>
-    // خريطة الماركات - لاحقًا نضيف باقي الأنواع مع ملفات JSON خاصة بها
+    // ============= ربط واجهة عرض السعر ببيانات العملاء المخزنة محليًا =============
+    // نفس المفتاح المستخدم في customer-manager.html
+    const CUSTOMER_STORAGE_KEY = 'rkl_customers';
+
+    let currentBrandData = null;
+    let selectedCustomer = null; // آخر عميل تم تحميله في النموذج
+
+    function loadStoredCustomers() {
+        try {
+            return JSON.parse(localStorage.getItem(CUSTOMER_STORAGE_KEY) || '[]');
+        } catch (e) {
+            console.error('خطأ في قراءة بيانات العملاء من localStorage', e);
+            return [];
+        }
+    }
+
+    function populateCustomerDropdown() {
+        const select = document.getElementById('customer_select');
+        if (!select) return;
+
+        const customers = loadStoredCustomers();
+
+        // تفريغ القائمة مع خيار افتراضي
+        select.innerHTML = '<option value="">— اختر عميلًا (اختياري) —</option>';
+
+        customers.forEach((c, index) => {
+            const name = c.customer_name || '(بدون اسم)';
+            const city = c.city ? ` - ${c.city}` : '';
+            const opt = document.createElement('option');
+            opt.value = index.toString();
+            opt.textContent = `${name}${city}`;
+            select.appendChild(opt);
+        });
+
+        if (!customers.length) {
+            const opt = document.createElement('option');
+            opt.value = '';
+            opt.textContent = 'لا توجد بيانات عملاء محفوظة في هذا المتصفح';
+            select.appendChild(opt);
+            select.disabled = true;
+        } else {
+            select.disabled = false;
+        }
+    }
+
+    function applyCustomerToForm(customer) {
+        selectedCustomer = customer || null;
+
+        // تعبئة الحقول الأساسية
+        const nameInput = document.getElementById('customer_name');
+        const projectInput = document.getElementById('project_name');
+
+        if (customer) {
+            if (nameInput) nameInput.value = customer.customer_name || '';
+            // لو عندك مشروع باسم المدينة أو الوصف تقدر تستخدمه كنقطة بداية نصية
+            if (projectInput && !projectInput.value) {
+                const city = customer.city ? ` - ${customer.city}` : '';
+                projectInput.value = `مشروع مصاعد للعميل ${customer.customer_name || ''}${city}`;
+            }
+        }
+    }
+
+    // عند تغيير العميل من القائمة المنسدلة
+    document.addEventListener('DOMContentLoaded', () => {
+        populateCustomerDropdown();
+
+        const customerSelect = document.getElementById('customer_select');
+        if (customerSelect) {
+            customerSelect.addEventListener('change', () => {
+                const idx = customerSelect.value;
+                if (idx === '') {
+                    selectedCustomer = null;
+                    return;
+                }
+                const customers = loadStoredCustomers();
+                const customer = customers[Number(idx)];
+                if (customer) {
+                    applyCustomerToForm(customer);
+                }
+            });
+        }
+    });
+
+    // ========================== منطق أسعار المصاعد (كما كان) ==========================
     const BRAND_SOURCES = {
         'FUJI_MRL': {
             label: 'FUJI – MRL Passenger',
             jsonPath: 'fuji_mrl_prices.json'
         }
-        // مثال لاحقًا:
-        // 'VERTILIFT_MRL': { label: 'VERTILIFT – MRL', jsonPath: 'vertilift_mrl_prices.json' }
+        // لاحقًا يمكن إضافة ماركات أخرى هنا
     };
-
-    let currentBrandData = null;
 
     async function loadBrandData(brandKey) {
         const config = BRAND_SOURCES[brandKey];
@@ -509,16 +588,17 @@
     }
 
     function generateQuoteText(result, model, currency) {
-        const customerName = document.getElementById('customer_name').value.trim();
+        const manualCustomerName = document.getElementById('customer_name').value.trim();
         const projectName = document.getElementById('project_name').value.trim();
 
         const currencyLabel = currency === 'USD' ? 'دولار أمريكي' : 'ريال سعودي';
 
+        // نحدد اسم العميل النهائي: إمّا من selectedCustomer أو من الحقل اليدوي
+        const finalCustomerName = selectedCustomer?.customer_name || manualCustomerName || 'العميل الكريم';
+
         const lines = [];
 
-        if (customerName) {
-            lines.push(`السادة / ${customerName}`);
-        }
+        lines.push(`السادة / ${finalCustomerName}`);
         if (projectName) {
             lines.push(`الموضوع: عرض سعر توريد وتركيب مصعد لمشروع (${projectName}).`);
         } else {
@@ -527,6 +607,41 @@
 
         lines.push('');
         lines.push(`نود أن نشكركم على تواصلكم مع مؤسسة آر كي ال RKL، ويسرّنا أن نقدّم لكم عرض السعر التالي:`);
+
+        // بيانات إضافية من سجل العميل إن توفرت
+        if (selectedCustomer) {
+            lines.push('');
+            lines.push(`بيانات العميل المسجّلة لدينا:`);
+            if (selectedCustomer.customer_type === 'company') {
+                lines.push(`- نوع العميل: شركة / مؤسسة.`);
+            } else if (selectedCustomer.customer_type === 'individual') {
+                lines.push(`- نوع العميل: فرد.`);
+            }
+            if (selectedCustomer.contact_person) {
+                lines.push(`- الشخص المخوّل بالتوقيع: ${selectedCustomer.contact_person}`);
+            }
+            if (selectedCustomer.cr_number) {
+                lines.push(`- السجل التجاري: ${selectedCustomer.cr_number}`);
+            }
+            if (selectedCustomer.tax_number) {
+                lines.push(`- الرقم الضريبي: ${selectedCustomer.tax_number}`);
+            }
+            const addrParts = [
+                selectedCustomer.city,
+                selectedCustomer.district,
+                selectedCustomer.street,
+                selectedCustomer.full_address
+            ].filter(Boolean);
+            if (addrParts.length) {
+                lines.push(`- العنوان: ${addrParts.join(' - ')}`);
+            }
+            if (selectedCustomer.mobile) {
+                lines.push(`- جوال رقم: ${selectedCustomer.mobile}`);
+            }
+            if (selectedCustomer.email) {
+                lines.push(`- البريد الإلكتروني: ${selectedCustomer.email}`);
+            }
+        }
 
         lines.push('');
         lines.push(`1) بيانات المصعد:`);
@@ -658,6 +773,11 @@
         document.getElementById('numbers-wrapper').innerHTML =
             '<div class="hint">اختر الماركة والسعة والسرعة ثم أدخل عدد الأدوار.</div>';
         document.getElementById('quote_text').value = '';
+        // إعادة تهيئة قائمة العملاء في حال تغيّر شيء
+        populateCustomerDropdown();
+        selectedCustomer = null;
+        const customerSelect = document.getElementById('customer_select');
+        if (customerSelect) customerSelect.value = '';
     });
 
     document.getElementById('copy-btn').addEventListener('click', function () {
@@ -671,10 +791,12 @@
         alert('تم نسخ نص عرض السعر.');
     });
 
-    // تهيئة أولية
+    // تهيئة أولية لرسالة الأرقام
     document.getElementById('numbers-wrapper').innerHTML =
         '<div class="hint">ابدأ باختيار الماركة ثم بقية البيانات لحساب عرض السعر.</div>';
 </script>
+
 </body>
 </html>
+
 
