@@ -1,66 +1,70 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <title>عرض سعر مصعد – RKL</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8" />
+    <title>عرض سعر / عقد توريد وتركيب وتشغيل مصاعد – RKL</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             background: #f3f4f6;
             margin: 0;
-            padding: 20px;
+            padding: 16px;
             color: #111827;
         }
 
-        .page {
-            max-width: 900px;
-            margin: 0 auto;
-            background: #ffffff;
-            padding: 30px 40px;
-            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.1);
-        }
-
         .toolbar {
-            max-width: 900px;
-            margin: 0 auto 10px auto;
+            max-width: 1024px;
+            margin: 0 auto 12px auto;
             display: flex;
-            gap: 10px;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .toolbar select {
-            padding: 6px 10px;
-            font-size: 14px;
+            justify-content: flex-end;
+            gap: 8px;
         }
 
         .toolbar button {
-            padding: 8px 14px;
-            font-size: 14px;
+            padding: 8px 16px;
             border-radius: 999px;
             border: none;
             cursor: pointer;
+            font-size: 14px;
             background: #059669;
-            color: #ffffff;
+            color: #fff;
         }
 
-        .toolbar button.secondary {
-            background: #4b5563;
+        .page {
+            max-width: 1024px;
+            margin: 0 auto 16px auto;
+            background: #ffffff;
+            padding: 24px 28px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            position: relative;
         }
 
-        .header {
+        .page-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            gap: 16px;
             border-bottom: 2px solid #e5e7eb;
-            padding-bottom: 10px;
-            margin-bottom: 16px;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+        }
+
+        .header-right {
+            text-align: right;
+            font-size: 12px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: #6b7280;
         }
 
         .header-left {
@@ -69,26 +73,9 @@
             color: #4b5563;
         }
 
-        .logo-text {
-            font-weight: 800;
-            font-size: 20px;
-            color: #111827;
-        }
-
-        .subtitle {
-            font-size: 13px;
-            color: #6b7280;
-        }
-
-        .header-right {
-            text-align: right;
-            font-size: 12px;
-            color: #4b5563;
-        }
-
         .doc-title {
             text-align: center;
-            margin: 10px 0 6px 0;
+            margin: 4px 0 4px;
             font-size: 18px;
             font-weight: 700;
         }
@@ -97,31 +84,26 @@
             text-align: center;
             font-size: 13px;
             color: #4b5563;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
         }
 
         .section {
-            margin-bottom: 14px;
+            margin-bottom: 12px;
         }
 
         .section-title {
             font-weight: 700;
-            margin-bottom: 6px;
             font-size: 14px;
             border-bottom: 1px solid #e5e7eb;
-            padding-bottom: 2px;
+            padding-bottom: 3px;
+            margin-bottom: 6px;
         }
 
         .info-grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 4px 16px;
+            gap: 4px 18px;
             font-size: 13px;
-        }
-
-        .info-label {
-            font-weight: 600;
-            color: #4b5563;
         }
 
         .info-row {
@@ -129,51 +111,51 @@
             gap: 4px;
         }
 
+        .info-label {
+            font-weight: 600;
+            color: #4b5563;
+            min-width: 80px;
+        }
+
         .info-value {
             flex: 1;
+        }
+
+        .hint {
+            font-size: 11px;
+            color: #6b7280;
+            margin-bottom: 3px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 6px;
-            font-size: 13px;
+            font-size: 11.5px;
         }
 
         th, td {
-            border: 1px solid #e5e7eb;
-            padding: 6px 8px;
+            border: 1px solid #d1d5db;
+            padding: 4px 6px;
             text-align: center;
         }
 
         th {
             background: #f3f4f6;
-            font-weight: 600;
-        }
-
-        .totals {
-            margin-top: 8px;
-            font-size: 13px;
-            text-align: left;
-        }
-
-        .totals span.label {
-            font-weight: 600;
-            color: #4b5563;
+            font-weight: 700;
         }
 
         .notes {
             font-size: 12px;
-            color: #4b5563;
             line-height: 1.7;
+            color: #374151;
         }
 
         .signatures {
             display: grid;
             grid-template-columns: repeat(2, minmax(0,1fr));
-            gap: 30px;
-            margin-top: 20px;
-            font-size: 13px;
+            gap: 32px;
+            font-size: 12px;
+            margin-top: 18px;
         }
 
         .sign-box {
@@ -186,14 +168,30 @@
             margin-bottom: 4px;
         }
 
-        .badge {
-            display: inline-block;
-            font-size: 11px;
-            background: #e0f2fe;
-            color: #0369a1;
-            padding: 2px 6px;
-            border-radius: 999px;
-            margin-right: 4px;
+        [contenteditable="true"] {
+            outline: none;
+        }
+
+        [contenteditable="true"]:hover {
+            background: #fefce8;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
+        .blue-header {
+            background: #1d4ed8;
+            color: #ffffff;
+            text-align: center;
+            padding: 6px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        .two-col-table th, .two-col-table td {
+            width: 50%;
         }
 
         @media print {
@@ -216,24 +214,22 @@
 <body>
 
 <div class="toolbar">
-    <div>
-        <select id="quote-selector">
-            <option value="">— اختر عرض سعر من السجل —</option>
-        </select>
-    </div>
-    <div>
-        <button type="button" onclick="window.print()">طباعة عرض السعر</button>
-    </div>
+    <button type="button" onclick="window.print()">طباعة / حفظ كـ PDF</button>
 </div>
 
-<div class="page" id="print-area">
-    <div class="header">
+<!-- ======================= الصفحة الأولى: عرض السعر ======================= -->
+<div class="page">
+
+    <div class="page-header">
+        <!-- بيانات RKL -->
         <div class="header-right">
             <div class="logo-text">آر كي ال RKL</div>
             <div class="subtitle">للمصاعد والسلالم الكهربائية</div>
             <div>السجل التجاري: 1010709355</div>
             <div>الرقم الضريبي: 302250422600003</div>
         </div>
+
+        <!-- بيانات التواصل -->
         <div class="header-left">
             <div>الهاتف: 0114774021</div>
             <div>البريد الإلكتروني: admin@rk-lifts.com</div>
@@ -241,228 +237,522 @@
         </div>
     </div>
 
-    <div class="doc-title">عرض سعر توريد وتركيب وتشغيل مصعد/مصاعد</div>
-    <div class="doc-meta">
-        رقم عرض السعر: <span id="doc-number">—</span> &nbsp; | &nbsp;
-        التاريخ: <span id="doc-date">—</span>
+    <div class="doc-title" contenteditable="true">
+        عرض سعر توريد وتركيب وتشغيل مصعد / مصاعد ركاب
     </div>
 
+    <div class="doc-meta">
+        رقم عرض السعر:
+        <span id="offer_no" contenteditable="true">Q-2025-001</span>
+        &nbsp; | &nbsp;
+        التاريخ:
+        <span id="offer_date" contenteditable="true">2025-12-03</span>
+    </div>
+
+    <!-- بيانات العميل والمشروع -->
     <div class="section">
         <div class="section-title">أولاً: بيانات العميل والمشروع</div>
         <div class="info-grid">
             <div class="info-row">
-                <div class="info-label">اسم العميل:</div>
-                <div class="info-value" id="customer-name">—</div>
+                <div class="info-label">العميل:</div>
+                <div class="info-value" contenteditable="true">
+                    السادة / ....................................................
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">العنوان:</div>
+                <div class="info-value" contenteditable="true">
+                    ........................................ / المدينة: ..............................
+                </div>
             </div>
             <div class="info-row">
                 <div class="info-label">اسم المشروع:</div>
-                <div class="info-value" id="project-name">—</div>
+                <div class="info-value" contenteditable="true">
+                    مشروع ............................................................
+                </div>
             </div>
             <div class="info-row">
                 <div class="info-label">موقع المشروع:</div>
-                <div class="info-value" id="project-location">—</div>
+                <div class="info-value" contenteditable="true">
+                    ............................................................
+                </div>
             </div>
             <div class="info-row">
-                <div class="info-label">طريقة التواصل:</div>
-                <div class="info-value" id="contact-info">—</div>
+                <div class="info-label">هاتف/جوال:</div>
+                <div class="info-value" contenteditable="true">
+                    ............................................................
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">بريد إلكتروني:</div>
+                <div class="info-value" contenteditable="true">
+                    ............................................................
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- ملخص التسعير -->
     <div class="section">
-        <div class="section-title">ثانياً: بيانات المصاعد المطلوبة</div>
+        <div class="section-title">ثانياً: ملخص التسعير</div>
+        <div class="info-grid">
+            <div class="info-row">
+                <div class="info-label">ماركة المصعد:</div>
+                <div class="info-value" contenteditable="true">
+                    FUJI – MRL Passenger
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">الحمولة / السرعة:</div>
+                <div class="info-value" contenteditable="true">
+                    450–320 kg / 1.0 m/s
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">عدد الأدوار:</div>
+                <div class="info-value" contenteditable="true">
+                    .... أدوار – .... توقفات
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">عدد المصاعد:</div>
+                <div class="info-value" contenteditable="true">
+                    عدد ( .... ) مصعد
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">قيمة المصعد الواحد (شامل الضريبة):</div>
+                <div class="info-value" contenteditable="true">
+                    SAR 000,000.00
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">الإجمالي شامل الضريبة:</div>
+                <div class="info-value" contenteditable="true">
+                    SAR 000,000.00
+                </div>
+            </div>
+        </div>
+        <div class="hint">
+            جميع الأرقام أعلاه قابلة للتعديل يدويًا؛ لاحقًا يمكن ربطها مباشرة بنتائج صفحة حساب عرض السعر.
+        </div>
+    </div>
+
+    <!-- المواصفات العامة المختصرة -->
+    <div class="section">
+        <div class="section-title">ثالثاً: المواصفات العامة (مختصر)</div>
         <table>
             <thead>
             <tr>
-                <th>#</th>
-                <th>الماركة / النظام</th>
-                <th>الحمولة (kg)</th>
-                <th>السرعة (m/s)</th>
-                <th>عدد الأدوار</th>
-                <th>عدد المصاعد</th>
-                <th>الإجمالي شامل الضريبة</th>
+                <th>م</th>
+                <th>البند</th>
+                <th>الوصف</th>
+                <th>ملاحظات</th>
             </tr>
             </thead>
-            <tbody id="items-body">
+            <tbody>
             <tr>
                 <td>1</td>
-                <td id="brand-cell">—</td>
-                <td id="capacity-cell">—</td>
-                <td id="speed-cell">—</td>
-                <td id="floors-cell">—</td>
-                <td id="lifts-cell">—</td>
-                <td id="total-cell">—</td>
+                <td contenteditable="true">نوع النظام</td>
+                <td contenteditable="true">كهربائي بدون غرفة محرك – MRL</td>
+                <td contenteditable="true"></td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td contenteditable="true">الاستخدام</td>
+                <td contenteditable="true">مصعد ركاب Passenger Elevator</td>
+                <td contenteditable="true"></td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td contenteditable="true">تشطيب الكابينة</td>
+                <td contenteditable="true">ستانلس ستيل / مرآه / خشب حسب اختيار العميل</td>
+                <td contenteditable="true"></td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td contenteditable="true">تشطيب الأبواب</td>
+                <td contenteditable="true">ستانلس ستيل – أو حسب المخططات</td>
+                <td contenteditable="true"></td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td contenteditable="true">تشطيب الأرضية</td>
+                <td contenteditable="true">رخام / جرانيت – يورد من قبل مالك المشروع</td>
+                <td contenteditable="true"></td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="hint">يمكن الاكتفاء بهذه المواصفات المختصرة، أو الرجوع إلى الجداول الفنية التفصيلية في الصفحات التالية.</div>
+    </div>
+
+    <!-- ملاحظات عامة -->
+    <div class="section">
+        <div class="section-title">رابعاً: ملاحظات عامة على العرض</div>
+        <div class="notes" contenteditable="true">
+            • الأسعار لا تشمل الأعمال المدنية والكهربائية خارج حدود المصعد ما لم يُنص على خلاف ذلك.<br />
+            • مدة صلاحية هذا العرض (30) يومًا من تاريخه ما لم يتم سحبه أو تعديله كتابيًا من قبل مؤسسة RKL.<br />
+            • يتم التنفيذ وفقًا لأحدث المواصفات المعتمدة بين الطرفين والمخططات النهائية المعتمدة من الاستشاري / المالك.
+        </div>
+    </div>
+</div>
+
+<!-- ======================= الصفحة الثانية: Elevator Request Form ======================= -->
+<div class="page page-break">
+
+    <div class="blue-header" contenteditable="true">Elevator Request Form</div>
+
+    <table class="two-col-table">
+        <tbody>
+        <tr>
+            <th>Item</th>
+            <th>Code</th>
+        </tr>
+        <tr>
+            <td contenteditable="true">Contract No.</td>
+            <td contenteditable="true">595 – FUJI JAPAN</td>
+        </tr>
+        <tr>
+            <td contenteditable="true">Machine Type</td>
+            <td contenteditable="true">MRL</td>
+        </tr>
+        <tr>
+            <td contenteditable="true">Load</td>
+            <td contenteditable="true">450 kg</td>
+        </tr>
+        <tr>
+            <td contenteditable="true">Floors (Stops)</td>
+            <td contenteditable="true">4 Floors – 4 Stops</td>
+        </tr>
+        <tr>
+            <td contenteditable="true">Cabin Entrance</td>
+            <td contenteditable="true">1</td>
+        </tr>
+        <tr>
+            <td contenteditable="true">Shaft Dimension</td>
+            <td contenteditable="true">As in final shop drawing</td>
+        </tr>
+        <tr>
+            <td contenteditable="true">Door Type</td>
+            <td contenteditable="true">Automatic</td>
+        </tr>
+        <tr>
+            <td contenteditable="true">Cabin Decoration Type</td>
+            <td contenteditable="true">Stainless Steel / Mirror / etc.</td>
+        </tr>
+        <tr>
+            <td contenteditable="true">Door Decoration Type</td>
+            <td contenteditable="true">Stainless Steel</td>
+        </tr>
+        <tr>
+            <td contenteditable="true">Car Operation Panel Type</td>
+            <td contenteditable="true">LCD / Touch</td>
+        </tr>
+        <tr>
+            <td contenteditable="true">COP</td>
+            <td contenteditable="true">Standard</td>
+        </tr>
+        <tr>
+            <td contenteditable="true">LOP</td>
+            <td contenteditable="true">Standard</td>
+        </tr>
+        <tr>
+            <td contenteditable="true">Ceiling Type</td>
+            <td contenteditable="true">As per RKL catalogue</td>
+        </tr>
+        <tr>
+            <td contenteditable="true">Handrail Type</td>
+            <td contenteditable="true">Stainless Steel</td>
+        </tr>
+        <tr>
+            <td contenteditable="true">Floor Type</td>
+            <td contenteditable="true">Marble / Granite</td>
+        </tr>
+        <tr>
+            <td contenteditable="true">Control Type</td>
+            <td contenteditable="true">VVVF</td>
+        </tr>
+        <tr>
+            <td contenteditable="true">ARD</td>
+            <td contenteditable="true">Including</td>
+        </tr>
+        <tr>
+            <td contenteditable="true">Additional Request</td>
+            <td contenteditable="true">Gong, Intercom, etc.</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="section" style="margin-top: 16px;">
+        <div class="section-title">الضمان والصيانة / Warranty and Maintenance</div>
+        <table>
+            <thead>
+            <tr>
+                <th style="width:8%;">م</th>
+                <th>Arabic</th>
+                <th>English</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>01</td>
+                <td contenteditable="true">
+                    مدة الضمان 10 سنوات على كامل المصعد، بشرط الالتزام بعقد صيانة لباقي السنوات بعد انتهاء الفترة
+                    المجانية للصيانة.
+                </td>
+                <td contenteditable="true">
+                    The warranty period is 10 years on the entire elevator, provided that a maintenance
+                    contract is committed to the rest of the years after the end of the free maintenance period.
+                </td>
+            </tr>
+            <tr>
+                <td>02</td>
+                <td contenteditable="true">
+                    الصيانة المجانية لمدة سنتين كاملتين شاملة قطع الغيار.
+                </td>
+                <td contenteditable="true">
+                    2 years free maintenance including spare parts.
+                </td>
             </tr>
             </tbody>
         </table>
 
-        <div class="totals">
-            <div><span class="label">العملة:</span> <span id="currency-label">—</span></div>
-            <div><span class="label">نسبة ضريبة القيمة المضافة:</span> <span id="vat-rate-label">—</span></div>
-            <div><span class="label">قيمة العرض الإجمالية:</span> <span id="grand-total-label">—</span></div>
+        <div style="margin-top: 18px; font-size: 12px;">
+            <strong>Customer Signature:</strong>
+            <span contenteditable="true">_____________________________</span>
+        </div>
+    </div>
+</div>
+
+<!-- ======================= الصفحة الثالثة: Specification Sheet (مختصرة) ======================= -->
+<div class="page page-break">
+
+    <div class="blue-header" contenteditable="true">
+        Complete Elevator Specification Sheet – From FUJI JAPAN
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th style="width:6%;">NO.</th>
+            <th style="width:10%;">Code</th>
+            <th>Content</th>
+            <th style="width:22%;">Remarks</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- يمكنك إضافة أو حذف أسطر حسب الحاجة، كل الخلايا قابلة للتعديل -->
+        <tr>
+            <td contenteditable="true">001</td>
+            <td contenteditable="true">L1</td>
+            <td contenteditable="true">Type – Traction Elevator from FUJI JAPAN</td>
+            <td contenteditable="true"></td>
+        </tr>
+        <tr>
+            <td contenteditable="true">002</td>
+            <td contenteditable="true">L2</td>
+            <td contenteditable="true">Control Type – Simplex / Duplex</td>
+            <td contenteditable="true"></td>
+        </tr>
+        <tr>
+            <td contenteditable="true">003</td>
+            <td contenteditable="true">003</td>
+            <td contenteditable="true">Stops / Floors / Doors – As per final shop drawing</td>
+            <td contenteditable="true"></td>
+        </tr>
+        <tr>
+            <td contenteditable="true">004</td>
+            <td contenteditable="true">004</td>
+            <td contenteditable="true">Floor Name – GF, 1, 2, ...</td>
+            <td contenteditable="true"></td>
+        </tr>
+        <tr>
+            <td contenteditable="true">005</td>
+            <td contenteditable="true">005</td>
+            <td contenteditable="true">Base Floor – GF</td>
+            <td contenteditable="true"></td>
+        </tr>
+        <tr>
+            <td contenteditable="true">006</td>
+            <td contenteditable="true">006</td>
+            <td contenteditable="true">Car Size – As in final shop drawing</td>
+            <td contenteditable="true"></td>
+        </tr>
+        <tr>
+            <td contenteditable="true">007</td>
+            <td contenteditable="true">007</td>
+            <td contenteditable="true">Pit Depth – 1200 mm (min) أو حسب المخططات</td>
+            <td contenteditable="true"></td>
+        </tr>
+        <tr>
+            <td contenteditable="true">008</td>
+            <td contenteditable="true">008</td>
+            <td contenteditable="true">Overhead Height – 4200 mm (min)</td>
+            <td contenteditable="true"></td>
+        </tr>
+        <tr>
+            <td contenteditable="true">009</td>
+            <td contenteditable="true">009</td>
+            <td contenteditable="true">Power Supply – 380V 60Hz AC 3 Phase</td>
+            <td contenteditable="true"></td>
+        </tr>
+        <tr>
+            <td contenteditable="true">010</td>
+            <td contenteditable="true">010</td>
+            <td contenteditable="true">Machine Level – MRL</td>
+            <td contenteditable="true"></td>
+        </tr>
+
+        <!-- مجموعة بنود تشطيب الكابينة والأبواب -->
+        <tr>
+            <td contenteditable="true">020</td>
+            <td contenteditable="true">020</td>
+            <td contenteditable="true">Car Material – Stainless Steel (Hairline)</td>
+            <td contenteditable="true"></td>
+        </tr>
+        <tr>
+            <td contenteditable="true">021</td>
+            <td contenteditable="true">021</td>
+            <td contenteditable="true">Landing Door Material – Stainless Steel</td>
+            <td contenteditable="true"></td>
+        </tr>
+        <tr>
+            <td contenteditable="true">022</td>
+            <td contenteditable="true">022</td>
+            <td contenteditable="true">Ceiling – As per design</td>
+            <td contenteditable="true"></td>
+        </tr>
+        <tr>
+            <td contenteditable="true">023</td>
+            <td contenteditable="true">023</td>
+            <td contenteditable="true">Handrail – Stainless Steel</td>
+            <td contenteditable="true"></td>
+        </tr>
+        <tr>
+            <td contenteditable="true">024</td>
+            <td contenteditable="true">024</td>
+            <td contenteditable="true">Floor – Marble / Granite</td>
+            <td contenteditable="true"></td>
+        </tr>
+
+        <!-- يمكنك تكرار أو تعديل الأسطر حتى تصل لنفس عدد بنود الورقة الأصلية -->
+        </tbody>
+    </table>
+
+    <div class="hint" style="margin-top: 8px;">
+        هذه الصفحة تمثل الـ Specification Sheet التفصيلية. يمكنك نسخ بنود العقد الأصلي ولصقها هنا بندًا بندًا.
+    </div>
+</div>
+
+<!-- ======================= الصفحة الرابعة: الدفعات والشروط الختامية ======================= -->
+<div class="page page-break">
+
+    <div class="section">
+        <div class="section-title">المادة الثالثة: التزامات الطرف الأول – الدفعات</div>
+        <div class="hint">
+            الجدول التالي مأخوذ من نموذج الدفعات في العقد؛ جميع الخلايا قابلة للتعديل.
+        </div>
+        <table>
+            <thead>
+            <tr>
+                <th>البيان</th>
+                <th>النسبة المئوية</th>
+                <th>المبلغ بالريال</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td contenteditable="true">عند توقيع العقد</td>
+                <td contenteditable="true">50 %</td>
+                <td contenteditable="true">SAR 000,000.00</td>
+            </tr>
+            <tr>
+                <td contenteditable="true">عند انتهاء التركيب الميكانيكي</td>
+                <td contenteditable="true">25 %</td>
+                <td contenteditable="true">SAR 000,000.00</td>
+            </tr>
+            <tr>
+                <td contenteditable="true">بعد انتهاء الأعمال الكهربائية والتشغيل</td>
+                <td contenteditable="true">20 %</td>
+                <td contenteditable="true">SAR 000,000.00</td>
+            </tr>
+            <tr>
+                <td contenteditable="true">عند التسليم الابتدائي</td>
+                <td contenteditable="true">5 %</td>
+                <td contenteditable="true">SAR 000,000.00</td>
+            </tr>
+            <tr>
+                <td contenteditable="true">الإجمالي (شامل ضريبة القيمة المضافة 15%)</td>
+                <td contenteditable="true">100 %</td>
+                <td contenteditable="true">SAR 000,000.00</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="notes" style="margin-top: 10px;" contenteditable="true">
+            ملاحظة: يتم تحويل جميع الدفعات إلى حساب مؤسسة آر كي ال RKL للمصاعد والسلالم الكهربائية وفق بيانات التحويل المعتمدة، خلال مدة لا تتجاوز
+            سبعة (7) أيام من تاريخ استحقاق كل دفعة، وفي حال التأخير يحق للطرف الثاني إيقاف الأعمال لحين السداد دون أن يعد ذلك إخلالاً بالعقد.
         </div>
     </div>
 
     <div class="section">
-        <div class="section-title">ثالثاً: ملاحظات وشروط عامة مختصرة</div>
-        <div class="notes" id="notes-block">
-            • الأسعار أعلاه مبنية على المواصفات الفنية الخاصة بنظام <span class="badge" id="brand-badge">—</span>،  
-            وأي تعديل جوهري في المواصفات أو عدد الأدوار أو موقع المشروع قد يستلزم إعادة تسعير.<br>
-            • الأسعار تشمل توريد وتركيب وتشغيل المصاعد المذكورة، ولا تشمل الأعمال المدنية والكهربائية خارج غرفة المصعد
-              إلا إذا تم النص على خلاف ذلك في العرض الفني التفصيلي.<br>
-            • مدة صلاحية هذا العرض (30) يومًا من تاريخه، ما لم يتم سحبه أو تعديله كتابيًا من قبل مؤسسة RKL.<br>
-            • يتـم إصدار عقد توريد وتركيب وتشغيل مصاعد مستقل عند اعتماد هذا العرض ودفع الدفعة المقدمة المتفق عليها.
+        <div class="section-title">المادة الرابعة: الأعمال المدنية والكهربائية</div>
+        <div class="notes" contenteditable="true">
+            يلتزم الطرف الأول بتجهيز جميع الفتحات والأعمدة الخرسانية، وتوفير مصدر تيار كهربائي 380 فولت ثلاثي الفاز، وتنفيذ جميع الأعمال
+            المدنية حول الأبواب والبئر حسب المخططات، على أن يتم التنسيق المسبق مع الطرف الثاني قبل صب الخرسانات أو تنفيذ التشطيبات.
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">المادة الخامسة: الضمان والصيانة</div>
+        <div class="notes" contenteditable="true">
+            يلتزم الطرف الثاني بضمان المصعد وفق ما ورد في نموذج الضمان والصيانة المرفق، ويعتبر هذا النموذج جزءًا لا يتجزأ من العقد، ويعمل به
+            ما لم يتم الاتفاق كتابيًا على غير ذلك.
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">المادة السادسة: الإخطارات والمراسلات</div>
+        <div class="notes" contenteditable="true">
+            تتم المراسلات بين الطرفين عبر البريد الإلكتروني الرسمي أو الخطابات المعتمدة أو أي وسيلة يتم الاتفاق عليها، ويعد أي إشعار
+            مرسل إلى العناوين الموضحة في صدر هذا العقد منتجًا لآثاره القانونية ما لم يتم إشعار بخلاف ذلك كتابيًا.
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">المادة السابعة: حل النزاعات</div>
+        <div class="notes" contenteditable="true">
+            في حال وقوع أي خلاف بين الطرفين حول تفسير أو تنفيذ هذا العقد يتم حله وديًا قدر الإمكان، وفي حال تعذر ذلك يكون الاختصاص
+            للمحاكم والجهات القضائية المختصة في المملكة العربية السعودية.
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">المادة الثامنة: نسخ العقد والتوقيع الإلكتروني</div>
+        <div class="notes" contenteditable="true">
+            نظرًا للظروف الحالية واعتماد وسائل الاتصال الإلكترونية، يقر الطرفان بصحة النسخة الرقمية لهذا العقد، ويجوز اعتماده بالتوقيع الإلكتروني
+            أو الختم الرقمي، على أن يتم توقيع النسخ الورقية وتسليم نسخة لكل طرف عند الطلب، دون أن يؤثر ذلك على صحة النسخة الإلكترونية.
         </div>
     </div>
 
     <div class="section signatures">
         <div class="sign-box">
-            <div class="sign-title">مع تحيات</div>
-            <div>آر كي ال RKL للمصاعد والسلالم الكهربائية</div>
-            <div style="margin-top: 25px;">التوقيع والختم:</div>
+            <div class="sign-title">الطرف الأول (العميل)</div>
+            <div>الاسم: <span contenteditable="true">..........................................</span></div>
+            <div>التوقيع: <span contenteditable="true">..........................................</span></div>
         </div>
         <div class="sign-box">
-            <div class="sign-title">إقرار العميل</div>
-            <div>أقر أنا المذكور اسمي أعلاه باستلام عرض السعر هذا والاطلاع على الشروط الواردة فيه.</div>
-            <div style="margin-top: 25px;">الاسم: __________________________</div>
-            <div>التوقيع: ______________________</div>
-            <div>التاريخ: ____ / ____ / _______</div>
+            <div class="sign-title">الطرف الثاني – مؤسسة آر كي ال RKL</div>
+            <div>الاسم: <span contenteditable="true">..........................................</span></div>
+            <div>الصفة: <span contenteditable="true">المدير العام</span></div>
+            <div>التوقيع والختم: <span contenteditable="true">..........................................</span></div>
         </div>
     </div>
+
+    <div style="margin-top: 18px; font-size: 12px; text-align: center;" contenteditable="true">
+        والله الموفق، وهو خير الشاهدين.
+    </div>
 </div>
-
-<script>
-    const QUOTES_STORAGE_KEY = 'rkl_quotes';
-    const CUSTOMER_STORAGE_KEY = 'rkl_customers';
-
-    function loadJson(key) {
-        try {
-            return JSON.parse(localStorage.getItem(key) || '[]');
-        } catch (e) {
-            console.error('Failed to parse localStorage for', key, e);
-            return [];
-        }
-    }
-
-    function formatCurrency(val, currency) {
-        if (isNaN(val)) return '—';
-        const num = Number(val).toFixed(2);
-        return currency === 'USD' ? `${num} USD` : `${num} SAR`;
-    }
-
-    function formatDate(isoStr) {
-        if (!isoStr) return '—';
-        const d = new Date(isoStr);
-        if (isNaN(d.getTime())) return '—';
-        const y = d.getFullYear();
-        const m = String(d.getMonth() + 1).padStart(2, '0');
-        const day = String(d.getDate()).padStart(2, '0');
-        return `${y}-${m}-${day}`;
-    }
-
-    function populateQuoteSelector() {
-        const select = document.getElementById('quote-selector');
-        const quotes = loadJson(QUOTES_STORAGE_KEY);
-
-        if (!quotes.length) {
-            select.innerHTML = '<option value="">لا توجد عروض أسعار محفوظة في هذا المتصفح</option>';
-            select.disabled = true;
-            return;
-        }
-
-        select.disabled = false;
-        select.innerHTML = '<option value="">— اختر عرض سعر من السجل —</option>';
-
-        quotes.forEach((q, index) => {
-            const opt = document.createElement('option');
-            const label = `${q.quoteNumber || 'بدون رقم'} – ${q.customerName || ''} – ${formatDate(q.timestamp)}`;
-            opt.value = index.toString();
-            opt.textContent = label;
-            select.appendChild(opt);
-        });
-
-        // اختر آخر عرض تلقائيًا
-        select.value = (quotes.length - 1).toString();
-        applyQuote(quotes.length - 1);
-    }
-
-    function findCustomerByName(name) {
-        if (!name) return null;
-        const customers = loadJson(CUSTOMER_STORAGE_KEY);
-        return customers.find(c => c.customer_name === name) || null;
-    }
-
-    function applyQuote(index) {
-        const quotes = loadJson(QUOTES_STORAGE_KEY);
-        const quote = quotes[index];
-        if (!quote) return;
-
-        document.getElementById('doc-number').textContent = quote.quoteNumber || '—';
-        document.getElementById('doc-date').textContent = formatDate(quote.timestamp);
-
-        const customerName = quote.customerName || '—';
-        const projectName = quote.projectName || '—';
-
-        document.getElementById('customer-name').textContent = customerName;
-        document.getElementById('project-name').textContent = projectName;
-
-        // محاولة جلب معلومات إضافية للعميل من customer-manager
-        const customer = findCustomerByName(quote.customerName);
-        if (customer) {
-            const addrParts = [
-                customer.city,
-                customer.district,
-                customer.street,
-                customer.full_address
-            ].filter(Boolean);
-            document.getElementById('project-location').textContent = addrParts.join(' - ') || '—';
-
-            const contacts = [
-                customer.mobile ? `جوال: ${customer.mobile}` : '',
-                customer.phone ? `هاتف: ${customer.phone}` : '',
-                customer.email ? `بريد: ${customer.email}` : ''
-            ].filter(Boolean);
-            document.getElementById('contact-info').textContent = contacts.join(' | ') || '—';
-        } else {
-            document.getElementById('project-location').textContent = '—';
-            document.getElementById('contact-info').textContent = '—';
-        }
-
-        document.getElementById('brand-cell').textContent = quote.brandLabel || quote.brandKey || '—';
-
-        // capacity/speed مخزنة لدينا بالنص "630 kg" لذلك نفصل الرقم عن الوحدة للعرض
-        document.getElementById('capacity-cell').textContent = quote.capacity || '—';
-        document.getElementById('speed-cell').textContent = quote.speed || '—';
-        document.getElementById('floors-cell').textContent = quote.floors || '—';
-        document.getElementById('lifts-cell').textContent = quote.liftsCount || '—';
-
-        document.getElementById('total-cell').textContent =
-            formatCurrency(quote.totalWithVat, quote.currency || 'SAR');
-
-        document.getElementById('currency-label').textContent =
-            quote.currency === 'USD' ? 'دولار أمريكي' : 'ريال سعودي';
-
-        document.getElementById('vat-rate-label').textContent =
-            (quote.vatRate != null ? quote.vatRate : 15) + ' %';
-
-        document.getElementById('grand-total-label').textContent =
-            formatCurrency(quote.totalWithVat, quote.currency || 'SAR');
-
-        document.getElementById('brand-badge').textContent =
-            quote.brandLabel || quote.brandKey || 'نظام المصعد';
-    }
-
-    (function init() {
-        populateQuoteSelector();
-
-        const select = document.getElementById('quote-selector');
-        select.addEventListener('change', () => {
-            const idx = select.value;
-            if (idx === '') return;
-            applyQuote(Number(idx));
-        });
-    })();
-</script>
 
 </body>
 </html>
