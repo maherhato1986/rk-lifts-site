@@ -707,6 +707,9 @@ lines.push(`- عدد الأدوار: ${result.floors} دور (السعر الأ�
         lines.push('');
         lines.push(`3) الأسعار النهائية (${currencyLabel}):`);
         lines.push(`- سعر البيع قبل الضريبة: ${formatCurrency(result.totalBeforeVat, currency)}`);
+        lines.push(`- سعر البيع قبل الضريبة للمصعد الواحد: ${formatCurrency(result.totalBeforeVatPerLift, currency)}`);
+lines.push(`- سعر البيع قبل الضريبة لإجمالي ${result.liftsCount} مصعد: ${formatCurrency(result.totalBeforeVat, currency)}`);
+
         lines.push(`- قيمة ضريبة القيمة المضافة (${result.vatRate}%): ${formatCurrency(result.vatAmount, currency)}`);
         lines.push(`- الإجمالي ${result.includeVat ? 'شامل' : 'بدون'} ضريبة القيمة المضافة: ${formatCurrency(result.totalWithVat, currency)}.`);
 
@@ -934,6 +937,7 @@ generateQuoteText(result, model, currency);
 
 </body>
 </html>
+
 
 
 
