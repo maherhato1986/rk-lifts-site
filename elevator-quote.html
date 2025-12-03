@@ -988,6 +988,168 @@ lines.push(`- سعر البيع قبل الضريبة لإجمالي ${result.li
         document.execCommand('copy');
         alert('تم نسخ نص عرض السعر.');
     });
+// ========================== سجل عروض الأسعار ==========================
+
+function loadQuotes() {
+    try {
+        return JSON.parse(localStorage.getItem(QUOTES_STORAGE_KEY) || '[]');
+    } catch (e) {
+        console.error('خطأ في قراءة سجل عروض الأسعار من localStorage', e);
+        return [];
+    }
+}
+
+function saveQuotes(list) {
+    localStorage.setItem(QUOTES_STORAGE_KEY, JSON.stringify(list));
+}
+
+function formatDateOnly(iso) {
+    if (!iso) return '';
+    return iso.slice(0, 10); // YYYY-MM-DD
+}
+
+function renderQuotesTable() {
+    const quotes = loadQuotes();
+    const tbody = document.querySelector('#quotes-table tbody');
+    if (!tbody) return;
+
+    tbody.innerHTML = '';
+
+    if (!quotes.length) {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = 8;
+        td.textContent = 'لا توجد عروض أسعار محفوظة في هذا الجهاز.';
+        td.style.textAlign = 'center';
+        td.style.color = '#6b7280';
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+        return;
+    }
+
+    quotes.forEach((q, index) => {
+        const tr = document.createElement('tr');
+
+        tr.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${q.quoteNo}</td>
+            <td>${formatDateOnly(q.date)}</td>
+            <td>${q.customerName || ''}</td>
+            <td>${q.projectName || ''}</td>
+            <td>${q.brandLabel} – ${q.capacityKg}kg – ${q.speedMps}m/s</td>
+            <td>${q.liftsCount}</td>
+            <td>${formatCurrency(q.totalWithVat, q.currency)}</td>
+        `;
+
+        tbody.appendChild(tr);
+    });
+}
+
+// زر حفظ عرض السعر الحالي في السجل
+document.getElementById('save-quote-btn').addEventListener('click', function () {
+    if (!lastQuoteSnapshot) {
+        alert('قم أولًا بحساب عرض السعر ثم حاول حفظه.');
+        return;
+    }
+
+    const { result, model, currency } = lastQuoteSnapshot;
+
+    const manualCustomerName = document.getElementById('customer_name').value.trim();
+    const projectName = document.getElementById('project_name').value.trim();
+    const customerName = selectedCustomer?.customer_name || manualCustomerName || '';
+
+    const quotes = loadQuotes();
+
+    // توليد رقم عرض السعر (بسيط ومتصاعد)
+    const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+    const seq = String(quotes.length + 1).padStart(3, '0');
+    const quoteNo = `Q-${today}-${seq}`;
+
+    const quote = {
+        quoteNo,
+        date: new Date().toISOString(),
+        customerName,
+        projectName,
+        brandKey: result.brandKey,
+        brandLabel: BRAND_SOURCES[result.brandKey].label,
+        capacityKg: model.capacityKg,
+        speedMps: model.speedMps,
+        floors: result.floors,
+        liftsCount: result.liftsCount,
+        currency,
+        totalBeforeVat: result.totalBeforeVat,
+        vatRate: result.vatRate,
+        totalWithVat: result.totalWithVat
+    };
+
+    quotes.push(quote);
+    saveQuotes(quotes);
+    renderQuotesTable();
+    alert('تم حفظ عرض السعر في سجل العروض على هذا الجهاز.');
+});
+
+// زر تصدير السجل إلى CSV لفتحه في Excel
+document.getElementById('export-quotes-btn').addEventListener('click', function () {
+    const quotes = loadQuotes();
+    if (!quotes.length) {
+        alert('لا توجد عروض أسعار للتصدير.');
+        return;
+    }
+
+    const header = [
+        'رقم عرض السعر',
+        'التاريخ',
+        'اسم العميل',
+        'اسم المشروع',
+        'الماركة',
+        'السعة (kg)',
+        'السرعة (m/s)',
+        'عدد الأدوار',
+        'عدد المصاعد',
+        'العملة',
+        'سعر البيع قبل الضريبة',
+        'نسبة الضريبة %',
+        'الإجمالي شامل الضريبة'
+    ];
+
+    const rows = quotes.map(q => [
+        q.quoteNo,
+        formatDateOnly(q.date),
+        q.customerName || '',
+        q.projectName || '',
+        q.brandLabel || '',
+        q.capacityKg || '',
+        q.speedMps || '',
+        q.floors || '',
+        q.liftsCount || '',
+        q.currency || '',
+        (q.totalBeforeVat ?? '').toString(),
+        (q.vatRate ?? '').toString(),
+        (q.totalWithVat ?? '').toString()
+    ]);
+
+    const csvContent = [header, ...rows]
+        .map(row => row
+            .map(value => `"${(value ?? '').toString().replace(/"/g, '""')}"`)
+            .join(',')
+        )
+        .join('\r\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    const today = new Date().toISOString().slice(0, 10);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `rkl_elevator_quotes_${today}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+});
+
+// عند تحميل الصفحة: عرض السجل (إن وجد)
+renderQuotesTable();
 
     // رسالة أولية
     document.getElementById('numbers-wrapper').innerHTML =
@@ -996,6 +1158,7 @@ lines.push(`- سعر البيع قبل الضريبة لإجمالي ${result.li
 
 </body>
 </html>
+
 
 
 
