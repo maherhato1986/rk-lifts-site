@@ -798,31 +798,70 @@
         const overheadCurrency = overheadSar / divisor;
         const costBeforeProfitCurrency = costBeforeProfitSar / divisor;
         const profitCurrency = profitSar / divisor;
-        const totalBeforeVatCurrency = totalBeforeVatSar / divisor;
 
-        const vatAmountCurrency = totalBeforeVatCurrency * (vatRate / 100);
-        const totalWithVatCurrency = includeVat
-            ? totalBeforeVatCurrency + vatAmountCurrency
-            : totalBeforeVatCurrency;
+      // تحويل حسب العملة المختارة (للمصعد الواحد)
+const divisor = (currency === 'USD') ? rate : 1;
 
-        const result = {
-            brandKey,
-            floors,
-            factoryCost: factoryCostCurrency,
-            shippingInsuranceCost: shippingInsuranceCurrency,
-            clearanceTransportCost: clearanceTransportCurrency,
-            installationCommissioningCost: installationCommissioningCurrency,
-            overheadCost: overheadCurrency,
-            overheadPercent: COST_PARAMS.overheadPercent,
-            costBeforeProfit: costBeforeProfitCurrency,
-            profitAmount: profitCurrency,
-            profitPercent: COST_PARAMS.profitPercent,
-            totalBeforeVat: totalBeforeVatCurrency,
-            vatRate,
-            vatAmount: vatAmountCurrency,
-            totalWithVat: totalWithVatCurrency,
-            includeVat
-        };
+const factoryCostPerLift = factorySar / divisor;
+const shippingInsurancePerLift = shippingInsuranceSar / divisor;
+const clearanceTransportPerLift = clearanceTransportSar / divisor;
+const installationCommissioningPerLift = installationCommissioningSar / divisor;
+const overheadPerLift = overheadSar / divisor;
+const costBeforeProfitPerLift = costBeforeProfitSar / divisor;
+const profitPerLift = profitSar / divisor;
+const totalBeforeVatPerLift = totalBeforeVatSar / divisor;
+
+const vatAmountPerLift = totalBeforeVatPerLift * (vatRate / 100);
+const totalWithVatPerLift = includeVat
+    ? totalBeforeVatPerLift + vatAmountPerLift
+    : totalBeforeVatPerLift;
+
+// مجاميع لعدد المصاعد
+const factoryCostTotal = factoryCostPerLift * liftsCount;
+const shippingInsuranceTotal = shippingInsurancePerLift * liftsCount;
+const clearanceTransportTotal = clearanceTransportPerLift * liftsCount;
+const installationCommissioningTotal = installationCommissioningPerLift * liftsCount;
+const overheadTotal = overheadPerLift * liftsCount;
+const costBeforeProfitTotal = costBeforeProfitPerLift * liftsCount;
+const profitTotal = profitPerLift * liftsCount;
+const totalBeforeVatTotal = totalBeforeVatPerLift * liftsCount;
+const vatAmountTotal = vatAmountPerLift * liftsCount;
+const totalWithVatTotal = totalWithVatPerLift * liftsCount;
+
+const result = {
+    brandKey,
+    floors,
+    liftsCount,
+    // للمصعد الواحد
+    factoryCostPerLift,
+    shippingInsurancePerLift,
+    clearanceTransportPerLift,
+    installationCommissioningPerLift,
+    overheadPerLift,
+    costBeforeProfitPerLift,
+    profitPerLift,
+    totalBeforeVatPerLift,
+    vatAmountPerLift,
+    totalWithVatPerLift,
+    // الإجمالي لكل المصاعد
+    factoryCost: factoryCostTotal,
+    shippingInsuranceCost: shippingInsuranceTotal,
+    clearanceTransportCost: clearanceTransportTotal,
+    installationCommissioningCost: installationCommissioningTotal,
+    overheadCost: overheadTotal,
+    costBeforeProfit: costBeforeProfitTotal,
+    profitAmount: profitTotal,
+    totalBeforeVat: totalBeforeVatTotal,
+    vatRate,
+    vatAmount: vatAmountTotal,
+    totalWithVat: totalWithVatTotal,
+    includeVat
+};
+
+generateNumbersView(result, model, currency);
+generateQuoteText(result, model, currency);
+
+
 
         generateNumbersView(result, model, currency);
         generateQuoteText(result, model, currency);
@@ -888,6 +927,7 @@
 
 </body>
 </html>
+
 
 
 
