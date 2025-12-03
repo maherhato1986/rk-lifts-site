@@ -430,6 +430,11 @@
         profitPercent: 25            // هامش الربح %
     };
 
+        // تخزين عروض الأسعار
+    const QUOTES_STORAGE_KEY = 'rkl_quotes';
+    let lastQuoteSnapshot = null; // آخر عرض سعر محسوب (لنحفظه في السجل)
+
+
     // ========================== ربط واجهة عرض السعر ببيانات العملاء ==========================
     const CUSTOMER_STORAGE_KEY = 'rkl_customers';
 
@@ -982,6 +987,7 @@
 
 </body>
 </html>
+
 
 
 
