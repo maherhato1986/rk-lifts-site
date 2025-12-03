@@ -509,8 +509,11 @@
     }
 
     function saveQuotesToStorage(quotes) {
-           // بعد حفظ السجل:
-    localStorage.setItem(CURRENT_QUOTE_SELECTION_KEY, currentQuote.quoteNumber);
+
+        localStorage.setItem("selected_quote", JSON.stringify(quoteData));
+window.location.href = "elevator-quote-offer.html";
+
+   
 
     }
 
@@ -1202,6 +1205,7 @@
 
 </body>
 </html>
+
 
 
 
