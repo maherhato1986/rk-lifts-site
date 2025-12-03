@@ -717,19 +717,22 @@
         document.getElementById('quote_text').value = lines.join('\n');
     }
 
-    async function calculateQuote() {
-        const brandKey = document.getElementById('brand').value;
-        const capacity = document.getElementById('capacity').value;
-        const speed = document.getElementById('speed').value;
-        const floors = Number(document.getElementById('floors').value);
-        const currency = document.getElementById('currency').value;
-        const vatRate = Number(document.getElementById('vat_rate').value) || 0;
-        const includeVat = document.getElementById('include_vat').checked;
+  async function calculateQuote() {
+    const brandKey = document.getElementById('brand').value;
+    const capacity = document.getElementById('capacity').value;
+    const speed = document.getElementById('speed').value;
+    const floors = Number(document.getElementById('floors').value);
+    const liftsCount = Number(document.getElementById('lifts_count').value) || 1;
+    const currency = document.getElementById('currency').value;
+    const vatRate = Number(document.getElementById('vat_rate').value) || 0;
+    const includeVat = document.getElementById('include_vat').checked;
 
-        if (!brandKey || !capacity || !speed || !floors || floors < 2) {
-            alert('يرجى اختيار الماركة والسعة والسرعة وإدخال عدد أدوار صحيح (٢ فأكثر).');
-            return;
-        }
+    if (!brandKey || !capacity || !speed || !floors || floors < 2 || liftsCount < 1) {
+        alert('يرجى اختيار الماركة والسعة والسرعة وإدخال عدد أدوار صحيح (٢ فأكثر) وعدد مصاعد واحد فأكثر.');
+        return;
+    }
+   
+
 
         if (!currentBrandData) {
             await loadBrandData(brandKey);
@@ -885,6 +888,7 @@
 
 </body>
 </html>
+
 
 
 
