@@ -686,12 +686,13 @@
             }
         }
 
-        lines.push('');
-        lines.push(`1) بيانات المصعد:`);
-        lines.push(`- الماركة: ${BRAND_SOURCES[result.brandKey].label}`);
-        lines.push(`- السعة: ${model.capacityKg} kg`);
-        lines.push(`- السرعة: ${model.speedMps} m/s`);
-        lines.push(`- عدد الأدوار: ${result.floors} دور (السعر الأساسي من المصنع يشمل ${model.baseFloors} دور).`);
+       lines.push(`1) بيانات المصعد:`);
+lines.push(`- الماركة: ${BRAND_SOURCES[result.brandKey].label}`);
+lines.push(`- عدد المصاعد بهذه المواصفات: ${result.liftsCount} مصعد/مصاعد.`);
+lines.push(`- السعة: ${model.capacityKg} kg`);
+lines.push(`- السرعة: ${model.speedMps} m/s`);
+lines.push(`- عدد الأدوار: ${result.floors} دور (السعر الأساسي من المصنع يشمل ${model.baseFloors} دور).`);
+
 
         lines.push('');
         lines.push(`2) هيكل التكلفة (${currencyLabel}):`);
@@ -933,6 +934,7 @@ generateQuoteText(result, model, currency);
 
 </body>
 </html>
+
 
 
 
