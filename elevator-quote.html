@@ -353,6 +353,45 @@
         </div>
     </div>
 </div>
+            <!-- بطاقة سجل عروض الأسعار -->
+        <div style="margin-top: 16px;">
+            <div class="card">
+                <div class="card-header">
+                    <h2>سجل عروض الأسعار في هذا الجهاز</h2>
+                    <p>يمكنك حفظ عرض السعر الحالي في السجل ثم تصدير جميع العروض إلى ملف Excel (CSV).</p>
+                </div>
+
+                <div class="actions">
+                    <button type="button" class="btn btn-primary" id="save-quote-btn">
+                        حفظ عرض السعر الحالي في السجل
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="export-quotes-btn">
+                        تصدير السجل إلى Excel (CSV)
+                    </button>
+                </div>
+
+                <div class="table-wrapper">
+                    <table id="quotes-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>رقم عرض السعر</th>
+                                <th>التاريخ</th>
+                                <th>اسم العميل</th>
+                                <th>اسم المشروع</th>
+                                <th>الماركة / السعة / السرعة</th>
+                                <th>عدد المصاعد</th>
+                                <th>الإجمالي شامل الضريبة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- سيتم تعبئته تلقائيًا من JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
 <script>
     // ======================= ثوابت الحسبة (يمكن تعديلها لاحقًا) =======================
     const COST_PARAMS = {
@@ -922,6 +961,7 @@ lines.push(`- سعر البيع قبل الضريبة لإجمالي ${result.li
 
 </body>
 </html>
+
 
 
 
