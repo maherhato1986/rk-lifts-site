@@ -727,7 +727,7 @@ lines.push(`- سعر البيع قبل الضريبة لإجمالي ${result.li
         document.getElementById('quote_text').value = lines.join('\n');
     }
 
-  async function calculateQuote() {
+    async function calculateQuote() {
     const brandKey = document.getElementById('brand').value;
     const capacity = document.getElementById('capacity').value;
     const speed = document.getElementById('speed').value;
@@ -737,142 +737,130 @@ lines.push(`- سعر البيع قبل الضريبة لإجمالي ${result.li
     const vatRate = Number(document.getElementById('vat_rate').value) || 0;
     const includeVat = document.getElementById('include_vat').checked;
 
-    if (!brandKey || !capacity || !speed || !floors || floors < 2 || liftsCount < 1) {
+    if (!brandKey || !capacity || !speed || floors < 2 || liftsCount < 1) {
         alert('يرجى اختيار الماركة والسعة والسرعة وإدخال عدد أدوار صحيح (٢ فأكثر) وعدد مصاعد واحد فأكثر.');
         return;
     }
-   
 
-
-        if (!currentBrandData) {
-            await loadBrandData(brandKey);
-        }
-        if (!currentBrandData) {
-            return;
-        }
-
-        const model = findModel(capacity, speed);
-        if (!model) {
-            alert('لم يتم العثور على توليفة مطابقة لهذه السعة والسرعة في ملف الأسعار.');
-            return;
-        }
-
-        const rate = currentBrandData.exchangeRateToSAR || 1;
-
-        // عدد الأدوار الإضافية عن سعر المصنع
-        const extraFloors = Math.max(0, floors - model.baseFloors);
-
-        // 1) سعر المصنع بالدولار + الزيادة لكل دور إضافي
-        const factoryUsd = model.basePriceUsd + (model.extraPerFloorUsd * extraFloors);
-
-        // تحويل لسعودي
-        const factorySar = factoryUsd * rate;
-
-        // 2) الشحن + التأمين
-        const shippingSar = COST_PARAMS.shippingUsdPerLift * rate;
-        const insuranceSar = factoryUsd * (COST_PARAMS.insurancePercent / 100) * rate;
-        const shippingInsuranceSar = shippingSar + insuranceSar;
-
-        // 3) التخليص + النقل الداخلي
-        const clearanceTransportSar = COST_PARAMS.clearanceSar + COST_PARAMS.inlandTransportSar;
-
-        // 4) التركيب + التشغيل
-        const installationCommissioningSar = COST_PARAMS.installationSar + COST_PARAMS.commissioningSar;
-
-        // 5) التكلفة المباشرة قبل مصاريف التشغيل
-        const directCostSar =
-            factorySar +
-            shippingInsuranceSar +
-            clearanceTransportSar +
-            installationCommissioningSar;
-
-        // 6) مصاريف التشغيل
-        const overheadSar = directCostSar * (COST_PARAMS.overheadPercent / 100);
-
-        // 7) تكلفة قبل الربح
-        const costBeforeProfitSar = directCostSar + overheadSar;
-
-        // 8) هامش الربح
-        const profitSar = costBeforeProfitSar * (COST_PARAMS.profitPercent / 100);
-
-        // 9) سعر البيع قبل الضريبة
-        const totalBeforeVatSar = costBeforeProfitSar + profitSar;
-
-        // تحويل حسب العملة المختارة
-        const divisor = (currency === 'USD') ? rate : 1;
-
-        const factoryCostCurrency = factorySar / divisor;
-        const shippingInsuranceCurrency = shippingInsuranceSar / divisor;
-        const clearanceTransportCurrency = clearanceTransportSar / divisor;
-        const installationCommissioningCurrency = installationCommissioningSar / divisor;
-        const overheadCurrency = overheadSar / divisor;
-        const costBeforeProfitCurrency = costBeforeProfitSar / divisor;
-        const profitCurrency = profitSar / divisor;
-
-      // تحويل حسب العملة المختارة (للمصعد الواحد)
-const divisor = (currency === 'USD') ? rate : 1;
-
-const factoryCostPerLift = factorySar / divisor;
-const shippingInsurancePerLift = shippingInsuranceSar / divisor;
-const clearanceTransportPerLift = clearanceTransportSar / divisor;
-const installationCommissioningPerLift = installationCommissioningSar / divisor;
-const overheadPerLift = overheadSar / divisor;
-const costBeforeProfitPerLift = costBeforeProfitSar / divisor;
-const profitPerLift = profitSar / divisor;
-const totalBeforeVatPerLift = totalBeforeVatSar / divisor;
-
-const vatAmountPerLift = totalBeforeVatPerLift * (vatRate / 100);
-const totalWithVatPerLift = includeVat
-    ? totalBeforeVatPerLift + vatAmountPerLift
-    : totalBeforeVatPerLift;
-
-// مجاميع لعدد المصاعد
-const factoryCostTotal = factoryCostPerLift * liftsCount;
-const shippingInsuranceTotal = shippingInsurancePerLift * liftsCount;
-const clearanceTransportTotal = clearanceTransportPerLift * liftsCount;
-const installationCommissioningTotal = installationCommissioningPerLift * liftsCount;
-const overheadTotal = overheadPerLift * liftsCount;
-const costBeforeProfitTotal = costBeforeProfitPerLift * liftsCount;
-const profitTotal = profitPerLift * liftsCount;
-const totalBeforeVatTotal = totalBeforeVatPerLift * liftsCount;
-const vatAmountTotal = vatAmountPerLift * liftsCount;
-const totalWithVatTotal = totalWithVatPerLift * liftsCount;
-
-const result = {
-    brandKey,
-    floors,
-    liftsCount,
-    // للمصعد الواحد
-    factoryCostPerLift,
-    shippingInsurancePerLift,
-    clearanceTransportPerLift,
-    installationCommissioningPerLift,
-    overheadPerLift,
-    costBeforeProfitPerLift,
-    profitPerLift,
-    totalBeforeVatPerLift,
-    vatAmountPerLift,
-    totalWithVatPerLift,
-    // الإجمالي لكل المصاعد
-    factoryCost: factoryCostTotal,
-    shippingInsuranceCost: shippingInsuranceTotal,
-    clearanceTransportCost: clearanceTransportTotal,
-    installationCommissioningCost: installationCommissioningTotal,
-    overheadCost: overheadTotal,
-    costBeforeProfit: costBeforeProfitTotal,
-    profitAmount: profitTotal,
-    totalBeforeVat: totalBeforeVatTotal,
-    vatRate,
-    vatAmount: vatAmountTotal,
-    totalWithVat: totalWithVatTotal,
-    includeVat
-};
-
-
-
-        generateNumbersView(result, model, currency);
-        generateQuoteText(result, model, currency);
+    // تحميل بيانات الماركة عند الحاجة
+    if (!currentBrandData) {
+        await loadBrandData(brandKey);
     }
+    if (!currentBrandData) return;
+
+    const model = findModel(capacity, speed);
+    if (!model) {
+        alert('لم يتم العثور على توليفة مطابقة لهذه السعة والسرعة في ملف الأسعار.');
+        return;
+    }
+
+    const rate = currentBrandData.exchangeRateToSAR || 1;
+
+    // عدد الأدوار الإضافية عن سعر المصنع
+    const extraFloors = Math.max(0, floors - model.baseFloors);
+
+    // 1) سعر المصنع بالدولار + الزيادة لكل دور إضافي
+    const factoryUsd = model.basePriceUsd + (model.extraPerFloorUsd * extraFloors);
+
+    // تحويل إلى ريال
+    const factorySar = factoryUsd * rate;
+
+    // 2) الشحن + التأمين
+    const shippingSar = COST_PARAMS.shippingUsdPerLift * rate;
+    const insuranceSar = factoryUsd * (COST_PARAMS.insurancePercent / 100) * rate;
+    const shippingInsuranceSar = shippingSar + insuranceSar;
+
+    // 3) التخليص + النقل الداخلي
+    const clearanceTransportSar = COST_PARAMS.clearanceSar + COST_PARAMS.inlandTransportSar;
+
+    // 4) التركيب + التشغيل
+    const installationCommissioningSar =
+        COST_PARAMS.installationSar + COST_PARAMS.commissioningSar;
+
+    // 5) التكلفة المباشرة قبل مصاريف التشغيل
+    const directCostSar =
+        factorySar +
+        shippingInsuranceSar +
+        clearanceTransportSar +
+        installationCommissioningSar;
+
+    // 6) مصاريف التشغيل
+    const overheadSar = directCostSar * (COST_PARAMS.overheadPercent / 100);
+
+    // 7) تكلفة قبل الربح
+    const costBeforeProfitSar = directCostSar + overheadSar;
+
+    // 8) هامش الربح
+    const profitSar = costBeforeProfitSar * (COST_PARAMS.profitPercent / 100);
+
+    // 9) سعر البيع قبل الضريبة (للمصعد الواحد بالريال)
+    const totalBeforeVatSar = costBeforeProfitSar + profitSar;
+
+    // تحويل حسب العملة المختارة (للمصعد الواحد)
+    const divisor = (currency === 'USD') ? rate : 1;
+
+    const factoryCostPerLift = factorySar / divisor;
+    const shippingInsurancePerLift = shippingInsuranceSar / divisor;
+    const clearanceTransportPerLift = clearanceTransportSar / divisor;
+    const installationCommissioningPerLift = installationCommissioningSar / divisor;
+    const overheadPerLift = overheadSar / divisor;
+    const costBeforeProfitPerLift = costBeforeProfitSar / divisor;
+    const profitPerLift = profitSar / divisor;
+    const totalBeforeVatPerLift = totalBeforeVatSar / divisor;
+
+    const vatAmountPerLift = totalBeforeVatPerLift * (vatRate / 100);
+    const totalWithVatPerLift = includeVat
+        ? totalBeforeVatPerLift + vatAmountPerLift
+        : totalBeforeVatPerLift;
+
+    // مجاميع لعدد المصاعد
+    const factoryCostTotal = factoryCostPerLift * liftsCount;
+    const shippingInsuranceTotal = shippingInsurancePerLift * liftsCount;
+    const clearanceTransportTotal = clearanceTransportPerLift * liftsCount;
+    const installationCommissioningTotal = installationCommissioningPerLift * liftsCount;
+    const overheadTotal = overheadPerLift * liftsCount;
+    const costBeforeProfitTotal = costBeforeProfitPerLift * liftsCount;
+    const profitTotal = profitPerLift * liftsCount;
+    const totalBeforeVatTotal = totalBeforeVatPerLift * liftsCount;
+    const vatAmountTotal = vatAmountPerLift * liftsCount;
+    const totalWithVatTotal = totalWithVatPerLift * liftsCount;
+
+    const result = {
+        brandKey,
+        floors,
+        liftsCount,
+        // لكل مصعد
+        factoryCostPerLift,
+        shippingInsurancePerLift,
+        clearanceTransportPerLift,
+        installationCommissioningPerLift,
+        overheadPerLift,
+        costBeforeProfitPerLift,
+        profitPerLift,
+        totalBeforeVatPerLift,
+        vatAmountPerLift,
+        totalWithVatPerLift,
+        // الإجمالي
+        factoryCost: factoryCostTotal,
+        shippingInsuranceCost: shippingInsuranceTotal,
+        clearanceTransportCost: clearanceTransportTotal,
+        installationCommissioningCost: installationCommissioningTotal,
+        overheadCost: overheadTotal,
+        costBeforeProfit: costBeforeProfitTotal,
+        profitAmount: profitTotal,
+        totalBeforeVat: totalBeforeVatTotal,
+        vatRate,
+        vatAmount: vatAmountTotal,
+        totalWithVat: totalWithVatTotal,
+        includeVat
+    };
+
+    generateNumbersView(result, model, currency);
+    generateQuoteText(result, model, currency);
+}
+
+
+ 
 
     // ========================== أحداث واجهة المستخدم ==========================
     document.getElementById('brand').addEventListener('change', async function () {
@@ -934,6 +922,7 @@ const result = {
 
 </body>
 </html>
+
 
 
 
