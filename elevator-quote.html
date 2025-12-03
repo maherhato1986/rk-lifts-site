@@ -24,6 +24,31 @@
             grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
             gap: 16px;
         }
+        .table-wrapper {
+    margin-top: 10px;
+    overflow-x: auto;
+}
+
+#quotes-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+#quotes-table th,
+#quotes-table td {
+    padding: 6px 8px;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: right;
+    white-space: nowrap;
+}
+
+#quotes-table th {
+    background: #f9fafb;
+    font-weight: 600;
+    color: #374151;
+}
+
 
         .card {
             background: #ffffff;
@@ -961,6 +986,7 @@ lines.push(`- سعر البيع قبل الضريبة لإجمالي ${result.li
 
 </body>
 </html>
+
 
 
 
