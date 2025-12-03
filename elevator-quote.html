@@ -1026,6 +1026,25 @@
             });
         }
 
+        document.getElementById("printOfferButton").addEventListener("click", function () {
+    // لو حاب تتأكد إنه في عرض مخزَّن قبل الانتقال:
+    const saved = JSON.parse(localStorage.getItem(QUOTES_STORAGE_KEY) || "[]");
+    if (!saved.length) {
+        alert("لا يوجد أي عرض سعر محفوظ في السجل.");
+        return;
+    }
+
+    // آخر عرض مخزَّن سيكون هو الحالي
+    const lastQuote = saved[saved.length - 1];
+
+    // خزّن رقم هذا العرض ليتم اختياره تلقائيًا في صفحة الطباعة
+    localStorage.setItem(CURRENT_QUOTE_SELECTION_KEY, lastQuote.quoteNumber);
+
+    // افتح صفحة نموذج عرض السعر الرسمي
+    window.open("elevator-quote-offer.html", "_blank");
+});
+
+
         // رسالة أولية في صندوق الأرقام
         document.getElementById('numbers-wrapper').innerHTML =
             '<div class="hint">ابدأ باختيار الماركة ثم بقية البيانات لحساب عرض السعر.</div>';
@@ -1183,6 +1202,7 @@
 
 </body>
 </html>
+
 
 
 
