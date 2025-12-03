@@ -1055,6 +1055,9 @@
                 '<div class="hint">اختر الماركة والسعة والسرعة ثم أدخل عدد الأدوار.</div>';
             document.getElementById('quote_text').value = '';
             populateCustomerDropdown();
+                    // تحميل عروض الأسعار الموجودة مسبقًا في الجدول
+        renderQuotesTable();
+
             selectedCustomer = null;
             if (customerSelect) customerSelect.value = '';
         });
@@ -1075,6 +1078,7 @@
 
 </body>
 </html>
+
 
 
 
