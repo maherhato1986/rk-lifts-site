@@ -505,7 +505,9 @@
     }
 
     function saveQuotesToStorage(quotes) {
-        localStorage.setItem(QUOTES_STORAGE_KEY, JSON.stringify(quotes));
+           // بعد حفظ السجل:
+    localStorage.setItem(CURRENT_QUOTE_SELECTION_KEY, currentQuote.quoteNumber);
+
     }
 
     function renderQuotesTable() {
@@ -1177,6 +1179,7 @@
 
 </body>
 </html>
+
 
 
 
