@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <title>إضافة / إدارة بيانات العميل</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #f3f4f6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .page-wrapper {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 16px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+            padding: 20px 22px;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+        }
+
+        .card-header h1 {
+            margin: 0;
+            font-size: 22px;
+            color: #111827;
+        }
+
+        .card-header p {
+            margin: 4px 0 0;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 14px 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="email"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.25);
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .hint {
+            font-size: 11px;
+            color: #9ca3af;
+            margin-top: 2px;
+        }
+
+        .section-title {
+            margin: 12px 0 4px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .actions {
+            margin-top: 18px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            border: none;
+            padding: 8px 18px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.05s;
+        }
+
+        .btn-primary {
+            background: #059669;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: #047857;
+            box-shadow: 0 4px 10px rgba(4, 120, 87, 0.25);
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #111827;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        .btn-warning {
+            background: #fbbf24;
+            color: #111827;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: #ffffff;
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+            box-shadow: none;
+        }
+
+        .customers-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+
+        .customers-table th,
+        .customers-table td {
+            border: 1px solid #e5e7eb;
+            padding: 6px 8px;
+            text-align: center;
+        }
+
+        .customers-table th {
+            background: #f9fafb;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+            background: #eef2ff;
+            color: #3730a3;
+        }
+    </style>
+</head>
+<body>
+<div class="page-wrapper">
+
+    <!-- نموذج إضافة / تعديل عميل -->
+    <form id="customer-form">
+        <div class="card">
+            <div class="card-header">
+                <h1>إضافة / تعديل بيانات العميل</h1>
+                <p>سيتم حفظ بيانات العملاء في المتصفح، مع إمكانية تصديرها إلى ملف Excel (CSV) عند الحاجة.</p>
+            </div>
+
+            <!-- حقل مخفي لمعرف العميل عند التعديل -->
+            <input type="hidden" id="customer_index" />
+
+            <div class="section-title">١. بيانات التعريف بالعميل</div>
+            <div class="form-grid">
+                <div>
+                    <label for="customer_type">نوع العميل</label>
+                    <select id="customer_type" required>
+                        <option value="">اختر نوع العميل...</option>
+                        <option value="company">شركة / مؤسسة (السادة)</option>
+                        <option value="individual">فرد (السيد)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="customer_name">اسم العميل (كما سيظهر في العقد)</label>
+                    <input type="text" id="customer_name" required />
+                    <div class="hint">مثال: السادة / شركة غيتس ديفيلوبمنت أو السيد / محمد أحمد</div>
+                </div>
+
+                <div>
+                    <label for="contact_person">اسم الشخص المخوّل بالتوقيع</label>
+                    <input type="text" id="contact_person" />
+                </div>
+            </div>
+
+            <div class="section-title">٢. الأرقام الرسمية</div>
+            <div class="form-grid">
+                <div>
+                    <label for="id_number">رقم الهوية الوطنية / الإقامة</label>
+                    <input type="text" id="id_number" />
+                </div>
+
+                <div>
+                    <label for="cr_number">رقم السجل التجاري</label>
+                    <input type="text" id="cr_number" />
+                </div>
+
+                <div>
+                    <label for="tax_number">الرقم الضريبي</label>
+                    <input type="text" id="tax_number" />
+                </div>
+            </div>
+
+            <div class="section-title">٣. العنوان</div>
+            <div class="form-grid">
+                <div>
+                    <label for="city">المدينة</label>
+                    <input type="text" id="city" required />
+                </div>
+
+                <div>
+                    <label for="district">الحي</label>
+                    <input type="text" id="district" />
+                </div>
+
+                <div>
+                    <label for="street">الشارع</label>
+                    <input type="text" id="street" />
+                </div>
+
+                <div>
+                    <label for="building_no">رقم المبنى</label>
+                    <input type="text" id="building_no" />
+                </div>
+
+                <div>
+                    <label for="postal_code">الرمز البريدي</label>
+                    <input type="text" id="postal_code" />
+                </div>
+
+                <div>
+                    <label for="full_address">وصف العنوان المختصر</label>
+                    <input type="text" id="full_address" />
+                </div>
+            </div>
+
+            <div class="section-title">٤. بيانات الاتصال</div>
+            <div class="form-grid">
+                <div>
+                    <label for="mobile">جوال رقم</label>
+                    <input type="text" id="mobile" required />
+                </div>
+
+                <div>
+                    <label for="phone">هاتف ثابت</label>
+                    <input type="text" id="phone" />
+                </div>
+
+                <div>
+                    <label for="email">البريد الإلكتروني</label>
+                    <input type="email" id="email" />
+                </div>
+
+                <div>
+                    <label for="preferred_contact">وسيلة التواصل المفضلة</label>
+                    <select id="preferred_contact">
+                        <option value="">اختر...</option>
+                        <option value="mobile">الجوال</option>
+                        <option value="email">البريد الإلكتروني</option>
+                        <option value="whatsapp">واتساب</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section-title">٥. ملاحظات داخلية</div>
+            <div class="form-grid">
+                <div style="grid-column: 1 / -1;">
+                    <textarea id="notes" placeholder="ملاحظات لا تظهر في العقد..."></textarea>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button type="submit" class="btn btn-primary">حفظ / تحديث بيانات العميل</button>
+                <button type="reset" class="btn btn-secondary" id="reset-btn">تفريغ النموذج</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- قائمة العملاء المخزنين -->
+    <div class="card">
+        <div class="card-header">
+            <h1>قائمة العملاء المخزّنين في هذا الجهاز</h1>
+            <p>يمكنك تصدير هذه القائمة إلى ملف Excel (CSV) في أي وقت.</p>
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-warning" id="export-btn">تصدير إلى Excel (CSV)</button>
+            <button class="btn btn-danger" id="clear-all-btn">حذف جميع العملاء من هذا الجهاز</button>
+        </div>
+
+        <table class="customers-table" id="customers-table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>الاسم</th>
+                <th>المدينة</th>
+                <th>الجوال</th>
+                <th>نوع العميل</th>
+                <th>تعديل</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- تُملأ ديناميكياً -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const STORAGE_KEY = 'rkl_customers';
+
+    function loadCustomers() {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    }
+
+    function saveCustomers(list) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    }
+
+    function renderTable() {
+        const customers = loadCustomers();
+        const tbody = document.querySelector('#customers-table tbody');
+        tbody.innerHTML = '';
+
+        customers.forEach((c, index) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${c.customer_name || ''}</td>
+                <td>${c.city || ''}</td>
+                <td>${c.mobile || ''}</td>
+                <td><span class="badge">${c.customer_type === 'company' ? 'شركة' : 'فرد'}</span></td>
+                <td><button class="btn btn-secondary btn-sm" data-index="${index}">تعديل</button></td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function fillFormFromCustomer(c, index) {
+        document.getElementById('customer_index').value = index;
+        document.getElementById('customer_type').value = c.customer_type || '';
+        document.getElementById('customer_name').value = c.customer_name || '';
+        document.getElementById('contact_person').value = c.contact_person || '';
+        document.getElementById('id_number').value = c.id_number || '';
+        document.getElementById('cr_number').value = c.cr_number || '';
+        document.getElementById('tax_number').value = c.tax_number || '';
+        document.getElementById('city').value = c.city || '';
+        document.getElementById('district').value = c.district || '';
+        document.getElementById('street').value = c.street || '';
+        document.getElementById('building_no').value = c.building_no || '';
+        document.getElementById('postal_code').value = c.postal_code || '';
+        document.getElementById('full_address').value = c.full_address || '';
+        document.getElementById('mobile').value = c.mobile || '';
+        document.getElementById('phone').value = c.phone || '';
+        document.getElementById('email').value = c.email || '';
+        document.getElementById('preferred_contact').value = c.preferred_contact || '';
+        document.getElementById('notes').value = c.notes || '';
+    }
+
+    // حفظ / تحديث عميل
+    document.getElementById('customer-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const idx = document.getElementById('customer_index').value;
+        const customers = loadCustomers();
+
+        const customer = {
+            customer_type: document.getElementById('customer_type').value,
+            customer_name: document.getElementById('customer_name').value,
+            contact_person: document.getElementById('contact_person').value,
+            id_number: document.getElementById('id_number').value,
+            cr_number: document.getElementById('cr_number').value,
+            tax_number: document.getElementById('tax_number').value,
+            city: document.getElementById('city').value,
+            district: document.getElementById('district').value,
+            street: document.getElementById('street').value,
+            building_no: document.getElementById('building_no').value,
+            postal_code: document.getElementById('postal_code').value,
+            full_address: document.getElementById('full_address').value,
+            mobile: document.getElementById('mobile').value,
+            phone: document.getElementById('phone').value,
+            email: document.getElementById('email').value,
+            preferred_contact: document.getElementById('preferred_contact').value,
+            notes: document.getElementById('notes').value
+        };
+
+        if (idx === '') {
+            customers.push(customer);         // إضافة عميل جديد
+        } else {
+            customers[Number(idx)] = customer; // تحديث عميل موجود
+        }
+
+        saveCustomers(customers);
+        renderTable();
+        this.reset();
+        document.getElementById('customer_index').value = '';
+        alert('تم حفظ بيانات العميل في هذا الجهاز.');
+    });
+
+    // زر تفريغ النموذج (إلغاء التعديل)
+    document.getElementById('reset-btn').addEventListener('click', function () {
+        document.getElementById('customer_index').value = '';
+    });
+
+    // تعديل عميل من الجدول
+    document.querySelector('#customers-table').addEventListener('click', function (e) {
+        if (e.target.matches('button[data-index]')) {
+            const index = Number(e.target.getAttribute('data-index'));
+            const customers = loadCustomers();
+            fillFormFromCustomer(customers[index], index);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    });
+
+    // تصدير إلى CSV (يُفتح في Excel)
+    document.getElementById('export-btn').addEventListener('click', function () {
+        const customers = loadCustomers();
+        if (!customers.length) {
+            alert('لا توجد بيانات عملاء للتصدير.');
+            return;
+        }
+
+        const header = [
+            'نوع العميل',
+            'اسم العميل',
+            'اسم المخول',
+            'رقم الهوية',
+            'السجل التجاري',
+            'الرقم الضريبي',
+            'المدينة',
+            'الحي',
+            'الشارع',
+            'رقم المبنى',
+            'الرمز البريدي',
+            'العنوان المختصر',
+            'الجوال',
+            'الهاتف',
+            'البريد الإلكتروني',
+            'وسيلة التواصل المفضلة',
+            'ملاحظات'
+        ];
+
+        const rows = customers.map(c => [
+            c.customer_type,
+            c.customer_name,
+            c.contact_person,
+            c.id_number,
+            c.cr_number,
+            c.tax_number,
+            c.city,
+            c.district,
+            c.street,
+            c.building_no,
+            c.postal_code,
+            c.full_address,
+            c.mobile,
+            c.phone,
+            c.email,
+            c.preferred_contact,
+            (c.notes || '').replace(/\r?\n/g, ' ')
+        ]);
+
+        const csvContent = [header, ...rows]
+            .map(row => row
+                .map(value => `"${(value ?? '').toString().replace(/"/g, '""')}"`)
+                .join(',')
+            )
+            .join('\r\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        const today = new Date().toISOString().slice(0, 10);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `rkl_customers_${today}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    });
+
+    // حذف جميع العملاء من هذا المتصفح
+    document.getElementById('clear-all-btn').addEventListener('click', functio
