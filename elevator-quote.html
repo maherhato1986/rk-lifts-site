@@ -342,8 +342,19 @@
     </div>
 </div>
 <script>
-    // ============= ربط واجهة عرض السعر ببيانات العملاء المخزنة محليًا =============
-    // نفس المفتاح المستخدم في customer-manager.html
+    // ======================= ثوابت الحسبة (يمكن تعديلها لاحقًا) =======================
+    const COST_PARAMS = {
+        shippingUsdPerLift: 500,     // تكلفة الشحن من الصين لكل مصعد (دولار)
+        insurancePercent: 1,         // نسبة التأمين من سعر المصنع %
+        clearanceSar: 1200,          // تخليص جمركي في السعودية (ريال)
+        inlandTransportSar: 1500,    // نقل من الميناء إلى الرياض (ريال)
+        installationSar: 7500,       // أجور تركيب المصعد (ريال)
+        commissioningSar: 1500,      // أجور التشغيل والاختبارات (ريال)
+        overheadPercent: 10,         // مصاريف تشغيل RKL %
+        profitPercent: 25            // هامش الربح %
+    };
+
+    // ========================== ربط واجهة عرض السعر ببيانات العملاء ==========================
     const CUSTOMER_STORAGE_KEY = 'rkl_customers';
 
     let currentBrandData = null;
@@ -364,7 +375,6 @@
 
         const customers = loadStoredCustomers();
 
-        // تفريغ القائمة مع خيار افتراضي
         select.innerHTML = '<option value="">— اختر عميلًا (اختياري) —</option>';
 
         customers.forEach((c, index) => {
@@ -390,13 +400,11 @@
     function applyCustomerToForm(customer) {
         selectedCustomer = customer || null;
 
-        // تعبئة الحقول الأساسية
         const nameInput = document.getElementById('customer_name');
         const projectInput = document.getElementById('project_name');
 
         if (customer) {
             if (nameInput) nameInput.value = customer.customer_name || '';
-            // لو عندك مشروع باسم المدينة أو الوصف تقدر تستخدمه كنقطة بداية نصية
             if (projectInput && !projectInput.value) {
                 const city = customer.city ? ` - ${customer.city}` : '';
                 projectInput.value = `مشروع مصاعد للعميل ${customer.customer_name || ''}${city}`;
@@ -404,7 +412,6 @@
         }
     }
 
-    // عند تغيير العميل من القائمة المنسدلة
     document.addEventListener('DOMContentLoaded', () => {
         populateCustomerDropdown();
 
@@ -425,7 +432,7 @@
         }
     });
 
-    // ========================== منطق أسعار المصاعد (كما كان) ==========================
+    // ========================== تعريف الماركات وملفات الأسعار ==========================
     const BRAND_SOURCES = {
         'FUJI_MRL': {
             label: 'FUJI – MRL Passenger',
@@ -527,39 +534,60 @@
 
     function generateNumbersView(result, model, currency) {
         const wrapper = document.getElementById('numbers-wrapper');
-        const rate = currentBrandData?.exchangeRateToSAR || 1;
-
-        const baseUsd = model.basePriceUsd;
-        const extraUsd = model.extraPerFloorUsd;
-        const baseSar = baseUsd * rate;
-        const extraSar = extraUsd * rate;
-
-        const baseLabel = currency === 'USD' ? baseUsd : baseSar;
-        const extraLabel = currency === 'USD' ? extraUsd : extraSar;
 
         wrapper.innerHTML = `
             <div class="numbers-grid">
                 <div class="number-box">
-                    <div class="label">السعر الأساسي (${model.baseFloors} دور)</div>
+                    <div class="label">سعر المصنع (FOB)</div>
                     <div class="value">
-                        ${formatCurrency(baseLabel, currency)}
+                        ${formatCurrency(result.factoryCost, currency)}
                     </div>
                 </div>
 
                 <div class="number-box">
-                    <div class="label">عدد الأدوار الإضافية</div>
-                    <div class="value">${result.extraFloors}</div>
-                </div>
-
-                <div class="number-box">
-                    <div class="label">قيمة الزيادة عن الأدوار الإضافية</div>
+                    <div class="label">الشحن + التأمين</div>
                     <div class="value">
-                        ${formatCurrency(result.extraPrice, currency)}
+                        ${formatCurrency(result.shippingInsuranceCost, currency)}
                     </div>
                 </div>
 
                 <div class="number-box">
-                    <div class="label">المجموع قبل الضريبة</div>
+                    <div class="label">التخليص + النقل الداخلي</div>
+                    <div class="value">
+                        ${formatCurrency(result.clearanceTransportCost, currency)}
+                    </div>
+                </div>
+
+                <div class="number-box">
+                    <div class="label">التركيب + التشغيل</div>
+                    <div class="value">
+                        ${formatCurrency(result.installationCommissioningCost, currency)}
+                    </div>
+                </div>
+
+                <div class="number-box">
+                    <div class="label">مصاريف تشغيل (${result.overheadPercent}%)</div>
+                    <div class="value">
+                        ${formatCurrency(result.overheadCost, currency)}
+                    </div>
+                </div>
+
+                <div class="number-box">
+                    <div class="label">التكلفة الكلية قبل الربح</div>
+                    <div class="value">
+                        ${formatCurrency(result.costBeforeProfit, currency)}
+                    </div>
+                </div>
+
+                <div class="number-box">
+                    <div class="label">هامش الربح (${result.profitPercent}%)</div>
+                    <div class="value">
+                        ${formatCurrency(result.profitAmount, currency)}
+                    </div>
+                </div>
+
+                <div class="number-box">
+                    <div class="label">سعر البيع قبل الضريبة</div>
                     <div class="value">
                         ${formatCurrency(result.totalBeforeVat, currency)}
                     </div>
@@ -582,7 +610,7 @@
 
             <div style="margin-top: 10px; font-size: 12px; color:#6b7280;">
                 <span class="badge">${BRAND_SOURCES[result.brandKey].label}</span>
-                سعة ${model.capacityKg} kg – سرعة ${model.speedMps} m/s – نظام ${model.machineType || 'N/A'}
+                سعة ${model.capacityKg} kg – سرعة ${model.speedMps} m/s – عدد الأدوار: ${result.floors} (الأساسي ${model.baseFloors} دور).
             </div>
         `;
     }
@@ -592,8 +620,6 @@
         const projectName = document.getElementById('project_name').value.trim();
 
         const currencyLabel = currency === 'USD' ? 'دولار أمريكي' : 'ريال سعودي';
-
-        // نحدد اسم العميل النهائي: إمّا من selectedCustomer أو من الحقل اليدوي
         const finalCustomerName = selectedCustomer?.customer_name || manualCustomerName || 'العميل الكريم';
 
         const lines = [];
@@ -608,7 +634,6 @@
         lines.push('');
         lines.push(`نود أن نشكركم على تواصلكم مع مؤسسة آر كي ال RKL، ويسرّنا أن نقدّم لكم عرض السعر التالي:`);
 
-        // بيانات إضافية من سجل العميل إن توفرت
         if (selectedCustomer) {
             lines.push('');
             lines.push(`بيانات العميل المسجّلة لدينا:`);
@@ -648,22 +673,29 @@
         lines.push(`- الماركة: ${BRAND_SOURCES[result.brandKey].label}`);
         lines.push(`- السعة: ${model.capacityKg} kg`);
         lines.push(`- السرعة: ${model.speedMps} m/s`);
-        lines.push(`- عدد الأدوار: ${result.floors} دور (السعر الأساسي يشمل ${model.baseFloors} دور).`);
+        lines.push(`- عدد الأدوار: ${result.floors} دور (السعر الأساسي من المصنع يشمل ${model.baseFloors} دور).`);
 
         lines.push('');
-        lines.push(`2) الأسعار (${currencyLabel}):`);
-        lines.push(`- السعر الأساسي (${model.baseFloors} دور): ${formatCurrency(result.basePrice, currency)}`);
-        lines.push(`- الزيادة عن الأدوار الإضافية (${result.extraFloors} دور): ${formatCurrency(result.extraPrice, currency)}`);
-        lines.push(`- المجموع قبل الضريبة: ${formatCurrency(result.totalBeforeVat, currency)}`);
+        lines.push(`2) هيكل التكلفة (${currencyLabel}):`);
+        lines.push(`- سعر المصنع (FOB): ${formatCurrency(result.factoryCost, currency)}`);
+        lines.push(`- الشحن والتأمين: ${formatCurrency(result.shippingInsuranceCost, currency)}`);
+        lines.push(`- التخليص الجمركي + النقل الداخلي: ${formatCurrency(result.clearanceTransportCost, currency)}`);
+        lines.push(`- أجور التركيب والتشغيل: ${formatCurrency(result.installationCommissioningCost, currency)}`);
+        lines.push(`- مصاريف تشغيل (${result.overheadPercent}%): ${formatCurrency(result.overheadCost, currency)}`);
+        lines.push(`- التكلفة الكلية قبل الربح: ${formatCurrency(result.costBeforeProfit, currency)}`);
+        lines.push(`- هامش الربح (${result.profitPercent}%): ${formatCurrency(result.profitAmount, currency)}`);
+
+        lines.push('');
+        lines.push(`3) الأسعار النهائية (${currencyLabel}):`);
+        lines.push(`- سعر البيع قبل الضريبة: ${formatCurrency(result.totalBeforeVat, currency)}`);
         lines.push(`- قيمة ضريبة القيمة المضافة (${result.vatRate}%): ${formatCurrency(result.vatAmount, currency)}`);
         lines.push(`- الإجمالي ${result.includeVat ? 'شامل' : 'بدون'} ضريبة القيمة المضافة: ${formatCurrency(result.totalWithVat, currency)}.`);
 
         lines.push('');
-        lines.push(`*ملاحظات اختيارية:*`);
-        lines.push(`- بلد المنشأ: ${model.notes || 'حسب عرض المصنع'}`);
+        lines.push(`*ملاحظات:*`);
+        lines.push(`- بلد المنشأ: ${model.notes || 'حسب عرض المصنع'}.`);
         lines.push(`- نوع الماكينة: ${model.machineType || 'حسب المواصفات'} – نوع الأبواب: ${model.doorType || 'حسب العرض الفني'}.`);
         lines.push(`- الأسعار لا تشمل الأعمال المدنية والكهربائية إلا إذا نُصّ على خلاف ذلك في العرض الفني التفصيلي.`);
-
         lines.push('');
         lines.push(`هذا العرض مبدئي، ويمكن تعديله بناءً على المخططات النهائية ومتطلبات الاستشاري وشروط المشروع.`);
         lines.push('');
@@ -702,34 +734,78 @@
 
         const rate = currentBrandData.exchangeRateToSAR || 1;
 
+        // عدد الأدوار الإضافية عن سعر المصنع
         const extraFloors = Math.max(0, floors - model.baseFloors);
-        const baseUsd = model.basePriceUsd;
-        const extraUsd = model.extraPerFloorUsd * extraFloors;
 
-        let basePrice, extraPrice;
+        // 1) سعر المصنع بالدولار + الزيادة لكل دور إضافي
+        const factoryUsd = model.basePriceUsd + (model.extraPerFloorUsd * extraFloors);
 
-        if (currency === 'USD') {
-            basePrice = baseUsd;
-            extraPrice = extraUsd;
-        } else {
-            basePrice = baseUsd * rate;
-            extraPrice = extraUsd * rate;
-        }
+        // تحويل لسعودي
+        const factorySar = factoryUsd * rate;
 
-        const totalBeforeVat = basePrice + extraPrice;
-        const vatAmount = (totalBeforeVat * vatRate) / 100;
-        const totalWithVat = includeVat ? (totalBeforeVat + vatAmount) : totalBeforeVat;
+        // 2) الشحن + التأمين
+        const shippingSar = COST_PARAMS.shippingUsdPerLift * rate;
+        const insuranceSar = factoryUsd * (COST_PARAMS.insurancePercent / 100) * rate;
+        const shippingInsuranceSar = shippingSar + insuranceSar;
+
+        // 3) التخليص + النقل الداخلي
+        const clearanceTransportSar = COST_PARAMS.clearanceSar + COST_PARAMS.inlandTransportSar;
+
+        // 4) التركيب + التشغيل
+        const installationCommissioningSar = COST_PARAMS.installationSar + COST_PARAMS.commissioningSar;
+
+        // 5) التكلفة المباشرة قبل مصاريف التشغيل
+        const directCostSar =
+            factorySar +
+            shippingInsuranceSar +
+            clearanceTransportSar +
+            installationCommissioningSar;
+
+        // 6) مصاريف التشغيل
+        const overheadSar = directCostSar * (COST_PARAMS.overheadPercent / 100);
+
+        // 7) تكلفة قبل الربح
+        const costBeforeProfitSar = directCostSar + overheadSar;
+
+        // 8) هامش الربح
+        const profitSar = costBeforeProfitSar * (COST_PARAMS.profitPercent / 100);
+
+        // 9) سعر البيع قبل الضريبة
+        const totalBeforeVatSar = costBeforeProfitSar + profitSar;
+
+        // تحويل حسب العملة المختارة
+        const divisor = (currency === 'USD') ? rate : 1;
+
+        const factoryCostCurrency = factorySar / divisor;
+        const shippingInsuranceCurrency = shippingInsuranceSar / divisor;
+        const clearanceTransportCurrency = clearanceTransportSar / divisor;
+        const installationCommissioningCurrency = installationCommissioningSar / divisor;
+        const overheadCurrency = overheadSar / divisor;
+        const costBeforeProfitCurrency = costBeforeProfitSar / divisor;
+        const profitCurrency = profitSar / divisor;
+        const totalBeforeVatCurrency = totalBeforeVatSar / divisor;
+
+        const vatAmountCurrency = totalBeforeVatCurrency * (vatRate / 100);
+        const totalWithVatCurrency = includeVat
+            ? totalBeforeVatCurrency + vatAmountCurrency
+            : totalBeforeVatCurrency;
 
         const result = {
             brandKey,
-            basePrice,
-            extraPrice,
-            extraFloors,
             floors,
+            factoryCost: factoryCostCurrency,
+            shippingInsuranceCost: shippingInsuranceCurrency,
+            clearanceTransportCost: clearanceTransportCurrency,
+            installationCommissioningCost: installationCommissioningCurrency,
+            overheadCost: overheadCurrency,
+            overheadPercent: COST_PARAMS.overheadPercent,
+            costBeforeProfit: costBeforeProfitCurrency,
+            profitAmount: profitCurrency,
+            profitPercent: COST_PARAMS.profitPercent,
+            totalBeforeVat: totalBeforeVatCurrency,
             vatRate,
-            vatAmount,
-            totalBeforeVat,
-            totalWithVat,
+            vatAmount: vatAmountCurrency,
+            totalWithVat: totalWithVatCurrency,
             includeVat
         };
 
@@ -737,7 +813,7 @@
         generateQuoteText(result, model, currency);
     }
 
-    // أحداث واجهة المستخدم
+    // ========================== أحداث واجهة المستخدم ==========================
     document.getElementById('brand').addEventListener('change', async function () {
         const brandKey = this.value;
         document.getElementById('capacity').disabled = true;
@@ -773,7 +849,6 @@
         document.getElementById('numbers-wrapper').innerHTML =
             '<div class="hint">اختر الماركة والسعة والسرعة ثم أدخل عدد الأدوار.</div>';
         document.getElementById('quote_text').value = '';
-        // إعادة تهيئة قائمة العملاء في حال تغيّر شيء
         populateCustomerDropdown();
         selectedCustomer = null;
         const customerSelect = document.getElementById('customer_select');
@@ -791,12 +866,13 @@
         alert('تم نسخ نص عرض السعر.');
     });
 
-    // تهيئة أولية لرسالة الأرقام
+    // رسالة أولية
     document.getElementById('numbers-wrapper').innerHTML =
         '<div class="hint">ابدأ باختيار الماركة ثم بقية البيانات لحساب عرض السعر.</div>';
 </script>
 
 </body>
 </html>
+
 
 
