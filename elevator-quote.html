@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <title>نموذج عرض سعر مصعد</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #f3f4f6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .page-wrapper {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 16px;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+            gap: 16px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+            padding: 18px 20px;
+            margin-bottom: 16px;
+        }
+
+        .card-header {
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 12px;
+            padding-bottom: 6px;
+        }
+
+        .card-header h1,
+        .card-header h2 {
+            margin: 0;
+            color: #111827;
+        }
+
+        .card-header h1 {
+            font-size: 22px;
+        }
+
+        .card-header h2 {
+            font-size: 18px;
+        }
+
+        .card-header p {
+            margin: 4px 0 0;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 12px 14px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.25);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .hint {
+            font-size: 11px;
+            color: #9ca3af;
+            margin-top: 2px;
+        }
+
+        .section-title {
+            margin: 10px 0 4px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .inline {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+        }
+
+        .inline input[type="checkbox"] {
+            width: auto;
+        }
+
+        .numbers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .number-box {
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            padding: 8px 10px;
+            background: #f9fafb;
+        }
+
+        .number-box .label {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 4px;
+        }
+
+        .number-box .value {
+            font-weight: 600;
+            font-size: 15px;
+            color: #111827;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+            background: #ecfdf5;
+            color: #166534;
+            margin-right: 6px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            border: none;
+            padding: 7px 16px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.05s;
+        }
+
+        .btn-primary {
+            background: #059669;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: #047857;
+            box-shadow: 0 4px 10px rgba(4, 120, 87, 0.25);
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #111827;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+            box-shadow: none;
+        }
+
+        .actions {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 900px) {
+            .layout {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="page-wrapper">
+
+    <div class="layout">
+        <!-- بطاقة إدخال بيانات العرض -->
+        <div>
+            <div class="card">
+                <div class="card-header">
+                    <h1>نموذج عرض سعر مصعد</h1>
+                    <p>واجهة عامة لحساب عرض سعر بناءً على بيانات الماركة والسعة والسرعة وعدد الأدوار (FUJI MRL كمرحلة أولى).</p>
+                </div>
+
+                <form id="quote-form">
+                    <div class="section-title">١. بيانات عامة</div>
+                    <div class="form-grid">
+                        <div>
+                            <label for="customer_name">اسم العميل (اختياري)</label>
+                            <input type="text" id="customer_name" placeholder="مثال: السادة / شركة ...." />
+                        </div>
+
+                        <div>
+                            <label for="project_name">اسم المشروع (اختياري)</label>
+                            <input type="text" id="project_name" placeholder="مثال: مشروع مبنى المكاتب - الرياض" />
+                        </div>
+                    </div>
+
+                    <div class="section-title">٢. اختيار نوع المصعد</div>
+                    <div class="form-grid">
+                        <div>
+                            <label for="brand">
+                                الماركة / نوع النظام
+                            </label>
+                            <select id="brand" required>
+                                <option value="">اختر الماركة...</option>
+                                <option value="FUJI_MRL">FUJI – MRL Passenger (من الصين)</option>
+                                <!-- لاحقًا: نضيف خيارات أخرى مثل VERTILIFT, FUJI_HOME, Local Assembly ... -->
+                            </select>
+                            <div class="hint">حاليًا المربوط فعليًا هو FUJI – MRL، والباقي نضيفه لاحقًا بنفس الفكرة.</div>
+                        </div>
+
+                        <div>
+                            <label for="capacity">السعة (kg)</label>
+                            <select id="capacity" required disabled>
+                                <option value="">اختر السعة...</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="speed">السرعة (m/s)</label>
+                            <select id="speed" required disabled>
+                                <option value="">اختر السرعة...</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="floors">عدد الأدوار (Stops)</label>
+                            <input type="number" id="floors" min="2" value="2" required />
+                            <div class="hint">السعر الأساسي يشمل عادةً دورين. الزيادة تُحسب لكل دور إضافي.</div>
+                        </div>
+                    </div>
+
+                    <div class="section-title">٣. إعدادات التسعير</div>
+                    <div class="form-grid">
+                        <div>
+                            <label for="currency">العملة الأساسية للحساب</label>
+                            <select id="currency">
+                                <option value="SAR">ريال سعودي (SAR)</option>
+                                <option value="USD">دولار أمريكي (USD)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="vat_rate">نسبة الضريبة %</label>
+                            <input type="number" id="vat_rate" value="15" step="0.1" />
+                        </div>
+
+                        <div>
+                            <label>خيارات إضافية</label>
+                            <div class="inline">
+                                <input type="checkbox" id="include_vat" checked />
+                                <label for="include_vat" style="margin: 0;">عرض السعر شامل الضريبة</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <button type="button" class="btn btn-primary" id="calc-btn">حساب عرض السعر</button>
+                        <button type="reset" class="btn btn-secondary" id="reset-btn">إعادة تعيين</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- بطاقة الأرقام التفصيلية -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>النتائج الرقمية</h2>
+                </div>
+
+                <div id="numbers-wrapper">
+                    <div class="hint">اختر الماركة والسعة والسرعة ثم اضغط "حساب عرض السعر" لعرض التفاصيل.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- بطاقة ملخص عرض السعر النصي -->
+        <div>
+            <div class="card">
+                <div class="card-header">
+                    <h2>ملخص عرض السعر (نصي)</h2>
+                    <p>يمكنك نسخ هذا النص ولصقه في عرض سعر رسمي أو ملف Word.</p>
+                </div>
+
+                <textarea id="quote_text" placeholder="سيتم توليد نص عرض السعر هنا بعد الحساب..."></textarea>
+
+                <div class="actions">
+                    <button type="button" class="btn btn-secondary" id="copy-btn">نسخ النص</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // خريطة الماركات - لاحقًا نضيف باقي الأنواع مع ملفات JSON خاصة بها
+    const BRAND_SOURCES = {
+        'FUJI_MRL': {
+            label: 'FUJI – MRL Passenger',
+            jsonPath: 'fuji_mrl_prices.json'
+        }
+        // مثال لاحقًا:
+        // 'VERTILIFT_MRL': { label: 'VERTILIFT – MRL', jsonPath: 'vertilift_mrl_prices.json' }
+    };
+
+    let currentBrandData = null;
+
+    async function loadBrandData(brandKey) {
+        const config = BRAND_SOURCES[brandKey];
+        if (!config) {
+            currentBrandData = null;
+            return null;
+        }
+
+        const res = await fetch(config.jsonPath);
+        if (!res.ok) {
+            alert('تعذر تحميل ملف الأسعار للماركة المحددة.');
+            currentBrandData = null;
+            return null;
+        }
+
+        const data = await res.json();
+        currentBrandData = data;
+        return data;
+    }
+
+    function fillCapacityOptions() {
+        const capacitySelect = document.getElementById('capacity');
+        const speedSelect = document.getElementById('speed');
+
+        capacitySelect.innerHTML = '<option value="">اختر السعة...</option>';
+        speedSelect.innerHTML = '<option value="">اختر السرعة...</option>';
+        speedSelect.disabled = true;
+
+        if (!currentBrandData || !currentBrandData.models) {
+            capacitySelect.disabled = true;
+            return;
+        }
+
+        const capacities = Array.from(
+            new Set(currentBrandData.models.map(m => m.capacityKg))
+        );
+
+        capacities.forEach(cap => {
+            const opt = document.createElement('option');
+            opt.value = cap;
+            opt.textContent = cap + ' kg';
+            capacitySelect.appendChild(opt);
+        });
+
+        capacitySelect.disabled = false;
+    }
+
+    function fillSpeedOptions() {
+        const capacitySelect = document.getElementById('capacity');
+        const speedSelect = document.getElementById('speed');
+
+        const selectedCapacity = capacitySelect.value;
+        speedSelect.innerHTML = '<option value="">اختر السرعة...</option>';
+
+        if (!currentBrandData || !selectedCapacity) {
+            speedSelect.disabled = true;
+            return;
+        }
+
+        const speeds = Array.from(
+            new Set(
+                currentBrandData.models
+                    .filter(m => m.capacityKg === selectedCapacity)
+                    .map(m => m.speedMps)
+            )
+        ).sort((a, b) => a - b);
+
+        speeds.forEach(sp => {
+            const opt = document.createElement('option');
+            opt.value = sp;
+            opt.textContent = sp + ' m/s';
+            speedSelect.appendChild(opt);
+        });
+
+        speedSelect.disabled = false;
+    }
+
+    function findModel(capacity, speed) {
+        if (!currentBrandData || !currentBrandData.models) return null;
+        return currentBrandData.models.find(
+            m => m.capacityKg === capacity && Number(m.speedMps) === Number(speed)
+        );
+    }
+
+    function formatCurrency(value, currency) {
+        if (isNaN(value)) return '-';
+        const v = Number(value).toFixed(2);
+        return currency === 'USD'
+            ? `${v} USD`
+            : `${v} SAR`;
+    }
+
+    function generateNumbersView(result, model, currency) {
+        const wrapper = document.getElementById('numbers-wrapper');
+        const rate = currentBrandData?.exchangeRateToSAR || 1;
+
+        const baseUsd = model.basePriceUsd;
+        const extraUsd = model.extraPerFloorUsd;
+        const baseSar = baseUsd * rate;
+        const extraSar = extraUsd * rate;
+
+        const baseLabel = currency === 'USD' ? baseUsd : baseSar;
+        const extraLabel = currency === 'USD' ? extraUsd : extraSar;
+
+        wrapper.innerHTML = `
+            <div class="numbers-grid">
+                <div class="number-box">
+                    <div class="label">السعر الأساسي (${model.baseFloors} دور)</div>
+                    <div class="value">
+                        ${formatCurrency(baseLabel, currency)}
+                    </div>
+                </div>
+
+                <div class="number-box">
+                    <div class="label">عدد الأدوار الإضافية</div>
+                    <div class="value">${result.extraFloors}</div>
+                </div>
+
+                <div class="number-box">
+                    <div class="label">قيمة الزيادة عن الأدوار الإضافية</div>
+                    <div class="value">
+                        ${formatCurrency(result.extraPrice, currency)}
+                    </div>
+                </div>
+
+                <div class="number-box">
+                    <div class="label">المجموع قبل الضريبة</div>
+                    <div class="value">
+                        ${formatCurrency(result.totalBeforeVat, currency)}
+                    </div>
+                </div>
+
+                <div class="number-box">
+                    <div class="label">قيمة الضريبة (${result.vatRate}%)</div>
+                    <div class="value">
+                        ${formatCurrency(result.vatAmount, currency)}
+                    </div>
+                </div>
+
+                <div class="number-box">
+                    <div class="label">الإجمالي ${result.includeVat ? 'شامل الضريبة' : 'بدون الضريبة'}</div>
+                    <div class="value">
+                        ${formatCurrency(result.totalWithVat, currency)}
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 10px; font-size: 12px; color:#6b7280;">
+                <span class="badge">${BRAND_SOURCES[result.brandKey].label}</span>
+                سعة ${model.capacityKg} kg – سرعة ${model.speedMps} m/s – نظام ${model.machineType || 'N/A'}
+            </div>
+        `;
+    }
+
+    function generateQuoteText(result, model, currency) {
+        const customerName = document.getElementById('customer_name').value.trim();
+        const projectName = document.getElementById('project_name').value.trim();
+
+        const currencyLabel = currency === 'USD' ? 'دولار أمريكي' : 'ريال سعودي';
+
+        const lines = [];
+
+        if (customerName) {
+            lines.push(`السادة / ${customerName}`);
+        }
+        if (projectName) {
+            lines.push(`الموضوع: عرض سعر توريد وتركيب مصعد لمشروع (${projectName}).`);
+        } else {
+            lines.push(`الموضوع: عرض سعر توريد وتركيب مصعد.`);
+        }
+
+        lines.push('');
+        lines.push(`نود أن نشكركم على تواصلكم مع مؤسسة آر كي ال RKL، ويسرّنا أن نقدّم لكم عرض السعر التالي:`);
+
+        lines.push('');
+        lines.push(`1) بيانات المصعد:`);
+        lines.push(`- الماركة: ${BRAND_SOURCES[result.brandKey].label}`);
+        lines.push(`- السعة: ${model.capacityKg} kg`);
+        lines.push(`- السرعة: ${model.speedMps} m/s`);
+        lines.push(`- عدد الأدوار: ${result.floors} دور (السعر الأساسي يشمل ${model.baseFloors} دور).`);
+
+        lines.push('');
+        lines.push(`2) الأسعار (${currencyLabel}):`);
+        lines.push(`- السعر الأساسي (${model.baseFloors} دور): ${formatCurrency(result.basePrice, currency)}`);
+        lines.push(`- الزيادة عن الأدوار الإضافية (${result.extraFloors} دور): ${formatCurrency(result.extraPrice, currency)}`);
+        lines.push(`- المجموع قبل الضريبة: ${formatCurrency(result.totalBeforeVat, currency)}`);
+        lines.push(`- قيمة ضريبة القيمة المضافة (${result.vatRate}%): ${formatCurrency(result.vatAmount, currency)}`);
+        lines.push(`- الإجمالي ${result.includeVat ? 'شامل' : 'بدون'} ضريبة القيمة المضافة: ${formatCurrency(result.totalWithVat, currency)}.`);
+
+        lines.push('');
+        lines.push(`*ملاحظات اختيارية:*`);
+        lines.push(`- بلد المنشأ: ${model.notes || 'حسب عرض المصنع'}`);
+        lines.push(`- نوع الماكينة: ${model.machineType || 'حسب المواصفات'} – نوع الأبواب: ${model.doorType || 'حسب العرض الفني'}.`);
+        lines.push(`- الأسعار لا تشمل الأعمال المدنية والكهربائية إلا إذا نُصّ على خلاف ذلك في العرض الفني التفصيلي.`);
+
+        lines.push('');
+        lines.push(`هذا العرض مبدئي، ويمكن تعديله بناءً على المخططات النهائية ومتطلبات الاستشاري وشروط المشروع.`);
+        lines.push('');
+        lines.push(`مع خالص التحية والتقدير،`);
+        lines.push(`مؤسسة آر كي ال RKL للمصاعد والسلالم الكهربائية.`);
+
+        document.getElementById('quote_text').value = lines.join('\n');
+    }
+
+    async function calculateQuote() {
+        const brandKey = document.getElementById('brand').value;
+        const capacity = document.getElementById('capacity').value;
+        const speed = document.getElementById('speed').value;
+        const floors = Number(document.getElementById('floors').value);
+        const currency = document.getElementById('currency').value;
+        const vatRate = Number(document.getElementById('vat_rate').value) || 0;
+        const includeVat = document.getElementById('include_vat').checked;
+
+        if (!brandKey || !capacity || !speed || !floors || floors < 2) {
+            alert('يرجى اختيار الماركة والسعة والسرعة وإدخال عدد أدوار صحيح (٢ فأكثر).');
+            return;
+        }
+
+        if (!currentBrandData) {
+            await loadBrandData(brandKey);
+        }
+        if (!currentBrandData) {
+            return;
+        }
+
+        const model = findModel(capacity, speed);
+        if (!model) {
+            alert('لم يتم العثور على توليفة مطابقة لهذه السعة والسرعة في ملف الأسعار.');
+            return;
+        }
+
+        const rate = currentBrandData.exchangeRateToSAR || 1;
+
+        const extraFloors = Math.max(0, floors - model.baseFloors);
+        const baseUsd = model.basePriceUsd;
+        const extraUsd = model.extraPerFloorUsd * extraFloors;
+
+        let basePrice, extraPrice;
+
+        if (currency === 'USD') {
+            basePrice = baseUsd;
+            extraPrice = extraUsd;
+        } else {
+            basePrice = baseUsd * rate;
+            extraPrice = extraUsd * rate;
+        }
+
+        const totalBeforeVat = basePrice + extraPrice;
+        const vatAmount = (totalBeforeVat * vatRate) / 100;
+        const totalWithVat = includeVat ? (totalBeforeVat + vatAmount) : totalBeforeVat;
+
+        const result = {
+            brandKey,
+            basePrice,
+            extraPrice,
+            extraFloors,
+            floors,
+            vatRate,
+            vatAmount,
+            totalBeforeVat,
+            totalWithVat,
+            includeVat
+        };
+
+        generateNumbersView(result, model, currency);
+        generateQuoteText(result, model, currency);
+    }
+
+    // أحداث واجهة المستخدم
+    document.getElementById('brand').addEventListener('change', async function () {
+        const brandKey = this.value;
+        document.getElementById('capacity').disabled = true;
+        document.getElementById('speed').disabled = true;
+
+        if (!brandKey) {
+            currentBrandData = null;
+            document.getElementById('numbers-wrapper').innerHTML =
+                '<div class="hint">يرجى اختيار الماركة أولاً.</div>';
+            return;
+        }
+
+        await loadBrandData(brandKey);
+        if (!currentBrandData) return;
+
+        fillCapacityOptions();
+        document.getElementById('numbers-wrapper').innerHTML =
+            '<div class="hint">اختر السعة والسرعة ثم أدخل عدد الأدوار واضغط "حساب عرض السعر".</div>';
+    });
+
+    document.getElementById('capacity').addEventListener('change', function () {
+        fillSpeedOptions();
+    });
+
+    document.getElementById('calc-btn').addEventListener('click', calculateQuote);
+
+    document.getElementById('reset-btn').addEventListener('click', function () {
+        currentBrandData = null;
+        document.getElementById('capacity').innerHTML = '<option value="">اختر السعة...</option>';
+        document.getElementById('capacity').disabled = true;
+        document.getElementById('speed').innerHTML = '<option value="">اختر السرعة...</option>';
+        document.getElementById('speed').disabled = true;
+        document.getElementById('numbers-wrapper').innerHTML =
+            '<div class="hint">اختر الماركة والسعة والسرعة ثم أدخل عدد الأدوار.</div>';
+        document.getElementById('quote_text').value = '';
+    });
+
+    document.getElementById('copy-btn').addEventListener('click', function () {
+        const textarea = document.getElementById('quote_text');
+        if (!textarea.value.trim()) {
+            alert('لا يوجد نص لنسخه، قم بحساب عرض السعر أولاً.');
+            return;
+        }
+        textarea.select();
+        document.execCommand('copy');
+        alert('تم نسخ نص عرض السعر.');
+    });
+
+    // تهيئة أولية
+    document.getElementById('numbers-wrapper').innerHTML =
+        '<div class="hint">ابدأ باختيار الماركة ثم بقية البيانات لحساب عرض السعر.</div>';
+</script>
+</body>
+</html>
