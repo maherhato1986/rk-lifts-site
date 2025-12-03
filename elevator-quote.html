@@ -996,9 +996,13 @@
     }
 
     // ========================== تهيئة الأحداث عند تحميل الصفحة ==========================
+       // ========================== تهيئة الأحداث عند تحميل الصفحة ==========================
     (function init() {
-        // تحميل العملاء
+        // تحميل العملاء من صفحة customer-manager
         populateCustomerDropdown();
+
+        // تحميل عروض الأسعار الموجودة مسبقًا في الجدول
+        renderQuotesTable();
 
         const customerSelect = document.getElementById('customer_select');
         if (customerSelect) {
@@ -1016,11 +1020,11 @@
             });
         }
 
-        // رسالة أولية
+        // رسالة أولية في صندوق الأرقام
         document.getElementById('numbers-wrapper').innerHTML =
             '<div class="hint">ابدأ باختيار الماركة ثم بقية البيانات لحساب عرض السعر.</div>';
 
-        // أحداث الماركة والسعة والزرار
+        // عند تغيير الماركة: تحميل ملف الأسعار وتجهيز السعات
         document.getElementById('brand').addEventListener('change', async function () {
             const brandKey = this.value;
             document.getElementById('capacity').disabled = true;
@@ -1039,7 +1043,46 @@
             fillCapacityOptions();
             document.getElementById('numbers-wrapper').innerHTML =
                 '<div class="hint">اختر السعة والسرعة ثم أدخل عدد الأدوار واضغط "حساب عرض السعر".</div>';
-                    // زر حفظ عرض السعر الحالي في السجل
+        });
+
+        // عند اختيار السعة: تعبئة السرعات المتاحة
+        document.getElementById('capacity').addEventListener('change', fillSpeedOptions);
+
+        // زر حساب عرض السعر
+        document.getElementById('calc-btn').addEventListener('click', calculateQuote);
+
+        // زر إعادة التعيين
+        document.getElementById('reset-btn').addEventListener('click', function () {
+            currentBrandData = null;
+            document.getElementById('capacity').innerHTML = '<option value="">اختر السعة...</option>';
+            document.getElementById('capacity').disabled = true;
+            document.getElementById('speed').innerHTML = '<option value="">اختر السرعة...</option>';
+            document.getElementById('speed').disabled = true;
+            document.getElementById('numbers-wrapper').innerHTML =
+                '<div class="hint">اختر الماركة والسعة والسرعة ثم أدخل عدد الأدوار.</div>';
+            document.getElementById('quote_text').value = '';
+
+            // إعادة تحميل قائمة العملاء والجدول
+            populateCustomerDropdown();
+            renderQuotesTable();
+
+            selectedCustomer = null;
+            if (customerSelect) customerSelect.value = '';
+        });
+
+        // زر نسخ النص
+        document.getElementById('copy-btn').addEventListener('click', function () {
+            const textarea = document.getElementById('quote_text');
+            if (!textarea.value.trim()) {
+                alert('لا يوجد نص لنسخه، قم بحساب عرض السعر أولاً.');
+                return;
+            }
+            textarea.select();
+            document.execCommand('copy');
+            alert('تم نسخ نص عرض السعر.');
+        });
+
+        // زر حفظ عرض السعر الحالي في السجل
         const saveBtn = document.getElementById('save-quote-btn');
         if (saveBtn) {
             saveBtn.addEventListener('click', () => {
@@ -1124,46 +1167,14 @@
                 URL.revokeObjectURL(url);
             });
         }
-
-        });
-
-        document.getElementById('capacity').addEventListener('change', fillSpeedOptions);
-
-        document.getElementById('calc-btn').addEventListener('click', calculateQuote);
-
-        document.getElementById('reset-btn').addEventListener('click', function () {
-            currentBrandData = null;
-            document.getElementById('capacity').innerHTML = '<option value="">اختر السعة...</option>';
-            document.getElementById('capacity').disabled = true;
-            document.getElementById('speed').innerHTML = '<option value="">اختر السرعة...</option>';
-            document.getElementById('speed').disabled = true;
-            document.getElementById('numbers-wrapper').innerHTML =
-                '<div class="hint">اختر الماركة والسعة والسرعة ثم أدخل عدد الأدوار.</div>';
-            document.getElementById('quote_text').value = '';
-            populateCustomerDropdown();
-                    // تحميل عروض الأسعار الموجودة مسبقًا في الجدول
-        renderQuotesTable();
-
-            selectedCustomer = null;
-            if (customerSelect) customerSelect.value = '';
-        });
-
-        document.getElementById('copy-btn').addEventListener('click', function () {
-            const textarea = document.getElementById('quote_text');
-            if (!textarea.value.trim()) {
-                alert('لا يوجد نص لنسخه، قم بحساب عرض السعر أولاً.');
-                return;
-            }
-            textarea.select();
-            document.execCommand('copy');
-            alert('تم نسخ نص عرض السعر.');
-        });
     })();
+
 </script>
 
 
 </body>
 </html>
+
 
 
 
