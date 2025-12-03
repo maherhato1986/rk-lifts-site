@@ -436,6 +436,10 @@
     let currentBrandData = null;
     let selectedCustomer = null; // آخر عميل تم تحميله في النموذج
 
+    const QUOTES_STORAGE_KEY = 'rkl_quotes';
+let lastQuoteSnapshot = null; // آخر عرض سعر محسوب (لا يُحفظ إلا عند الضغط على زر الحفظ)
+
+
     function loadStoredCustomers() {
         try {
             return JSON.parse(localStorage.getItem(CUSTOMER_STORAGE_KEY) || '[]');
@@ -986,6 +990,7 @@ lines.push(`- سعر البيع قبل الضريبة لإجمالي ${result.li
 
 </body>
 </html>
+
 
 
 
