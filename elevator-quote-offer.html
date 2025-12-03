@@ -212,10 +212,15 @@
     </style>
 </head>
 <body>
-
 <div class="toolbar">
-    <button type="button" onclick="window.print()">طباعة / حفظ كـ PDF</button>
+    <button type="button" onclick="window.print()">طباعة عرض السعر / حفظ كـ PDF</button>
+
+    <!-- اختيار عرض سعر محفوظ من صفحة elevator-quote.html -->
+    <select id="quote-selector">
+        <option value="">اختر عرض سعر من السجل...</option>
+    </select>
 </div>
+
 
 <!-- ======================= الصفحة الأولى: عرض السعر ======================= -->
 <div class="page">
@@ -753,6 +758,85 @@
         والله الموفق، وهو خير الشاهدين.
     </div>
 </div>
+<script>
+    // نفس المفتاح المستخدم في elevator-quote.html
+    const QUOTES_STORAGE_KEY = 'rkl_quotes';
+
+    function loadStoredQuotes() {
+        try {
+            return JSON.parse(localStorage.getItem(QUOTES_STORAGE_KEY) || '[]');
+        } catch (e) {
+            console.error('خطأ في قراءة عروض الأسعار من LocalStorage', e);
+            return [];
+        }
+    }
+
+    // تعبئة القائمة المنسدلة بعروض الأسعار المحفوظة
+    function populateQuoteSelector() {
+        const select = document.getElementById('quote-selector');
+        if (!select) return;
+
+        const quotes = loadStoredQuotes();
+
+        select.innerHTML = '<option value="">اختر عرض سعر من السجل...</option>';
+
+        quotes.forEach((q, index) => {
+            const dateStr = q.timestamp ? q.timestamp.slice(0, 10) : '';
+            const customer = q.customerName || 'بدون اسم عميل';
+            const quoteNo = q.quoteNumber || 'بدون رقم';
+
+            const opt = document.createElement('option');
+            opt.value = index.toString();
+            opt.textContent = `${dateStr} – ${customer} – ${quoteNo}`;
+            select.appendChild(opt);
+        });
+
+        if (!quotes.length) {
+            const opt = document.createElement('option');
+            opt.value = '';
+            opt.textContent = 'لا توجد عروض أسعار محفوظة في هذا المتصفح';
+            opt.disabled = true;
+            select.appendChild(opt);
+        }
+    }
+
+    // تطبيق بيانات عرض السعر المختار على النموذج (نبدأ بالأساسيات)
+    function applyQuoteToDocument(q) {
+        if (!q) return;
+
+        // رقم عرض السعر والتاريخ
+        const offerNoSpan   = document.getElementById('offer_no');
+        const offerDateSpan = document.getElementById('offer_date');
+
+        if (offerNoSpan)   offerNoSpan.textContent   = q.quoteNumber || '';
+        if (offerDateSpan) offerDateSpan.textContent = (q.timestamp || '').slice(0, 10);
+
+        // يمكنك لاحقًا إضافة ربط لباقي الحقول (العميل، المشروع، الماركة، العدد، الإجمالي...)
+        // مثال لو أضفت span أو div لها id مناسب:
+        // const customerDiv = document.getElementById('offer_customer_name');
+        // if (customerDiv) customerDiv.textContent = 'السادة / ' + (q.customerName || '');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const select = document.getElementById('quote-selector');
+        if (!select) return;
+
+        // تعبئة القائمة عند تحميل الصفحة
+        populateQuoteSelector();
+
+        // عند تغيير الاختيار: نقرأ العرض ونطبقه على النموذج
+        select.addEventListener('change', () => {
+            const quotes = loadStoredQuotes();
+            const index = Number(select.value);
+            const selectedQuote = quotes[index];
+
+            if (selectedQuote) {
+                applyQuoteToDocument(selectedQuote);
+            }
+        });
+    });
+</script>
 
 </body>
 </html>
+
