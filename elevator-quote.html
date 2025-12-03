@@ -493,6 +493,68 @@
         }
     }
 
+        // ========================== تخزين عروض الأسعار في LocalStorage ==========================
+
+    function loadStoredQuotes() {
+        try {
+            return JSON.parse(localStorage.getItem(QUOTES_STORAGE_KEY) || '[]');
+        } catch (e) {
+            console.error('خطأ في قراءة عروض الأسعار من localStorage', e);
+            return [];
+        }
+    }
+
+    function saveQuotesToStorage(quotes) {
+        localStorage.setItem(QUOTES_STORAGE_KEY, JSON.stringify(quotes));
+    }
+
+    function renderQuotesTable() {
+        const tbody = document.querySelector('#quotes-table tbody');
+        if (!tbody) return;
+
+        const quotes = loadStoredQuotes();
+        tbody.innerHTML = '';
+
+        if (!quotes.length) {
+            const tr = document.createElement('tr');
+            const td = document.createElement('td');
+            td.colSpan = 8;
+            td.textContent = 'لا توجد عروض أسعار محفوظة في هذا الجهاز حتى الآن.';
+            td.style.textAlign = 'center';
+            td.style.color = '#9ca3af';
+            tr.appendChild(td);
+            tbody.appendChild(tr);
+            return;
+        }
+
+        quotes.forEach((q, index) => {
+            const tr = document.createElement('tr');
+
+            const dateStr = q.timestamp ? q.timestamp.slice(0, 10) : '';
+            const totalStr = formatCurrency(q.totalWithVat, q.currency || 'SAR');
+
+            const cols = [
+                index + 1,
+                q.quoteNumber || '',
+                dateStr,
+                q.customerName || '',
+                q.projectName || '',
+                `${q.brandLabel || q.brandKey || ''} / ${q.capacity || ''} / ${q.speed || ''}`,
+                q.liftsCount || '',
+                totalStr
+            ];
+
+            cols.forEach(val => {
+                const td = document.createElement('td');
+                td.textContent = val;
+                tr.appendChild(td);
+            });
+
+            tbody.appendChild(tr);
+        });
+    }
+
+
     // ========================== تعريف الماركات وملفات الأسعار ==========================
     const BRAND_SOURCES = {
         'FUJI_MRL': {
@@ -987,6 +1049,7 @@
 
 </body>
 </html>
+
 
 
 
