@@ -343,7 +343,12 @@
     const STORAGE_KEY = 'rkl_customers';
 
     function loadCustomers() {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        try {
+            return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        } catch (e) {
+            console.error('Error parsing customers from localStorage', e);
+            return [];
+        }
     }
 
     function saveCustomers(list) {
@@ -514,4 +519,13 @@
     });
 
     // حذف جميع العملاء من هذا المتصفح
-    document.getElementById('clear-all-btn').addEventListener('click', functio
+    document.getElementById('clear-all-btn').addEventListener('click', function () {
+        if (confirm('هل أنت متأكد من حذف جميع بيانات العملاء من هذا الجهاز؟')) {
+            localStorage.removeItem(STORAGE_KEY);
+            renderTable();
+        }
+    });
+
+    // عند تحميل الصفحة لأول مرة: عرض العملاء الموجودين (إن وجدوا)
+    renderTable();
+</script>
