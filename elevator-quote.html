@@ -222,16 +222,29 @@
                 <form id="quote-form">
                     <div class="section-title">١. بيانات عامة</div>
                     <div class="form-grid">
-                        <div>
-                            <label for="customer_name">اسم العميل (اختياري)</label>
-                            <input type="text" id="customer_name" placeholder="مثال: السادة / شركة ...." />
-                        </div>
+                       <div class="section-title">١. اختيار العميل</div>
+<div class="form-grid">
+    <div>
+        <label for="customer_select">اختر عميلًا من السجل (محفوظ في هذا الجهاز)</label>
+        <select id="customer_select">
+            <option value="">— اختر عميلًا (اختياري) —</option>
+        </select>
+        <div class="hint">
+            يتم سحب هذه القائمة من صفحة "إضافة / إدارة بيانات العميل" (localStorage).
+        </div>
+    </div>
 
-                        <div>
-                            <label for="project_name">اسم المشروع (اختياري)</label>
-                            <input type="text" id="project_name" placeholder="مثال: مشروع مبنى المكاتب - الرياض" />
-                        </div>
-                    </div>
+    <div>
+        <label for="customer_name">اسم العميل (يمكن تعديله يدويًا)</label>
+        <input type="text" id="customer_name" placeholder="مثال: السادة / شركة ...." />
+    </div>
+
+    <div>
+        <label for="project_name">اسم المشروع (اختياري)</label>
+        <input type="text" id="project_name" placeholder="مثال: مشروع مبنى المكاتب - الرياض" />
+    </div>
+</div>
+
 
                     <div class="section-title">٢. اختيار نوع المصعد</div>
                     <div class="form-grid">
@@ -664,3 +677,4 @@
 </script>
 </body>
 </html>
+
