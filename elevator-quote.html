@@ -545,87 +545,93 @@
     }
 
     function generateNumbersView(result, model, currency) {
-        const wrapper = document.getElementById('numbers-wrapper');
+    const wrapper = document.getElementById('numbers-wrapper');
 
-        wrapper.innerHTML = `
-            <div class="numbers-grid">
-                <div class="number-box">
-                    <div class="label">سعر المصنع (FOB)</div>
-                    <div class="value">
-                        ${formatCurrency(result.factoryCost, currency)}
-                    </div>
-                </div>
+    const per = (v) => formatCurrency(v, currency);
+    const both = (perLift, total) =>
+        `${per(perLift)} <span style="font-size:11px;color:#6b7280;">/ لكل مصعد</span><br>` +
+        `${per(total)} <span style="font-size:11px;color:#6b7280;">إجمالي (${result.liftsCount})</span>`;
 
-                <div class="number-box">
-                    <div class="label">الشحن + التأمين</div>
-                    <div class="value">
-                        ${formatCurrency(result.shippingInsuranceCost, currency)}
-                    </div>
-                </div>
-
-                <div class="number-box">
-                    <div class="label">التخليص + النقل الداخلي</div>
-                    <div class="value">
-                        ${formatCurrency(result.clearanceTransportCost, currency)}
-                    </div>
-                </div>
-
-                <div class="number-box">
-                    <div class="label">التركيب + التشغيل</div>
-                    <div class="value">
-                        ${formatCurrency(result.installationCommissioningCost, currency)}
-                    </div>
-                </div>
-
-                <div class="number-box">
-                    <div class="label">مصاريف تشغيل (${result.overheadPercent}%)</div>
-                    <div class="value">
-                        ${formatCurrency(result.overheadCost, currency)}
-                    </div>
-                </div>
-
-                <div class="number-box">
-                    <div class="label">التكلفة الكلية قبل الربح</div>
-                    <div class="value">
-                        ${formatCurrency(result.costBeforeProfit, currency)}
-                    </div>
-                </div>
-
-                <div class="number-box">
-                    <div class="label">هامش الربح (${result.profitPercent}%)</div>
-                    <div class="value">
-                        ${formatCurrency(result.profitAmount, currency)}
-                    </div>
-                </div>
-
-                <div class="number-box">
-                    <div class="label">سعر البيع قبل الضريبة</div>
-                    <div class="value">
-                        ${formatCurrency(result.totalBeforeVat, currency)}
-                    </div>
-                </div>
-
-                <div class="number-box">
-                    <div class="label">قيمة الضريبة (${result.vatRate}%)</div>
-                    <div class="value">
-                        ${formatCurrency(result.vatAmount, currency)}
-                    </div>
-                </div>
-
-                <div class="number-box">
-                    <div class="label">الإجمالي ${result.includeVat ? 'شامل الضريبة' : 'بدون الضريبة'}</div>
-                    <div class="value">
-                        ${formatCurrency(result.totalWithVat, currency)}
-                    </div>
+    wrapper.innerHTML = `
+        <div class="numbers-grid">
+            <div class="number-box">
+                <div class="label">سعر المصنع (FOB)</div>
+                <div class="value">
+                    ${both(result.factoryCostPerLift, result.factoryCost)}
                 </div>
             </div>
 
-            <div style="margin-top: 10px; font-size: 12px; color:#6b7280;">
-                <span class="badge">${BRAND_SOURCES[result.brandKey].label}</span>
-                سعة ${model.capacityKg} kg – سرعة ${model.speedMps} m/s – عدد الأدوار: ${result.floors} (الأساسي ${model.baseFloors} دور).
+            <div class="number-box">
+                <div class="label">الشحن + التأمين</div>
+                <div class="value">
+                    ${both(result.shippingInsurancePerLift, result.shippingInsuranceCost)}
+                </div>
             </div>
-        `;
-    }
+
+            <div class="number-box">
+                <div class="label">التخليص + النقل الداخلي</div>
+                <div class="value">
+                    ${both(result.clearanceTransportPerLift, result.clearanceTransportCost)}
+                </div>
+            </div>
+
+            <div class="number-box">
+                <div class="label">التركيب + التشغيل</div>
+                <div class="value">
+                    ${both(result.installationCommissioningPerLift, result.installationCommissioningCost)}
+                </div>
+            </div>
+
+            <div class="number-box">
+                <div class="label">مصاريف تشغيل (${result.overheadPercent}%)</div>
+                <div class="value">
+                    ${both(result.overheadPerLift, result.overheadCost)}
+                </div>
+            </div>
+
+            <div class="number-box">
+                <div class="label">التكلفة الكلية قبل الربح</div>
+                <div class="value">
+                    ${both(result.costBeforeProfitPerLift, result.costBeforeProfit)}
+                </div>
+            </div>
+
+            <div class="number-box">
+                <div class="label">هامش الربح (${result.profitPercent}%)</div>
+                <div class="value">
+                    ${both(result.profitPerLift, result.profitAmount)}
+                </div>
+            </div>
+
+            <div class="number-box">
+                <div class="label">سعر البيع قبل الضريبة</div>
+                <div class="value">
+                    ${both(result.totalBeforeVatPerLift, result.totalBeforeVat)}
+                </div>
+            </div>
+
+            <div class="number-box">
+                <div class="label">قيمة الضريبة (${result.vatRate}%)</div>
+                <div class="value">
+                    ${both(result.vatAmountPerLift, result.vatAmount)}
+                </div>
+            </div>
+
+            <div class="number-box">
+                <div class="label">الإجمالي ${result.includeVat ? 'شامل الضريبة' : 'بدون الضريبة'}</div>
+                <div class="value">
+                    ${both(result.totalWithVatPerLift, result.totalWithVat)}
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 10px; font-size: 12px; color:#6b7280;">
+            <span class="badge">${BRAND_SOURCES[result.brandKey].label}</span>
+            عدد المصاعد: ${result.liftsCount} – سعة ${model.capacityKg} kg – سرعة ${model.speedMps} m/s – عدد الأدوار: ${result.floors} (الأساسي ${model.baseFloors} دور).
+        </div>
+    `;
+}
+
 
     function generateQuoteText(result, model, currency) {
         const manualCustomerName = document.getElementById('customer_name').value.trim();
@@ -927,6 +933,7 @@ generateQuoteText(result, model, currency);
 
 </body>
 </html>
+
 
 
 
