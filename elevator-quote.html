@@ -967,6 +967,32 @@
 
         generateNumbersView(result, model, currency);
         generateQuoteText(result, model, currency);
+
+                // حفظ لقطة من هذا العرض لاستخدامها عند الضغط على "حفظ عرض السعر"
+        const manualCustomerName = document.getElementById('customer_name').value.trim();
+        const projectName = document.getElementById('project_name').value.trim();
+
+        const finalCustomerName =
+            (selectedCustomer?.customer_name || manualCustomerName || 'العميل الكريم').trim();
+
+        const brandLabel = BRAND_SOURCES[brandKey]?.label || brandKey;
+
+        lastQuoteSnapshot = {
+            timestamp: new Date().toISOString(),
+            customerName: finalCustomerName,
+            projectName: projectName,
+            brandKey,
+            brandLabel,
+            capacity: capacity + ' kg',
+            speed: speed + ' m/s',
+            floors,
+            liftsCount,
+            totalWithVat: result.totalWithVat,
+            currency,
+            vatRate,
+            includeVat
+        };
+
     }
 
     // ========================== تهيئة الأحداث عند تحميل الصفحة ==========================
@@ -1049,6 +1075,7 @@
 
 </body>
 </html>
+
 
 
 
