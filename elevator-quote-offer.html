@@ -222,370 +222,123 @@
 </div>
 
 
-<!-- ======================= الصفحة الأولى: عرض السعر ======================= -->
-<!-- ====== صفحة عرض السعر – الصفحة الأولى ====== -->
+    <!-- ======================= الصفحة الأولى: عرض السعر ======================= -->
+<div class="page">
 
-<style>
-/* الخلفية الشفافة */
-.offer-bg {
-    position: absolute;
-    top: 180px;
-    left: 50%;
-    width: 420px;
-    opacity: 0.08;
-    transform: translateX(-50%);
-    z-index: 0;
-}
+    <!-- خلفية الشعار الشفافة -->
+    <img src="rk-lifts-site/logo.png" class="offer-bg">
 
-/* تنسيق الترويسة */
-.header-box {
-    text-align: center;
-    margin-top: 20px;
-    position: relative;
-    z-index: 2;
-}
-
-.header-logo {
-    width: 150px;
-    margin-bottom: 10px;
-}
-
-/* عنوان عرض السعر */
-.main-title {
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    margin-top: 10px;
-    margin-bottom: 20px;
-}
-
-/* الجداول */
-.table-offer {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 25px;
-    position: relative;
-    z-index: 2;
-}
-
-.table-offer th, .table-offer td {
-    border: 1px solid #bbb;
-    padding: 8px;
-    font-size: 15px;
-}
-
-.table-offer th {
-    background: #f0f0f0;
-    font-weight: bold;
-}
-
-.section-title {
-    font-weight: bold;
-    margin: 25px 0 10px;
-    font-size: 18px;
-}
-</style>
-
-<!-- خلفية الشعار الشفافة -->
-<img src="rk-lifts-site/logo.png" class="offer-bg">
-
-<!-- الترويسة -->
-<div class="header-box">
-    <img src="rk-lifts-site/logo.png" class="header-logo">
-    <div>آر كي ال RKL للمصاعد والسلالم الكهربائية</div>
-    <div>السجل التجاري: 1010709355</div>
-    <div>الرقم الضريبي: 302250422600003</div>
-    <div>العنوان: السليمانية – الرياض</div>
-    <div>الهاتف: 0114774021 – البريد: admin@rk-lifts.com</div>
-</div>
-
-<hr style="margin: 25px 0;">
-
-<!-- العنوان الرئيسي -->
-<div class="main-title">
-    عرض سعر توريد وتركيب وتشغيل مصعد / مصاعد ركاب
-</div>
-
-<table class="table-offer">
-    <tr>
-        <th>رقم عرض السعر</th>
-        <td id="offerNumber" contenteditable="true">---------</td>
-        <th>التاريخ</th>
-        <td id="offerDate" contenteditable="true">---------</td>
-    </tr>
-</table>
-<table class="table-offer">
-    <thead>
-        <tr>
-            <th>#</th>
-            <th>البند</th>
-            <th>القيمة</th>
-        </tr>
-    </thead>
-    <tbody id="itemsTableBody">
-        <!-- سيتم تعبئته تلقائيًا -->
-    </tbody>
-</table>
-
-
-
-<!-- نص تعريفي بالمؤسسة -->
-<div style="text-align: center; margin-top: 15px; font-size: 16px; line-height: 1.8; font-weight: bold; position: relative; z-index: 3;">
-    <p>
-        تأسست مؤسسة <strong>آر كي ال RKL للمصاعد والسلالم الكهربائية</strong> في الرياض، 
-        وتُعدّ واحدة من المؤسسات المتخصصة في مجال المصاعد الحديثة وأنظمة الرفع، 
-        حيث قامت بتنفيذ وتركيب وصيانة أكثر من 
-        <strong>500 مصعد</strong> في مختلف مناطق المملكة.
-    </p>
-    <p>
-        تتميز RKL بالشراكات الدولية مع أبرز المصانع العالمية، وبالتزامها بمعايير الجودة والاعتمادية،  
-        إضافةً إلى خبرة فنية متقدمة، وفريق محترف قادر على تقديم حلول متكاملة تشمل: التوريد، التركيب، التشغيل،  
-        الصيانة الدورية، وخدمات التحديث (Modernization).
-    </p>
-    <p>
-        وتفخر المؤسسة بجودة خدماتها وسرعة استجابتها وحرصها على تقديم أفضل الحلول الفنية والاقتصادية 
-        بما يتوافق مع اشتراطات الجهات الاستشارية والمواصفات المعتمدة للمشاريع.
-    </p>
-</div>
-
-<hr style="margin: 20px 0;">
-
-<!-- بيانات العميل والمشروع -->
-
-
-<table class="table-offer">
-    <tr>
-        <th>اسم العميل</th>
-        <td id="customerName" contenteditable="true">---------</td>
-        <th>رقم الجوال</th>
-        <td id="customerPhone" contenteditable="true">---------</td>
-    </tr>
-
-    <tr>
-        <th>البريد الإلكتروني</th>
-        <td id="customerEmail" contenteditable="true">---------</td>
-        <th>المدينة</th>
-        <td id="projectCity" contenteditable="true">---------</td>
-    </tr>
-
-    <tr>
-        <th>اسم المشروع</th>
-        <td id="projectName" contenteditable="true">---------</td>
-        <th>موقع المشروع</th>
-        <td id="projectLocation" contenteditable="true">---------</td>
-    </tr>
-
-    <tr>
-        <th>العنوان</th>
-        <td colspan="3" id="projectAddress" contenteditable="true">---------</td>
-    </tr>
-</table>
-
-
-<!-- ملخص التسعير -->
-<table class="table-offer">
-    <tr>
-        <th>الماركة</th>
-        <td id="brand" contenteditable="true">---------</td>
-        <th>نوع النظام</th>
-        <td id="systemType" contenteditable="true">---------</td>
-    </tr>
-
-    <tr>
-        <th>الحمولة / السرعة</th>
-        <td id="capacitySpeed" contenteditable="true">---------</td>
-        <th>عدد الأدوار</th>
-        <td id="floors" contenteditable="true">---------</td>
-    </tr>
-
-    <tr>
-        <th>عدد المصاعد</th>
-        <td id="elevatorCount" contenteditable="true">---------</td>
-        <th>سعر المصعد (شامل الضريبة)</th>
-        <td id="liftPrice" contenteditable="true">---------</td>
-    </tr>
-
-    <tr>
-        <th>الإجمالي شامل الضريبة</th>
-        <td colspan="3" id="totalPrice" contenteditable="true">---------</td>
-    </tr>
-</table>
-
-
-<tr>
-    <td>1</td>
-    <td>نوع النظام</td>
-    <td id="specSystem" contenteditable="true">---------</td>
-</tr>
-<tr>
-    <td>2</td>
-    <td>الاستخدام</td>
-    <td id="specUsage" contenteditable="true">---------</td>
-</tr>
-<tr>
-    <td>3</td>
-    <td>تشطيب الكبينة</td>
-    <td id="specCabin" contenteditable="true">---------</td>
-</tr>
-<tr>
-    <td>4</td>
-    <td>تشطيب الأبواب</td>
-    <td id="specDoors" contenteditable="true">---------</td>
-</tr>
-<tr>
-    <td>5</td>
-    <td>تشطيب الأرضية</td>
-    <td id="specFloor" contenteditable="true">---------</td>
-</tr>
-
-
-<!-- الملاحظات -->
-<div class="section-title">رابعاً: ملاحظات عامة على العرض</div>
-
-<ul style="font-size: 15px; line-height: 1.9;">
-    <li>السعر لا يشمل الأعمال المدنية والكهربائية خارج حدود غرفة المصعد.</li>
-    <li>مدة توريد المصعد من 30 إلى 45 يومًا بعد توقيع العقد وسداد الدفعة المقدمة.</li>
-    <li>الأسعار تشمل الضريبة المضافة 15%.</li>
-</ul>
-
-<br><br><br>
-
-    <div class="section">
-        <div class="section-title">رابعاً: ملاحظات عامة على العرض</div>
-        <div class="notes" contenteditable="true">
-            • الأسعار لا تشمل الأعمال المدنية والكهربائية خارج حدود المصعد ما لم يُنص على خلاف ذلك.<br />
-            • مدة صلاحية هذا العرض (30) يومًا من تاريخه ما لم يتم سحبه أو تعديله كتابيًا من قبل مؤسسة RKL.<br />
-            • يتم التنفيذ وفقًا لأحدث المواصفات المعتمدة بين الطرفين والمخططات النهائية المعتمدة من الاستشاري / المالك.
-        </div>
+    <!-- الترويسة -->
+    <div class="header-box">
+        <img src="rk-lifts-site/logo.png" class="header-logo">
+        <div>آر كي ال RKL للمصاعد والسلالم الكهربائية</div>
+        <div>السجل التجاري: 1010709355</div>
+        <div>الرقم الضريبي: 302250422600003</div>
+        <div>العنوان: السليمانية – الرياض</div>
+        <div>الهاتف: 0114774021 – البريد: admin@rk-lifts.com</div>
     </div>
-</div>
 
-<!-- ======================= الصفحة الثانية: Elevator Request Form ======================= -->
-<div class="page page-break">
+    <hr style="margin: 25px 0;">
 
-    <div class="blue-header" contenteditable="true">Elevator Request Form</div>
+    <!-- العنوان الرئيسي -->
+    <div class="main-title">عرض سعر توريد وتركيب وتشغيل مصعد / مصاعد ركاب</div>
 
-    <table class="two-col-table">
-        <tbody>
+    <!-- رقم العرض والتاريخ -->
+    <table class="table-offer">
         <tr>
-            <th>Item</th>
-            <th>Code</th>
+            <th style="width:20%;">رقم عرض السعر</th>
+            <td id="offerNumber" contenteditable="true">---------</td>
+            <th style="width:20%;">التاريخ</th>
+            <td id="offerDate" contenteditable="true">---------</td>
+        </tr>
+    </table>
+
+    <!-- بيانات العميل والمشروع -->
+    <div class="section-title">بيانات العميل والمشروع</div>
+    <table class="table-offer">
+        <tr>
+            <th>اسم العميل</th>
+            <td id="customerName" contenteditable="true">---------</td>
+            <th>رقم الجوال</th>
+            <td id="customerPhone" contenteditable="true">---------</td>
         </tr>
         <tr>
-            <td contenteditable="true">Contract No.</td>
-            <td contenteditable="true">595 – FUJI JAPAN</td>
+            <th>البريد الإلكتروني</th>
+            <td id="customerEmail" contenteditable="true">---------</td>
+            <th>المدينة</th>
+            <td id="projectCity" contenteditable="true">---------</td>
         </tr>
         <tr>
-            <td contenteditable="true">Machine Type</td>
-            <td contenteditable="true">MRL</td>
+            <th>اسم المشروع</th>
+            <td id="projectName" contenteditable="true">---------</td>
+            <th>موقع المشروع</th>
+            <td id="projectLocation" contenteditable="true">---------</td>
         </tr>
         <tr>
-            <td contenteditable="true">Load</td>
-            <td contenteditable="true">450 kg</td>
+            <th>العنوان</th>
+            <td colspan="3" id="projectAddress" contenteditable="true">---------</td>
+        </tr>
+    </table>
+
+    <!-- ملخص المواصفات -->
+    <div class="section-title">الملخص الفني للمصعد</div>
+    <table class="table-offer">
+        <tr>
+            <th>الماركة</th>
+            <td id="brand" contenteditable="true">---------</td>
+            <th>نوع النظام</th>
+            <td id="systemType" contenteditable="true">---------</td>
         </tr>
         <tr>
-            <td contenteditable="true">Floors (Stops)</td>
-            <td contenteditable="true">4 Floors – 4 Stops</td>
+            <th>الحمولة / السرعة</th>
+            <td id="capacitySpeed" contenteditable="true">---------</td>
+            <th>عدد الأدوار</th>
+            <td id="floors" contenteditable="true">---------</td>
         </tr>
         <tr>
-            <td contenteditable="true">Cabin Entrance</td>
-            <td contenteditable="true">1</td>
+            <th>عدد المصاعد</th>
+            <td id="elevatorCount" contenteditable="true">---------</td>
+            <th>سعر المصعد (شامل الضريبة)</th>
+            <td id="liftPrice" contenteditable="true">---------</td>
         </tr>
         <tr>
-            <td contenteditable="true">Shaft Dimension</td>
-            <td contenteditable="true">As in final shop drawing</td>
+            <th>الإجمالي شامل الضريبة</th>
+            <td colspan="3" id="totalPrice" contenteditable="true">---------</td>
         </tr>
-        <tr>
-            <td contenteditable="true">Door Type</td>
-            <td contenteditable="true">Automatic</td>
-        </tr>
-        <tr>
-            <td contenteditable="true">Cabin Decoration Type</td>
-            <td contenteditable="true">Stainless Steel / Mirror / etc.</td>
-        </tr>
-        <tr>
-            <td contenteditable="true">Door Decoration Type</td>
-            <td contenteditable="true">Stainless Steel</td>
-        </tr>
-        <tr>
-            <td contenteditable="true">Car Operation Panel Type</td>
-            <td contenteditable="true">LCD / Touch</td>
-        </tr>
-        <tr>
-            <td contenteditable="true">COP</td>
-            <td contenteditable="true">Standard</td>
-        </tr>
-        <tr>
-            <td contenteditable="true">LOP</td>
-            <td contenteditable="true">Standard</td>
-        </tr>
-        <tr>
-            <td contenteditable="true">Ceiling Type</td>
-            <td contenteditable="true">As per RKL catalogue</td>
-        </tr>
-        <tr>
-            <td contenteditable="true">Handrail Type</td>
-            <td contenteditable="true">Stainless Steel</td>
-        </tr>
-        <tr>
-            <td contenteditable="true">Floor Type</td>
-            <td contenteditable="true">Marble / Granite</td>
-        </tr>
-        <tr>
-            <td contenteditable="true">Control Type</td>
-            <td contenteditable="true">VVVF</td>
-        </tr>
-        <tr>
-            <td contenteditable="true">ARD</td>
-            <td contenteditable="true">Including</td>
-        </tr>
-        <tr>
-            <td contenteditable="true">Additional Request</td>
-            <td contenteditable="true">Gong, Intercom, etc.</td>
-        </tr>
+    </table>
+
+    <!-- مواصفات تفصيلية -->
+    <div class="section-title">المواصفات التفصيلية</div>
+    <table class="table-offer">
+        <tr><th>#</th><th>البند</th><th>القيمة</th></tr>
+        <tr><td>1</td><td>نوع النظام</td><td id="specSystem" contenteditable="true">---------</td></tr>
+        <tr><td>2</td><td>الاستخدام</td><td id="specUsage" contenteditable="true">---------</td></tr>
+        <tr><td>3</td><td>تشطيب الكبينة</td><td id="specCabin" contenteditable="true">---------</td></tr>
+        <tr><td>4</td><td>تشطيب الأبواب</td><td id="specDoors" contenteditable="true">---------</td></tr>
+        <tr><td>5</td><td>تشطيب الأرضية</td><td id="specFloor" contenteditable="true">---------</td></tr>
+    </table>
+
+    <!-- 🔥 جدول البنود القادمة من صفحة elevator-quote -->
+    <div class="section-title">بنود العرض التفصيلية</div>
+    <table class="table-offer">
+        <thead>
+            <tr><th>#</th><th>البند</th><th>القيمة</th></tr>
+        </thead>
+        <tbody id="itemsTableBody">
+            <!-- امتلاء تلقائي من السكربت -->
         </tbody>
     </table>
 
-    <div class="section" style="margin-top: 16px;">
-        <div class="section-title">الضمان والصيانة / Warranty and Maintenance</div>
-        <table>
-            <thead>
-            <tr>
-                <th style="width:8%;">م</th>
-                <th>Arabic</th>
-                <th>English</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>01</td>
-                <td contenteditable="true">
-                    مدة الضمان 10 سنوات على كامل المصعد، بشرط الالتزام بعقد صيانة لباقي السنوات بعد انتهاء الفترة
-                    المجانية للصيانة.
-                </td>
-                <td contenteditable="true">
-                    The warranty period is 10 years on the entire elevator, provided that a maintenance
-                    contract is committed to the rest of the years after the end of the free maintenance period.
-                </td>
-            </tr>
-            <tr>
-                <td>02</td>
-                <td contenteditable="true">
-                    الصيانة المجانية لمدة سنتين كاملتين شاملة قطع الغيار.
-                </td>
-                <td contenteditable="true">
-                    2 years free maintenance including spare parts.
-                </td>
-            </tr>
-            </tbody>
-        </table>
-
-        <div style="margin-top: 18px; font-size: 12px;">
-            <strong>Customer Signature:</strong>
-            <span contenteditable="true">_____________________________</span>
-        </div>
+    <!-- الملاحظات -->
+    <div class="section-title">رابعاً: ملاحظات عامة على العرض</div>
+    <div class="notes" contenteditable="true">
+        • الأسعار لا تشمل الأعمال المدنية والكهربائية خارج حدود المصعد.<br>
+        • مدة توريد المصعد من 30 إلى 45 يومًا بعد توقيع العقد وسداد الدفعة المقدمة.<br>
+        • الأسعار تشمل ضريبة القيمة المضافة 15%.
     </div>
+
 </div>
+
 
 <!-- ======================= الصفحة الثالثة: Specification Sheet (مختصرة) ======================= -->
 <div class="page page-break">
@@ -944,6 +697,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
+
 
 
 
