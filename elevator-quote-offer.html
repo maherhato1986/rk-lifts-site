@@ -922,10 +922,52 @@
   });
 </script>
 
+    <script>
+// ---------- قراءة السجل المحفوظ ----------
+document.addEventListener("DOMContentLoaded", function () {
+    const recordSelect = document.getElementById("savedOfferSelect");
+    const priceField = document.getElementById("totalPrice");
+    const brandField = document.getElementById("brand");
+    const speedField = document.getElementById("speed");
+    const capacityField = document.getElementById("capacity");
+    const floorsField = document.getElementById("floors");
+    const countField = document.getElementById("elevatorCount");
+
+    // تحميل السجلات من localStorage
+    const saved = localStorage.getItem("savedElevatorQuotes");
+    if (!saved) return;
+
+    const records = JSON.parse(saved);
+
+    // تعبئة القائمة
+    records.forEach(r => {
+        const opt = document.createElement("option");
+        opt.value = r.quoteID;
+        opt.textContent = `${r.quoteID} – ${r.projectName} – ${r.date}`;
+        recordSelect.appendChild(opt);
+    });
+
+    // عند تغيير الاختيار
+    recordSelect.addEventListener("change", function () {
+        const selected = records.find(r => r.quoteID === this.value);
+        if (!selected) return;
+
+        // تعبئة النموذج
+        brandField.textContent = selected.brand;
+        speedField.textContent = selected.speed;
+        capacityField.textContent = selected.capacity;
+        floorsField.textContent = selected.floors;
+        countField.textContent = selected.elevatorCount;
+        priceField.textContent = selected.totalWithVat;
+    });
+});
+</script>
+
 
 
 </body>
 </html>
+
 
 
 
