@@ -876,8 +876,50 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 </script>
+<script>
+document.getElementById("quote-selector").addEventListener("change", async function () {
+    const quoteId = this.value;
+    if (!quoteId) return;
+
+    // 1) جلب البيانات من السيرفر
+    const res = await fetch(`/api/get-quote/${quoteId}`);
+    const q = await res.json();
+
+    // 2) تعبئة رقم العرض والتاريخ
+    document.getElementById("offer_no").innerText = q.offer_no;
+    document.getElementById("offer_date").innerText = q.offer_date;
+
+    // 3) تعبئة بيانات العميل والمشروع
+    document.querySelector("#client_name").innerText = q.client_name;
+    document.querySelector("#project_name").innerText = q.project_name;
+    document.querySelector("#project_location").innerText = q.project_location;
+    document.querySelector("#client_phone").innerText = q.client_phone;
+    document.querySelector("#client_email").innerText = q.client_email;
+    document.querySelector("#client_address").innerText = q.client_address;
+
+    // 4) ملخص التسعير
+    document.querySelector("#brand").innerText = q.brand;
+    document.querySelector("#capacity_speed").innerText = q.capacity_speed;
+    document.querySelector("#floors_stops").innerText = q.floors_stops;
+    document.querySelector("#elevator_count").innerText = q.elevator_count;
+    document.querySelector("#elevator_price").innerText = q.elevator_price;
+    document.querySelector("#total_price").innerText = q.total_price;
+
+    // 5) جدول المواصفات
+    document.querySelector("#spec_system").innerText = q.spec_system;
+    document.querySelector("#spec_usage").innerText = q.spec_usage;
+    document.querySelector("#spec_cabin").innerText = q.spec_cabin;
+    document.querySelector("#spec_doors").innerText = q.spec_doors;
+    document.querySelector("#spec_flooring").innerText = q.spec_flooring;
+
+    // 6) الملاحظات العامة
+    document.querySelector("#general_notes").innerText = q.general_notes;
+
+});
+</script>
 
 </body>
 </html>
+
 
 
