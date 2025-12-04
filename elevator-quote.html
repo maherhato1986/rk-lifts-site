@@ -573,14 +573,12 @@ const COST_PARAMS = {
 
     // ========================== تعريف الماركات وملفات الأسعار ==========================
     const BRAND_SOURCES = {
-        'FUJI_MRL': {
-            label: 'FUJI – MRL Passenger',
-            jsonPath: 'https://maherhato1986.github.io/rk-lifts-site/fuji_mrl_prices.json'
+    'FUJI_MRL': {
+        label: 'FUJI – MRL Passenger',
+        jsonPath: '/fuji_mrl_prices.json'
+    }
+};
 
-
-        }
-        // لاحقًا يمكن إضافة ماركات أخرى هنا
-    };
 
     async function loadBrandData(brandKey) {
         const config = BRAND_SOURCES[brandKey];
@@ -1227,6 +1225,7 @@ if (!currentBrandData) {
 
 </body>
 </html>
+
 
 
 
