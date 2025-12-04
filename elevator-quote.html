@@ -1204,9 +1204,45 @@ const COST_PARAMS = {
 
 </script>
 
+<script>
+// إظهار/إخفاء باقي خيارات المصعد عند تغيير عدد المصاعد بنفس المواصفات
+document.getElementById("sameSpecsCount").addEventListener("input", function () {
+    const count = parseInt(this.value);
+    const section = document.getElementById("elevatorSpecsSection");
+
+    if (!section) return;
+
+    if (count > 0) {
+        section.style.display = "block";
+    } else {
+        section.style.display = "none";
+    }
+});
+
+// إظهار باقي الحقول بعد اختيار الماركة/الحمولة/السرعة
+function showSpecs() {
+    const brand = document.getElementById("elevatorBrand").value;
+    const capacity = document.getElementById("capacity").value;
+    const speed = document.getElementById("speed").value;
+
+    const section = document.getElementById("elevatorSpecsSection");
+    if (!section) return;
+
+    if (brand && capacity && speed) {
+        section.style.display = "block";
+    } else {
+        section.style.display = "none";
+    }
+}
+
+document.getElementById("elevatorBrand").addEventListener("change", showSpecs);
+document.getElementById("capacity").addEventListener("change", showSpecs);
+document.getElementById("speed").addEventListener("change", showSpecs);
+</script>
 
 </body>
 </html>
+
 
 
 
