@@ -423,16 +423,17 @@
 
 <script>
     // ======================= ثوابت الحسبة (يمكن تعديلها لاحقًا) =======================
-    const COST_PARAMS = {
-        shippingUsdPerLift: 500,     // تكلفة الشحن من الصين لكل مصعد (دولار)
-        insurancePercent: 1,         // نسبة التأمين من سعر المصنع %
-        clearanceSar: 1200,          // تخليص جمركي في السعودية (ريال)
-        inlandTransportSar: 1500,    // نقل من الميناء إلى الرياض (ريال)
-        installationSar: 7500,       // أجور تركيب المصعد (ريال)
-        commissioningSar: 1500,      // أجور التشغيل والاختبارات (ريال)
-        overheadPercent: 10,         // مصاريف تشغيل RKL %
-        profitPercent: 25            // هامش الربح %
-    };
+const COST_PARAMS = {
+    shippingUsdPerLift: 500,
+    insurancePercent: 1,
+    clearanceSar: 1200,
+    inlandTransportSar: 1500,
+    installationSar: 9000,   // ← عدّلها إلى التكلفة الحقيقية
+    commissioningSar: 2000,  // ← عدّل حسب رغبتك
+    overheadPercent: 12,     // ← لو تريد تقليل أو رفع المصاريف التشغيلية
+    profitPercent: 25
+};
+
 
         // تخزين عروض الأسعار
     const QUOTES_STORAGE_KEY = 'rkl_quotes';
@@ -1206,6 +1207,7 @@
 
 </body>
 </html>
+
 
 
 
