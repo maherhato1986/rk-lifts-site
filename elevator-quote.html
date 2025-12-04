@@ -627,35 +627,45 @@ const COST_PARAMS = {
         capacitySelect.disabled = false;
     }
 
-    function fillSpeedOptions() {
-        const capacitySelect = document.getElementById('capacity');
-        const speedSelect = document.getElementById('speed');
+function fillSpeedOptions() {
+    const capacitySelect = document.getElementById('capacity');
+    const speedSelect = document.getElementById('speed');
 
-        const selectedCapacity = capacitySelect.value;
-        speedSelect.innerHTML = '<option value="">اختر السرعة...</option>';
+    const selectedCapacity = capacitySelect.value;
+    speedSelect.innerHTML = '<option value="">اختر السرعة...</option>';
 
-        if (!currentBrandData || !selectedCapacity) {
-            speedSelect.disabled = true;
-            return;
-        }
-
-        const speeds = Array.from(
-            new Set(
-                currentBrandData.models
-                    .filter(m => m.capacityKg === selectedCapacity)
-                    .map(m => m.speedMps)
-            )
-        ).sort((a, b) => a - b);
-
-        speeds.forEach(sp => {
-            const opt = document.createElement('option');
-            opt.value = sp;
-            opt.textContent = sp + ' m/s';
-            speedSelect.appendChild(opt);
-        });
-
-        speedSelect.disabled = false;
+    if (!currentBrandData || !selectedCapacity) {
+        speedSelect.disabled = true;
+        return;
     }
+
+    // 🔥 دعم السعات المركبة مثل 320-450
+    const speeds = Array.from(
+        new Set(
+            currentBrandData.models
+                .filter(m => {
+                    // إذا كانت السعة مثل 320-450
+                    if (m.capacityKg.includes('-')) {
+                        const [min, max] = m.capacityKg.split('-').map(Number);
+                        return Number(selectedCapacity) >= min && Number(selectedCapacity) <= max;
+                    }
+                    // سعات مفردة
+                    return m.capacityKg === selectedCapacity;
+                })
+                .map(m => m.speedMps)
+        )
+    ).sort((a, b) => a - b);
+
+    speeds.forEach(sp => {
+        const opt = document.createElement('option');
+        opt.value = sp;
+        opt.textContent = sp + ' m/s';
+        speedSelect.appendChild(opt);
+    });
+
+    speedSelect.disabled = false;
+}
+
 
     function findModel(capacity, speed) {
         if (!currentBrandData || !currentBrandData.models) return null;
@@ -1216,6 +1226,7 @@ if (!currentBrandData) {
 
 </body>
 </html>
+
 
 
 
