@@ -254,94 +254,75 @@
         <span id="offer_date" contenteditable="true">2025-12-03</span>
     </div>
 
-    <!-- بيانات العميل والمشروع -->
-    <div class="section">
-        <div class="section-title">أولاً: بيانات العميل والمشروع</div>
-        <div class="info-grid">
-            <div class="info-row">
-                <div class="info-label">العميل:</div>
-                <div class="info-value" contenteditable="true">
-                    السادة / ....................................................
-                </div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">العنوان:</div>
-                <div class="info-value" contenteditable="true">
-                    ........................................ / المدينة: ..............................
-                </div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">اسم المشروع:</div>
-                <div class="info-value" contenteditable="true">
-                    مشروع ............................................................
-                </div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">موقع المشروع:</div>
-                <div class="info-value" contenteditable="true">
-                    ............................................................
-                </div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">هاتف/جوال:</div>
-                <div class="info-value" contenteditable="true">
-                    ............................................................
-                </div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">بريد إلكتروني:</div>
-                <div class="info-value" contenteditable="true">
-                    ............................................................
-                </div>
-            </div>
-        </div>
+<div class="info-grid">
+
+    <div class="info-row">
+        <div class="info-label">العميل:</div>
+        <div class="info-value" id="client_name" contenteditable="true"></div>
     </div>
 
-    <!-- ملخص التسعير -->
-    <div class="section">
-        <div class="section-title">ثانياً: ملخص التسعير</div>
-        <div class="info-grid">
-            <div class="info-row">
-                <div class="info-label">ماركة المصعد:</div>
-                <div class="info-value" contenteditable="true">
-                    FUJI – MRL Passenger
-                </div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">الحمولة / السرعة:</div>
-                <div class="info-value" contenteditable="true">
-                    450–320 kg / 1.0 m/s
-                </div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">عدد الأدوار:</div>
-                <div class="info-value" contenteditable="true">
-                    .... أدوار – .... توقفات
-                </div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">عدد المصاعد:</div>
-                <div class="info-value" contenteditable="true">
-                    عدد ( .... ) مصعد
-                </div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">قيمة المصعد الواحد (شامل الضريبة):</div>
-                <div class="info-value" contenteditable="true">
-                    SAR 000,000.00
-                </div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">الإجمالي شامل الضريبة:</div>
-                <div class="info-value" contenteditable="true">
-                    SAR 000,000.00
-                </div>
-            </div>
-        </div>
-        <div class="hint">
-            جميع الأرقام أعلاه قابلة للتعديل يدويًا؛ لاحقًا يمكن ربطها مباشرة بنتائج صفحة حساب عرض السعر.
-        </div>
+    <div class="info-row">
+        <div class="info-label">العنوان:</div>
+        <div class="info-value" id="client_address" contenteditable="true"></div>
     </div>
+
+    <div class="info-row">
+        <div class="info-label">اسم المشروع:</div>
+        <div class="info-value" id="project_name" contenteditable="true"></div>
+    </div>
+
+    <div class="info-row">
+        <div class="info-label">موقع المشروع:</div>
+        <div class="info-value" id="project_location" contenteditable="true"></div>
+    </div>
+
+    <div class="info-row">
+        <div class="info-label">هاتف/جوال:</div>
+        <div class="info-value" id="client_phone" contenteditable="true"></div>
+    </div>
+
+    <div class="info-row">
+        <div class="info-label">بريد إلكتروني:</div>
+        <div class="info-value" id="client_email" contenteditable="true"></div>
+    </div>
+
+</div>
+
+
+<div class="info-grid">
+
+    <div class="info-row">
+        <div class="info-label">ماركة المصعد:</div>
+        <div class="info-value" id="brand" contenteditable="true"></div>
+    </div>
+
+    <div class="info-row">
+        <div class="info-label">الحمولة / السرعة:</div>
+        <div class="info-value" id="capacity_speed" contenteditable="true"></div>
+    </div>
+
+    <div class="info-row">
+        <div class="info-label">عدد الأدوار:</div>
+        <div class="info-value" id="floors_stops" contenteditable="true"></div>
+    </div>
+
+    <div class="info-row">
+        <div class="info-label">عدد المصاعد:</div>
+        <div class="info-value" id="elevator_count" contenteditable="true"></div>
+    </div>
+
+    <div class="info-row">
+        <div class="info-label">قيمة المصعد الواحد:</div>
+        <div class="info-value" id="elevator_price" contenteditable="true"></div>
+    </div>
+
+    <div class="info-row">
+        <div class="info-label">الإجمالي شامل الضريبة:</div>
+        <div class="info-value" id="total_price" contenteditable="true"></div>
+    </div>
+
+</div>
+
 
     <!-- المواصفات العامة المختصرة -->
     <div class="section">
@@ -963,6 +944,7 @@ document.getElementById("quote-selector").addEventListener("change", async funct
 
 </body>
 </html>
+
 
 
 
