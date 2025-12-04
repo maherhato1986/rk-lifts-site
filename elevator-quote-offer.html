@@ -917,9 +917,53 @@ document.getElementById("quote-selector").addEventListener("change", async funct
 
 });
 </script>
+<script>
+document.getElementById("quote-selector").addEventListener("change", async function () {
+    const index = this.value;
+    if (index === "") return;
+
+    // قراءة بيانات عروض الأسعار من LocalStorage
+    const quotes = JSON.parse(localStorage.getItem("rkl_quotes") || "[]");
+    const q = quotes[index];
+    if (!q) return;
+
+    // رقم العرض والتاريخ
+    document.getElementById("offer_no").innerText   = q.quoteNumber;
+    document.getElementById("offer_date").innerText = q.timestamp?.slice(0, 10) || "";
+
+    // بيانات العميل
+    document.getElementById("client_name").innerText     = q.customerName || "";
+    document.getElementById("client_address").innerText  = q.customerAddress || "";
+    document.getElementById("client_phone").innerText    = q.customerPhone || "";
+    document.getElementById("client_email").innerText    = q.customerEmail || "";
+
+    // بيانات المشروع
+    document.getElementById("project_name").innerText      = q.projectName || "";
+    document.getElementById("project_location").innerText  = q.projectLocation || "";
+
+    // ملخص التسعير
+    document.getElementById("brand").innerText          = q.brand || "";
+    document.getElementById("capacity_speed").innerText = q.capacity_speed || "";
+    document.getElementById("floors_stops").innerText   = q.floors_stops || "";
+    document.getElementById("elevator_count").innerText = q.elevator_count || "";
+    document.getElementById("elevator_price").innerText = q.elevator_price || "";
+    document.getElementById("total_price").innerText    = q.total_price || "";
+
+    // المواصفات
+    document.getElementById("spec_system").innerText   = q.spec_system || "";
+    document.getElementById("spec_usage").innerText    = q.spec_usage || "";
+    document.getElementById("spec_cabin").innerText    = q.spec_cabin || "";
+    document.getElementById("spec_doors").innerText    = q.spec_doors || "";
+    document.getElementById("spec_flooring").innerText = q.spec_flooring || "";
+
+    // الملاحظات
+    document.getElementById("general_notes").innerText = q.general_notes || "";
+});
+</script>
 
 </body>
 </html>
+
 
 
 
