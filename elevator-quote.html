@@ -508,14 +508,15 @@
         }
     }
 
-    function saveQuotesToStorage(quotes) {
-
-        localStorage.setItem("selected_quote", JSON.stringify(quoteData));
-window.location.href = "elevator-quote-offer.html";
-
-   
-
+  function saveQuotesToStorage(quotes) {
+    try {
+        localStorage.setItem(QUOTES_STORAGE_KEY, JSON.stringify(quotes));
+    } catch (e) {
+        console.error("خطأ أثناء حفظ عروض الأسعار:", e);
+        alert("تعذر حفظ عرض السعر في هذا الجهاز.");
     }
+}
+
 
     function renderQuotesTable() {
         const tbody = document.querySelector('#quotes-table tbody');
@@ -1205,6 +1206,7 @@ window.location.href = "elevator-quote-offer.html";
 
 </body>
 </html>
+
 
 
 
