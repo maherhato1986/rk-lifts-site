@@ -887,14 +887,16 @@ document.getElementById("quote-selector").addEventListener("change", async funct
     document.querySelector("#total_price").innerText = q.total_price;
 
     // 5) جدول المواصفات
-    document.querySelector("#spec_system").innerText = q.spec_system;
-    document.querySelector("#spec_usage").innerText = q.spec_usage;
-    document.querySelector("#spec_cabin").innerText = q.spec_cabin;
-    document.querySelector("#spec_doors").innerText = q.spec_doors;
-    document.querySelector("#spec_flooring").innerText = q.spec_flooring;
+<td id="spec_system" contenteditable="true"></td>
+<td id="spec_usage" contenteditable="true"></td>
+<td id="spec_cabin" contenteditable="true"></td>
+<td id="spec_doors" contenteditable="true"></td>
+<td id="spec_flooring" contenteditable="true"></td>
+
 
     // 6) الملاحظات العامة
-    document.querySelector("#general_notes").innerText = q.general_notes;
+   <div class="notes" id="general_notes" contenteditable="true"></div>
+
 
 });
 </script>
@@ -944,6 +946,7 @@ document.getElementById("quote-selector").addEventListener("change", async funct
 
 </body>
 </html>
+
 
 
 
