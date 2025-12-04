@@ -781,22 +781,43 @@
         }
     }
 
-    // تطبيق بيانات عرض السعر المختار على النموذج (نبدأ بالأساسيات)
-    function applyQuoteToDocument(q) {
-        if (!q) return;
+   function applyQuoteToDocument(q) {
 
-        // رقم عرض السعر والتاريخ
-        const offerNoSpan   = document.getElementById('offer_no');
-        const offerDateSpan = document.getElementById('offer_date');
+    // رقم العرض والتاريخ
+    document.getElementById("offer_no").innerText = q.quoteNumber || "";
+    document.getElementById("offer_date").innerText = (q.timestamp || "").slice(0, 10);
 
-        if (offerNoSpan)   offerNoSpan.textContent   = q.quoteNumber || '';
-        if (offerDateSpan) offerDateSpan.textContent = (q.timestamp || '').slice(0, 10);
+    // بيانات العميل
+    document.getElementById("client_name").innerText = q.customerName || "";
+    document.getElementById("client_address").innerText = q.customerAddress || "";
+    document.getElementById("client_phone").innerText = q.customerPhone || "";
+    document.getElementById("client_email").innerText = q.customerEmail || "";
 
-        // يمكنك لاحقًا إضافة ربط لباقي الحقول (العميل، المشروع، الماركة، العدد، الإجمالي...)
-        // مثال لو أضفت span أو div لها id مناسب:
-        // const customerDiv = document.getElementById('offer_customer_name');
-        // if (customerDiv) customerDiv.textContent = 'السادة / ' + (q.customerName || '');
-    }
+    // بيانات المشروع
+    document.getElementById("project_name").innerText = q.projectName || "";
+    document.getElementById("project_location").innerText = q.projectLocation || "";
+
+    // ملخص التسعير
+    document.getElementById("brand").innerText = q.brand || "";
+    document.getElementById("capacity_speed").innerText = q.capacity_speed || "";
+    document.getElementById("floors_stops").innerText = q.floors_stops || "";
+    document.getElementById("elevator_count").innerText = q.elevator_count || "";
+    document.getElementById("elevator_price").innerText = q.elevator_price || "";
+    document.getElementById("total_price").innerText = q.total_price || "";
+
+    // ملخص عرض السعر النصي
+    const summaryBox = document.querySelector("#summary_box");
+    if (summaryBox) summaryBox.innerText = q.summaryText || "";
+
+    // المواصفات العامة (اختياري إذا كنت تخزّنها)
+    if (q.spec_system) document.getElementById("spec_system").innerText = q.spec_system;
+    if (q.spec_usage) document.getElementById("spec_usage").innerText = q.spec_usage;
+    if (q.spec_cabin) document.getElementById("spec_cabin").innerText = q.spec_cabin;
+    if (q.spec_doors) document.getElementById("spec_doors").innerText = q.spec_doors;
+    if (q.spec_flooring) document.getElementById("spec_flooring").innerText = q.spec_flooring;
+}
+
+   
 
     document.addEventListener('DOMContentLoaded', () => {
         const select = document.getElementById('quote-selector');
@@ -946,6 +967,7 @@ document.getElementById("quote-selector").addEventListener("change", async funct
 
 </body>
 </html>
+
 
 
 
