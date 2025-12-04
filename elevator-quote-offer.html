@@ -339,102 +339,93 @@
 <hr style="margin: 20px 0;">
 
 <!-- بيانات العميل والمشروع -->
-<div class="section-title">أولاً: بيانات العميل والمشروع</div>
+
 
 <table class="table-offer">
     <tr>
         <th>اسم العميل</th>
-        <td id="customerName">---------</td>
+        <td id="customerName" contenteditable="true">---------</td>
         <th>رقم الجوال</th>
-        <td id="customerPhone">---------</td>
+        <td id="customerPhone" contenteditable="true">---------</td>
     </tr>
 
     <tr>
         <th>البريد الإلكتروني</th>
-        <td id="customerEmail">---------</td>
+        <td id="customerEmail" contenteditable="true">---------</td>
         <th>المدينة</th>
-        <td id="projectCity">---------</td>
+        <td id="projectCity" contenteditable="true">---------</td>
     </tr>
 
     <tr>
         <th>اسم المشروع</th>
-        <td id="projectName">---------</td>
+        <td id="projectName" contenteditable="true">---------</td>
         <th>موقع المشروع</th>
-        <td id="projectLocation">---------</td>
+        <td id="projectLocation" contenteditable="true">---------</td>
     </tr>
 
     <tr>
         <th>العنوان</th>
-        <td colspan="3" id="projectAddress">---------</td>
+        <td colspan="3" id="projectAddress" contenteditable="true">---------</td>
     </tr>
 </table>
 
-<!-- ملخص التسعير -->
-<div class="section-title">ثانياً: ملخص التسعير</div>
 
+<!-- ملخص التسعير -->
 <table class="table-offer">
     <tr>
         <th>الماركة</th>
-        <td id="brand">---------</td>
+        <td id="brand" contenteditable="true">---------</td>
         <th>نوع النظام</th>
-        <td id="systemType">---------</td>
+        <td id="systemType" contenteditable="true">---------</td>
     </tr>
 
     <tr>
         <th>الحمولة / السرعة</th>
-        <td id="capacitySpeed">---------</td>
+        <td id="capacitySpeed" contenteditable="true">---------</td>
         <th>عدد الأدوار</th>
-        <td id="floors">---------</td>
+        <td id="floors" contenteditable="true">---------</td>
     </tr>
 
     <tr>
         <th>عدد المصاعد</th>
-        <td id="elevatorCount">---------</td>
+        <td id="elevatorCount" contenteditable="true">---------</td>
         <th>سعر المصعد (شامل الضريبة)</th>
-        <td id="liftPrice">---------</td>
+        <td id="liftPrice" contenteditable="true">---------</td>
     </tr>
 
     <tr>
         <th>الإجمالي شامل الضريبة</th>
-        <td colspan="3" id="totalPrice">---------</td>
+        <td colspan="3" id="totalPrice" contenteditable="true">---------</td>
     </tr>
 </table>
 
-<!-- المواصفات العامة -->
-<div class="section-title">ثالثاً: المواصفات العامة (مختصر)</div>
 
-<table class="table-offer">
-    <tr>
-        <th>م</th>
-        <th>البند</th>
-        <th>الوصف</th>
-    </tr>
-    <tr>
-        <td>1</td>
-        <td>نوع النظام</td>
-        <td id="specSystem">---------</td>
-    </tr>
-    <tr>
-        <td>2</td>
-        <td>الاستخدام</td>
-        <td id="specUsage">---------</td>
-    </tr>
-    <tr>
-        <td>3</td>
-        <td>تشطيب الكبينة</td>
-        <td id="specCabin">---------</td>
-    </tr>
-    <tr>
-        <td>4</td>
-        <td>تشطيب الأبواب</td>
-        <td id="specDoors">---------</td>
-    </tr>
-    <tr>
-        <td>5</td>
-        <td>تشطيب الأرضية</td>
-        <td id="specFloor">---------</td>
-    </tr>
-</table>
+<tr>
+    <td>1</td>
+    <td>نوع النظام</td>
+    <td id="specSystem" contenteditable="true">---------</td>
+</tr>
+<tr>
+    <td>2</td>
+    <td>الاستخدام</td>
+    <td id="specUsage" contenteditable="true">---------</td>
+</tr>
+<tr>
+    <td>3</td>
+    <td>تشطيب الكبينة</td>
+    <td id="specCabin" contenteditable="true">---------</td>
+</tr>
+<tr>
+    <td>4</td>
+    <td>تشطيب الأبواب</td>
+    <td id="specDoors" contenteditable="true">---------</td>
+</tr>
+<tr>
+    <td>5</td>
+    <td>تشطيب الأرضية</td>
+    <td id="specFloor" contenteditable="true">---------</td>
+</tr>
+
 
 <!-- الملاحظات -->
 <div class="section-title">رابعاً: ملاحظات عامة على العرض</div>
@@ -813,234 +804,129 @@
         والله الموفق، وهو خير الشاهدين.
     </div>
 </div>
-<script>
-    // نفس المفتاح المستخدم في elevator-quote.html
-    const QUOTES_STORAGE_KEY = 'rkl_quotes';
 
-    function loadStoredQuotes() {
-        try {
-            return JSON.parse(localStorage.getItem(QUOTES_STORAGE_KEY) || '[]');
-        } catch (e) {
-            console.error('خطأ في قراءة عروض الأسعار من LocalStorage', e);
-            return [];
-        }
+    <script>
+  const QUOTES_STORAGE_KEY = 'rkl_quotes';
+
+  function loadStoredQuotes() {
+    try {
+      return JSON.parse(localStorage.getItem(QUOTES_STORAGE_KEY) || '[]');
+    } catch (e) {
+      console.error('خطأ في قراءة عروض الأسعار من LocalStorage', e);
+      return [];
     }
+  }
 
-    // تعبئة القائمة المنسدلة بعروض الأسعار المحفوظة
-    function populateQuoteSelector() {
-        const select = document.getElementById('quote-selector');
-        if (!select) return;
+  function populateQuoteSelector() {
+    const select = document.getElementById('quote-selector');
+    if (!select) return;
 
-        const quotes = loadStoredQuotes();
+    const quotes = loadStoredQuotes();
+    select.innerHTML = '<option value="">اختر عرض سعر من السجل...</option>';
 
-        select.innerHTML = '<option value="">اختر عرض سعر من السجل...</option>';
+    quotes.forEach((q, index) => {
+      const dateStr   = q.timestamp ? q.timestamp.slice(0, 10) : '';
+      const customer  = q.customerName || 'بدون اسم عميل';
+      const quoteNo   = q.quoteNumber || `#${index + 1}`;
+      const opt       = document.createElement('option');
+      opt.value       = index.toString();
+      opt.textContent = `${quoteNo} – ${customer} – ${dateStr}`;
+      select.appendChild(opt);
+    });
 
-        quotes.forEach((q, index) => {
-            const dateStr = q.timestamp ? q.timestamp.slice(0, 10) : '';
-            const customer = q.customerName || 'بدون اسم عميل';
-            const quoteNo = q.quoteNumber || 'بدون رقم';
-
-            const opt = document.createElement('option');
-            opt.value = index.toString();
-            opt.textContent = `${dateStr} – ${customer} – ${quoteNo}`;
-            select.appendChild(opt);
-        });
-
-        if (!quotes.length) {
-            const opt = document.createElement('option');
-            opt.value = '';
-            opt.textContent = 'لا توجد عروض أسعار محفوظة في هذا المتصفح';
-            opt.disabled = true;
-            select.appendChild(opt);
-        }
+    if (!quotes.length) {
+      const opt = document.createElement('option');
+      opt.value = '';
+      opt.textContent = 'لا توجد عروض أسعار محفوظة في هذا المتصفح';
+      opt.disabled = true;
+      select.appendChild(opt);
     }
+  }
 
-   function applyQuoteToDocument(q) {
-
+  function applyQuoteToFirstPage(q) {
     // رقم العرض والتاريخ
-    document.getElementById("offer_no").innerText = q.quoteNumber || "";
-    document.getElementById("offer_date").innerText = (q.timestamp || "").slice(0, 10);
+    const offerNumber = document.getElementById('offerNumber');
+    const offerDate   = document.getElementById('offerDate');
+    if (offerNumber) offerNumber.textContent = q.quoteNumber || '';
+    if (offerDate)   offerDate.textContent   = (q.timestamp || '').slice(0, 10);
 
     // بيانات العميل
-    document.getElementById("client_name").innerText = q.customerName || "";
-    document.getElementById("client_address").innerText = q.customerAddress || "";
-    document.getElementById("client_phone").innerText = q.customerPhone || "";
-    document.getElementById("client_email").innerText = q.customerEmail || "";
+    const customerName    = document.getElementById('customerName');
+    const customerPhone   = document.getElementById('customerPhone');
+    const customerEmail   = document.getElementById('customerEmail');
+    const projectCity     = document.getElementById('projectCity');
+    const projectAddress  = document.getElementById('projectAddress');
+
+    if (customerName)   customerName.textContent   = q.customerName   || '';
+    if (customerPhone)  customerPhone.textContent  = q.customerPhone  || '';
+    if (customerEmail)  customerEmail.textContent  = q.customerEmail  || '';
+    // المدينة إذا لم يكن لها حقل مستقل، نتركها فارغة ليعدلها المستخدم يدويًا
+    if (projectCity)    projectCity.textContent    = q.projectCity || '';
+    if (projectAddress) projectAddress.textContent = q.customerAddress || '';
 
     // بيانات المشروع
-    document.getElementById("project_name").innerText = q.projectName || "";
-    document.getElementById("project_location").innerText = q.projectLocation || "";
+    const projectName     = document.getElementById('projectName');
+    const projectLocation = document.getElementById('projectLocation');
+    if (projectName)     projectName.textContent     = q.projectName     || '';
+    if (projectLocation) projectLocation.textContent = q.projectLocation || '';
 
     // ملخص التسعير
-    document.getElementById("brand").innerText = q.brand || "";
-    document.getElementById("capacity_speed").innerText = q.capacity_speed || "";
-    document.getElementById("floors_stops").innerText = q.floors_stops || "";
-    document.getElementById("elevator_count").innerText = q.elevator_count || "";
-    document.getElementById("elevator_price").innerText = q.elevator_price || "";
-    document.getElementById("total_price").innerText = q.total_price || "";
+    const brand         = document.getElementById('brand');
+    const systemType    = document.getElementById('systemType');
+    const capacitySpeed = document.getElementById('capacitySpeed');
+    const floors        = document.getElementById('floors');
+    const elevatorCount = document.getElementById('elevatorCount');
+    const liftPrice     = document.getElementById('liftPrice');
+    const totalPrice    = document.getElementById('totalPrice');
 
-    // ملخص عرض السعر النصي
-    const summaryBox = document.querySelector("#summary_box");
-    if (summaryBox) summaryBox.innerText = q.summaryText || "";
+    if (brand)         brand.textContent         = q.brand || '';
+    if (systemType)    systemType.textContent    = q.spec_system || '';   // أو استخرجها من brand
+    if (capacitySpeed) capacitySpeed.textContent = q.capacity_speed || '';
+    if (floors)        floors.textContent        = q.floors_stops || '';
+    if (elevatorCount) elevatorCount.textContent = q.elevator_count || '';
+    if (liftPrice)     liftPrice.textContent     = q.elevator_price || '';
+    if (totalPrice)    totalPrice.textContent    = q.total_price || '';
 
-    // المواصفات العامة (اختياري إذا كنت تخزّنها)
-    if (q.spec_system) document.getElementById("spec_system").innerText = q.spec_system;
-    if (q.spec_usage) document.getElementById("spec_usage").innerText = q.spec_usage;
-    if (q.spec_cabin) document.getElementById("spec_cabin").innerText = q.spec_cabin;
-    if (q.spec_doors) document.getElementById("spec_doors").innerText = q.spec_doors;
-    if (q.spec_flooring) document.getElementById("spec_flooring").innerText = q.spec_flooring;
-}
+    // المواصفات المختصرة
+    const specSystem = document.getElementById('specSystem');
+    const specUsage  = document.getElementById('specUsage');
+    const specCabin  = document.getElementById('specCabin');
+    const specDoors  = document.getElementById('specDoors');
+    const specFloor  = document.getElementById('specFloor');
 
-   
+    if (specSystem) specSystem.textContent = q.spec_system   || '';
+    if (specUsage)  specUsage.textContent  = q.spec_usage    || '';
+    if (specCabin)  specCabin.textContent  = q.spec_cabin    || '';
+    if (specDoors)  specDoors.textContent  = q.spec_doors    || '';
+    if (specFloor)  specFloor.textContent  = q.spec_flooring || '';
 
-    document.addEventListener('DOMContentLoaded', () => {
-        const select = document.getElementById('quote-selector');
-        if (!select) return;
+    // ملاحظات عامة إن وجدت في السجل
+    const notesBlock = document.querySelector('.notes[contenteditable="true"]');
+    if (notesBlock && q.general_notes) {
+      notesBlock.textContent = q.general_notes;
+    }
+  }
 
-        // تعبئة القائمة عند تحميل الصفحة
-        populateQuoteSelector();
+  document.addEventListener('DOMContentLoaded', () => {
+    const select = document.getElementById('quote-selector');
+    if (!select) return;
 
-        // عند تغيير الاختيار: نقرأ العرض ونطبقه على النموذج
-        select.addEventListener('change', () => {
-            const quotes = loadStoredQuotes();
-            const index = Number(select.value);
-            const selectedQuote = quotes[index];
+    populateQuoteSelector();
 
-            if (selectedQuote) {
-                applyQuoteToDocument(selectedQuote);
-            }
-        });
+    select.addEventListener('change', () => {
+      const quotes = loadStoredQuotes();
+      const index  = Number(select.value);
+      const q      = quotes[index];
+      if (q) applyQuoteToFirstPage(q);
     });
+  });
 </script>
-<script>
-// ---------- قراءة السجل المحفوظ ----------
-document.addEventListener("DOMContentLoaded", function () {
-    const recordSelect = document.getElementById("savedOfferSelect");
-    const priceField = document.getElementById("totalPrice");
-    const brandField = document.getElementById("brand");
-    const speedField = document.getElementById("speed");
-    const capacityField = document.getElementById("capacity");
-    const floorsField = document.getElementById("floors");
-    const countField = document.getElementById("elevatorCount");
-
-    // تحميل السجلات من localStorage
-    const saved = localStorage.getItem("savedElevatorQuotes");
-    if (!saved) return;
-
-    const records = JSON.parse(saved);
-
-    // تعبئة القائمة
-    records.forEach(r => {
-        const opt = document.createElement("option");
-        opt.value = r.quoteID;
-        opt.textContent = `${r.quoteID} – ${r.projectName} – ${r.date}`;
-        recordSelect.appendChild(opt);
-    });
-
-    // عند تغيير الاختيار
-    recordSelect.addEventListener("change", function () {
-        const selected = records.find(r => r.quoteID === this.value);
-        if (!selected) return;
-
-        // تعبئة النموذج
-        brandField.textContent = selected.brand;
-        speedField.textContent = selected.speed;
-        capacityField.textContent = selected.capacity;
-        floorsField.textContent = selected.floors;
-        countField.textContent = selected.elevatorCount;
-        priceField.textContent = selected.totalWithVat;
-    });
-});
-</script>
-<script>
-document.getElementById("quote-selector").addEventListener("change", async function () {
-    const quoteId = this.value;
-    if (!quoteId) return;
-
-    // 1) جلب البيانات من السيرفر
-    const res = await fetch(`/api/get-quote/${quoteId}`);
-    const q = await res.json();
-
-    // 2) تعبئة رقم العرض والتاريخ
-    document.getElementById("offer_no").innerText = q.offer_no;
-    document.getElementById("offer_date").innerText = q.offer_date;
-
-    // 3) تعبئة بيانات العميل والمشروع
-    document.querySelector("#client_name").innerText = q.client_name;
-    document.querySelector("#project_name").innerText = q.project_name;
-    document.querySelector("#project_location").innerText = q.project_location;
-    document.querySelector("#client_phone").innerText = q.client_phone;
-    document.querySelector("#client_email").innerText = q.client_email;
-    document.querySelector("#client_address").innerText = q.client_address;
-
-    // 4) ملخص التسعير
-    document.querySelector("#brand").innerText = q.brand;
-    document.querySelector("#capacity_speed").innerText = q.capacity_speed;
-    document.querySelector("#floors_stops").innerText = q.floors_stops;
-    document.querySelector("#elevator_count").innerText = q.elevator_count;
-    document.querySelector("#elevator_price").innerText = q.elevator_price;
-    document.querySelector("#total_price").innerText = q.total_price;
-
-    // 5) جدول المواصفات
-<td id="spec_system" contenteditable="true"></td>
-<td id="spec_usage" contenteditable="true"></td>
-<td id="spec_cabin" contenteditable="true"></td>
-<td id="spec_doors" contenteditable="true"></td>
-<td id="spec_flooring" contenteditable="true"></td>
 
 
-    // 6) الملاحظات العامة
-   <div class="notes" id="general_notes" contenteditable="true"></div>
-
-
-});
-</script>
-<script>
-document.getElementById("quote-selector").addEventListener("change", async function () {
-    const index = this.value;
-    if (index === "") return;
-
-    // قراءة بيانات عروض الأسعار من LocalStorage
-    const quotes = JSON.parse(localStorage.getItem("rkl_quotes") || "[]");
-    const q = quotes[index];
-    if (!q) return;
-
-    // رقم العرض والتاريخ
-    document.getElementById("offer_no").innerText   = q.quoteNumber;
-    document.getElementById("offer_date").innerText = q.timestamp?.slice(0, 10) || "";
-
-    // بيانات العميل
-    document.getElementById("client_name").innerText     = q.customerName || "";
-    document.getElementById("client_address").innerText  = q.customerAddress || "";
-    document.getElementById("client_phone").innerText    = q.customerPhone || "";
-    document.getElementById("client_email").innerText    = q.customerEmail || "";
-
-    // بيانات المشروع
-    document.getElementById("project_name").innerText      = q.projectName || "";
-    document.getElementById("project_location").innerText  = q.projectLocation || "";
-
-    // ملخص التسعير
-    document.getElementById("brand").innerText          = q.brand || "";
-    document.getElementById("capacity_speed").innerText = q.capacity_speed || "";
-    document.getElementById("floors_stops").innerText   = q.floors_stops || "";
-    document.getElementById("elevator_count").innerText = q.elevator_count || "";
-    document.getElementById("elevator_price").innerText = q.elevator_price || "";
-    document.getElementById("total_price").innerText    = q.total_price || "";
-
-    // المواصفات
-    document.getElementById("spec_system").innerText   = q.spec_system || "";
-    document.getElementById("spec_usage").innerText    = q.spec_usage || "";
-    document.getElementById("spec_cabin").innerText    = q.spec_cabin || "";
-    document.getElementById("spec_doors").innerText    = q.spec_doors || "";
-    document.getElementById("spec_flooring").innerText = q.spec_flooring || "";
-
-    // الملاحظات
-    document.getElementById("general_notes").innerText = q.general_notes || "";
-});
-</script>
 
 </body>
 </html>
+
 
 
 
