@@ -1,8 +1,10 @@
 {
   "brand": "FUJI",
   "series": "MRL Passenger",
-  "exchangeRateToSAR": 3.75
-  "models": [
+
+  "exchangeRateToSAR": 3.75,
+"models": [
+
     {
       "code": "FJ-MRL-320-0.4",
       "capacityKg": "320-450",
