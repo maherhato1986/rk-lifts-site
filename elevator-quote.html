@@ -864,11 +864,13 @@ const COST_PARAMS = {
         }
 
         if (!currentBrandData) {
-            await loadBrandData(brandKey);
-        }
-        if (!currentBrandData) {
-            return;
-        }
+    await loadBrandData(brandKey);
+}
+
+if (!currentBrandData) {
+    console.log("❌ لم يتم تحميل بيانات الماركة");
+    return;
+}
 
         const model = findModel(capacity, speed);
         if (!model) {
@@ -1210,6 +1212,7 @@ const COST_PARAMS = {
 
 </body>
 </html>
+
 
 
 
