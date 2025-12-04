@@ -805,9 +805,10 @@
     </div>
 </div>
 
-    <script>
+   <script>
   const QUOTES_STORAGE_KEY = 'rkl_quotes';
 
+  // تحميل العروض من LocalStorage
   function loadStoredQuotes() {
     try {
       return JSON.parse(localStorage.getItem(QUOTES_STORAGE_KEY) || '[]');
@@ -817,6 +818,7 @@
     }
   }
 
+  // تعبئة قائمة اختيار العروض
   function populateQuoteSelector() {
     const select = document.getElementById('quote-selector');
     if (!select) return;
@@ -843,70 +845,107 @@
     }
   }
 
-  function applyQuoteToFirstPage(q) {
+  // توحيد أسماء الحقول بين الصفحتين
+  function normalizeQuote(q) {
+    return {
+      quoteNumber:     q.quoteNumber || "",
+      timestamp:       q.timestamp   || "",
+
+      // بيانات العميل
+      customerName:    q.customerName    || "",
+      customerPhone:   q.customerPhone   || "",
+      customerEmail:   q.customerEmail   || "",
+      projectCity:     q.projectCity     || "",
+      customerAddress: q.customerAddress || "",
+
+      // بيانات المشروع
+      projectName:     q.projectName     || "",
+      projectLocation: q.projectLocation || "",
+
+      // المواصفات الفنية التي تأتي من elevator-quote.html
+      brand:           q.brand        || "",
+      systemType:      q.brand        || "",   // نفس القيمة
+      capacity:        q.capacity     || "",
+      speed:           q.speed        || "",
+      stops:           q.stops        || "",
+      elevatorCount:   q.elevatorCount || 1,
+
+      elevatorPrice:   q.elevatorPrice || q.elevator_price || "",
+      totalPrice:      q.totalPrice    || q.total_price    || "",
+
+      // مواصفات تفصيلية
+      spec_system:     q.spec_system   || q.brand || "",
+      spec_usage:      q.spec_usage    || "",
+      spec_cabin:      q.spec_cabin    || "",
+      spec_doors:      q.spec_doors    || "",
+      spec_flooring:   q.spec_flooring || "",
+
+      // الملاحظات العامة
+      general_notes:   q.general_notes || "",
+
+      // جميع البنود Array
+      items: q.items || []
+    };
+  }
+
+  // تطبيق البيانات على صفحة العرض
+  function applyQuoteToFirstPage(qRaw) {
+
+    const q = normalizeQuote(qRaw);
+
     // رقم العرض والتاريخ
-    const offerNumber = document.getElementById('offerNumber');
-    const offerDate   = document.getElementById('offerDate');
-    if (offerNumber) offerNumber.textContent = q.quoteNumber || '';
-    if (offerDate)   offerDate.textContent   = (q.timestamp || '').slice(0, 10);
+    document.getElementById('offerNumber').textContent = q.quoteNumber;
+    document.getElementById('offerDate').textContent   = q.timestamp.slice(0, 10);
 
     // بيانات العميل
-    const customerName    = document.getElementById('customerName');
-    const customerPhone   = document.getElementById('customerPhone');
-    const customerEmail   = document.getElementById('customerEmail');
-    const projectCity     = document.getElementById('projectCity');
-    const projectAddress  = document.getElementById('projectAddress');
-
-    if (customerName)   customerName.textContent   = q.customerName   || '';
-    if (customerPhone)  customerPhone.textContent  = q.customerPhone  || '';
-    if (customerEmail)  customerEmail.textContent  = q.customerEmail  || '';
-    // المدينة إذا لم يكن لها حقل مستقل، نتركها فارغة ليعدلها المستخدم يدويًا
-    if (projectCity)    projectCity.textContent    = q.projectCity || '';
-    if (projectAddress) projectAddress.textContent = q.customerAddress || '';
+    document.getElementById('customerName').textContent   = q.customerName;
+    document.getElementById('customerPhone').textContent  = q.customerPhone;
+    document.getElementById('customerEmail').textContent  = q.customerEmail;
+    document.getElementById('projectCity').textContent    = q.projectCity;
+    document.getElementById('projectAddress').textContent = q.customerAddress;
 
     // بيانات المشروع
-    const projectName     = document.getElementById('projectName');
-    const projectLocation = document.getElementById('projectLocation');
-    if (projectName)     projectName.textContent     = q.projectName     || '';
-    if (projectLocation) projectLocation.textContent = q.projectLocation || '';
+    document.getElementById('projectName').textContent     = q.projectName;
+    document.getElementById('projectLocation').textContent = q.projectLocation;
 
     // ملخص التسعير
-    const brand         = document.getElementById('brand');
-    const systemType    = document.getElementById('systemType');
-    const capacitySpeed = document.getElementById('capacitySpeed');
-    const floors        = document.getElementById('floors');
-    const elevatorCount = document.getElementById('elevatorCount');
-    const liftPrice     = document.getElementById('liftPrice');
-    const totalPrice    = document.getElementById('totalPrice');
-
-    if (brand)         brand.textContent         = q.brand || '';
-    if (systemType)    systemType.textContent    = q.spec_system || '';   // أو استخرجها من brand
-    if (capacitySpeed) capacitySpeed.textContent = q.capacity_speed || '';
-    if (floors)        floors.textContent        = q.floors_stops || '';
-    if (elevatorCount) elevatorCount.textContent = q.elevator_count || '';
-    if (liftPrice)     liftPrice.textContent     = q.elevator_price || '';
-    if (totalPrice)    totalPrice.textContent    = q.total_price || '';
+    document.getElementById('brand').textContent         = q.brand;
+    document.getElementById('systemType').textContent    = q.systemType;
+    document.getElementById('capacitySpeed').textContent = `${q.capacity} – ${q.speed}`;
+    document.getElementById('floors').textContent        = q.stops;
+    document.getElementById('elevatorCount').textContent = q.elevatorCount;
+    document.getElementById('liftPrice').textContent     = q.elevatorPrice;
+    document.getElementById('totalPrice').textContent    = q.totalPrice;
 
     // المواصفات المختصرة
-    const specSystem = document.getElementById('specSystem');
-    const specUsage  = document.getElementById('specUsage');
-    const specCabin  = document.getElementById('specCabin');
-    const specDoors  = document.getElementById('specDoors');
-    const specFloor  = document.getElementById('specFloor');
+    document.getElementById('specSystem').textContent = q.spec_system;
+    document.getElementById('specUsage').textContent  = q.spec_usage;
+    document.getElementById('specCabin').textContent  = q.spec_cabin;
+    document.getElementById('specDoors').textContent  = q.spec_doors;
+    document.getElementById('specFloor').textContent  = q.spec_flooring;
 
-    if (specSystem) specSystem.textContent = q.spec_system   || '';
-    if (specUsage)  specUsage.textContent  = q.spec_usage    || '';
-    if (specCabin)  specCabin.textContent  = q.spec_cabin    || '';
-    if (specDoors)  specDoors.textContent  = q.spec_doors    || '';
-    if (specFloor)  specFloor.textContent  = q.spec_flooring || '';
-
-    // ملاحظات عامة إن وجدت في السجل
+    // الملاحظات
     const notesBlock = document.querySelector('.notes[contenteditable="true"]');
-    if (notesBlock && q.general_notes) {
-      notesBlock.textContent = q.general_notes;
+    if (notesBlock) notesBlock.textContent = q.general_notes;
+
+    // --------------------------------------------------------------------
+    //      عرض جميع البنود (Items) داخل جدول العرض
+    // --------------------------------------------------------------------
+    const itemsBody = document.getElementById("items_table_body");
+    if (itemsBody) {
+      itemsBody.innerHTML = "";
+      q.items.forEach(item => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${item.title || item.name || ""}</td>
+          <td>${item.value || ""}</td>
+        `;
+        itemsBody.appendChild(tr);
+      });
     }
   }
 
+  // تشغيل الصفحة
   document.addEventListener('DOMContentLoaded', () => {
     const select = document.getElementById('quote-selector');
     if (!select) return;
@@ -925,8 +964,10 @@
 
 
 
+
 </body>
 </html>
+
 
 
 
