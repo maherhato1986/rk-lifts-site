@@ -223,156 +223,238 @@
 
 
 <!-- ======================= الصفحة الأولى: عرض السعر ======================= -->
-<div class="page">
+<!-- ====== صفحة عرض السعر – الصفحة الأولى ====== -->
 
-    <div class="page-header">
-        <!-- بيانات RKL -->
-        <div class="header-right">
-            <div class="logo-text">آر كي ال RKL</div>
-            <div class="subtitle">للمصاعد والسلالم الكهربائية</div>
-            <div>السجل التجاري: 1010709355</div>
-            <div>الرقم الضريبي: 302250422600003</div>
-        </div>
+<style>
+/* الخلفية الشفافة */
+.offer-bg {
+    position: absolute;
+    top: 180px;
+    left: 50%;
+    width: 420px;
+    opacity: 0.08;
+    transform: translateX(-50%);
+    z-index: 0;
+}
 
-        <!-- بيانات التواصل -->
-        <div class="header-left">
-            <div>الهاتف: 0114774021</div>
-            <div>البريد الإلكتروني: admin@rk-lifts.com</div>
-            <div>العنوان: السليمانية – الرياض</div>
-        </div>
-    </div>
+/* تنسيق الترويسة */
+.header-box {
+    text-align: center;
+    margin-top: 20px;
+    position: relative;
+    z-index: 2;
+}
 
-    <div class="doc-title" contenteditable="true">
-        عرض سعر توريد وتركيب وتشغيل مصعد / مصاعد ركاب
-    </div>
+.header-logo {
+    width: 150px;
+    margin-bottom: 10px;
+}
 
-    <div class="doc-meta">
-        رقم عرض السعر:
-        <span id="offer_no" contenteditable="true">Q-2025-001</span>
-        &nbsp; | &nbsp;
-        التاريخ:
-        <span id="offer_date" contenteditable="true">2025-12-03</span>
-    </div>
+/* عنوان عرض السعر */
+.main-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
 
-<div class="info-grid">
+/* الجداول */
+.table-offer {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 25px;
+    position: relative;
+    z-index: 2;
+}
 
-    <div class="info-row">
-        <div class="info-label">العميل:</div>
-        <div class="info-value" id="client_name" contenteditable="true"></div>
-    </div>
+.table-offer th, .table-offer td {
+    border: 1px solid #bbb;
+    padding: 8px;
+    font-size: 15px;
+}
 
-    <div class="info-row">
-        <div class="info-label">العنوان:</div>
-        <div class="info-value" id="client_address" contenteditable="true"></div>
-    </div>
+.table-offer th {
+    background: #f0f0f0;
+    font-weight: bold;
+}
 
-    <div class="info-row">
-        <div class="info-label">اسم المشروع:</div>
-        <div class="info-value" id="project_name" contenteditable="true"></div>
-    </div>
+.section-title {
+    font-weight: bold;
+    margin: 25px 0 10px;
+    font-size: 18px;
+}
+</style>
 
-    <div class="info-row">
-        <div class="info-label">موقع المشروع:</div>
-        <div class="info-value" id="project_location" contenteditable="true"></div>
-    </div>
+<!-- خلفية الشعار الشفافة -->
+<img src="rk-lifts-site/logo.png" class="offer-bg">
 
-    <div class="info-row">
-        <div class="info-label">هاتف/جوال:</div>
-        <div class="info-value" id="client_phone" contenteditable="true"></div>
-    </div>
-
-    <div class="info-row">
-        <div class="info-label">بريد إلكتروني:</div>
-        <div class="info-value" id="client_email" contenteditable="true"></div>
-    </div>
-
+<!-- الترويسة -->
+<div class="header-box">
+    <img src="rk-lifts-site/logo.png" class="header-logo">
+    <div>آر كي ال RKL للمصاعد والسلالم الكهربائية</div>
+    <div>السجل التجاري: 1010709355</div>
+    <div>الرقم الضريبي: 302250422600003</div>
+    <div>العنوان: السليمانية – الرياض</div>
+    <div>الهاتف: 0114774021 – البريد: admin@rk-lifts.com</div>
 </div>
 
+<hr style="margin: 25px 0;">
 
-<div class="info-grid">
-
-    <div class="info-row">
-        <div class="info-label">ماركة المصعد:</div>
-        <div class="info-value" id="brand" contenteditable="true"></div>
-    </div>
-
-    <div class="info-row">
-        <div class="info-label">الحمولة / السرعة:</div>
-        <div class="info-value" id="capacity_speed" contenteditable="true"></div>
-    </div>
-
-    <div class="info-row">
-        <div class="info-label">عدد الأدوار:</div>
-        <div class="info-value" id="floors_stops" contenteditable="true"></div>
-    </div>
-
-    <div class="info-row">
-        <div class="info-label">عدد المصاعد:</div>
-        <div class="info-value" id="elevator_count" contenteditable="true"></div>
-    </div>
-
-    <div class="info-row">
-        <div class="info-label">قيمة المصعد الواحد:</div>
-        <div class="info-value" id="elevator_price" contenteditable="true"></div>
-    </div>
-
-    <div class="info-row">
-        <div class="info-label">الإجمالي شامل الضريبة:</div>
-        <div class="info-value" id="total_price" contenteditable="true"></div>
-    </div>
-
+<!-- العنوان الرئيسي -->
+<div class="main-title">
+    عرض سعر توريد وتركيب وتشغيل مصعد / مصاعد ركاب
 </div>
 
+<!-- رقم العرض والتاريخ -->
+<table class="table-offer">
+    <tr>
+        <th>رقم عرض السعر</th>
+        <td id="offerNumber">---------</td>
+        <th>التاريخ</th>
+        <td id="offerDate">---------</td>
+    </tr>
+</table>
+<!-- الترويسة -->
+<div class="header-box">
+    <img src="rk-lifts-site/logo.png" class="header-logo">
+    <div>آر كي ال RKL للمصاعد والسلالم الكهربائية</div>
+    <div>السجل التجاري: 1010709355</div>
+    <div>الرقم الضريبي: 302250422600003</div>
+    <div>العنوان: السليمانية – الرياض</div>
+    <div>الهاتف: 0114774021 – البريد: admin@rk-lifts.com</div>
+</div>
 
-    <!-- المواصفات العامة المختصرة -->
-    <div class="section">
-        <div class="section-title">ثالثاً: المواصفات العامة (مختصر)</div>
-        <table>
-            <thead>
-            <tr>
-                <th>م</th>
-                <th>البند</th>
-                <th>الوصف</th>
-                <th>ملاحظات</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>1</td>
-                <td contenteditable="true">نوع النظام</td>
-                <td contenteditable="true">كهربائي بدون غرفة محرك – MRL</td>
-                <td contenteditable="true"></td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td contenteditable="true">الاستخدام</td>
-                <td contenteditable="true">مصعد ركاب Passenger Elevator</td>
-                <td contenteditable="true"></td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td contenteditable="true">تشطيب الكابينة</td>
-                <td contenteditable="true">ستانلس ستيل / مرآه / خشب حسب اختيار العميل</td>
-                <td contenteditable="true"></td>
-            </tr>
-            <tr>
-                <td>4</td>
-                <td contenteditable="true">تشطيب الأبواب</td>
-                <td contenteditable="true">ستانلس ستيل – أو حسب المخططات</td>
-                <td contenteditable="true"></td>
-            </tr>
-            <tr>
-                <td>5</td>
-                <td contenteditable="true">تشطيب الأرضية</td>
-                <td contenteditable="true">رخام / جرانيت – يورد من قبل مالك المشروع</td>
-                <td contenteditable="true"></td>
-            </tr>
-            </tbody>
-        </table>
-        <div class="hint">يمكن الاكتفاء بهذه المواصفات المختصرة، أو الرجوع إلى الجداول الفنية التفصيلية في الصفحات التالية.</div>
-    </div>
+<!-- نص تعريفي بالمؤسسة -->
+<div style="text-align: center; margin-top: 15px; font-size: 16px; line-height: 1.8; font-weight: bold; position: relative; z-index: 3;">
+    <p>
+        تأسست مؤسسة <strong>آر كي ال RKL للمصاعد والسلالم الكهربائية</strong> في الرياض، 
+        وتُعدّ واحدة من المؤسسات المتخصصة في مجال المصاعد الحديثة وأنظمة الرفع، 
+        حيث قامت بتنفيذ وتركيب وصيانة أكثر من 
+        <strong>500 مصعد</strong> في مختلف مناطق المملكة.
+    </p>
+    <p>
+        تتميز RKL بالشراكات الدولية مع أبرز المصانع العالمية، وبالتزامها بمعايير الجودة والاعتمادية،  
+        إضافةً إلى خبرة فنية متقدمة، وفريق محترف قادر على تقديم حلول متكاملة تشمل: التوريد، التركيب، التشغيل،  
+        الصيانة الدورية، وخدمات التحديث (Modernization).
+    </p>
+    <p>
+        وتفخر المؤسسة بجودة خدماتها وسرعة استجابتها وحرصها على تقديم أفضل الحلول الفنية والاقتصادية 
+        بما يتوافق مع اشتراطات الجهات الاستشارية والمواصفات المعتمدة للمشاريع.
+    </p>
+</div>
 
-    <!-- ملاحظات عامة -->
+<hr style="margin: 20px 0;">
+
+<!-- بيانات العميل والمشروع -->
+<div class="section-title">أولاً: بيانات العميل والمشروع</div>
+
+<table class="table-offer">
+    <tr>
+        <th>اسم العميل</th>
+        <td id="customerName">---------</td>
+        <th>رقم الجوال</th>
+        <td id="customerPhone">---------</td>
+    </tr>
+
+    <tr>
+        <th>البريد الإلكتروني</th>
+        <td id="customerEmail">---------</td>
+        <th>المدينة</th>
+        <td id="projectCity">---------</td>
+    </tr>
+
+    <tr>
+        <th>اسم المشروع</th>
+        <td id="projectName">---------</td>
+        <th>موقع المشروع</th>
+        <td id="projectLocation">---------</td>
+    </tr>
+
+    <tr>
+        <th>العنوان</th>
+        <td colspan="3" id="projectAddress">---------</td>
+    </tr>
+</table>
+
+<!-- ملخص التسعير -->
+<div class="section-title">ثانياً: ملخص التسعير</div>
+
+<table class="table-offer">
+    <tr>
+        <th>الماركة</th>
+        <td id="brand">---------</td>
+        <th>نوع النظام</th>
+        <td id="systemType">---------</td>
+    </tr>
+
+    <tr>
+        <th>الحمولة / السرعة</th>
+        <td id="capacitySpeed">---------</td>
+        <th>عدد الأدوار</th>
+        <td id="floors">---------</td>
+    </tr>
+
+    <tr>
+        <th>عدد المصاعد</th>
+        <td id="elevatorCount">---------</td>
+        <th>سعر المصعد (شامل الضريبة)</th>
+        <td id="liftPrice">---------</td>
+    </tr>
+
+    <tr>
+        <th>الإجمالي شامل الضريبة</th>
+        <td colspan="3" id="totalPrice">---------</td>
+    </tr>
+</table>
+
+<!-- المواصفات العامة -->
+<div class="section-title">ثالثاً: المواصفات العامة (مختصر)</div>
+
+<table class="table-offer">
+    <tr>
+        <th>م</th>
+        <th>البند</th>
+        <th>الوصف</th>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>نوع النظام</td>
+        <td id="specSystem">---------</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>الاستخدام</td>
+        <td id="specUsage">---------</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>تشطيب الكبينة</td>
+        <td id="specCabin">---------</td>
+    </tr>
+    <tr>
+        <td>4</td>
+        <td>تشطيب الأبواب</td>
+        <td id="specDoors">---------</td>
+    </tr>
+    <tr>
+        <td>5</td>
+        <td>تشطيب الأرضية</td>
+        <td id="specFloor">---------</td>
+    </tr>
+</table>
+
+<!-- الملاحظات -->
+<div class="section-title">رابعاً: ملاحظات عامة على العرض</div>
+
+<ul style="font-size: 15px; line-height: 1.9;">
+    <li>السعر لا يشمل الأعمال المدنية والكهربائية خارج حدود غرفة المصعد.</li>
+    <li>مدة توريد المصعد من 30 إلى 45 يومًا بعد توقيع العقد وسداد الدفعة المقدمة.</li>
+    <li>الأسعار تشمل الضريبة المضافة 15%.</li>
+</ul>
+
+<br><br><br>
+
     <div class="section">
         <div class="section-title">رابعاً: ملاحظات عامة على العرض</div>
         <div class="notes" contenteditable="true">
@@ -967,6 +1049,7 @@ document.getElementById("quote-selector").addEventListener("change", async funct
 
 </body>
 </html>
+
 
 
 
