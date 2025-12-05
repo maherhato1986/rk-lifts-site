@@ -1283,6 +1283,68 @@ const directCostSarFinal = directCostSar + cabinExtraCost;
                     quoteNumber
                 };
 
+                // === إنشاء offerData ===
+const offerData = {
+  customer: {
+    name: selectedCustomer?.customer_name || finalCustomerName,
+    type: selectedCustomer?.customer_type || null,
+    contactPerson: selectedCustomer?.contact_person || null,
+    crNumber: selectedCustomer?.cr_number || null,
+    taxNumber: selectedCustomer?.tax_number || null,
+    city: selectedCustomer?.city || null,
+    district: selectedCustomer?.district || null,
+    street: selectedCustomer?.street || null,
+    address: selectedCustomer?.full_address || null,
+    mobile: selectedCustomer?.mobile || null,
+    email: selectedCustomer?.email || null
+  },
+
+  project: {
+    name: projectName,
+    date: new Date().toISOString(),
+    brandKey,
+    brandLabel,
+    capacityKg: model.capacityKg,
+    speedMps: model.speedMps,
+    floors,
+    baseFloors: model.baseFloors,
+    liftsCount,
+    machineType: model.machineType || null,
+    doorType: model.doorType || null
+  },
+
+  dimensions: {
+    en81: selectedEn81Row || null,
+    custom: {
+      shaftWidth,
+      shaftDepth,
+      cabinSizeText
+    }
+  },
+
+  cabin: {
+    design: cabinDesign,
+    floorFinish: floorFinish,
+    extraCostPerLift: cabinExtraCost
+  },
+
+  pricing: {
+    currency,
+    vatRate,
+    includeVat,
+    overheadPercent: COST_PARAMS.overheadPercent,
+    profitPercent: COST_PARAMS.profitPercent,
+    perLift: calcResult.perLift,
+    total: calcResult.total
+  },
+
+  quoteText: document.getElementById('quote_text').value
+};
+
+// حفظه في LocalStorage
+localStorage.setItem('rkl_last_offer', JSON.stringify(offerData));
+
+
                 quotes.push(entry);
                 saveQuotesToStorage(quotes);
                 renderQuotesTable();
@@ -1358,6 +1420,7 @@ const directCostSarFinal = directCostSar + cabinExtraCost;
 
 </body>
 </html>
+
 
 
 
