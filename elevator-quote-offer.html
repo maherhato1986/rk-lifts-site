@@ -744,21 +744,22 @@ function populateQuoteSelector() {
         selector.innerHTML += `<option value="${index}">${label}</option>`;
     });
 }
-document.getElementById("quote-selector").addEventListener("change", function () {
+
+    document.getElementById("quote-selector").addEventListener("change", function () {
     const index = this.value;
     if (index === "") return;
 
-    const quotes = loadStoredQuotes();
-    const selected = quotes[index];
+    const quotes = loadStoredQuotes();   // كل عروض الأسعار
+    const selected = quotes[index];      // العرض الذي اختاره المستخدم
 
-    if (selected) {
-        // تحميل العرض الرسمي
-        const fullOffer = JSON.parse(localStorage.getItem('rkl_last_offer'));
+    if (!selected) return;
 
-        // أو بناء offerData جديد لو كنت تحفظ لكل عرض على حدة
-        fillOfferPage(fullOffer);
-    }
+    // بعض العروض محفوظة داخل fullOffer، وبعضها بيانات مباشرة
+    const offer = selected.fullOffer ? selected.fullOffer : selected;
+
+    fillOfferPage(offer);    // الآن يعرض البيانات الصحيحة
 });
+
 
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -1007,6 +1008,7 @@ document.getElementById('quote-selector').addEventListener('change', function ()
 
 </body>
 </html>
+
 
 
 
