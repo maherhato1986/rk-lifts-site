@@ -1263,94 +1263,87 @@ const directCostSarFinal = directCostSar + cabinExtraCost;
         });
 
         // زر حفظ عرض السعر الحالي في السجل
-        const saveBtn = document.getElementById('save-quote-btn');
-        if (saveBtn) {
-            saveBtn.addEventListener('click', () => {
-                if (!lastQuoteSnapshot) {
-                    alert('قم أولاً بحساب عرض السعر قبل حفظه في السجل.');
-                    return;
-                }
-
-                const quotes = loadStoredQuotes();
-
-                const nextIndex = quotes.length + 1;
-                const today = new Date();
-                const ymd = today.toISOString().slice(0, 10).replace(/-/g, '');
-                const quoteNumber = `Q-${ymd}-${String(nextIndex).padStart(3, '0')}`;
-
-                const entry = {
-                    ...lastQuoteSnapshot,
-                    quoteNumber
-                };
-
-                // === إنشاء offerData ===
-const offerData = {
-  customer: {
-    name: selectedCustomer?.customer_name || finalCustomerName,
-    type: selectedCustomer?.customer_type || null,
-    contactPerson: selectedCustomer?.contact_person || null,
-    crNumber: selectedCustomer?.cr_number || null,
-    taxNumber: selectedCustomer?.tax_number || null,
-    city: selectedCustomer?.city || null,
-    district: selectedCustomer?.district || null,
-    street: selectedCustomer?.street || null,
-    address: selectedCustomer?.full_address || null,
-    mobile: selectedCustomer?.mobile || null,
-    email: selectedCustomer?.email || null
-  },
-
-  project: {
-    name: projectName,
-    date: new Date().toISOString(),
-    brandKey,
-    brandLabel,
-    capacityKg: model.capacityKg,
-    speedMps: model.speedMps,
-    floors,
-    baseFloors: model.baseFloors,
-    liftsCount,
-    machineType: model.machineType || null,
-    doorType: model.doorType || null
-  },
-
-  dimensions: {
-    en81: selectedEn81Row || null,
-    custom: {
-      shaftWidth,
-      shaftDepth,
-      cabinSizeText
-    }
-  },
-
-  cabin: {
-    design: cabinDesign,
-    floorFinish: floorFinish,
-    extraCostPerLift: cabinExtraCost
-  },
-
-  pricing: {
-    currency,
-    vatRate,
-    includeVat,
-    overheadPercent: COST_PARAMS.overheadPercent,
-    profitPercent: COST_PARAMS.profitPercent,
-    perLift: calcResult.perLift,
-    total: calcResult.total
-  },
-
-  quoteText: document.getElementById('quote_text').value
-};
-
-// حفظه في LocalStorage
-localStorage.setItem('rkl_last_offer', JSON.stringify(offerData));
-
-
-                quotes.push(entry);
-                saveQuotesToStorage(quotes);
-                renderQuotesTable();
-                alert('تم حفظ عرض السعر الحالي في سجل هذا الجهاز.');
-            });
+       const saveBtn = document.getElementById('save-quote-btn');
+if (saveBtn) {
+    saveBtn.addEventListener('click', () => {
+        if (!lastQuoteSnapshot) {
+            alert('قم أولاً بحساب عرض السعر قبل حفظه في السجل.');
+            return;
         }
+
+        // 1) قراءة العروض المخزنة وتجهيز رقم عرض جديد
+        const quotes = loadStoredQuotes();
+
+        const nextIndex = quotes.length + 1;
+        const today = new Date();
+        const ymd = today.toISOString().slice(0, 10).replace(/-/g, '');
+        const quoteNumber = `Q-${ymd}-${String(nextIndex).padStart(3, '0')}`;
+
+        // 2) قراءة اسم العميل والمشروع من الحقول
+        const manualCustomerName = document.getElementById('customer_name').value.trim();
+        const projectName = document.getElementById('project_name').value.trim();
+
+        const finalCustomerName =
+            (selectedCustomer?.customer_name || manualCustomerName || 'العميل الكريم').trim();
+
+        // 3) تجهيز العنصر الذي يذهب إلى جدول السجل
+        const entry = {
+            ...lastQuoteSnapshot,
+            customerName: finalCustomerName,
+            projectName: projectName,
+            quoteNumber
+        };
+
+        // 4) إنشاء offerData لاستخدامه في صفحة elevator-quote-offer.html
+        const offerData = {
+            customer: {
+                name: finalCustomerName,
+                type: selectedCustomer?.customer_type || null,
+                contactPerson: selectedCustomer?.contact_person || null,
+                crNumber: selectedCustomer?.cr_number || null,
+                taxNumber: selectedCustomer?.tax_number || null,
+                city: selectedCustomer?.city || null,
+                district: selectedCustomer?.district || null,
+                street: selectedCustomer?.street || null,
+                address: selectedCustomer?.full_address || null,
+                mobile: selectedCustomer?.mobile || null,
+                email: selectedCustomer?.email || null
+            },
+            project: {
+                name: projectName,
+                date: new Date().toISOString(),
+                brandKey: entry.brandKey,
+                brandLabel: entry.brandLabel,
+                capacity: entry.capacity,
+                speed: entry.speed,
+                floors: entry.floors,
+                liftsCount: entry.liftsCount
+            },
+            cabin: {
+                design: document.getElementById('cabin_design').value,
+                floorFinish: document.getElementById('floor_finish').value
+            },
+            pricing: {
+                currency: entry.currency,
+                vatRate: entry.vatRate,
+                includeVat: entry.includeVat,
+                totalWithVat: entry.totalWithVat
+            },
+            quoteNumber: entry.quoteNumber,
+            quoteText: document.getElementById('quote_text').value
+        };
+
+        // 5) حفظ بيانات العرض التفصيلية لواجهة elevator-quote-offer.html
+        localStorage.setItem('rkl_last_offer', JSON.stringify(offerData));
+
+        // 6) حفظ العرض في سجل العروض كما هو مسبقًا
+        quotes.push(entry);
+        saveQuotesToStorage(quotes);
+        renderQuotesTable();
+        alert('تم حفظ عرض السعر الحالي في سجل هذا الجهاز.');
+    });
+}
+
 
         // زر تصدير السجل إلى CSV
         const exportBtn = document.getElementById('export-quotes-btn');
@@ -1420,6 +1413,7 @@ localStorage.setItem('rkl_last_offer', JSON.stringify(offerData));
 
 </body>
 </html>
+
 
 
 
