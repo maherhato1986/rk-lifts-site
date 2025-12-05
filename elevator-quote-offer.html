@@ -909,12 +909,104 @@ document.getElementById('quote-selector').addEventListener('change', function ()
     const q = quotes[index];
     if (!q) return;
 
-    renderFullOffer(q); // ← هذه الدالة أنت ستنشئها لعرض البيانات
+    fillOfferPage(q.fullOffer || q);
+
 });
+
+    function fillOfferPage(offer) {
+    if (!offer) return;
+
+    const customer = offer.customer || {};
+    const project  = offer.project  || {};
+    const cabin    = offer.cabin    || {};
+    const pricing  = offer.pricing  || {};
+    const dimsEn81 = (offer.dimensions && offer.dimensions.en81) || {};
+    const dimsCustom = (offer.dimensions && offer.dimensions.custom) || {};
+
+    const dateStr = project.date ? project.date.slice(0, 10) : "";
+
+    // رأس العرض
+    bindText("bind_quote_number", offer.quoteNumber || "—");
+    bindText("bind_offer_date", dateStr || "—");
+
+    // بيانات العميل
+    const typeLabel =
+        customer.type === "company" ? "شركة / مؤسسة" :
+        customer.type === "individual" ? "عميل فردي" : "—";
+
+    bindText("bind_customer_type", typeLabel);
+    bindText("bind_customer_name", customer.name || "—");
+    bindText("bind_contact_person", customer.contactPerson || "—");
+    bindText("bind_id_number", customer.idNumber || "—");
+    bindText("bind_cr_number", customer.crNumber || "—");
+    bindText("bind_tax_number", customer.taxNumber || "—");
+    bindText("bind_city", customer.city || "—");
+    bindText("bind_district", customer.district || "—");
+    bindText("bind_street", customer.street || "—");
+    bindText("bind_building_no", customer.buildingNo || "—");
+    bindText("bind_postal_code", customer.postalCode || "—");
+    bindText("bind_full_address", customer.address || "—");
+    bindText("bind_mobile", customer.mobile || "—");
+    bindText("bind_phone", customer.phone || "—");
+    bindText("bind_email", customer.email || "—");
+
+    // المشروع
+    bindText("bind_project_name", project.name || "—");
+
+    bindText("bind_brand", project.brandLabel || "—");
+    bindText("bind_capacity", project.capacityKg ? project.capacityKg + " kg" : "—");
+    bindText("bind_speed", project.speedMps ? project.speedMps + " m/s" : "—");
+    bindText("bind_floors", project.floors ?? "—");
+    bindText("bind_lifts", project.liftsCount ?? 1);
+
+    bindText("bind_cabin_design", cabin.design || "Standard");
+    bindText("bind_floor_finish", cabin.floorFinish || "Standard");
+
+    // أبعاد
+    let cabinSize = dimsEn81.cabinWidth ? 
+        `${dimsEn81.cabinWidth} x ${dimsEn81.cabinDepth} mm` :
+        (dimsCustom.cabinSizeText || "—");
+
+    bindText("bind_dim_cabin", cabinSize);
+
+    let shaftSize = dimsEn81.shaftWidth ? 
+        `${dimsEn81.shaftWidth} x ${dimsEn81.shaftDepth} mm` :
+        (dimsCustom.shaftWidth && dimsCustom.shaftDepth ?
+            `${dimsCustom.shaftWidth} x ${dimsCustom.shaftDepth} mm` : "—");
+
+    bindText("bind_dim_shaft", shaftSize);
+
+    bindText("bind_shaft_width", dimsEn81.shaftWidth || dimsCustom.shaftWidth || "—");
+    bindText("bind_shaft_depth", dimsEn81.shaftDepth || dimsCustom.shaftDepth || "—");
+    bindText("bind_pit", dimsEn81.pit || "—");
+    bindText("bind_oh", dimsEn81.oh || "—");
+
+    // التسعير
+    const currency = pricing.currency || "SAR";
+    const totalWithVat = pricing.totalWithVat ?? null;
+    const vatRate = pricing.vatRate ?? 15;
+
+    bindText("bind_vat_rate", vatRate);
+
+    if (totalWithVat != null) {
+        const lifts = project.liftsCount || 1;
+        const perLift = Number(totalWithVat) / Number(lifts);
+
+        bindText("bind_price_per_unit", formatCurrency(perLift, currency));
+        bindText("bind_total_price", formatCurrency(totalWithVat, currency));
+        bindText("bind_total_with_vat", formatCurrency(totalWithVat, currency));
+
+        bindText("bind_pay_50", formatCurrency(totalWithVat * 0.5, currency));
+        bindText("bind_pay_25", formatCurrency(totalWithVat * 0.25, currency));
+        bindText("bind_pay_20", formatCurrency(totalWithVat * 0.20, currency));
+        bindText("bind_pay_5",  formatCurrency(totalWithVat * 0.05, currency));
+    }
+}
 
 </script>
 
 </body>
 </html>
+
 
 
