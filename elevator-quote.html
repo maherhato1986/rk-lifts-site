@@ -309,6 +309,54 @@
                             <div class="hint">السعر الأساسي يشمل عادةً دورين. الزيادة تُحسب لكل دور إضافي.</div>
                         </div>
                     </div>
+                    <div class="section-title">٢.٢ مقاس بئر المصعد</div>
+<div class="form-grid">
+
+    <div>
+        <label for="shaft_width">عرض البئر (mm)</label>
+        <input type="number" id="shaft_width" min="800" placeholder="مثال: 1800" />
+    </div>
+
+    <div>
+        <label for="shaft_depth">عمق البئر (mm)</label>
+        <input type="number" id="shaft_depth" min="800" placeholder="مثال: 1600" />
+    </div>
+
+    <div>
+        <label for="cabin_dimensions">مقاس الكبينه (اختياري)</label>
+        <input type="text" id="cabin_dimensions" placeholder="مثال: 1100 × 1400 mm" />
+    </div>
+
+</div>
+
+<div class="section-title">٢.٣ تصميم الكبينه الداخلية</div>
+<div class="form-grid">
+
+    <div>
+        <label for="cabin_design">نوع التشطيب الداخلي للكبينه</label>
+        <select id="cabin_design">
+            <option value="">— اختر نوع التصميم —</option>
+            <option value="SS304-Hairline">ستانلس ستيل 304 – Hairline</option>
+            <option value="SS304-Mirror">ستانلس ستيل 304 – مرايا</option>
+            <option value="Mirror-SS304">مرايا + ستانلس</option>
+            <option value="Wood-SS304">خشبي + ستانلس</option>
+            <option value="Custom">تصميم خاص (Custom)</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="floor_finish">تشطيب الأرضية</label>
+        <select id="floor_finish">
+            <option value="">— اختر نوع الأرضية —</option>
+            <option value="Vinyl">فينيل</option>
+            <option value="Granite">جرانيت</option>
+            <option value="Marble">رخام</option>
+            <option value="Aluminum-Checker">ألمنيوم Checker Plate</option>
+        </select>
+    </div>
+
+</div>
+
                         <div class="section-title">٢.١ عدد المصاعد لهذه المواصفات</div>
 <div class="form-grid">
     <div>
@@ -1225,6 +1273,7 @@ if (!currentBrandData) {
 
 </body>
 </html>
+
 
 
 
