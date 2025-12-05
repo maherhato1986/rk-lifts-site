@@ -485,6 +485,13 @@ const COST_PARAMS = {
     overheadPercent: 12,     // ← لو تريد تقليل أو رفع المصاريف التشغيلية
     profitPercent: 25
 };
+const CABIN_DESIGN_ADDITIONAL = {
+    "SS304-Hairline": 0,
+    "SS304-Mirror": 2500,
+    "Mirror-SS304": 4000,
+    "Wood-SS304": 6000,
+    "Custom": 10000
+};
 
 
         // تخزين عروض الأسعار
@@ -918,6 +925,17 @@ function fillSpeedOptions() {
         const currency = document.getElementById('currency').value;
         const vatRate = Number(document.getElementById('vat_rate').value) || 0;
         const includeVat = document.getElementById('include_vat').checked;
+        const cabinDesign = document.getElementById("cabin_design").value;
+const cabinExtraCost = CABIN_DESIGN_ADDITIONAL[cabinDesign] || 0;
+
+// أضف هذه التكلفة ضمن directCostSar
+const directCostSar =
+    factorySar +
+    shippingInsuranceSar +
+    clearanceTransportSar +
+    installationCommissioningSar +
+    cabinExtraCost;  // ← إضافة تكلفة التصميم
+
 
         if (!brandKey || !capacity || !speed || !floors || floors < 2 || liftsCount < 1) {
             alert('يرجى اختيار الماركة والسعة والسرعة وإدخال عدد أدوار صحيح (٢ فأكثر) وعدد مصاعد واحد فأكثر.');
@@ -1273,6 +1291,7 @@ if (!currentBrandData) {
 
 </body>
 </html>
+
 
 
 
