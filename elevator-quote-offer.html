@@ -2,88 +2,91 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8" />
-    <title>عرض سعر توريد وتركيب مصعد - RKL</title>
+    <title>عرض سعر / عقد توريد وتركيب وتشغيل مصعد</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
         body {
             font-family: "Cairo", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: #f2f4f7;
+            background: #f3f4f6;
             margin: 0;
             padding: 20px;
-            color: #222;
+            color: #111827;
         }
 
         .page {
             max-width: 900px;
-            margin: 0 auto;
-            background: #fff;
-            box-shadow: 0 0 10px rgba(0,0,0,0.08);
+            margin: 0 auto 30px auto;
+            background: #ffffff;
+            box-shadow: 0 0 8px rgba(15,23,42,0.08);
             padding: 25px 35px;
+            position: relative;
         }
 
         .header {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            border-bottom: 2px solid #e0e0e0;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
+            align-items: flex-start;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
         }
 
         .logo-box {
             text-align: right;
+            font-size: 12px;
         }
 
-        .logo-box .company-name {
+        .logo-title {
             font-weight: 700;
             font-size: 18px;
         }
 
-        .logo-box .company-sub {
-            font-size: 12px;
-            color: #666;
+        .logo-sub {
+            font-size: 11px;
+            color: #6b7280;
+            line-height: 1.5;
         }
 
         .offer-meta {
             text-align: left;
-            font-size: 12px;
+            font-size: 11px;
             line-height: 1.6;
         }
 
-        h1.title {
+        h1.main-title {
             text-align: center;
             font-size: 18px;
-            margin: 10px 0 20px;
+            margin: 8px 0 15px;
         }
 
         .section-title {
             font-weight: 700;
-            margin: 18px 0 8px;
             font-size: 14px;
-            border-right: 4px solid #0d6efd;
+            margin: 18px 0 8px;
+            border-right: 4px solid #2563eb;
             padding-right: 6px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 13px;
+            font-size: 12px;
         }
 
         th, td {
-            border: 1px solid #ddd;
+            border: 1px solid #d1d5db;
             padding: 6px 8px;
             vertical-align: top;
         }
 
         th {
-            background: #f7f7f7;
+            background: #f9fafb;
             font-weight: 600;
         }
 
         .two-col {
             display: grid;
-            grid-template-columns: 1.2fr 1fr;
+            grid-template-columns: 1.1fr 1fr;
             gap: 12px;
         }
 
@@ -91,16 +94,14 @@
             outline: none;
         }
 
-        .note-box {
-            font-size: 12px;
-            background: #f8fafc;
-            border: 1px dashed #cbd5f5;
-            padding: 8px 10px;
-            margin-top: 6px;
+        .small-note {
+            font-size: 11px;
+            color: #6b7280;
+            margin-top: 4px;
         }
 
         .terms p {
-            font-size: 12px;
+            font-size: 11.5px;
             margin: 4px 0;
             text-align: justify;
         }
@@ -114,10 +115,10 @@
 
         .btn-print {
             display: inline-block;
-            margin: 15px auto 0;
+            margin: 10px auto 0;
             padding: 8px 18px;
             font-size: 13px;
-            background: #0d6efd;
+            background: #2563eb;
             color: #fff;
             border-radius: 4px;
             border: none;
@@ -126,19 +127,108 @@
 
         .warning {
             color: #b91c1c;
-            font-size: 12px;
-            margin-bottom: 10px;
+            font-size: 11.5px;
+            margin-top: 8px;
+        }
+
+        .page-index {
+            position: absolute;
+            left: 35px;
+            bottom: 8px;
+            font-size: 11px;
+            color: #9ca3af;
+        }
+
+        .spec-table th:nth-child(1),
+        .spec-table td:nth-child(1) {
+            width: 5%;
+            text-align: center;
+        }
+
+        .spec-table th:nth-child(2),
+        .spec-table td:nth-child(2) {
+            width: 45%;
+        }
+
+        .spec-table th:nth-child(3),
+        .spec-table td:nth-child(3) {
+            width: 15%;
+            text-align: center;
+        }
+
+        .spec-table th:nth-child(4),
+        .spec-table td:nth-child(4) {
+            width: 35%;
+        }
+
+        /* صفحة المخطط */
+        .diagram-container {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .shaft {
+            position: relative;
+            border: 2px solid #4b5563;
+            width: 260px;
+            height: 340px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f9fafb;
+        }
+
+        .cabin {
+            border: 2px solid #10b981;
+            background: #ecfdf5;
+            width: 65%;
+            height: 55%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .dim-label {
+            position: absolute;
+            font-size: 11px;
+            color: #111827;
+            background: rgba(255,255,255,0.9);
+            padding: 1px 4px;
+        }
+
+        .dim-top {
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .dim-right {
+            right: -5px;
+            top: 50%;
+            transform: translate(100%, -50%) rotate(-90deg);
+            transform-origin: left top;
+        }
+
+        .caption {
+            font-size: 11px;
+            text-align: center;
+            margin-top: 6px;
+            color: #4b5563;
         }
 
         @media print {
             body {
-                background: #fff;
+                background: #ffffff;
                 padding: 0;
             }
             .page {
-                box-shadow: none;
                 margin: 0;
                 width: 100%;
+                box-shadow: none;
+                page-break-after: always;
             }
             .btn-print {
                 display: none;
@@ -148,46 +238,46 @@
 </head>
 <body>
 
+<!-- ===== صفحة 1: بيانات العميل + الملخص الفني + السعر ===== -->
 <div class="page">
-
     <div class="header">
         <div class="logo-box editable" contenteditable="true">
-            <div class="company-name">آر كي ال RKL للمصاعد والسلالم الكهربائية</div>
-            <div class="company-sub">
+            <div class="logo-title">آر كي ال RKL للمصاعد والسلالم الكهربائية</div>
+            <div class="logo-sub">
                 السجل التجاري: 1010709355 – الرقم الضريبي: 302250422600003<br/>
                 الرياض – حي السليمانية – هاتف: 0114774021 – بريد: admin@rk-lifts.com
             </div>
         </div>
         <div class="offer-meta">
-            <div>رقم العرض: <span id="meta_quote_number">—</span></div>
-            <div>تاريخ العرض: <span id="meta_date">—</span></div>
+            <div>رقم العرض: <span class="bind_quote_number">—</span></div>
+            <div>تاريخ العرض: <span class="bind_offer_date">—</span></div>
         </div>
     </div>
 
-    <h1 class="title">عرض سعر توريد وتركيب وتشغيل مصعد كهربائي</h1>
+    <h1 class="main-title">عرض سعر توريد وتركيب وتشغيل مصعد كهربائي</h1>
 
-    <div class="section-title">أولاً: بيانات العميل والمشروع</div>
+    <div class="section-title">أولاً: بيانات العميل والموقع</div>
     <table>
         <tbody>
         <tr>
-            <th style="width: 20%;">اسم العميل</th>
-            <td id="customer_name" class="editable" contenteditable="true">—</td>
-            <th style="width: 20%;">جهة العمل</th>
-            <td id="customer_type" class="editable" contenteditable="true">—</td>
+            <th style="width: 18%;">اسم العميل</th>
+            <td class="bind_customer_name editable" contenteditable="true">—</td>
+            <th style="width: 18%;">جهة العمل</th>
+            <td class="bind_customer_type editable" contenteditable="true">—</td>
         </tr>
         <tr>
             <th>اسم المشروع</th>
-            <td id="project_name" class="editable" contenteditable="true">—</td>
+            <td class="bind_project_name editable" contenteditable="true">—</td>
             <th>المدينة</th>
-            <td id="project_city" class="editable" contenteditable="true">—</td>
+            <td class="bind_city editable" contenteditable="true">—</td>
         </tr>
         <tr>
             <th>العنوان</th>
-            <td id="project_address" colspan="3" class="editable" contenteditable="true">—</td>
+            <td colspan="3" class="bind_address editable" contenteditable="true">—</td>
         </tr>
         <tr>
             <th>وسائل التواصل</th>
-            <td colspan="3" class="editable" contenteditable="true" id="contact_info">—</td>
+            <td colspan="3" class="bind_contact editable" contenteditable="true">—</td>
         </tr>
         </tbody>
     </table>
@@ -197,32 +287,32 @@
         <table>
             <tbody>
             <tr>
-                <th style="width: 35%;">الماركة / النظام</th>
-                <td id="tech_brand" class="editable" contenteditable="true">—</td>
+                <th style="width: 30%;">الماركة / النظام</th>
+                <td class="bind_brand editable" contenteditable="true">—</td>
             </tr>
             <tr>
                 <th>الحمولة الاسمية</th>
-                <td id="tech_capacity" class="editable" contenteditable="true">—</td>
+                <td class="bind_capacity editable" contenteditable="true">—</td>
             </tr>
             <tr>
                 <th>السرعة</th>
-                <td id="tech_speed" class="editable" contenteditable="true">—</td>
+                <td class="bind_speed editable" contenteditable="true">—</td>
             </tr>
             <tr>
                 <th>عدد الأدوار (Stops)</th>
-                <td id="tech_floors" class="editable" contenteditable="true">—</td>
+                <td class="bind_floors editable" contenteditable="true">—</td>
             </tr>
             <tr>
-                <th>عدد المصاعد بنفس المواصفات</th>
-                <td id="tech_lifts_count" class="editable" contenteditable="true">—</td>
+                <th>عدد المصاعد</th>
+                <td class="bind_lifts editable" contenteditable="true">—</td>
             </tr>
             <tr>
                 <th>تصميم الكابينة الداخلية</th>
-                <td id="tech_cabin_design" class="editable" contenteditable="true">—</td>
+                <td class="bind_cabin_design editable" contenteditable="true">Standard</td>
             </tr>
             <tr>
-                <th>تشطيب الأرضية</th>
-                <td id="tech_floor_finish" class="editable" contenteditable="true">—</td>
+                <th>تشطيب أرضية الكابينة</th>
+                <td class="bind_floor_finish editable" contenteditable="true">Standard</td>
             </tr>
             </tbody>
         </table>
@@ -236,19 +326,19 @@
             <tbody>
             <tr>
                 <th style="width: 40%;">مقاس الكابينة (mm)</th>
-                <td id="dim_cabin" class="editable" contenteditable="true">حسب EN81 أو رسومات العميل</td>
+                <td class="bind_dim_cabin editable" contenteditable="true">حسب EN81 أو رسومات العميل</td>
             </tr>
             <tr>
                 <th>مقاس البئر (mm)</th>
-                <td id="dim_shaft" class="editable" contenteditable="true">—</td>
+                <td class="bind_dim_shaft editable" contenteditable="true">—</td>
             </tr>
             <tr>
-                <th>الباب (Door)</th>
+                <th>باب المصعد</th>
                 <td class="editable" contenteditable="true">—</td>
             </tr>
             <tr>
                 <th>Pit / OH</th>
-                <td class="editable" contenteditable="true">حسب المعايير أو حسب حالة الموقع</td>
+                <td class="editable" contenteditable="true">حسب المعايير أو حالة الموقع</td>
             </tr>
             </tbody>
         </table>
@@ -258,8 +348,8 @@
     <table>
         <thead>
         <tr>
-            <th style="width: 35%;">البند</th>
-            <th style="width: 20%;">عدد الوحدات</th>
+            <th style="width: 40%;">البند</th>
+            <th style="width: 15%;">عدد الوحدات</th>
             <th style="width: 20%;">سعر الوحدة</th>
             <th style="width: 25%;">الإجمالي</th>
         </tr>
@@ -267,71 +357,25 @@
         <tbody>
         <tr>
             <td class="editable" contenteditable="true">
-                توريد وتركيب وتشغيل مصعد ركاب كامل حسب المواصفات أعلاه
+                توريد وتركيب وتشغيل مصعد ركاب كامل حسب المواصفات أعلاه.
             </td>
-            <td id="price_units">1</td>
-            <td id="price_unit_value" class="editable" contenteditable="true">—</td>
-            <td id="price_total_value">—</td>
+            <td class="bind_units">1</td>
+            <td class="bind_price_per_unit editable" contenteditable="true">—</td>
+            <td class="bind_total_price">—</td>
         </tr>
         </tbody>
         <tfoot>
         <tr>
-            <th colspan="3">الإجمالي شامل ضريبة القيمة المضافة (%<span id="price_vat_rate">15</span>)</th>
-            <th id="price_grand_total">—</th>
+            <th colspan="3">
+                الإجمالي شامل ضريبة القيمة المضافة (%<span class="bind_vat_rate">15</span>)
+            </th>
+            <th class="bind_total_with_vat">—</th>
         </tr>
         </tfoot>
     </table>
 
-    <div class="note-box editable" contenteditable="true">
+    <div class="small-note editable" contenteditable="true">
         ملاحظة: الأسعار أعلاه مبنية على الأسعار الحالية للمواد والخدمات، وقد تتغير في حال تغير أسعار الصرف أو تكاليف الشحن أو الرسوم الحكومية.
-    </div>
-
-    <div class="section-title">رابعاً: جدول الدفعات المقترح</div>
-    <table>
-        <thead>
-        <tr>
-            <th style="width: 45%;">البيان</th>
-            <th style="width: 15%;">النسبة</th>
-            <th style="width: 40%;">المبلغ بالريال السعودي</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td class="editable" contenteditable="true">عند توقيع العقد</td>
-            <td>50%</td>
-            <td id="pay_50">—</td>
-        </tr>
-        <tr>
-            <td class="editable" contenteditable="true">عند الانتهاء من الأعمال الميكانيكية</td>
-            <td>25%</td>
-            <td id="pay_25">—</td>
-        </tr>
-        <tr>
-            <td class="editable" contenteditable="true">بعد الانتهاء من الأعمال الكهربائية والتشغيل</td>
-            <td>20%</td>
-            <td id="pay_20">—</td>
-        </tr>
-        <tr>
-            <td class="editable" contenteditable="true">عند التسليم النهائي</td>
-            <td>5%</td>
-            <td id="pay_5">—</td>
-        </tr>
-        <tr>
-            <th>الإجمالي (شامل ضريبة القيمة المضافة)</th>
-            <th>100%</th>
-            <th id="pay_total">—</th>
-        </tr>
-        </tbody>
-    </table>
-
-    <div class="section-title">خامساً: الشروط العامة</div>
-    <div class="terms editable" contenteditable="true">
-        <p>1- تشمل الأسعار توريد وتركيب وتشغيل المصعد كاملاً حسب المواصفات المعتمدة، ولا تشمل أية أعمال مدنية أو تعديلات إنشائية ما لم يُنص على ذلك في هذا العرض.</p>
-        <p>2- يجب توفير التغذية الكهربائية المطلوبة للمصعد (3 فاز 380V – 60Hz) حتى غرفة الماكينة أو لوحة التحكم من قبل العميل.</p>
-        <p>3- مدة التوريد المتوقعة من تاريخ استلام الدفعة الأولى وتأكيد المخططات من قبل الاستشاري هي (8–12) أسبوعاً، حسب حالة المصنع والشحن.</p>
-        <p>4- مدة التركيب والتشغيل تعتمد على جاهزية البئر والأعمال المدنية، وبمتوسط (2–4) أسابيع لكل مصعد.</p>
-        <p>5- الضمان لمدة (12) شهراً من تاريخ التشغيل الأولي، ويشمل العيوب المصنعية دون سوء الاستخدام أو الإهمال أو التعديلات من طرف ثالث.</p>
-        <p>6- يعتبر هذا العرض سارياً لمدة (30) يوماً من تاريخ إصداره ما لم يتم تعديله أو سحبه خطياً من قبل مؤسسة آر كي ال RKL.</p>
     </div>
 
     <div class="signature-row">
@@ -347,23 +391,357 @@
         </div>
     </div>
 
-    <button class="btn-print" onclick="window.print()">طباعة / حفظ PDF</button>
+    <div class="page-index">Page 1</div>
+</div>
 
-    <div id="warn_no_data" class="warning" style="display:none;">
-        لم يتم العثور على بيانات عرض أخير (rkl_last_offer). الرجاء العودة إلى صفحة التسعير وحفظ عرض السعر أولاً.
+<!-- ===== صفحة 2: Specification Sheet (مختصر) ===== -->
+<div class="page">
+    <div class="header">
+        <div class="logo-box">
+            <div class="logo-title">آر كي ال RKL للمصاعد والسلالم الكهربائية</div>
+            <div class="logo-sub">Specification Sheet (General Data)</div>
+        </div>
+        <div class="offer-meta">
+            <div>Contract / Offer No: <span class="bind_quote_number">—</span></div>
+            <div>Date: <span class="bind_offer_date">—</span></div>
+        </div>
     </div>
 
+    <div class="section-title">1) General Specifications</div>
+    <table class="spec-table">
+        <thead>
+        <tr>
+            <th>SN</th>
+            <th>General Specification</th>
+            <th>Code</th>
+            <th>المواصفة بالعربية</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>1</td>
+            <td>Brand</td>
+            <td class="bind_brand_en">—</td>
+            <td class="bind_brand_ar">ماركة المصعد</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Machine Type</td>
+            <td>MRL / Gearless</td>
+            <td>نوع الماكينة</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>Use</td>
+            <td>Passenger</td>
+            <td>نوع الاستخدام (ركاب)</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>Capacity</td>
+            <td class="bind_capacity_en">—</td>
+            <td>الحمولة الاسمية</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>Speed</td>
+            <td class="bind_speed_en">—</td>
+            <td>سرعة المصعد</td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td>Stops / Floors</td>
+            <td class="bind_floors_en">—</td>
+            <td>عدد الأدوار / التوقفات</td>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td>Cabin Size</td>
+            <td class="bind_dim_cabin_en">—</td>
+            <td>مقاس الكابينة</td>
+        </tr>
+        <tr>
+            <td>8</td>
+            <td>Shaft Size</td>
+            <td class="bind_dim_shaft_en">—</td>
+            <td>مقاس البئر</td>
+        </tr>
+        <tr>
+            <td>9</td>
+            <td>Door Type / Size</td>
+            <td>Automatic – 800/900 mm</td>
+            <td>نوع الباب ومقاسه</td>
+        </tr>
+        <tr>
+            <td>10</td>
+            <td>Cabin Decoration</td>
+            <td class="bind_cabin_design_en">Hairline / Mirror</td>
+            <td>تشطيب الكابينة</td>
+        </tr>
+        <tr>
+            <td>11</td>
+            <td>Flooring</td>
+            <td class="bind_floor_finish_en">Granite</td>
+            <td>تشطيب الأرضية</td>
+        </tr>
+        <tr>
+            <td>12</td>
+            <td>Ceiling Type</td>
+            <td>LED Panel</td>
+            <td>سقف الكابينة مع إنارة LED</td>
+        </tr>
+        <tr>
+            <td>13</td>
+            <td>Handrail Type</td>
+            <td>Stainless Steel</td>
+            <td>درابزين ستانلس</td>
+        </tr>
+        <tr>
+            <td>14</td>
+            <td>COP / LOP Type</td>
+            <td>LCD / Touch as per design</td>
+            <td>لوحات التشغيل الداخلية والخارجية</td>
+        </tr>
+        <tr>
+            <td>15</td>
+            <td>Power Supply</td>
+            <td>380V, 60Hz, 3-Phase</td>
+            <td>التغذية الكهربائية المطلوبة</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="page-index">Page 2</div>
+</div>
+
+<!-- ===== صفحة 3: Security & Safety Features ===== -->
+<div class="page">
+    <div class="header">
+        <div class="logo-box">
+            <div class="logo-title">آر كي ال RKL للمصاعد والسلالم الكهربائية</div>
+            <div class="logo-sub">Security, Safety & Additional Features</div>
+        </div>
+        <div class="offer-meta">
+            <div>Offer No: <span class="bind_quote_number">—</span></div>
+            <div>Date: <span class="bind_offer_date">—</span></div>
+        </div>
+    </div>
+
+    <div class="section-title">2) Security, Safety & Additional Features</div>
+    <table class="spec-table">
+        <thead>
+        <tr>
+            <th>SN</th>
+            <th>Feature (English)</th>
+            <th>الكود</th>
+            <th>الوصف بالعربية</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr><td>1</td><td>ARD (Automatic Rescue Device)</td><td>ARD</td><td>جهاز الإنقاذ التلقائي عند انقطاع التيار</td></tr>
+        <tr><td>2</td><td>Fireman Key</td><td>FIRE</td><td>مفتاح حريق لاستدعاء المصعد إلى الدور الأرضي</td></tr>
+        <tr><td>3</td><td>Two-way Intercom System</td><td>INT</td><td>نظام اتصال داخلي ثنائي الاتجاه بين الكابينة وغرفة الماكينة</td></tr>
+        <tr><td>4</td><td>Emergency Car Light</td><td>E-LIGHT</td><td>إنارة طوارئ داخل الكابينة</td></tr>
+        <tr><td>5</td><td>Emergency Alarm Bell</td><td>ALARM</td><td>جرس إنذار للطوارئ</td></tr>
+        <tr><td>6</td><td>Electric Blower / Fan</td><td>FAN</td><td>مروحة تهوية للكابينة</td></tr>
+        <tr><td>7</td><td>Speed Governor</td><td>GOV</td><td>منظم سرعة لسلامة الحركة</td></tr>
+        <tr><td>8</td><td>Overload Protection</td><td>OL</td><td>حماية من زيادة الحمولة مع إنذار صوتي وضوئي</td></tr>
+        <tr><td>9</td><td>Door Safety Edge / Light Curtain</td><td>DOOR SAFE</td><td>حساسات أمان لباب المصعد تمنع الإغلاق عند وجود عائق</td></tr>
+        <tr><td>10</td><td>Auto Park Function</td><td>AUTO PARK</td><td>عودة المصعد تلقائياً لدور محدد عند عدم الاستخدام</td></tr>
+        <tr><td>11</td><td>Power Saver Mode</td><td>P-SAVE</td><td>وضعية توفير الطاقة عند الخمول</td></tr>
+        <tr><td>12</td><td>Black-out Protection</td><td>VOLT PROT</td><td>حماية من انخفاض/ارتفاع الجهد الكهربائي</td></tr>
+        </tbody>
+    </table>
+
+    <div class="page-index">Page 3</div>
+</div>
+
+<!-- ===== صفحة 4: Warranty & Maintenance + Payment Terms ===== -->
+<div class="page">
+    <div class="header">
+        <div class="logo-box">
+            <div class="logo-title">Warranty & Maintenance</div>
+            <div class="logo-sub">الضمان والصيانة</div>
+        </div>
+        <div class="offer-meta">
+            <div>Offer No: <span class="bind_quote_number">—</span></div>
+            <div>Date: <span class="bind_offer_date">—</span></div>
+        </div>
+    </div>
+
+    <div class="section-title">3) Warranty and Maintenance / الضمان والصيانة</div>
+    <table>
+        <thead>
+        <tr>
+            <th style="width: 8%;">No.</th>
+            <th style="width: 46%;">Warranty and Maintenance (English)</th>
+            <th style="width: 46%;">الضمان والصيانة (بالعربية)</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>01</td>
+            <td class="editable" contenteditable="true">
+                The warranty period is 1 year on the entire elevator against manufacturing defects,
+                provided that the elevator is operated and used according to the manufacturer's instructions.
+            </td>
+            <td class="editable" contenteditable="true">
+                مدة الضمان سنة واحدة على كامل المصعد ضد العيوب المصنعية،
+                بشرط تشغيل المصعد واستخدامه وفق تعليمات الشركة الصانعة.
+            </td>
+        </tr>
+        <tr>
+            <td>02</td>
+            <td class="editable" contenteditable="true">
+                Free preventive maintenance during the warranty period according to the agreed maintenance schedule.
+            </td>
+            <td class="editable" contenteditable="true">
+                صيانة وقائية مجانية خلال فترة الضمان وفق جدول الصيانة المتفق عليه.
+            </td>
+        </tr>
+        <tr>
+            <td>03</td>
+            <td class="editable" contenteditable="true">
+                Spare parts during warranty are free of charge for manufacturing defects only.
+            </td>
+            <td class="editable" contenteditable="true">
+                قطع الغيار خلال فترة الضمان مجانية للعيوب المصنعية فقط.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="section-title">4) Payment Terms / جدول الدفعات</div>
+    <table>
+        <thead>
+        <tr>
+            <th style="width: 45%;">البيان</th>
+            <th style="width: 15%;">النسبة</th>
+            <th style="width: 40%;">المبلغ بالريال السعودي</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class="editable" contenteditable="true">عند توقيع العقد</td>
+            <td>50%</td>
+            <td class="bind_pay_50">—</td>
+        </tr>
+        <tr>
+            <td class="editable" contenteditable="true">عند الانتهاء من الأعمال الميكانيكية</td>
+            <td>25%</td>
+            <td class="bind_pay_25">—</td>
+        </tr>
+        <tr>
+            <td class="editable" contenteditable="true">بعد الانتهاء من الأعمال الكهربائية والتشغيل</td>
+            <td>20%</td>
+            <td class="bind_pay_20">—</td>
+        </tr>
+        <tr>
+            <td class="editable" contenteditable="true">عند التسليم النهائي للمصعد</td>
+            <td>5%</td>
+            <td class="bind_pay_5">—</td>
+        </tr>
+        <tr>
+            <th>الإجمالي (شامل ضريبة القيمة المضافة)</th>
+            <th>100%</th>
+            <th class="bind_total_with_vat">—</th>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="page-index">Page 4</div>
+</div>
+
+<!-- ===== صفحة 5: بنود العقد العربية ===== -->
+<div class="page">
+    <div class="header">
+        <div class="logo-box">
+            <div class="logo-title">بنود وشروط العقد</div>
+            <div class="logo-sub">يمكن تعديل النصوص يدويًا قبل الطباعة</div>
+        </div>
+        <div class="offer-meta">
+            <div>عرض رقم: <span class="bind_quote_number">—</span></div>
+            <div>تاريخ: <span class="bind_offer_date">—</span></div>
+        </div>
+    </div>
+
+    <div class="section-title">5) مواد وبنود العقد (بالعربية)</div>
+    <div class="terms editable" contenteditable="true">
+        <p>المادة الأولى: يعتبر هذا العرض جزءًا لا يتجزأ من عقد توريد وتركيب وتشغيل المصعد في حال اعتماده من قبل العميل والتوقيع عليه.</p>
+        <p>المادة الثانية: يلتزم الطرف الثاني (مؤسسة آر كي ال RKL) بتنفيذ الأعمال وفق المواصفات الفنية المعتمدة، وعلى مسؤوليته الفنية الكاملة.</p>
+        <p>المادة الثالثة: جميع الأسعار المذكورة في هذا العرض تم احتسابها بالريال السعودي، وتشمل ضريبة القيمة المضافة بنسبة 15%، ما لم يُذكر غير ذلك.</p>
+        <p>المادة الرابعة: يلتزم الطرف الأول (العميل) بتوفير التغذية الكهربائية 3 فاز 380 فولت إلى غرفة الماكينة أو لوحة التحكم، وكذلك تنفيذ جميع الأعمال المدنية الخاصة ببئر المصعد والأبواب وفق المخططات المعتمدة.</p>
+        <p>المادة الخامسة: لا يتحمل الطرف الثاني أي مسؤولية عن الأعطال الناتجة عن سوء الاستخدام أو العبث أو التعديلات من قبل أي طرف آخر غير معتمد.</p>
+        <p>المادة السادسة: في حال تأخر الدفعات عن مواعيدها يحق للطرف الثاني إيقاف الأعمال مؤقتاً إلى حين التسوية المالية، دون أن يترتب على ذلك أي مسؤولية عن التأخير في التسليم.</p>
+        <p>المادة السابعة: تكون ولاية القضاء في حال النزاع لا قدر الله للمحاكم المختصة في المملكة العربية السعودية.</p>
+        <p>المادة الثامنة: يتم تبادل المراسلات والإشعارات بين الطرفين عبر البريد الإلكتروني الرسمي أو الخطابات الورقية، وتعتبر وسيلة معتمدة في الإثبات.</p>
+        <p>المادة التاسعة: يعتبر هذا العرض لاغياً في حال عدم توقيعه وسداد الدفعة الأولى خلال المدة المحددة لصلاحية العرض.</p>
+    </div>
+
+    <div class="page-index">Page 5</div>
+</div>
+
+<!-- ===== صفحة 6: صفحة المخطط بناءً على المقاسات ===== -->
+<div class="page">
+    <div class="header">
+        <div class="logo-box">
+            <div class="logo-title">Elevator Shaft & Cabin Diagram</div>
+            <div class="logo-sub">مخطط مبسط استرشادي (غير مقيّد للاستخدام الإنشائي)</div>
+        </div>
+        <div class="offer-meta">
+            <div>Offer No: <span class="bind_quote_number">—</span></div>
+            <div>Date: <span class="bind_offer_date">—</span></div>
+        </div>
+    </div>
+
+    <div class="section-title">6) المخطط الاسترشادي لأبعاد بئر المصعد والكابينة</div>
+    <div class="diagram-container">
+        <div class="shaft">
+            <div class="cabin">
+                <span class="bind_dim_cabin">Cabin</span>
+            </div>
+            <div class="dim-label dim-top">
+                عرض البئر: <span class="bind_shaft_width">—</span> mm
+            </div>
+            <div class="dim-label dim-right">
+                عمق البئر: <span class="bind_shaft_depth">—</span> mm
+            </div>
+        </div>
+    </div>
+    <div class="caption">
+        الأبعاد أعلاه استرشادية فقط، ويجب اعتماد الرسومات النهائية (Shop Drawings) من الاستشاري قبل التنفيذ.
+    </div>
+
+    <div class="page-index">Page 6</div>
+</div>
+
+<!-- زر طباعة عام -->
+<div style="text-align:center; margin-top:10px;">
+    <button class="btn-print" onclick="window.print()">طباعة / حفظ PDF</button>
+    <div id="warn_no_data" class="warning" style="display:none;">
+        لم يتم العثور على بيانات عرض أخير (rkl_last_offer). الرجاء العودة إلى نموذج التسعير وحفظ عرض السعر أولاً.
+    </div>
 </div>
 
 <script>
     function formatCurrency(value, currency) {
         if (value == null || isNaN(value)) return "—";
         const num = Number(value);
-        const formatted = num.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        if (currency === "USD") {
-            return "USD " + formatted;
-        }
+        const formatted = num.toLocaleString("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+        if (currency === "USD") return "USD " + formatted;
         return "SAR " + formatted;
+    }
+
+    function bindText(cls, value) {
+        const nodes = document.querySelectorAll("." + cls);
+        nodes.forEach(el => {
+            el.textContent = (value !== undefined && value !== null && value !== "")
+                ? value
+                : el.textContent || "—";
+        });
     }
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -382,88 +760,97 @@
             return;
         }
 
-        // meta
-        document.getElementById("meta_quote_number").textContent = offer.quoteNumber || "—";
-        const dateStr = offer.project?.date ? offer.project.date.slice(0, 10) : "";
-        document.getElementById("meta_date").textContent = dateStr || "—";
+        const customer = offer.customer || {};
+        const project  = offer.project  || {};
+        const cabin    = offer.cabin    || {};
+        const pricing  = offer.pricing  || {};
+        const dims     = (offer.dimensions && offer.dimensions.en81) || {};
 
-        // customer & project
-        document.getElementById("customer_name").textContent = offer.customer?.name || "—";
-        document.getElementById("customer_type").textContent = offer.customer?.type || "—";
-        document.getElementById("project_name").textContent = offer.project?.name || "—";
-        document.getElementById("project_city").textContent = offer.customer?.city || "—";
+        const dateStr = project.date ? project.date.slice(0, 10) : "";
 
-        const addrParts = [
-            offer.customer?.city,
-            offer.customer?.district,
-            offer.customer?.street,
-            offer.customer?.address
-        ].filter(Boolean);
-        document.getElementById("project_address").textContent = addrParts.join(" - ") || "—";
+        bindText("bind_quote_number", offer.quoteNumber || "—");
+        bindText("bind_offer_date", dateStr || "—");
 
-        const contactParts = [
-            offer.customer?.mobile ? "جوال: " + offer.customer.mobile : "",
-            offer.customer?.email ? "بريد: " + offer.customer.email : ""
-        ].filter(Boolean);
-        document.getElementById("contact_info").textContent = contactParts.join(" | ") || "—";
+        bindText("bind_customer_name", customer.name || "—");
+        bindText("bind_customer_type", customer.type || "company");
+        bindText("bind_project_name", project.name || "—");
+        bindText("bind_city", customer.city || "—");
+
+        const addrParts = [customer.city, customer.district, customer.street, customer.address]
+            .filter(Boolean);
+        bindText("bind_address", addrParts.join(" - ") || "—");
+
+        const contactParts = [];
+        if (customer.mobile) contactParts.push("جوال: " + customer.mobile);
+        if (customer.email)  contactParts.push("بريد: " + customer.email);
+        bindText("bind_contact", contactParts.join(" | ") || "—");
 
         // technical
-        document.getElementById("tech_brand").textContent = offer.project?.brandLabel || "—";
-        document.getElementById("tech_capacity").textContent = offer.project?.capacity
-            ? offer.project.capacity + " kg"
-            : "—";
-        document.getElementById("tech_speed").textContent = offer.project?.speed
-            ? offer.project.speed + " m/s"
-            : "—";
-        document.getElementById("tech_floors").textContent = offer.project?.floors ?? "—";
-        document.getElementById("tech_lifts_count").textContent = offer.project?.liftsCount ?? "—";
-
-        document.getElementById("tech_cabin_design").textContent =
-            offer.cabin?.design || "Standard";
-        document.getElementById("tech_floor_finish").textContent =
-            offer.cabin?.floorFinish || "Standard";
-
-        // dimensions (لو لاحقاً خزناها في offer.dimensions)
-        if (offer.dimensions && offer.dimensions.en81) {
-            const en = offer.dimensions.en81;
-            const cabin = en.cabinSize || "";
-            const shaft = en.shaftSize || "";
-            if (cabin) document.getElementById("dim_cabin").textContent = cabin;
-            if (shaft) document.getElementById("dim_shaft").textContent = shaft;
+        bindText("bind_brand", project.brandLabel || "—");
+        bindText("bind_brand_en", project.brandLabel || "—");
+        bindText("bind_brand_ar", "ماركة المصعد " + (project.brandLabel || ""));
+        if (project.capacity) {
+            bindText("bind_capacity", project.capacity + " kg");
+            bindText("bind_capacity_en", project.capacity + " kg");
         }
+        if (project.speed) {
+            bindText("bind_speed", project.speed + " m/s");
+            bindText("bind_speed_en", project.speed + " m/s");
+        }
+        bindText("bind_floors", project.floors ?? "—");
+        bindText("bind_floors_en", project.floors != null ? project.floors + " floors" : "—");
+        bindText("bind_lifts", project.liftsCount ?? 1);
+
+        bindText("bind_cabin_design", cabin.design || "Standard");
+        bindText("bind_cabin_design_en", cabin.design || "Standard");
+        bindText("bind_floor_finish", cabin.floorFinish || "Standard");
+        bindText("bind_floor_finish_en", cabin.floorFinish || "Standard");
+
+        // dimensions (لو مخزنة)
+        if (dims.cabinSize) {
+            bindText("bind_dim_cabin", dims.cabinSize);
+            bindText("bind_dim_cabin_en", dims.cabinSize);
+        }
+        if (dims.shaftSize) {
+            bindText("bind_dim_shaft", dims.shaftSize);
+            bindText("bind_dim_shaft_en", dims.shaftSize);
+        }
+
+        // محاولة استخراج عرض/عمق البئر من نص shaftSize
+        let shaftWidth = "";
+        let shaftDepth = "";
+        if (dims.shaftSize && dims.shaftSize.includes("x")) {
+            const parts = dims.shaftSize.split("x");
+            if (parts.length >= 2) {
+                shaftWidth = parts[0].trim();
+                shaftDepth = parts[1].trim();
+            }
+        }
+        bindText("bind_shaft_width", shaftWidth);
+        bindText("bind_shaft_depth", shaftDepth);
 
         // pricing
-        const totalWithVat = offer.pricing?.totalWithVat ?? null;
-        const currency = offer.pricing?.currency || "SAR";
-        const vatRate = offer.pricing?.vatRate ?? 15;
+        const totalWithVat = pricing.totalWithVat ?? null;
+        const currency = pricing.currency || "SAR";
+        const vatRate  = pricing.vatRate ?? 15;
 
-        document.getElementById("price_vat_rate").textContent = vatRate;
-        document.getElementById("price_units").textContent = offer.project?.liftsCount ?? 1;
-        document.getElementById("price_grand_total").textContent = formatCurrency(totalWithVat, currency);
-        document.getElementById("pay_total").textContent = formatCurrency(totalWithVat, currency);
+        bindText("bind_vat_rate", vatRate);
+        bindText("bind_total_with_vat", formatCurrency(totalWithVat, currency));
 
-        if (totalWithVat != null && offer.project?.liftsCount) {
-            const perLift = Number(totalWithVat) / Number(offer.project.liftsCount);
-            document.getElementById("price_unit_value").textContent = formatCurrency(perLift, currency);
-            document.getElementById("price_total_value").textContent = formatCurrency(totalWithVat, currency);
-        }
+        const liftsCount = project.liftsCount || 1;
+        bindText("bind_units", liftsCount);
 
-        // payments
         if (totalWithVat != null) {
+            const perLift = Number(totalWithVat) / Number(liftsCount || 1);
+            bindText("bind_price_per_unit", formatCurrency(perLift, currency));
+            bindText("bind_total_price", formatCurrency(totalWithVat, currency));
+
             const t = Number(totalWithVat);
-            const p50 = t * 0.50;
-            const p25 = t * 0.25;
-            const p20 = t * 0.20;
-            const p5  = t * 0.05;
-
-            document.getElementById("pay_50").textContent = formatCurrency(p50, currency);
-            document.getElementById("pay_25").textContent = formatCurrency(p25, currency);
-            document.getElementById("pay_20").textContent = formatCurrency(p20, currency);
-            document.getElementById("pay_5").textContent  = formatCurrency(p5,  currency);
+            bindText("bind_pay_50", formatCurrency(t * 0.50, currency));
+            bindText("bind_pay_25", formatCurrency(t * 0.25, currency));
+            bindText("bind_pay_20", formatCurrency(t * 0.20, currency));
+            bindText("bind_pay_5",  formatCurrency(t * 0.05,  currency));
         }
-
-        // يمكن مستقبلاً استخدام offer.quoteText في صفحة مستقلة كمقدمة خطاب
-        // أو إدراجه في أعلى الصفحة حسب ما تفضل.
     });
 </script>
 
