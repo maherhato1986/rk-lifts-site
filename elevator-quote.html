@@ -309,25 +309,93 @@
                             <div class="hint">السعر الأساسي يشمل عادةً دورين. الزيادة تُحسب لكل دور إضافي.</div>
                         </div>
                     </div>
-                    <div class="section-title">٢.٢ مقاس بئر المصعد</div>
-<div class="form-grid">
+                    <div class="section-title">📌 جدول المقاسات القياسية (EN81)</div>
 
-    <div>
-        <label for="shaft_width">عرض البئر (mm)</label>
-        <input type="number" id="shaft_width" min="800" placeholder="مثال: 1800" />
-    </div>
+<table class="standard-table">
+    <thead>
+        <tr>
+            <th>الحمولة (kg)</th>
+            <th>مقاس الكابينة (mm)</th>
+            <th>مقاس البئر المطلوب (mm)</th>
+            <th>باب المصعد (mm)</th>
+            <th>Pit</th>
+            <th>OH</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>450</td>
+            <td>1100 × 1000</td>
+            <td>1700 × 1500</td>
+            <td>800</td>
+            <td>1200</td>
+            <td>3500</td>
+        </tr>
+        <tr>
+            <td>630</td>
+            <td>1100 × 1400</td>
+            <td>1800 × 1600</td>
+            <td>800</td>
+            <td>1200</td>
+            <td>3500</td>
+        </tr>
+        <tr>
+            <td>800</td>
+            <td>1350 × 1400</td>
+            <td>2000 × 1600</td>
+            <td>900</td>
+            <td>1300</td>
+            <td>3600</td>
+        </tr>
+        <tr>
+            <td>1000</td>
+            <td>1600 × 1500</td>
+            <td>2200 × 1800</td>
+            <td>900</td>
+            <td>1400</td>
+            <td>3700</td>
+        </tr>
+        <tr>
+            <td>1275</td>
+            <td>1800 × 1600</td>
+            <td>2400 × 1900</td>
+            <td>1100</td>
+            <td>1400</td>
+            <td>3800</td>
+        </tr>
+        <tr>
+            <td>1600</td>
+            <td>1800 × 2000</td>
+            <td>2600 × 2400</td>
+            <td>1100</td>
+            <td>1500</td>
+            <td>4000</td>
+        </tr>
+    </tbody>
+</table>
 
-    <div>
-        <label for="shaft_depth">عمق البئر (mm)</label>
-        <input type="number" id="shaft_depth" min="800" placeholder="مثال: 1600" />
-    </div>
+<style>
+.standard-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0 25px 0;
+    font-size: 14px;
+    background: #fff;
+}
+.standard-table th {
+    background: #f0f0f0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    font-weight: bold;
+}
+.standard-table td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+</style>
 
-    <div>
-        <label for="cabin_dimensions">مقاس الكبينه (اختياري)</label>
-        <input type="text" id="cabin_dimensions" placeholder="مثال: 1100 × 1400 mm" />
-    </div>
-
-</div>
+              </div>
 
 <div class="section-title">٢.٣ تصميم الكبينه الداخلية</div>
 <div class="form-grid">
@@ -1291,6 +1359,7 @@ if (!currentBrandData) {
 
 </body>
 </html>
+
 
 
 
