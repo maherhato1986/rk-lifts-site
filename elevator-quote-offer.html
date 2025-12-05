@@ -675,6 +675,35 @@
 </div>
 
 <script>
+
+    function loadStoredQuotes() {
+    try {
+        return JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
+    } catch (e) {
+        console.error('خطأ في قراءة LocalStorage', e);
+        return [];
+    }
+}
+
+function populateQuoteSelector() {
+    const select = document.getElementById('quote-selector');
+    if (!select) return;
+
+    const quotes = loadStoredQuotes();
+    select.innerHTML = '<option value="">اختر عرض سعر من السجل...</option>';
+
+    quotes.forEach((q, index) => {
+        const dateStr = q.timestamp ? q.timestamp.slice(0, 10) : '---';
+        const project = q.projectName || 'بدون اسم مشروع';
+        const customer = q.customerName || 'عميل غير محدد';
+        const label = `${q.quoteNumber} — ${customer} — ${project} — ${dateStr}`;
+        const opt = document.createElement('option');
+        opt.value = index;
+        opt.textContent = label;
+        select.appendChild(opt);
+    });
+}
+
     function formatCurrency(value, currency) {
         if (value == null || isNaN(value)) return "—";
         const num = Number(value);
@@ -868,8 +897,24 @@ document.getElementById("quote-selector").addEventListener("change", function ()
             bindText("bind_pay_5",  formatCurrency(t * 0.05,  currency));
         }
     });
+
+    document.addEventListener('DOMContentLoaded', function() {
+    populateQuoteSelector();
+});
+document.getElementById('quote-selector').addEventListener('change', function () {
+    const index = this.value;
+    if (index === "") return;
+
+    const quotes = loadStoredQuotes();
+    const q = quotes[index];
+    if (!q) return;
+
+    renderFullOffer(q); // ← هذه الدالة أنت ستنشئها لعرض البيانات
+});
+
 </script>
 
 </body>
 </html>
+
 
