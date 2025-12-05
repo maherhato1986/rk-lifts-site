@@ -1359,6 +1359,28 @@ const directCostSarFinal = directCostSar + cabinExtraCost;
 
                 quoteText: document.getElementById('quote_text').value
             };
+            // تجميع بيانات المقاسات من جدول المصاعد
+const shaftRows = document.querySelectorAll("#shaft-table tbody tr");
+const shaftData = [];
+
+shaftRows.forEach((row, index) => {
+    const shaft = row.querySelector(".shaft-select")?.value || "";
+    const cabin = row.querySelector(".cabin-cell")?.innerText || "";
+    const door = row.querySelector(".door-cell")?.innerText || "";
+    const note = row.querySelector(".note-input")?.value || "";
+
+    shaftData.push({
+        elevator: index + 1,
+        shaft,
+        cabin,
+        door,
+        note
+    });
+});
+
+// إضافة البيانات إلى offerData
+offerData.shafts = shaftData;
+
 
             // حفظ بيانات العرض الرسمي لاستخدامها في elevator-quote-offer.html
             localStorage.setItem('rkl_last_offer', JSON.stringify(offerData));
@@ -1487,6 +1509,7 @@ document.getElementById("lifts_count").addEventListener("input", function () {
 
 </body>
 </html>
+
 
 
 
