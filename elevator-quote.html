@@ -993,16 +993,7 @@ function fillSpeedOptions() {
         const currency = document.getElementById('currency').value;
         const vatRate = Number(document.getElementById('vat_rate').value) || 0;
         const includeVat = document.getElementById('include_vat').checked;
-        const cabinDesign = document.getElementById("cabin_design").value;
-const cabinExtraCost = CABIN_DESIGN_ADDITIONAL[cabinDesign] || 0;
-
-// أضف هذه التكلفة ضمن directCostSar
-const directCostSar =
-    factorySar +
-    shippingInsuranceSar +
-    clearanceTransportSar +
-    installationCommissioningSar +
-    cabinExtraCost;  // ← إضافة تكلفة التصميم
+     
 
 
         if (!brandKey || !capacity || !speed || !floors || floors < 2 || liftsCount < 1) {
@@ -1053,12 +1044,20 @@ if (!currentBrandData) {
             shippingInsuranceSar +
             clearanceTransportSar +
             installationCommissioningSar;
+        const cabinDesign = document.getElementById("cabin_design").value;
+const cabinExtraCost = CABIN_DESIGN_ADDITIONAL[cabinDesign] || 0;
+
+const directCostSarFinal = directCostSar + cabinExtraCost;
+
 
         // 6) مصاريف التشغيل
-        const overheadSar = directCostSar * (COST_PARAMS.overheadPercent / 100);
+        const overheadSar = directCostSarFinal * (COST_PARAMS.overheadPercent / 100);
+
+
 
         // 7) تكلفة قبل الربح
-        const costBeforeProfitSar = directCostSar + overheadSar;
+        const costBeforeProfitSar = directCostSarFinal + overheadSar;
+
 
         // 8) هامش الربح
         const profitSar = costBeforeProfitSar * (COST_PARAMS.profitPercent / 100);
@@ -1359,6 +1358,7 @@ if (!currentBrandData) {
 
 </body>
 </html>
+
 
 
 
