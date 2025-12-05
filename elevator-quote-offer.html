@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <title>عرض سعر / عقد توريد وتركيب وتشغيل مصعد</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <style>
         body {
             font-family: "Cairo", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -86,7 +87,7 @@
 
         .two-col {
             display: grid;
-            grid-template-columns: 1.1fr 1fr;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 12px;
         }
 
@@ -141,24 +142,24 @@
 
         .spec-table th:nth-child(1),
         .spec-table td:nth-child(1) {
-            width: 5%;
+            width: 6%;
             text-align: center;
         }
 
         .spec-table th:nth-child(2),
         .spec-table td:nth-child(2) {
-            width: 45%;
+            width: 44%;
         }
 
         .spec-table th:nth-child(3),
         .spec-table td:nth-child(3) {
-            width: 15%;
+            width: 18%;
             text-align: center;
         }
 
         .spec-table th:nth-child(4),
         .spec-table td:nth-child(4) {
-            width: 35%;
+            width: 32%;
         }
 
         /* صفحة المخطط */
@@ -238,14 +239,14 @@
 </head>
 <body>
 
-<!-- ===== صفحة 1: بيانات العميل + الملخص الفني + السعر ===== -->
+<!-- ================= صفحة 1: تعريف RKL + ملف العميل ================= -->
 <div class="page">
     <div class="header">
         <div class="logo-box editable" contenteditable="true">
             <div class="logo-title">آر كي ال RKL للمصاعد والسلالم الكهربائية</div>
             <div class="logo-sub">
                 السجل التجاري: 1010709355 – الرقم الضريبي: 302250422600003<br/>
-                الرياض – حي السليمانية – هاتف: 0114774021 – بريد: admin@rk-lifts.com
+                العنوان: السليمانية – الرياض – هاتف: 0114774021 – بريد: admin@rk-lifts.com
             </div>
         </div>
         <div class="offer-meta">
@@ -256,95 +257,308 @@
 
     <h1 class="main-title">عرض سعر توريد وتركيب وتشغيل مصعد كهربائي</h1>
 
-    <div class="section-title">أولاً: بيانات العميل والموقع</div>
+    <div class="section-title">أولاً: نبذة عن مؤسسة آر كي ال RKL</div>
+    <p class="small-note editable" contenteditable="true">
+        مؤسسة سعودية متخصصة في توريد وتركيب وصيانة المصاعد والسلالم الكهربائية، تعمل وفق أعلى معايير الجودة
+        والسلامة، وتمتلك شراكات مع مصانع عالمية، مع خبرة في تنفيذ مشاريع حكومية وخاصة في مختلف مناطق المملكة.
+    </p>
+
+    <div class="section-title">ثانياً: ملف العميل</div>
     <table>
         <tbody>
         <tr>
+            <th style="width: 18%;">نوع العميل</th>
+            <td class="bind_customer_type">—</td>
             <th style="width: 18%;">اسم العميل</th>
-            <td class="bind_customer_name editable" contenteditable="true">—</td>
-            <th style="width: 18%;">جهة العمل</th>
-            <td class="bind_customer_type editable" contenteditable="true">—</td>
+            <td class="bind_customer_name">—</td>
         </tr>
         <tr>
-            <th>اسم المشروع</th>
-            <td class="bind_project_name editable" contenteditable="true">—</td>
+            <th>اسم المخول بالتوقيع</th>
+            <td class="bind_contact_person">—</td>
+            <th>رقم الهوية / الإقامة</th>
+            <td class="bind_id_number">—</td>
+        </tr>
+        <tr>
+            <th>السجل التجاري</th>
+            <td class="bind_cr_number">—</td>
+            <th>الرقم الضريبي</th>
+            <td class="bind_tax_number">—</td>
+        </tr>
+        <tr>
             <th>المدينة</th>
-            <td class="bind_city editable" contenteditable="true">—</td>
+            <td class="bind_city">—</td>
+            <th>الحي</th>
+            <td class="bind_district">—</td>
         </tr>
         <tr>
-            <th>العنوان</th>
-            <td colspan="3" class="bind_address editable" contenteditable="true">—</td>
+            <th>الشارع</th>
+            <td class="bind_street">—</td>
+            <th>رقم المبنى</th>
+            <td class="bind_building_no">—</td>
         </tr>
         <tr>
-            <th>وسائل التواصل</th>
-            <td colspan="3" class="bind_contact editable" contenteditable="true">—</td>
+            <th>الرمز البريدي</th>
+            <td class="bind_postal_code">—</td>
+            <th>وصف العنوان المختصر</th>
+            <td class="bind_full_address">—</td>
+        </tr>
+        <tr>
+            <th>الجوال</th>
+            <td class="bind_mobile">—</td>
+            <th>هاتف ثابت</th>
+            <td class="bind_phone">—</td>
+        </tr>
+        <tr>
+            <th>البريد الإلكتروني</th>
+            <td class="bind_email" colspan="3">—</td>
+        </tr>
+        <tr>
+            <th>وسيلة التواصل المفضلة</th>
+            <td class="bind_preferred_contact">—</td>
+            <th>ملاحظات داخلية</th>
+            <td class="bind_notes">—</td>
         </tr>
         </tbody>
     </table>
 
-    <div class="section-title">ثانياً: الملخص الفني للمصعد المقترح</div>
-    <div class="two-col">
-        <table>
-            <tbody>
-            <tr>
-                <th style="width: 30%;">الماركة / النظام</th>
-                <td class="bind_brand editable" contenteditable="true">—</td>
-            </tr>
-            <tr>
-                <th>الحمولة الاسمية</th>
-                <td class="bind_capacity editable" contenteditable="true">—</td>
-            </tr>
-            <tr>
-                <th>السرعة</th>
-                <td class="bind_speed editable" contenteditable="true">—</td>
-            </tr>
-            <tr>
-                <th>عدد الأدوار (Stops)</th>
-                <td class="bind_floors editable" contenteditable="true">—</td>
-            </tr>
-            <tr>
-                <th>عدد المصاعد</th>
-                <td class="bind_lifts editable" contenteditable="true">—</td>
-            </tr>
-            <tr>
-                <th>تصميم الكابينة الداخلية</th>
-                <td class="bind_cabin_design editable" contenteditable="true">Standard</td>
-            </tr>
-            <tr>
-                <th>تشطيب أرضية الكابينة</th>
-                <td class="bind_floor_finish editable" contenteditable="true">Standard</td>
-            </tr>
-            </tbody>
-        </table>
+    <div class="page-index">Page 1</div>
+</div>
 
-        <table>
-            <thead>
-            <tr>
-                <th colspan="2">مقاسات المقصورة والبئر (يمكن تعديلها)</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <th style="width: 40%;">مقاس الكابينة (mm)</th>
-                <td class="bind_dim_cabin editable" contenteditable="true">حسب EN81 أو رسومات العميل</td>
-            </tr>
-            <tr>
-                <th>مقاس البئر (mm)</th>
-                <td class="bind_dim_shaft editable" contenteditable="true">—</td>
-            </tr>
-            <tr>
-                <th>باب المصعد</th>
-                <td class="editable" contenteditable="true">—</td>
-            </tr>
-            <tr>
-                <th>Pit / OH</th>
-                <td class="editable" contenteditable="true">حسب المعايير أو حالة الموقع</td>
-            </tr>
-            </tbody>
-        </table>
+<!-- ================= صفحة 2: مشاريع وخبرة RKL ================= -->
+<div class="page">
+    <div class="header">
+        <div class="logo-box">
+            <div class="logo-title">مشاريع وخبرة مؤسسة RKL</div>
+            <div class="logo-sub">Elevator Installations & Maintenance Projects in Saudi Arabia</div>
+        </div>
+        <div class="offer-meta">
+            <div>العميل: <span class="bind_customer_name">—</span></div>
+            <div>المشروع: <span class="bind_project_name">—</span></div>
+        </div>
     </div>
 
-    <div class="section-title">ثالثاً: قيمة العرض المالي</div>
+    <div class="section-title">١) ملخص خبرة RKL في المملكة</div>
+    <p class="small-note editable" contenteditable="true">
+        نفذت مؤسسة RKL عددًا من مشاريع المصاعد في مختلف مناطق المملكة، تشمل مباني حكومية، ومجمعات سكنية،
+        ومراكز تجارية، ومستشفيات، ومدارس. يوضح الجدول التالي نموذجًا لبعض المشاريع المرجعية، ويمكن تعديله
+        حسب متطلبات كل عرض سعر.
+    </p>
+
+    <div class="section-title">٢) عينة من مشاريع RKL (قابلة للتعديل)</div>
+    <table>
+        <thead>
+        <tr>
+            <th style="width: 6%;">#</th>
+            <th style="width: 34%;">اسم المشروع</th>
+            <th style="width: 20%;">المدينة</th>
+            <th style="width: 20%;">نوع العمل</th>
+            <th style="width: 20%;">عدد المصاعد</th>
+        </tr>
+        </thead>
+        <tbody class="editable" contenteditable="true">
+        <tr>
+            <td>1</td>
+            <td>مشروع مصاعد مباني القطاع الشرقي</td>
+            <td>الدمام</td>
+            <td>توريد وتركيب</td>
+            <td>8 مصاعد ركاب</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>مشروع مباني تعليم المدينة – الحرة الشرقية</td>
+            <td>المدينة المنورة</td>
+            <td>استبدال وتحديث</td>
+            <td>4 مصاعد ركاب</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>مشروع أبراج سكنية خاصة</td>
+            <td>الرياض</td>
+            <td>توريد وتركيب وصيانة</td>
+            <td>10 مصاعد</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="small-note editable" contenteditable="true">
+        يمكن لمندوب المبيعات تعديل المشاريع أعلاه أو إضافة مشاريع جديدة لتناسب نوع القطاع (سكني، تجاري، طبي، مدارس، إلخ).
+    </div>
+
+    <div class="page-index">Page 2</div>
+</div>
+
+<!-- ================= صفحة 3: المواصفات الفنية العامة ================= -->
+<div class="page">
+    <div class="header">
+        <div class="logo-box">
+            <div class="logo-title">المواصفات الفنية العامة للمصعد</div>
+            <div class="logo-sub">General Specifications</div>
+        </div>
+        <div class="offer-meta">
+            <div>Offer No: <span class="bind_quote_number">—</span></div>
+            <div>Date: <span class="bind_offer_date">—</span></div>
+        </div>
+    </div>
+
+    <div class="section-title">٣) البيانات الفنية الرئيسية</div>
+    <table class="spec-table">
+        <thead>
+        <tr>
+            <th>م</th>
+            <th>البند</th>
+            <th>القيمة</th>
+            <th>ملاحظات</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>1</td>
+            <td>ماركة المصعد / النظام</td>
+            <td class="bind_brand">—</td>
+            <td class="editable" contenteditable="true">حسب العرض المعتمد</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>نوع الماكينة</td>
+            <td class="editable" contenteditable="true">Traction – MRL</td>
+            <td>حسب اتفاق المورد</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>الحمولة الاسمية (kg)</td>
+            <td class="bind_capacity">—</td>
+            <td>حسب عدد الأشخاص المطلوب</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>السرعة (m/s)</td>
+            <td class="bind_speed">—</td>
+            <td>ركاب</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>عدد التوقفات (Stops)</td>
+            <td class="bind_floors">—</td>
+            <td>حسب مخططات المشروع</td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td>عدد المصاعد بهذه المواصفات</td>
+            <td class="bind_lifts">—</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td>مقاس الكابينة (mm)</td>
+            <td class="bind_dim_cabin">—</td>
+            <td>طبقاً لجدول EN81 أو التصميم المعتمد</td>
+        </tr>
+        <tr>
+            <td>8</td>
+            <td>مقاس بئر المصعد (mm)</td>
+            <td class="bind_dim_shaft">—</td>
+            <td>طبقاً لجدول EN81 أو حالة الموقع</td>
+        </tr>
+        <tr>
+            <td>9</td>
+            <td>عمق الحفرة Pit</td>
+            <td class="bind_pit">—</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>10</td>
+            <td>ارتفاع أعلى البئر OH</td>
+            <td class="bind_oh">—</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>11</td>
+            <td>تشطيب الكابينة الداخلية</td>
+            <td class="bind_cabin_design">Standard</td>
+            <td class="editable" contenteditable="true">يمكن تعديلها إلى تصميم خاص</td>
+        </tr>
+        <tr>
+            <td>12</td>
+            <td>تشطيب أرضية الكابينة</td>
+            <td class="bind_floor_finish">Standard</td>
+            <td class="editable" contenteditable="true">جرانيت / رخام حسب الاتفاق</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="page-index">Page 3</div>
+</div>
+
+<!-- ================= صفحة 4: ميزات الأمان + مخطط المقاسات ================= -->
+<div class="page">
+    <div class="header">
+        <div class="logo-box">
+            <div class="logo-title">ميزات الأمان والملحقات</div>
+            <div class="logo-sub">Security, Safety & Additional Features</div>
+        </div>
+        <div class="offer-meta">
+            <div>Offer No: <span class="bind_quote_number">—</span></div>
+            <div>Date: <span class="bind_offer_date">—</span></div>
+        </div>
+    </div>
+
+    <div class="section-title">٤) ميزات الأمان القياسية</div>
+    <table class="spec-table">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>الميزة</th>
+            <th>الكود</th>
+            <th>الوصف بالعربية</th>
+        </tr>
+        </thead>
+        <tbody class="editable" contenteditable="true">
+        <tr><td>1</td><td>Automatic Rescue Device</td><td>ARD</td><td>جهاز إنقاذ تلقائي عند انقطاع التيار</td></tr>
+        <tr><td>2</td><td>Fireman Key</td><td>FIRE</td><td>مفتاح حريق لإرجاع المصعد للدور الأرضي</td></tr>
+        <tr><td>3</td><td>Two-way Intercom</td><td>INT</td><td>نظام اتصال داخلي بين الكابينة وغرفة الماكينة</td></tr>
+        <tr><td>4</td><td>Emergency Light & Alarm</td><td>EMG</td><td>إنارة وجرس إنذار للطوارئ</td></tr>
+        <tr><td>5</td><td>Light Curtain</td><td>DOOR SAFE</td><td>حساسات أمان على باب المصعد</td></tr>
+        <tr><td>6</td><td>Overload Protection</td><td>OL</td><td>نظام حماية من زيادة الحمولة</td></tr>
+        <tr><td>7</td><td>Speed Governor</td><td>GOV</td><td>منظم سرعة لسلامة الحركة</td></tr>
+        <tr><td>8</td><td>Power Saver</td><td>PSAVE</td><td>نظام توفير الطاقة عند الخمول</td></tr>
+        </tbody>
+    </table>
+
+    <div class="section-title">٥) مخطط استرشادي لمقاسات البئر والكابينة</div>
+    <div class="diagram-container">
+        <div class="shaft">
+            <div class="cabin">
+                <span class="bind_dim_cabin">Cabin</span>
+            </div>
+            <div class="dim-label dim-top">
+                عرض البئر: <span class="bind_shaft_width">—</span> mm
+            </div>
+            <div class="dim-label dim-right">
+                عمق البئر: <span class="bind_shaft_depth">—</span> mm
+            </div>
+        </div>
+    </div>
+    <div class="caption">
+        الأبعاد أعلاه استرشادية فقط، ويجب اعتماد الرسومات التنفيذية (Shop Drawings) من الاستشاري قبل التنفيذ الفعلي.
+    </div>
+
+    <div class="page-index">Page 4</div>
+</div>
+
+<!-- ================= صفحة 5: القيمة المالية + الدفعات + البنود ================= -->
+<div class="page">
+    <div class="header">
+        <div class="logo-box">
+            <div class="logo-title">القيمة المالية وجدول الدفعات</div>
+            <div class="logo-sub">Financial Offer & Payment Terms</div>
+        </div>
+        <div class="offer-meta">
+            <div>Offer No: <span class="bind_quote_number">—</span></div>
+            <div>Date: <span class="bind_offer_date">—</span></div>
+        </div>
+    </div>
+
+    <div class="section-title">٦) ملخص القيمة المالية</div>
     <table>
         <thead>
         <tr>
@@ -357,10 +571,10 @@
         <tbody>
         <tr>
             <td class="editable" contenteditable="true">
-                توريد وتركيب وتشغيل مصعد ركاب كامل حسب المواصفات أعلاه.
+                توريد وتركيب وتشغيل مصعد ركاب كامل حسب المواصفات المذكورة في هذا العرض.
             </td>
-            <td class="bind_units">1</td>
-            <td class="bind_price_per_unit editable" contenteditable="true">—</td>
+            <td class="bind_lifts">1</td>
+            <td class="bind_price_per_unit">—</td>
             <td class="bind_total_price">—</td>
         </tr>
         </tbody>
@@ -374,244 +588,7 @@
         </tfoot>
     </table>
 
-    <div class="small-note editable" contenteditable="true">
-        ملاحظة: الأسعار أعلاه مبنية على الأسعار الحالية للمواد والخدمات، وقد تتغير في حال تغير أسعار الصرف أو تكاليف الشحن أو الرسوم الحكومية.
-    </div>
-
-    <div class="signature-row">
-        <div class="editable" contenteditable="true">
-            ممثل مؤسسة آر كي ال RKL للمصاعد والسلالم الكهربائية<br/>
-            الاسم: _______________________<br/>
-            التوقيع: _______________________
-        </div>
-        <div class="editable" contenteditable="true">
-            ممثل العميل الكريم<br/>
-            الاسم: _______________________<br/>
-            التوقيع: _______________________
-        </div>
-    </div>
-
-    <div class="page-index">Page 1</div>
-</div>
-
-<!-- ===== صفحة 2: Specification Sheet (مختصر) ===== -->
-<div class="page">
-    <div class="header">
-        <div class="logo-box">
-            <div class="logo-title">آر كي ال RKL للمصاعد والسلالم الكهربائية</div>
-            <div class="logo-sub">Specification Sheet (General Data)</div>
-        </div>
-        <div class="offer-meta">
-            <div>Contract / Offer No: <span class="bind_quote_number">—</span></div>
-            <div>Date: <span class="bind_offer_date">—</span></div>
-        </div>
-    </div>
-
-    <div class="section-title">1) General Specifications</div>
-    <table class="spec-table">
-        <thead>
-        <tr>
-            <th>SN</th>
-            <th>General Specification</th>
-            <th>Code</th>
-            <th>المواصفة بالعربية</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>1</td>
-            <td>Brand</td>
-            <td class="bind_brand_en">—</td>
-            <td class="bind_brand_ar">ماركة المصعد</td>
-        </tr>
-        <tr>
-            <td>2</td>
-            <td>Machine Type</td>
-            <td>MRL / Gearless</td>
-            <td>نوع الماكينة</td>
-        </tr>
-        <tr>
-            <td>3</td>
-            <td>Use</td>
-            <td>Passenger</td>
-            <td>نوع الاستخدام (ركاب)</td>
-        </tr>
-        <tr>
-            <td>4</td>
-            <td>Capacity</td>
-            <td class="bind_capacity_en">—</td>
-            <td>الحمولة الاسمية</td>
-        </tr>
-        <tr>
-            <td>5</td>
-            <td>Speed</td>
-            <td class="bind_speed_en">—</td>
-            <td>سرعة المصعد</td>
-        </tr>
-        <tr>
-            <td>6</td>
-            <td>Stops / Floors</td>
-            <td class="bind_floors_en">—</td>
-            <td>عدد الأدوار / التوقفات</td>
-        </tr>
-        <tr>
-            <td>7</td>
-            <td>Cabin Size</td>
-            <td class="bind_dim_cabin_en">—</td>
-            <td>مقاس الكابينة</td>
-        </tr>
-        <tr>
-            <td>8</td>
-            <td>Shaft Size</td>
-            <td class="bind_dim_shaft_en">—</td>
-            <td>مقاس البئر</td>
-        </tr>
-        <tr>
-            <td>9</td>
-            <td>Door Type / Size</td>
-            <td>Automatic – 800/900 mm</td>
-            <td>نوع الباب ومقاسه</td>
-        </tr>
-        <tr>
-            <td>10</td>
-            <td>Cabin Decoration</td>
-            <td class="bind_cabin_design_en">Hairline / Mirror</td>
-            <td>تشطيب الكابينة</td>
-        </tr>
-        <tr>
-            <td>11</td>
-            <td>Flooring</td>
-            <td class="bind_floor_finish_en">Granite</td>
-            <td>تشطيب الأرضية</td>
-        </tr>
-        <tr>
-            <td>12</td>
-            <td>Ceiling Type</td>
-            <td>LED Panel</td>
-            <td>سقف الكابينة مع إنارة LED</td>
-        </tr>
-        <tr>
-            <td>13</td>
-            <td>Handrail Type</td>
-            <td>Stainless Steel</td>
-            <td>درابزين ستانلس</td>
-        </tr>
-        <tr>
-            <td>14</td>
-            <td>COP / LOP Type</td>
-            <td>LCD / Touch as per design</td>
-            <td>لوحات التشغيل الداخلية والخارجية</td>
-        </tr>
-        <tr>
-            <td>15</td>
-            <td>Power Supply</td>
-            <td>380V, 60Hz, 3-Phase</td>
-            <td>التغذية الكهربائية المطلوبة</td>
-        </tr>
-        </tbody>
-    </table>
-
-    <div class="page-index">Page 2</div>
-</div>
-
-<!-- ===== صفحة 3: Security & Safety Features ===== -->
-<div class="page">
-    <div class="header">
-        <div class="logo-box">
-            <div class="logo-title">آر كي ال RKL للمصاعد والسلالم الكهربائية</div>
-            <div class="logo-sub">Security, Safety & Additional Features</div>
-        </div>
-        <div class="offer-meta">
-            <div>Offer No: <span class="bind_quote_number">—</span></div>
-            <div>Date: <span class="bind_offer_date">—</span></div>
-        </div>
-    </div>
-
-    <div class="section-title">2) Security, Safety & Additional Features</div>
-    <table class="spec-table">
-        <thead>
-        <tr>
-            <th>SN</th>
-            <th>Feature (English)</th>
-            <th>الكود</th>
-            <th>الوصف بالعربية</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr><td>1</td><td>ARD (Automatic Rescue Device)</td><td>ARD</td><td>جهاز الإنقاذ التلقائي عند انقطاع التيار</td></tr>
-        <tr><td>2</td><td>Fireman Key</td><td>FIRE</td><td>مفتاح حريق لاستدعاء المصعد إلى الدور الأرضي</td></tr>
-        <tr><td>3</td><td>Two-way Intercom System</td><td>INT</td><td>نظام اتصال داخلي ثنائي الاتجاه بين الكابينة وغرفة الماكينة</td></tr>
-        <tr><td>4</td><td>Emergency Car Light</td><td>E-LIGHT</td><td>إنارة طوارئ داخل الكابينة</td></tr>
-        <tr><td>5</td><td>Emergency Alarm Bell</td><td>ALARM</td><td>جرس إنذار للطوارئ</td></tr>
-        <tr><td>6</td><td>Electric Blower / Fan</td><td>FAN</td><td>مروحة تهوية للكابينة</td></tr>
-        <tr><td>7</td><td>Speed Governor</td><td>GOV</td><td>منظم سرعة لسلامة الحركة</td></tr>
-        <tr><td>8</td><td>Overload Protection</td><td>OL</td><td>حماية من زيادة الحمولة مع إنذار صوتي وضوئي</td></tr>
-        <tr><td>9</td><td>Door Safety Edge / Light Curtain</td><td>DOOR SAFE</td><td>حساسات أمان لباب المصعد تمنع الإغلاق عند وجود عائق</td></tr>
-        <tr><td>10</td><td>Auto Park Function</td><td>AUTO PARK</td><td>عودة المصعد تلقائياً لدور محدد عند عدم الاستخدام</td></tr>
-        <tr><td>11</td><td>Power Saver Mode</td><td>P-SAVE</td><td>وضعية توفير الطاقة عند الخمول</td></tr>
-        <tr><td>12</td><td>Black-out Protection</td><td>VOLT PROT</td><td>حماية من انخفاض/ارتفاع الجهد الكهربائي</td></tr>
-        </tbody>
-    </table>
-
-    <div class="page-index">Page 3</div>
-</div>
-
-<!-- ===== صفحة 4: Warranty & Maintenance + Payment Terms ===== -->
-<div class="page">
-    <div class="header">
-        <div class="logo-box">
-            <div class="logo-title">Warranty & Maintenance</div>
-            <div class="logo-sub">الضمان والصيانة</div>
-        </div>
-        <div class="offer-meta">
-            <div>Offer No: <span class="bind_quote_number">—</span></div>
-            <div>Date: <span class="bind_offer_date">—</span></div>
-        </div>
-    </div>
-
-    <div class="section-title">3) Warranty and Maintenance / الضمان والصيانة</div>
-    <table>
-        <thead>
-        <tr>
-            <th style="width: 8%;">No.</th>
-            <th style="width: 46%;">Warranty and Maintenance (English)</th>
-            <th style="width: 46%;">الضمان والصيانة (بالعربية)</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>01</td>
-            <td class="editable" contenteditable="true">
-                The warranty period is 1 year on the entire elevator against manufacturing defects,
-                provided that the elevator is operated and used according to the manufacturer's instructions.
-            </td>
-            <td class="editable" contenteditable="true">
-                مدة الضمان سنة واحدة على كامل المصعد ضد العيوب المصنعية،
-                بشرط تشغيل المصعد واستخدامه وفق تعليمات الشركة الصانعة.
-            </td>
-        </tr>
-        <tr>
-            <td>02</td>
-            <td class="editable" contenteditable="true">
-                Free preventive maintenance during the warranty period according to the agreed maintenance schedule.
-            </td>
-            <td class="editable" contenteditable="true">
-                صيانة وقائية مجانية خلال فترة الضمان وفق جدول الصيانة المتفق عليه.
-            </td>
-        </tr>
-        <tr>
-            <td>03</td>
-            <td class="editable" contenteditable="true">
-                Spare parts during warranty are free of charge for manufacturing defects only.
-            </td>
-            <td class="editable" contenteditable="true">
-                قطع الغيار خلال فترة الضمان مجانية للعيوب المصنعية فقط.
-            </td>
-        </tr>
-        </tbody>
-    </table>
-
-    <div class="section-title">4) Payment Terms / جدول الدفعات</div>
+    <div class="section-title">٧) جدول الدفعات المقترح</div>
     <table>
         <thead>
         <tr>
@@ -649,70 +626,31 @@
         </tbody>
     </table>
 
-    <div class="page-index">Page 4</div>
-</div>
-
-<!-- ===== صفحة 5: بنود العقد العربية ===== -->
-<div class="page">
-    <div class="header">
-        <div class="logo-box">
-            <div class="logo-title">بنود وشروط العقد</div>
-            <div class="logo-sub">يمكن تعديل النصوص يدويًا قبل الطباعة</div>
-        </div>
-        <div class="offer-meta">
-            <div>عرض رقم: <span class="bind_quote_number">—</span></div>
-            <div>تاريخ: <span class="bind_offer_date">—</span></div>
-        </div>
+    <div class="section-title">٨) بنود رئيسية للعقد (قابلة للتعديل)</div>
+    <div class="terms editable" contenteditable="true">
+        <p>١- يعتبر هذا العرض جزءًا لا يتجزأ من عقد توريد وتركيب وتشغيل المصعد في حال اعتماده والتوقيع عليه من قبل الطرفين.</p>
+        <p>٢- الأسعار الواردة أعلاه بالريال السعودي وتشمل ضريبة القيمة المضافة بنسبة ١٥٪ ما لم يُذكر خلاف ذلك.</p>
+        <p>٣- يلتزم الطرف الأول بتوفير التغذية الكهربائية ٣ فاز ٣٨٠ فولت وأعمال البئر والأبواب المدنية حسب المخططات المعتمدة.</p>
+        <p>٤- يلتزم الطرف الثاني بتنفيذ الأعمال وفق المواصفات الفنية المعتمدة والشروط الواردة في هذا العرض.</p>
+        <p>٥- في حال تأخر الدفعات عن مواعيدها يحق للطرف الثاني إيقاف الأعمال مؤقتًا إلى حين استلام المستحقات دون مسؤولية عن التأخير.</p>
+        <p>٦- في حال حدوث أي نزاع - لا قدر الله - تكون ولاية القضاء للمحاكم المختصة في المملكة العربية السعودية.</p>
+        <p>٧- يعتبر العرض لاغيًا إذا لم يتم توقيعه وسداد الدفعة الأولى خلال مدة سريان العرض المتفق عليها.</p>
     </div>
 
-    <div class="section-title">5) مواد وبنود العقد (بالعربية)</div>
-    <div class="terms editable" contenteditable="true">
-        <p>المادة الأولى: يعتبر هذا العرض جزءًا لا يتجزأ من عقد توريد وتركيب وتشغيل المصعد في حال اعتماده من قبل العميل والتوقيع عليه.</p>
-        <p>المادة الثانية: يلتزم الطرف الثاني (مؤسسة آر كي ال RKL) بتنفيذ الأعمال وفق المواصفات الفنية المعتمدة، وعلى مسؤوليته الفنية الكاملة.</p>
-        <p>المادة الثالثة: جميع الأسعار المذكورة في هذا العرض تم احتسابها بالريال السعودي، وتشمل ضريبة القيمة المضافة بنسبة 15%، ما لم يُذكر غير ذلك.</p>
-        <p>المادة الرابعة: يلتزم الطرف الأول (العميل) بتوفير التغذية الكهربائية 3 فاز 380 فولت إلى غرفة الماكينة أو لوحة التحكم، وكذلك تنفيذ جميع الأعمال المدنية الخاصة ببئر المصعد والأبواب وفق المخططات المعتمدة.</p>
-        <p>المادة الخامسة: لا يتحمل الطرف الثاني أي مسؤولية عن الأعطال الناتجة عن سوء الاستخدام أو العبث أو التعديلات من قبل أي طرف آخر غير معتمد.</p>
-        <p>المادة السادسة: في حال تأخر الدفعات عن مواعيدها يحق للطرف الثاني إيقاف الأعمال مؤقتاً إلى حين التسوية المالية، دون أن يترتب على ذلك أي مسؤولية عن التأخير في التسليم.</p>
-        <p>المادة السابعة: تكون ولاية القضاء في حال النزاع لا قدر الله للمحاكم المختصة في المملكة العربية السعودية.</p>
-        <p>المادة الثامنة: يتم تبادل المراسلات والإشعارات بين الطرفين عبر البريد الإلكتروني الرسمي أو الخطابات الورقية، وتعتبر وسيلة معتمدة في الإثبات.</p>
-        <p>المادة التاسعة: يعتبر هذا العرض لاغياً في حال عدم توقيعه وسداد الدفعة الأولى خلال المدة المحددة لصلاحية العرض.</p>
+    <div class="signature-row">
+        <div class="editable" contenteditable="true">
+            ممثل مؤسسة آر كي ال RKL للمصاعد والسلالم الكهربائية<br/>
+            الاسم: _______________________<br/>
+            التوقيع: _______________________
+        </div>
+        <div class="editable" contenteditable="true">
+            ممثل العميل الكريم<br/>
+            الاسم: _______________________<br/>
+            التوقيع: _______________________
+        </div>
     </div>
 
     <div class="page-index">Page 5</div>
-</div>
-
-<!-- ===== صفحة 6: صفحة المخطط بناءً على المقاسات ===== -->
-<div class="page">
-    <div class="header">
-        <div class="logo-box">
-            <div class="logo-title">Elevator Shaft & Cabin Diagram</div>
-            <div class="logo-sub">مخطط مبسط استرشادي (غير مقيّد للاستخدام الإنشائي)</div>
-        </div>
-        <div class="offer-meta">
-            <div>Offer No: <span class="bind_quote_number">—</span></div>
-            <div>Date: <span class="bind_offer_date">—</span></div>
-        </div>
-    </div>
-
-    <div class="section-title">6) المخطط الاسترشادي لأبعاد بئر المصعد والكابينة</div>
-    <div class="diagram-container">
-        <div class="shaft">
-            <div class="cabin">
-                <span class="bind_dim_cabin">Cabin</span>
-            </div>
-            <div class="dim-label dim-top">
-                عرض البئر: <span class="bind_shaft_width">—</span> mm
-            </div>
-            <div class="dim-label dim-right">
-                عمق البئر: <span class="bind_shaft_depth">—</span> mm
-            </div>
-        </div>
-    </div>
-    <div class="caption">
-        الأبعاد أعلاه استرشادية فقط، ويجب اعتماد الرسومات النهائية (Shop Drawings) من الاستشاري قبل التنفيذ.
-    </div>
-
-    <div class="page-index">Page 6</div>
 </div>
 
 <!-- زر طباعة عام -->
@@ -764,86 +702,114 @@
         const project  = offer.project  || {};
         const cabin    = offer.cabin    || {};
         const pricing  = offer.pricing  || {};
-        const dims     = (offer.dimensions && offer.dimensions.en81) || {};
+        const dimsEn81 = (offer.dimensions && offer.dimensions.en81) || {};
+        const dimsCustom = (offer.dimensions && offer.dimensions.custom) || {};
 
         const dateStr = project.date ? project.date.slice(0, 10) : "";
 
+        // رأس العرض
         bindText("bind_quote_number", offer.quoteNumber || "—");
         bindText("bind_offer_date", dateStr || "—");
 
+        // بيانات العميل
+        const typeLabel =
+            customer.type === "company" ? "شركة / مؤسسة" :
+            customer.type === "individual" ? "عميل فردي" : "—";
+
+        bindText("bind_customer_type", typeLabel);
         bindText("bind_customer_name", customer.name || "—");
-        bindText("bind_customer_type", customer.type || "company");
-        bindText("bind_project_name", project.name || "—");
+        bindText("bind_contact_person", customer.contactPerson || "—");
+        bindText("bind_id_number", customer.idNumber || "—");
+        bindText("bind_cr_number", customer.crNumber || "—");
+        bindText("bind_tax_number", customer.taxNumber || "—");
         bindText("bind_city", customer.city || "—");
+        bindText("bind_district", customer.district || "—");
+        bindText("bind_street", customer.street || "—");
+        bindText("bind_building_no", customer.buildingNo || "—");
+        bindText("bind_postal_code", customer.postalCode || "—");
+        bindText("bind_full_address", customer.address || "—");
+        bindText("bind_mobile", customer.mobile || "—");
+        bindText("bind_phone", customer.phone || "—");
+        bindText("bind_email", customer.email || "—");
 
-        const addrParts = [customer.city, customer.district, customer.street, customer.address]
-            .filter(Boolean);
-        bindText("bind_address", addrParts.join(" - ") || "—");
+        let pref = customer.preferredContact || "";
+        if (pref === "mobile") pref = "الجوال";
+        else if (pref === "email") pref = "البريد الإلكتروني";
+        else if (pref === "whatsapp") pref = "واتساب";
+        bindText("bind_preferred_contact", pref || "—");
 
-        const contactParts = [];
-        if (customer.mobile) contactParts.push("جوال: " + customer.mobile);
-        if (customer.email)  contactParts.push("بريد: " + customer.email);
-        bindText("bind_contact", contactParts.join(" | ") || "—");
+        bindText("bind_notes", customer.notes || "—");
 
-        // technical
+        // المشروع
+        bindText("bind_project_name", project.name || "—");
+
+        // بيانات فنية
         bindText("bind_brand", project.brandLabel || "—");
-        bindText("bind_brand_en", project.brandLabel || "—");
-        bindText("bind_brand_ar", "ماركة المصعد " + (project.brandLabel || ""));
-        if (project.capacity) {
-            bindText("bind_capacity", project.capacity + " kg");
-            bindText("bind_capacity_en", project.capacity + " kg");
+        if (project.capacityKg != null) {
+            bindText("bind_capacity", project.capacityKg + " kg");
         }
-        if (project.speed) {
-            bindText("bind_speed", project.speed + " m/s");
-            bindText("bind_speed_en", project.speed + " m/s");
+        if (project.speedMps != null) {
+            bindText("bind_speed", project.speedMps + " m/s");
         }
-        bindText("bind_floors", project.floors ?? "—");
-        bindText("bind_floors_en", project.floors != null ? project.floors + " floors" : "—");
-        bindText("bind_lifts", project.liftsCount ?? 1);
+        bindText("bind_floors", project.floors != null ? project.floors : "—");
+        bindText("bind_lifts", project.liftsCount != null ? project.liftsCount : 1);
 
         bindText("bind_cabin_design", cabin.design || "Standard");
-        bindText("bind_cabin_design_en", cabin.design || "Standard");
         bindText("bind_floor_finish", cabin.floorFinish || "Standard");
-        bindText("bind_floor_finish_en", cabin.floorFinish || "Standard");
 
-        // dimensions (لو مخزنة)
-        if (dims.cabinSize) {
-            bindText("bind_dim_cabin", dims.cabinSize);
-            bindText("bind_dim_cabin_en", dims.cabinSize);
+        // أبعاد EN81 أو المخصصة
+        let cabinSize = "";
+        if (dimsEn81.cabinWidth && dimsEn81.cabinDepth) {
+            cabinSize = `${dimsEn81.cabinWidth} x ${dimsEn81.cabinDepth} mm`;
+        } else if (dimsCustom.cabinSizeText) {
+            cabinSize = dimsCustom.cabinSizeText;
         }
-        if (dims.shaftSize) {
-            bindText("bind_dim_shaft", dims.shaftSize);
-            bindText("bind_dim_shaft_en", dims.shaftSize);
-        }
+        bindText("bind_dim_cabin", cabinSize);
 
-        // محاولة استخراج عرض/عمق البئر من نص shaftSize
+        let shaftSize = "";
+        if (dimsEn81.shaftWidth && dimsEn81.shaftDepth) {
+            shaftSize = `${dimsEn81.shaftWidth} x ${dimsEn81.shaftDepth} mm`;
+        } else if (dimsCustom.shaftWidth && dimsCustom.shaftDepth) {
+            shaftSize = `${dimsCustom.shaftWidth} x ${dimsCustom.shaftDepth} mm`;
+        }
+        bindText("bind_dim_shaft", shaftSize);
+
+        // لاستخدامها في المخطط
         let shaftWidth = "";
         let shaftDepth = "";
-        if (dims.shaftSize && dims.shaftSize.includes("x")) {
-            const parts = dims.shaftSize.split("x");
+        if (dimsEn81.shaftWidth && dimsEn81.shaftDepth) {
+            shaftWidth = dimsEn81.shaftWidth;
+            shaftDepth = dimsEn81.shaftDepth;
+        } else if (dimsCustom.shaftWidth && dimsCustom.shaftDepth) {
+            shaftWidth = dimsCustom.shaftWidth;
+            shaftDepth = dimsCustom.shaftDepth;
+        } else if (shaftSize.includes("x")) {
+            const parts = shaftSize.split("x");
             if (parts.length >= 2) {
                 shaftWidth = parts[0].trim();
                 shaftDepth = parts[1].trim();
             }
         }
-        bindText("bind_shaft_width", shaftWidth);
-        bindText("bind_shaft_depth", shaftDepth);
+        bindText("bind_shaft_width", shaftWidth || "—");
+        bindText("bind_shaft_depth", shaftDepth || "—");
 
-        // pricing
-        const totalWithVat = pricing.totalWithVat ?? null;
+        bindText("bind_pit", dimsEn81.pit || "—");
+        bindText("bind_oh", dimsEn81.oh || "—");
+
+        // التسعير
         const currency = pricing.currency || "SAR";
-        const vatRate  = pricing.vatRate ?? 15;
+        const totalWithVat = pricing.totalWithVat ?? null;
+        const vatRate = pricing.vatRate ?? 15;
 
         bindText("bind_vat_rate", vatRate);
-        bindText("bind_total_with_vat", formatCurrency(totalWithVat, currency));
-
-        const liftsCount = project.liftsCount || 1;
-        bindText("bind_units", liftsCount);
 
         if (totalWithVat != null) {
+            const liftsCount = project.liftsCount || 1;
             const perLift = Number(totalWithVat) / Number(liftsCount || 1);
+
             bindText("bind_price_per_unit", formatCurrency(perLift, currency));
             bindText("bind_total_price", formatCurrency(totalWithVat, currency));
+            bindText("bind_total_with_vat", formatCurrency(totalWithVat, currency));
 
             const t = Number(totalWithVat);
             bindText("bind_pay_50", formatCurrency(t * 0.50, currency));
