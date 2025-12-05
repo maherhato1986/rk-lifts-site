@@ -1262,110 +1262,94 @@ const directCostSarFinal = directCostSar + cabinExtraCost;
             alert('تم نسخ نص عرض السعر.');
         });
 
-        // زر حفظ عرض السعر الحالي في السجل
-       const saveBtn = document.getElementById('save-quote-btn');
-if (saveBtn) {
-    saveBtn.addEventListener('click', () => {
-        if (!lastQuoteSnapshot) {
-            alert('قم أولاً بحساب عرض السعر قبل حفظه في السجل.');
-            return;
-        }
+         // زر حفظ عرض السعر الحالي في السجل
+    const saveBtn = document.getElementById('save-quote-btn');
+    if (saveBtn) {
+        saveBtn.addEventListener('click', () => {
+            if (!lastQuoteSnapshot) {
+                alert('قم أولاً بحساب عرض السعر قبل حفظه في السجل.');
+                return;
+            }
 
-        // 1) قراءة العروض المخزنة وتجهيز رقم عرض جديد
-        const quotes = loadStoredQuotes();
+            // 1) قراءة العروض المخزنة وتجهيز رقم عرض جديد
+            const quotes = loadStoredQuotes();
 
-        const nextIndex = quotes.length + 1;
-        const today = new Date();
-        const ymd = today.toISOString().slice(0, 10).replace(/-/g, '');
-        const quoteNumber = `Q-${ymd}-${String(nextIndex).padStart(3, '0')}`;
+            const nextIndex = quotes.length + 1;
+            const today = new Date();
+            const ymd = today.toISOString().slice(0, 10).replace(/-/g, '');
+            const quoteNumber = `Q-${ymd}-${String(nextIndex).padStart(3, '0')}`;
 
-        // 2) قراءة اسم العميل والمشروع من الحقول
-        const manualCustomerName = document.getElementById('customer_name').value.trim();
-        const projectName = document.getElementById('project_name').value.trim();
+            // 2) قراءة اسم العميل والمشروع من الحقول
+            const manualCustomerName = document.getElementById('customer_name').value.trim();
+            const projectName = document.getElementById('project_name').value.trim();
 
-        const finalCustomerName =
-            (selectedCustomer?.customer_name || manualCustomerName || 'العميل الكريم').trim();
+            const finalCustomerName =
+                (selectedCustomer?.customer_name || manualCustomerName || 'العميل الكريم').trim();
 
-        // 3) تجهيز العنصر الذي يذهب إلى جدول السجل
-        const entry = {
-            ...lastQuoteSnapshot,
-            customerName: finalCustomerName,
-            projectName: projectName,
-            quoteNumber
-        };
+            // 3) تجهيز العنصر الذي يذهب إلى جدول السجل
+            const entry = {
+                ...lastQuoteSnapshot,
+                customerName: finalCustomerName,
+                projectName: projectName,
+                quoteNumber
+            };
 
-        // 4) إنشاء offerData لاستخدامه في صفحة elevator-quote-offer.html
-// === إنشاء offerData مع جميع بيانات العميل + رقم العرض ===
-const offerData = {
-  quoteNumber, // نفس رقم العرض الذي أنشأناه Q-YYYYMMDD-XXX
+            // حفظه في مصفوفة عروض الأسعار
+            quotes.push(entry);
+            saveQuotesToStorage(quotes);
+            renderQuotesTable();
 
-  customer: {
-    name: selectedCustomer?.customer_name || finalCustomerName,
-    type: selectedCustomer?.customer_type || null,        // company / individual
-    contactPerson: selectedCustomer?.contact_person || null,
-    idNumber: selectedCustomer?.id_number || null,
-    crNumber: selectedCustomer?.cr_number || null,
-    taxNumber: selectedCustomer?.tax_number || null,
-    city: selectedCustomer?.city || null,
-    district: selectedCustomer?.district || null,
-    street: selectedCustomer?.street || null,
-    buildingNo: selectedCustomer?.building_no || null,
-    postalCode: selectedCustomer?.postal_code || null,
-    address: selectedCustomer?.full_address || null,
-    mobile: selectedCustomer?.mobile || null,
-    phone: selectedCustomer?.phone || null,
-    email: selectedCustomer?.email || null,
-    preferredContact: selectedCustomer?.preferred_contact || null,
-    notes: selectedCustomer?.notes || null
-  },
+            // 4) تجهيز بيانات عرض السعر الرسمي (لاستخدامها في elevator-quote-offer.html)
+            const offerData = {
+                quoteNumber,
 
-  project: {
-    name: projectName,
-    date: new Date().toISOString(),
-    brandKey,
-    brandLabel,
-    capacityKg: model.capacityKg,
-    speedMps: model.speedMps,
-    floors,
-    baseFloors: model.baseFloors,
-    liftsCount,
-    machineType: model.machineType || null,
-    doorType: model.doorType || null
-  },
+                customer: {
+                    name: finalCustomerName,
+                    type: selectedCustomer?.customer_type || null,
+                    contactPerson: selectedCustomer?.contact_person || null,
+                    idNumber: selectedCustomer?.id_number || null,
+                    crNumber: selectedCustomer?.cr_number || null,
+                    taxNumber: selectedCustomer?.tax_number || null,
+                    city: selectedCustomer?.city || null,
+                    district: selectedCustomer?.district || null,
+                    street: selectedCustomer?.street || null,
+                    buildingNo: selectedCustomer?.building_no || null,
+                    postalCode: selectedCustomer?.postal_code || null,
+                    address: selectedCustomer?.full_address || null,
+                    mobile: selectedCustomer?.mobile || null,
+                    phone: selectedCustomer?.phone || null,
+                    email: selectedCustomer?.email || null,
+                    preferredContact: selectedCustomer?.preferred_contact || null,
+                    notes: selectedCustomer?.notes || null
+                },
 
-  dimensions: {
-    en81: selectedEn81Row || null,
-    custom: {
-      shaftWidth,
-      shaftDepth,
-      cabinSizeText
+                project: {
+                    name: projectName,
+                    date: entry.timestamp,
+                    brandKey: entry.brandKey,
+                    brandLabel: entry.brandLabel,
+                    capacityKg: entry.capacity,
+                    speedMps: entry.speed,
+                    floors: entry.floors,
+                    liftsCount: entry.liftsCount
+                },
+
+                pricing: {
+                    currency: entry.currency,
+                    vatRate: entry.vatRate,
+                    includeVat: entry.includeVat,
+                    totalWithVat: entry.totalWithVat
+                },
+
+                quoteText: document.getElementById('quote_text').value
+            };
+
+            // حفظ بيانات العرض الرسمي لاستخدامها في elevator-quote-offer.html
+            localStorage.setItem('rkl_last_offer', JSON.stringify(offerData));
+
+            alert('تم حفظ عرض السعر الحالي في سجل هذا الجهاز.');
+        });
     }
-  },
-
-  cabin: {
-    design: cabinDesign,
-    floorFinish: floorFinish,
-    extraCostPerLift: cabinExtraCost
-  },
-
-  pricing: {
-    currency,
-    vatRate,
-    includeVat,
-    overheadPercent: COST_PARAMS.overheadPercent,
-    profitPercent: COST_PARAMS.profitPercent,
-    perLift: calcResult.perLift,
-    total: calcResult.total,
-    totalWithVat: calcResult.totalWithVat
-  },
-
-  quoteText: document.getElementById('quote_text').value
-};
-
-// حفظه في LocalStorage كآخر عرض
-localStorage.setItem('rkl_last_offer', JSON.stringify(offerData));
-
-
 
         // زر تصدير السجل إلى CSV
         const exportBtn = document.getElementById('export-quotes-btn');
@@ -1435,6 +1419,7 @@ localStorage.setItem('rkl_last_offer', JSON.stringify(offerData));
 
 </body>
 </html>
+
 
 
 
