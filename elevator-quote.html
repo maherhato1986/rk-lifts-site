@@ -1295,54 +1295,76 @@ if (saveBtn) {
         };
 
         // 4) إنشاء offerData لاستخدامه في صفحة elevator-quote-offer.html
-        const offerData = {
-            customer: {
-                name: finalCustomerName,
-                type: selectedCustomer?.customer_type || null,
-                contactPerson: selectedCustomer?.contact_person || null,
-                crNumber: selectedCustomer?.cr_number || null,
-                taxNumber: selectedCustomer?.tax_number || null,
-                city: selectedCustomer?.city || null,
-                district: selectedCustomer?.district || null,
-                street: selectedCustomer?.street || null,
-                address: selectedCustomer?.full_address || null,
-                mobile: selectedCustomer?.mobile || null,
-                email: selectedCustomer?.email || null
-            },
-            project: {
-                name: projectName,
-                date: new Date().toISOString(),
-                brandKey: entry.brandKey,
-                brandLabel: entry.brandLabel,
-                capacity: entry.capacity,
-                speed: entry.speed,
-                floors: entry.floors,
-                liftsCount: entry.liftsCount
-            },
-            cabin: {
-                design: document.getElementById('cabin_design').value,
-                floorFinish: document.getElementById('floor_finish').value
-            },
-            pricing: {
-                currency: entry.currency,
-                vatRate: entry.vatRate,
-                includeVat: entry.includeVat,
-                totalWithVat: entry.totalWithVat
-            },
-            quoteNumber: entry.quoteNumber,
-            quoteText: document.getElementById('quote_text').value
-        };
+// === إنشاء offerData مع جميع بيانات العميل + رقم العرض ===
+const offerData = {
+  quoteNumber, // نفس رقم العرض الذي أنشأناه Q-YYYYMMDD-XXX
 
-        // 5) حفظ بيانات العرض التفصيلية لواجهة elevator-quote-offer.html
-        localStorage.setItem('rkl_last_offer', JSON.stringify(offerData));
+  customer: {
+    name: selectedCustomer?.customer_name || finalCustomerName,
+    type: selectedCustomer?.customer_type || null,        // company / individual
+    contactPerson: selectedCustomer?.contact_person || null,
+    idNumber: selectedCustomer?.id_number || null,
+    crNumber: selectedCustomer?.cr_number || null,
+    taxNumber: selectedCustomer?.tax_number || null,
+    city: selectedCustomer?.city || null,
+    district: selectedCustomer?.district || null,
+    street: selectedCustomer?.street || null,
+    buildingNo: selectedCustomer?.building_no || null,
+    postalCode: selectedCustomer?.postal_code || null,
+    address: selectedCustomer?.full_address || null,
+    mobile: selectedCustomer?.mobile || null,
+    phone: selectedCustomer?.phone || null,
+    email: selectedCustomer?.email || null,
+    preferredContact: selectedCustomer?.preferred_contact || null,
+    notes: selectedCustomer?.notes || null
+  },
 
-        // 6) حفظ العرض في سجل العروض كما هو مسبقًا
-        quotes.push(entry);
-        saveQuotesToStorage(quotes);
-        renderQuotesTable();
-        alert('تم حفظ عرض السعر الحالي في سجل هذا الجهاز.');
-    });
-}
+  project: {
+    name: projectName,
+    date: new Date().toISOString(),
+    brandKey,
+    brandLabel,
+    capacityKg: model.capacityKg,
+    speedMps: model.speedMps,
+    floors,
+    baseFloors: model.baseFloors,
+    liftsCount,
+    machineType: model.machineType || null,
+    doorType: model.doorType || null
+  },
+
+  dimensions: {
+    en81: selectedEn81Row || null,
+    custom: {
+      shaftWidth,
+      shaftDepth,
+      cabinSizeText
+    }
+  },
+
+  cabin: {
+    design: cabinDesign,
+    floorFinish: floorFinish,
+    extraCostPerLift: cabinExtraCost
+  },
+
+  pricing: {
+    currency,
+    vatRate,
+    includeVat,
+    overheadPercent: COST_PARAMS.overheadPercent,
+    profitPercent: COST_PARAMS.profitPercent,
+    perLift: calcResult.perLift,
+    total: calcResult.total,
+    totalWithVat: calcResult.totalWithVat
+  },
+
+  quoteText: document.getElementById('quote_text').value
+};
+
+// حفظه في LocalStorage كآخر عرض
+localStorage.setItem('rkl_last_offer', JSON.stringify(offerData));
+
 
 
         // زر تصدير السجل إلى CSV
@@ -1413,6 +1435,7 @@ if (saveBtn) {
 
 </body>
 </html>
+
 
 
 
