@@ -238,6 +238,19 @@
     </style>
 </head>
 <body>
+<div class="quote-selector-box" style="
+    padding: 15px;
+    background: #f8f8f8;
+    border-radius: 10px;
+    margin: 20px auto;
+    max-width: 900px;
+    border: 1px solid #ddd;
+">
+    <label style="font-weight: bold;">اختر عرض سعر من السجل:</label>
+    <select id="quote-selector" style="width:100%; padding:10px; margin-top:8px;">
+        <option value="">— اختر عرض سعر —</option>
+    </select>
+</div>
 
 <!-- ================= صفحة 1: تعريف RKL + ملف العميل ================= -->
 <div class="page">
@@ -682,6 +695,43 @@
         });
     }
 
+    function loadStoredQuotes() {
+    try {
+        return JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
+    } catch (e) {
+        console.error("خطأ في قراءة عروض الأسعار", e);
+        return [];
+    }
+}
+
+function populateQuoteSelector() {
+    const selector = document.getElementById('quote-selector');
+    const quotes = loadStoredQuotes();
+
+    selector.innerHTML = `<option value="">— اختر عرض سعر —</option>`;
+
+    quotes.forEach((q, index) => {
+        const label = `${q.quoteNumber} – ${q.projectName || ""} – ${q.customerName || ""}`;
+        selector.innerHTML += `<option value="${index}">${label}</option>`;
+    });
+}
+document.getElementById("quote-selector").addEventListener("change", function () {
+    const index = this.value;
+    if (index === "") return;
+
+    const quotes = loadStoredQuotes();
+    const selected = quotes[index];
+
+    if (selected) {
+        // تحميل العرض الرسمي
+        const fullOffer = JSON.parse(localStorage.getItem('rkl_last_offer'));
+
+        // أو بناء offerData جديد لو كنت تحفظ لكل عرض على حدة
+        fillOfferPage(fullOffer);
+    }
+});
+
+
     document.addEventListener("DOMContentLoaded", () => {
         const raw = localStorage.getItem("rkl_last_offer");
         if (!raw) {
@@ -822,3 +872,4 @@
 
 </body>
 </html>
+
