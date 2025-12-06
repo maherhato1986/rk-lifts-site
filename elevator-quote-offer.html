@@ -703,6 +703,72 @@ function loadStoredQuotes() {
     return [];
   }
 }
+function renderElevatorItemsTable(offer) {
+  const tbody = document.querySelector('#elevators-items tbody');
+  if (!tbody) return;
+
+  tbody.innerHTML = '';
+
+  const project = offer.project || {};
+  const count   = project.liftsCount || 1;
+
+  for (let i = 1; i <= count; i++) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${i}</td>
+      <td>Lift-${String(i).padStart(2,'0')}</td>
+      <td>${project.capacityKg || '—'}</td>
+      <td>${project.speedMps || '—'}</td>
+      <td>${project.stops || project.floors || '—'}</td>
+      <td>${project.machineType || 'MRL'}</td>
+    `;
+    tbody.appendChild(tr);
+  }
+}
+function populateQuoteSelector() {
+  const select = document.getElementById('quote-selector');
+  if (!select) return;
+
+  const quotes = loadStoredQuotes();
+  select.innerHTML = `<option value="">— اختر عرض سعر —</option>`;
+
+  quotes.forEach((q, i) => {
+    const label = `${q.quoteNumber || '—'} – ${q.project?.name || ''} – ${q.customer?.name || ''}`;
+    select.innerHTML += `<option value="${i}">${label}</option>`;
+  });
+}
+function loadSelectedQuote(index) {
+  const quotes = loadStoredQuotes();
+  const offer = quotes[index];
+  if (!offer) return;
+
+  const customer = offer.customer || {};
+  const project  = offer.project  || {};
+
+  bindText('bind_quote_number', offer.quoteNumber);
+  bindText('bind_offer_date', project.date?.slice(0,10));
+
+  bindText('bind_customer_name', customer.name);
+  bindText('bind_customer_type', customer.type);
+  bindText('bind_project_name', project.name);
+
+  bindText('bind_brand', project.brandLabel);
+  bindText('bind_capacity', project.capacityKg ? project.capacityKg + ' kg' : '—');
+  bindText('bind_speed', project.speedMps ? project.speedMps + ' m/s' : '—');
+  bindText('bind_floors', project.stops || project.floors);
+  bindText('bind_lifts', project.liftsCount);
+
+  renderElevatorItemsTable(offer);
+}
+document.addEventListener('DOMContentLoaded', () => {
+  populateQuoteSelector();
+
+  document.getElementById('quote-selector').addEventListener('change', function () {
+    if (this.value === '') return;
+    loadSelectedQuote(this.value);
+  });
+});
+</script>
 
 function bindText(cls, value) {
   document.querySelectorAll('.' + cls).forEach(el => {
@@ -1080,6 +1146,7 @@ function loadSelectedQuote(quoteIndex) {
     
 </body>
 </html>
+
 
 
 
