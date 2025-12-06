@@ -1385,25 +1385,34 @@ lastQuoteSnapshot = {
             const offerData = {
                 quoteNumber,
 
-                customer: {
-                    name: finalCustomerName,
-                    type: selectedCustomer?.customer_type || null,
-                    contactPerson: selectedCustomer?.contact_person || null,
-                    idNumber: selectedCustomer?.id_number || null,
-                    crNumber: selectedCustomer?.cr_number || null,
-                    taxNumber: selectedCustomer?.tax_number || null,
-                    city: selectedCustomer?.city || null,
-                    district: selectedCustomer?.district || null,
-                    street: selectedCustomer?.street || null,
-                    buildingNo: selectedCustomer?.building_no || null,
-                    postalCode: selectedCustomer?.postal_code || null,
-                    address: selectedCustomer?.full_address || null,
-                    mobile: selectedCustomer?.mobile || null,
-                    phone: selectedCustomer?.phone || null,
-                    email: selectedCustomer?.email || null,
-                    preferredContact: selectedCustomer?.preferred_contact || null,
-                    notes: selectedCustomer?.notes || null
-                },
+           customer: {
+    type: selectedCustomer?.customer_type || '',
+    contactPerson: selectedCustomer?.contact_person || '',
+    crNumber: selectedCustomer?.cr_number || '',
+    taxNumber: selectedCustomer?.tax_number || '',
+    mobile: selectedCustomer?.mobile || '',
+    email: selectedCustomer?.email || '',
+    city: selectedCustomer?.city || '',
+    district: selectedCustomer?.district || '',
+    fullAddress: selectedCustomer?.full_address || '',
+    notes: selectedCustomer?.notes || ''
+  },
+                  technical: {
+    brandLabel,
+    machineType: model.machineType,
+    capacity,
+    speed,
+    floors,
+    liftsCount,
+    cabinDimension: model.cabinSize,
+    shaftDimension: model.shaftSize,
+    pit: model.pit,
+    oh: model.oh,
+    cabinDesign: document.getElementById('cabin_design').value,
+    floorFinish: document.getElementById('floor_finish').value
+  },
+                 // ✅ المقاسات لكل مصعد
+  shafts: shaftData, // جدول المصاعد
 
                 project: {
                     name: projectName,
@@ -1417,11 +1426,18 @@ lastQuoteSnapshot = {
                 },
 
                 pricing: {
-                    currency: entry.currency,
-                    vatRate: entry.vatRate,
-                    includeVat: entry.includeVat,
-                    totalWithVat: entry.totalWithVat
-                },
+    unitPrice: result.totalBeforeVatPerLift,
+    subtotal: result.totalBeforeVat,
+    vatRate,
+    vatAmount: result.vatAmount,
+    totalWithVat: result.totalWithVat,
+    payments: {
+      p50: result.totalWithVat * 0.5,
+      p25: result.totalWithVat * 0.25,
+      p20: result.totalWithVat * 0.20,
+      p5 : result.totalWithVat * 0.05
+    }
+  },
 
                 quoteText: document.getElementById('quote_text').value
             };
@@ -1575,6 +1591,7 @@ document.getElementById("lifts_count").addEventListener("input", function () {
 
 </body>
 </html>
+
 
 
 
