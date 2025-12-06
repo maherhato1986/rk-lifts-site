@@ -238,19 +238,7 @@
     </style>
 </head>
 <body>
-<div class="quote-selector-box" style="
-    padding: 15px;
-    background: #f8f8f8;
-    border-radius: 10px;
-    margin: 20px auto;
-    max-width: 900px;
-    border: 1px solid #ddd;
-">
-    <label style="font-weight: bold;">اختر عرض سعر من السجل:</label>
-    <select id="quote-selector" style="width:100%; padding:10px; margin-top:8px;">
-        <option value="">— اختر عرض سعر —</option>
-    </select>
-</div>
+
 
 <!-- ================= صفحة 1: تعريف RKL + ملف العميل ================= -->
 <div class="page">
@@ -704,172 +692,71 @@
     }
 }
 
-function populateQuoteSelector() {
-    const selector = document.getElementById('quote-selector');
-    const quotes = loadStoredQuotes();
 
-    selector.innerHTML = `<option value="">— اختر عرض سعر —</option>`;
+);
 
-    quotes.forEach((q, index) => {
-        const label = `${q.quoteNumber} – ${q.projectName || ""} – ${q.customerName || ""}`;
-        selector.innerHTML += `<option value="${index}">${label}</option>`;
-    });
-}
-document.getElementById("quote-selector").addEventListener("change", function () {
-    const index = this.value;
-    if (index === "") return;
+document.addEventListener("DOMContentLoaded", () => {
 
-    const quotes = loadStoredQuotes();
-    const selected = quotes[index];
-
-    if (selected) {
-        // تحميل العرض الرسمي
-        const fullOffer = JSON.parse(localStorage.getItem('rkl_last_offer'));
-
-        // أو بناء offerData جديد لو كنت تحفظ لكل عرض على حدة
-        fillOfferPage(fullOffer);
+    const index = localStorage.getItem("rkl_selected_quote_index");
+    if (index === null) {
+        document.getElementById("warn_no_data").style.display = "block";
+        return;
     }
+
+    const quotes = loadStoredQuotes();
+    const selectedQuote = quotes[Number(index)];
+
+    if (!selectedQuote) {
+        document.getElementById("warn_no_data").style.display = "block";
+        return;
+    }
+
+    // ✅ نبني بيانات العرض الرسمية من السجل
+    const offer = {
+        quoteNumber: selectedQuote.quoteNumber,
+        customer: {
+            name: selectedQuote.customerName
+        },
+        project: {
+            name: selectedQuote.projectName,
+            date: selectedQuote.timestamp
+        },
+        brand: {
+            label: selectedQuote.brandLabel
+        },
+        cabin: {
+            capacity: selectedQuote.capacity,
+            speed: selectedQuote.speed
+        },
+        pricing: {
+            totalWithVat: selectedQuote.totalWithVat,
+            currency: selectedQuote.currency,
+            vatRate: selectedQuote.vatRate
+        },
+        liftsCount: selectedQuote.liftsCount
+    };
+
+    // ===== تعبئة الصفحة =====
+    bindText("bind_quote_number", offer.quoteNumber);
+    bindText("bind_offer_date", offer.project.date?.slice(0, 10));
+
+    bindText("bind_customer_name", offer.customer.name);
+    bindText("bind_project_name", offer.project.name);
+
+    bindText("bind_brand", offer.brand.label);
+    bindText("bind_capacity", offer.cabin.capacity);
+    bindText("bind_speed", offer.cabin.speed);
+
+    bindText("bind_lifts", offer.liftsCount);
+    bindText("bind_total_with_vat",
+        formatCurrency(offer.pricing.totalWithVat, offer.pricing.currency)
+    );
 });
 
-
-    document.addEventListener("DOMContentLoaded", () => {
-        const raw = localStorage.getItem("rkl_last_offer");
-        if (!raw) {
-            document.getElementById("warn_no_data").style.display = "block";
-            return;
-        }
-
-        let offer;
-        try {
-            offer = JSON.parse(raw);
-        } catch (e) {
-            console.error("Error parsing rkl_last_offer", e);
-            document.getElementById("warn_no_data").style.display = "block";
-            return;
-        }
-
-        const customer = offer.customer || {};
-        const project  = offer.project  || {};
-        const cabin    = offer.cabin    || {};
-        const pricing  = offer.pricing  || {};
-        const dimsEn81 = (offer.dimensions && offer.dimensions.en81) || {};
-        const dimsCustom = (offer.dimensions && offer.dimensions.custom) || {};
-
-        const dateStr = project.date ? project.date.slice(0, 10) : "";
-
-        // رأس العرض
-        bindText("bind_quote_number", offer.quoteNumber || "—");
-        bindText("bind_offer_date", dateStr || "—");
-
-        // بيانات العميل
-        const typeLabel =
-            customer.type === "company" ? "شركة / مؤسسة" :
-            customer.type === "individual" ? "عميل فردي" : "—";
-
-        bindText("bind_customer_type", typeLabel);
-        bindText("bind_customer_name", customer.name || "—");
-        bindText("bind_contact_person", customer.contactPerson || "—");
-        bindText("bind_id_number", customer.idNumber || "—");
-        bindText("bind_cr_number", customer.crNumber || "—");
-        bindText("bind_tax_number", customer.taxNumber || "—");
-        bindText("bind_city", customer.city || "—");
-        bindText("bind_district", customer.district || "—");
-        bindText("bind_street", customer.street || "—");
-        bindText("bind_building_no", customer.buildingNo || "—");
-        bindText("bind_postal_code", customer.postalCode || "—");
-        bindText("bind_full_address", customer.address || "—");
-        bindText("bind_mobile", customer.mobile || "—");
-        bindText("bind_phone", customer.phone || "—");
-        bindText("bind_email", customer.email || "—");
-
-        let pref = customer.preferredContact || "";
-        if (pref === "mobile") pref = "الجوال";
-        else if (pref === "email") pref = "البريد الإلكتروني";
-        else if (pref === "whatsapp") pref = "واتساب";
-        bindText("bind_preferred_contact", pref || "—");
-
-        bindText("bind_notes", customer.notes || "—");
-
-        // المشروع
-        bindText("bind_project_name", project.name || "—");
-
-        // بيانات فنية
-        bindText("bind_brand", project.brandLabel || "—");
-        if (project.capacityKg != null) {
-            bindText("bind_capacity", project.capacityKg + " kg");
-        }
-        if (project.speedMps != null) {
-            bindText("bind_speed", project.speedMps + " m/s");
-        }
-        bindText("bind_floors", project.floors != null ? project.floors : "—");
-        bindText("bind_lifts", project.liftsCount != null ? project.liftsCount : 1);
-
-        bindText("bind_cabin_design", cabin.design || "Standard");
-        bindText("bind_floor_finish", cabin.floorFinish || "Standard");
-
-        // أبعاد EN81 أو المخصصة
-        let cabinSize = "";
-        if (dimsEn81.cabinWidth && dimsEn81.cabinDepth) {
-            cabinSize = `${dimsEn81.cabinWidth} x ${dimsEn81.cabinDepth} mm`;
-        } else if (dimsCustom.cabinSizeText) {
-            cabinSize = dimsCustom.cabinSizeText;
-        }
-        bindText("bind_dim_cabin", cabinSize);
-
-        let shaftSize = "";
-        if (dimsEn81.shaftWidth && dimsEn81.shaftDepth) {
-            shaftSize = `${dimsEn81.shaftWidth} x ${dimsEn81.shaftDepth} mm`;
-        } else if (dimsCustom.shaftWidth && dimsCustom.shaftDepth) {
-            shaftSize = `${dimsCustom.shaftWidth} x ${dimsCustom.shaftDepth} mm`;
-        }
-        bindText("bind_dim_shaft", shaftSize);
-
-        // لاستخدامها في المخطط
-        let shaftWidth = "";
-        let shaftDepth = "";
-        if (dimsEn81.shaftWidth && dimsEn81.shaftDepth) {
-            shaftWidth = dimsEn81.shaftWidth;
-            shaftDepth = dimsEn81.shaftDepth;
-        } else if (dimsCustom.shaftWidth && dimsCustom.shaftDepth) {
-            shaftWidth = dimsCustom.shaftWidth;
-            shaftDepth = dimsCustom.shaftDepth;
-        } else if (shaftSize.includes("x")) {
-            const parts = shaftSize.split("x");
-            if (parts.length >= 2) {
-                shaftWidth = parts[0].trim();
-                shaftDepth = parts[1].trim();
-            }
-        }
-        bindText("bind_shaft_width", shaftWidth || "—");
-        bindText("bind_shaft_depth", shaftDepth || "—");
-
-        bindText("bind_pit", dimsEn81.pit || "—");
-        bindText("bind_oh", dimsEn81.oh || "—");
-
-        // التسعير
-        const currency = pricing.currency || "SAR";
-        const totalWithVat = pricing.totalWithVat ?? null;
-        const vatRate = pricing.vatRate ?? 15;
-
-        bindText("bind_vat_rate", vatRate);
-
-        if (totalWithVat != null) {
-            const liftsCount = project.liftsCount || 1;
-            const perLift = Number(totalWithVat) / Number(liftsCount || 1);
-
-            bindText("bind_price_per_unit", formatCurrency(perLift, currency));
-            bindText("bind_total_price", formatCurrency(totalWithVat, currency));
-            bindText("bind_total_with_vat", formatCurrency(totalWithVat, currency));
-
-            const t = Number(totalWithVat);
-            bindText("bind_pay_50", formatCurrency(t * 0.50, currency));
-            bindText("bind_pay_25", formatCurrency(t * 0.25, currency));
-            bindText("bind_pay_20", formatCurrency(t * 0.20, currency));
-            bindText("bind_pay_5",  formatCurrency(t * 0.05,  currency));
-        }
-    });
+ 
 </script>
 
 </body>
 </html>
+
 
