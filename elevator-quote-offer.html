@@ -791,33 +791,7 @@ function renderElevatorItemsTable(project) {
   }
 }
 
-    document.getElementById("quote-selector").addEventListener("change", function () {
-  const quotes = loadStoredQuotes();
-  const q = quotes.find(x => x.quoteNumber === this.value);
-  if (!q) return;
 
-  bindText(".bind_quote_number", q.quoteNumber);
-  bindText(".bind_offer_date", q.timestamp?.slice(0,10));
-
-  bindText(".bind_customer_name", q.customerName);
-  bindText(".bind_project_name", q.projectName);
-
-  bindText(".bind_brand", q.brandLabel);
-  bindText(".bind_capacity", q.capacity);
-  bindText(".bind_speed", q.speed);
-  bindText(".bind_floors", q.floors);
-  bindText(".bind_lifts", q.liftsCount);
-
-  bindText(".bind_cabin_design", q.cabinDesign);
-  bindText(".bind_floor_finish", q.floorFinish);
-
-  bindText(".bind_dim_cabin", q.dimensions?.cabin);
-  bindText(".bind_dim_shaft", q.dimensions?.shaft);
-  bindText(".bind_pit", q.dimensions?.pit);
-  bindText(".bind_oh", q.dimensions?.oh);
-
-  renderElevatorsTable(q.elevators);
-});
 
     function renderElevatorsTable(items = []) {
   const tbody = document.querySelector("#elevators-items tbody");
@@ -868,12 +842,7 @@ function renderElevatorsTable(elevators) {
 document.addEventListener('DOMContentLoaded', () => {
   populateQuoteSelector();
 
-  document
-    .getElementById('quote-selector')
-    .addEventListener('change', function () {
-      if (this.value === '') return;
-      loadSelectedQuote(this.value);
-    });
+
 });
 </script>
 
@@ -881,6 +850,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
 </body>
 </html>
+
 
 
 
