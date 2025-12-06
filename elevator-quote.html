@@ -999,10 +999,6 @@ function fillSpeedOptions() {
 
         document.getElementById('quote_text').value = lines.join('\n');
     }
-function generateQuoteNumber() {
-  const d = new Date();
-  return `Q-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}-${Math.floor(100 + Math.random()*900)}`;
-}
 
     async function calculateQuote() {
         const brandKey = document.getElementById('brand').value;
@@ -1156,69 +1152,26 @@ const directCostSarFinal = directCostSar + cabinExtraCost;
         const finalCustomerName =
             (selectedCustomer?.customer_name || manualCustomerName || 'العميل الكريم').trim();
 
-       
+        const brandLabel = BRAND_SOURCES[brandKey]?.label || brandKey;
 
-// ===============================
-// إنشاء Snapshot نهائي لعرض السعر
-// ===============================
+        lastQuoteSnapshot = {
+            timestamp: new Date().toISOString(),
+            customerName: finalCustomerName,
+            projectName: projectName,
+            brandKey,
+            brandLabel,
+            capacity: capacity + ' kg',
+            speed: speed + ' m/s',
+            floors,
+            liftsCount,
+            totalWithVat: result.totalWithVat,
+            currency,
+            vatRate,
+            includeVat
+        };
 
-// تأكد أن هذه المتغيرات معرفة فوق:
-// capacity, speed, floors, liftsCount, brandKey, currency, vatRate, result
+    }
 
-const quoteNumber = generateQuoteNumber();
-const timestamp = new Date().toISOString();
-
-const brandLabel =
-  BRAND_SOURCES[brandKey]?.label || brandKey || '';
-
-const lastQuoteSnapshot = {
-  // بيانات العرض
-  quoteNumber,
-  timestamp,
-
-  // بيانات العميل والمشروع
-  customerName: finalCustomerName || '',
-  projectName: projectName || '',
-
-  // بيانات المصعد الأساسية
-  brandKey,
-  brandLabel,
-  capacity,        // kg
-  speed,           // m/s
-  floors,
-  liftsCount,
-
-  // التشطيبات
-  cabinDesign: document.getElementById('cabin_design')?.value || '',
-  floorFinish: document.getElementById('floor_finish')?.value || '',
-
-  // الأبعاد (ثابتة مؤقتًا)
-  dimensions: {
-    cabin: 'حسب EN81',
-    shaft: 'حسب EN81',
-    pit: 'حسب المخططات',
-    oh: 'حسب المخططات'
-  },
-
-  // الأسعار
-  currency,
-  vatRate,
-  totalBeforeVat: result.totalBeforeVat,
-  vatAmount: result.vatAmount,
-  totalWithVat: result.totalWithVat,
-
-  // تفاصيل كل مصعد (ضروري لجدول العرض)
-  elevators: Array.from({ length: liftsCount }).map((_, i) => ({
-    no: `E-${String(i + 1).padStart(2, '0')}`,
-    capacity,
-    speed,
-    floors,
-    machine: 'MRL Gearless'
-  }))
-};
-
- // خزّن رقم هذا العرض ليتم اختياره تلقائيًا في صفحة الطباعة
-   const CURRENT_QUOTE_SELECTION_KEY = "rkl_current_quote_number";
     // ========================== تهيئة الأحداث عند تحميل الصفحة ==========================
        // ========================== تهيئة الأحداث عند تحميل الصفحة ==========================
     (function init() {
@@ -1255,8 +1208,8 @@ const lastQuoteSnapshot = {
     // آخر عرض مخزَّن سيكون هو الحالي
     const lastQuote = saved[saved.length - 1];
 
-   
-
+    // خزّن رقم هذا العرض ليتم اختياره تلقائيًا في صفحة الطباعة
+    localStorage.setItem(CURRENT_QUOTE_SELECTION_KEY, lastQuote.quoteNumber);
 
     // افتح صفحة نموذج عرض السعر الرسمي
     window.open("elevator-quote-offer.html", "_blank");
@@ -1556,60 +1509,4 @@ document.getElementById("lifts_count").addEventListener("input", function () {
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
