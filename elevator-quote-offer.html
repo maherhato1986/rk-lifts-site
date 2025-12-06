@@ -757,20 +757,34 @@ function populateQuoteSelector() {
     });
 }
 
-    document.getElementById("quote-selector").addEventListener("change", function () {
-    const index = this.value;
-    if (index === "") return;
+document.getElementById("quote-selector").addEventListener("change", function () {
+  if (this.value === "") return;
 
-    const quotes = loadStoredQuotes();   // كل عروض الأسعار
-    const selected = quotes[index];      // العرض الذي اختاره المستخدم
+  const quotes = loadStoredQuotes();
+  let selected = quotes[this.value];
+  if (!selected) return;
 
-    if (!selected) return;
+  const offer = selected.fullOffer || selected;
 
-    // بعض العروض محفوظة داخل fullOffer، وبعضها بيانات مباشرة
-    const offer = selected.fullOffer ? selected.fullOffer : selected;
-
-    fillOfferPage(offer);    // الآن يعرض البيانات الصحيحة
+  bindOfferData(offer);
+  renderElevatorItemsTable(offer);
 });
+function bindOfferData(offer) {
+  const customer = offer.customer || {};
+  const project  = offer.project || {};
+
+  bindText("bind_customer_name", customer.name);
+  bindText("bind_customer_type", customer.type);
+  bindText("bind_project_name", project.name);
+  bindText("bind_brand", project.brandLabel);
+  bindText("bind_capacity", project.capacityKg);
+  bindText("bind_speed", project.speedMps);
+  bindText("bind_floors", project.stops);
+  bindText("bind_lifts", project.liftsCount);
+  bindText("bind_dim_cabin", project.cabinSize);
+  bindText("bind_dim_shaft", project.shaftSize);
+}
+
 
 
 
@@ -1045,6 +1059,7 @@ function loadSelectedQuote(quoteIndex) {
     
 </body>
 </html>
+
 
 
 
