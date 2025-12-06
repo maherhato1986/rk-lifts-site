@@ -661,39 +661,84 @@
         لم يتم العثور على بيانات عرض أخير (rkl_last_offer). الرجاء العودة إلى نموذج التسعير وحفظ عرض السعر أولاً.
     </div>
 </div>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
+
+    <script>
+(function loadSelectedQuote() {
+
     const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
+    const index  = localStorage.getItem('rkl_current_quote_index');
 
-    if (!quotes.length) {
-        alert("لا يوجد عرض سعر محفوظ");
+    if (!quotes.length || index === null) {
+        alert('لم يتم العثور على عرض سعر محدد');
         return;
     }
 
-    const index = localStorage.getItem('rkl_current_quote_index');
-    const quoteIndex = index !== null ? Number(index) : quotes.length - 1;
-
-    const q = quotes[quoteIndex];
-    if (!q) {
-        alert("تعذر تحميل عرض السعر المطلوب");
+    const quote = quotes[Number(index)];
+    if (!quote) {
+        alert('عرض السعر غير موجود');
         return;
     }
 
-    // ✅ مثال ربط (عدّل IDs حسب صفحتك)
-    document.getElementById("quote-number").textContent = q.quoteNumber || '';
-    document.getElementById("client-name").textContent = q.customerName || '';
-    document.getElementById("project-name").textContent = q.projectName || '';
-    document.getElementById("brand").textContent = q.brandLabel || '';
-    document.getElementById("capacity").textContent = q.capacity || '';
-    document.getElementById("speed").textContent = q.speed || '';
-    document.getElementById("lifts-count").textContent = q.liftsCount || '';
-    document.getElementById("total-price").textContent =
-        (q.totalWithVat || 0).toLocaleString() + " " + (q.currency || 'SAR');
-});
+    /* ================= تعبئة البيانات الأساسية ================= */
+
+    document.querySelectorAll('.bind_quote_number').forEach(el => {
+        el.textContent = quote.quoteNumber || '—';
+    });
+
+    document.querySelectorAll('.bind_offer_date').forEach(el => {
+        el.textContent = quote.timestamp
+            ? quote.timestamp.slice(0, 10)
+            : '—';
+    });
+
+    document.querySelectorAll('.bind_customer_name').forEach(el => {
+        el.textContent = quote.customerName || '—';
+    });
+
+    document.querySelectorAll('.bind_project_name').forEach(el => {
+        el.textContent = quote.projectName || '—';
+    });
+
+    document.querySelectorAll('.bind_brand').forEach(el => {
+        el.textContent = quote.brandLabel || quote.brandKey || '—';
+    });
+
+    document.querySelectorAll('.bind_capacity').forEach(el => {
+        el.textContent = quote.capacity || '—';
+    });
+
+    document.querySelectorAll('.bind_speed').forEach(el => {
+        el.textContent = quote.speed || '—';
+    });
+
+    document.querySelectorAll('.bind_floors').forEach(el => {
+        el.textContent = quote.floors || '—';
+    });
+
+    document.querySelectorAll('.bind_lifts').forEach(el => {
+        el.textContent = quote.liftsCount || '—';
+    });
+
+    /* ================= القيم المالية ================= */
+
+    const total = quote.totalWithVat || 0;
+    const currency = quote.currency || 'SAR';
+
+    document.querySelectorAll('.bind_total_with_vat').forEach(el => {
+        el.textContent = total.toLocaleString() + ' ' + currency;
+    });
+
+    document.querySelectorAll('.bind_price_per_unit').forEach(el => {
+        el.textContent = (total / (quote.liftsCount || 1)).toLocaleString() + ' ' + currency;
+    });
+
+})();
 </script>
+
 
 </body>
 </html>
+
 
 
 
