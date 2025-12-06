@@ -662,82 +662,127 @@
     </div>
 </div>
 
-    <script>
+<script>
+/* ===========================================
+   Helper Functions
+=========================================== */
+function bind(selector, value) {
+    document.querySelectorAll(selector).forEach(el => {
+        el.textContent = (value !== undefined && value !== null && value !== '')
+            ? value
+            : '—';
+    });
+}
+
+function format(amount) {
+    if (isNaN(amount)) return '—';
+    return 'SAR ' + Number(amount).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+}
+
+
+/* ===========================================
+   Load Selected Quote From LocalStorage
+=========================================== */
 (function loadSelectedQuote() {
 
     const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
     const index  = localStorage.getItem('rkl_current_quote_index');
 
     if (!quotes.length || index === null) {
-        alert('لم يتم العثور على عرض سعر محدد');
+        alert('لم يتم العثور على عرض سعر محدد.');
         return;
     }
 
     const quote = quotes[Number(index)];
     if (!quote) {
-        alert('عرض السعر غير موجود');
+        alert('عرض السعر المختار غير موجود.');
         return;
     }
 
-    /* ================= تعبئة البيانات الأساسية ================= */
+    /* ===========================================
+       (1) بيانات العرض العامة
+    =========================================== */
+    bind('.bind_quote_number', quote.quoteNumber);
+    bind('.bind_offer_date', quote.timestamp ? quote.timestamp.slice(0, 10) : '');
+    bind('.bind_customer_name', quote.customerName);
+    bind('.bind_project_name', quote.projectName);
 
-    document.querySelectorAll('.bind_quote_number').forEach(el => {
-        el.textContent = quote.quoteNumber || '—';
-    });
 
-    document.querySelectorAll('.bind_offer_date').forEach(el => {
-        el.textContent = quote.timestamp
-            ? quote.timestamp.slice(0, 10)
-            : '—';
-    });
+    /* ===========================================
+       (2) ملف العميل
+    =========================================== */
+    if (quote.customer) {
+        bind('.bind_customer_type',        quote.customer.type);
+        bind('.bind_contact_person',       quote.customer.contactPerson);
+        bind('.bind_id_number',            quote.customer.idNumber);
+        bind('.bind_cr_number',            quote.customer.crNumber);
+        bind('.bind_tax_number',           quote.customer.taxNumber);
+        bind('.bind_city',                 quote.customer.city);
+        bind('.bind_district',             quote.customer.district);
+        bind('.bind_street',               quote.customer.street);
+        bind('.bind_building_no',           quote.customer.buildingNo);
+        bind('.bind_postal_code',           quote.customer.postalCode);
+        bind('.bind_full_address',          quote.customer.fullAddress);
+        bind('.bind_mobile',                quote.customer.mobile);
+        bind('.bind_phone',                 quote.customer.phone);
+        bind('.bind_email',                 quote.customer.email);
+        bind('.bind_preferred_contact',     quote.customer.preferredContact);
+        bind('.bind_notes',                 quote.customer.notes);
+    }
 
-    document.querySelectorAll('.bind_customer_name').forEach(el => {
-        el.textContent = quote.customerName || '—';
-    });
 
-    document.querySelectorAll('.bind_project_name').forEach(el => {
-        el.textContent = quote.projectName || '—';
-    });
+    /* ===========================================
+       (3) البيانات الفنية الرئيسية
+    =========================================== */
+    if (quote.technical) {
+        bind('.bind_brand',                quote.technical.brandLabel);
+        bind('.bind_machine_type',         quote.technical.machineType);
+        bind('.bind_capacity',             quote.technical.capacity);
+        bind('.bind_speed',                quote.technical.speed);
+        bind('.bind_floors',               quote.technical.floors);
+        bind('.bind_lifts',                quote.technical.liftsCount);
+        bind('.bind_dim_cabin',             quote.technical.cabinDimension);
+        bind('.bind_dim_shaft',             quote.technical.shaftDimension);
+        bind('.bind_pit',                  quote.technical.pit);
+        bind('.bind_oh',                   quote.technical.oh);
+        bind('.bind_cabin_design',         quote.technical.cabinDesign);
+        bind('.bind_floor_finish',         quote.technical.floorFinish);
+    }
 
-    document.querySelectorAll('.bind_brand').forEach(el => {
-        el.textContent = quote.brandLabel || quote.brandKey || '—';
-    });
 
-    document.querySelectorAll('.bind_capacity').forEach(el => {
-        el.textContent = quote.capacity || '—';
-    });
+    /* ===========================================
+       (6) ملخص القيمة المالية
+    =========================================== */
+    if (quote.pricing) {
+        bind('.bind_price_per_unit',       format(quote.pricing.unitPrice));
+        bind('.bind_total_before_vat',     format(quote.pricing.subtotal));
+        bind('.bind_vat_rate',             quote.pricing.vatRate + '%');
+        bind('.bind_vat_amount',           format(quote.pricing.vatAmount));
+        bind('.bind_total_with_vat',       format(quote.pricing.totalWithVat));
+    }
 
-    document.querySelectorAll('.bind_speed').forEach(el => {
-        el.textContent = quote.speed || '—';
-    });
 
-    document.querySelectorAll('.bind_floors').forEach(el => {
-        el.textContent = quote.floors || '—';
-    });
-
-    document.querySelectorAll('.bind_lifts').forEach(el => {
-        el.textContent = quote.liftsCount || '—';
-    });
-
-    /* ================= القيم المالية ================= */
-
-    const total = quote.totalWithVat || 0;
-    const currency = quote.currency || 'SAR';
-
-    document.querySelectorAll('.bind_total_with_vat').forEach(el => {
-        el.textContent = total.toLocaleString() + ' ' + currency;
-    });
-
-    document.querySelectorAll('.bind_price_per_unit').forEach(el => {
-        el.textContent = (total / (quote.liftsCount || 1)).toLocaleString() + ' ' + currency;
-    });
+    /* ===========================================
+       (7) جدول الدفعات المقترح
+    =========================================== */
+    if (quote.pricing && quote.pricing.payments) {
+        bind('.bind_pay_50', format(quote.pricing.payments.p50));
+        bind('.bind_pay_25', format(quote.pricing.payments.p25));
+        bind('.bind_pay_20', format(quote.pricing.payments.p20));
+        bind('.bind_pay_5',  format(quote.pricing.payments.p5));
+    }
 
 })();
 </script>
 
 
+
 </body>
 </html>
+
 
 
 
