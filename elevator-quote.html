@@ -1198,34 +1198,68 @@ lastQuoteSnapshot = {
   } : null,
 
   // عرض مختصر للجدول
-  customerName: selectedCustomer?.customer_name || document.getElementById('customer_name').value,
-  projectName: document.getElementById('project_name').value,
+         // حفظ لقطة من هذا العرض لاستخدامها عند الضغط على "حفظ عرض السعر"
+        const manualCustomerName = document.getElementById('customer_name').value.trim();
+        const projectName        = document.getElementById('project_name').value.trim();
 
-  // ✅ البيانات الفنية
-  technical: {
-    brandLabel,
-    capacity,
-    speed,
-    floors,
-    liftsCount,
-    cabinDimension: model?.cabinSize || '',
-    shaftDimension: model?.shaftSize || '',
-    pit: model?.pit || '',
-    oh: model?.oh || '',
-    cabinDeal: document.getElementById('cabin_design').value,
-    floorFinish: document.getElementById('floor_finish').value
-  },
+        const finalCustomerName =
+            (selectedCustomer?.customer_name || manualCustomerName || 'العميل الكريم').trim();
 
-  // ✅ الأسعار
-  pricing: {
-    subtotal: result.totalBeforeVat,
-    vatRate,
-    vatAmount: result.vatAmount,
-    totalWithVat: result.totalWithVat,
-    currency
-  }
-};
+        const brandLabel = BRAND_SOURCES[brandKey]?.label || brandKey;
 
+        // حسبة الدفعات المقترحة على الإجمالي شامل الضريبة
+        const payments = {
+            p50: totalWithVatTotal * 0.50,
+            p25: totalWithVatTotal * 0.25,
+            p20: totalWithVatTotal * 0.20,
+            p5 : totalWithVatTotal * 0.05
+        };
+
+        lastQuoteSnapshot = {
+            // بيانات أساسية
+            timestamp: new Date().toISOString(),
+            brandKey,
+            brandLabel,
+            capacity,
+            speed,
+            floors,
+            liftsCount,
+            currency,
+            vatRate,
+            includeVat,
+
+            // لعرض الاسم في الجدول
+            customerName: finalCustomerName,
+            projectName,
+
+            // البيانات الفنية
+            technical: {
+                brandLabel,
+                capacity,
+                speed,
+                floors,
+                liftsCount,
+                cabinDimension: model?.cabinSize || '',
+                shaftDimension: model?.shaftSize || '',
+                pit: model?.pit || '',
+                oh: model?.oh || '',
+                cabinDesign: document.getElementById('cabin_design').value,
+                floorFinish: document.getElementById('floor_finish').value
+            },
+
+            // الأسعار
+            pricing: {
+                unitPrice:       totalBeforeVatPerLift,
+                subtotal:        totalBeforeVatTotal,
+                vatRate,
+                vatAmount:       vatAmountTotal,
+                totalWithVat:    totalWithVatTotal,
+                payments
+            },
+
+            // لتسهيل عرض الإجمالي في جدول السجل
+            totalWithVat: totalWithVatTotal
+        };
 
 
 } 
@@ -1341,150 +1375,74 @@ lastQuoteSnapshot = {
          // زر حفظ عرض السعر الحالي في السجل
     const saveBtn = document.getElementById('save-quote-btn');
     if (saveBtn) {
+
+            // زر حفظ عرض السعر الحالي في السجل
+    const saveBtn = document.getElementById('save-quote-btn');
+    if (saveBtn) {
         saveBtn.addEventListener('click', () => {
             if (!lastQuoteSnapshot) {
                 alert('قم أولاً بحساب عرض السعر قبل حفظه في السجل.');
                 return;
             }
 
-            // 1) قراءة العروض المخزنة وتجهيز رقم عرض جديد
             const quotes = loadStoredQuotes();
 
-            const nextIndex = quotes.length + 1;
+            // توليد رقم عرض جديد
             const today = new Date();
-            const ymd = today.toISOString().slice(0, 10).replace(/-/g, '');
-            const quoteNumber = 'Q-' + new Date().toISOString().slice(0,10).replaceAll('-','') 
-                    + '-' + Math.floor(Math.random() * 1000);
+            const ymd   = today.toISOString().slice(0,10).replace(/-/g, '');
+            const rand  = Math.floor(Math.random() * 1000)
+                            .toString()
+                            .padStart(3, '0');
+            const quoteNumber = `Q-${ymd}-${rand}`;
 
-            // 2) قراءة اسم العميل والمشروع من الحقول
+            // قراءة اسم العميل والمشروع من الحقول (آخر نسخة)
             const manualCustomerName = document.getElementById('customer_name').value.trim();
-            const projectName = document.getElementById('project_name').value.trim();
+            const projectName        = document.getElementById('project_name').value.trim();
 
             const finalCustomerName =
                 (selectedCustomer?.customer_name || manualCustomerName || 'العميل الكريم').trim();
 
-            // 3) تجهيز العنصر الذي يذهب إلى جدول السجل
+            // تجهيز بيانات العميل لتخزينها مع العرض
+            const customerData = selectedCustomer ? {
+                type:            selectedCustomer.customer_type   || '',
+                contactPerson:   selectedCustomer.contact_person  || '',
+                idNumber:        selectedCustomer.id_number       || '',
+                crNumber:        selectedCustomer.cr_number       || '',
+                taxNumber:       selectedCustomer.tax_number      || '',
+                city:            selectedCustomer.city            || '',
+                district:        selectedCustomer.district        || '',
+                street:          selectedCustomer.street          || '',
+                buildingNo:      selectedCustomer.building_no     || '',
+                postalCode:      selectedCustomer.postal_code     || '',
+                fullAddress:     selectedCustomer.full_address    || '',
+                mobile:          selectedCustomer.mobile          || '',
+                phone:           selectedCustomer.phone           || '',
+                email:           selectedCustomer.email           || '',
+                preferredContact:selectedCustomer.preferred_contact || '',
+                notes:           selectedCustomer.notes           || ''
+            } : null;
+
+            // العنصر الذي سيُخزَّن في rkl_quotes ويُقرأ لاحقًا في elevator-quote-offer.html
             const entry = {
-    ...lastQuoteSnapshot,
-    quoteNumber,
-    customerName: finalCustomerName,
-    projectName,
+                ...lastQuoteSnapshot,
+                quoteNumber,
+                customerName: finalCustomerName,
+                projectName,
+                customer: customerData
+            };
 
-    // ✅ أضِف هذا الجزء
-    customer: selectedCustomer ? {
-        type: selectedCustomer.customer_type || '',
-        contactPerson: selectedCustomer.contact_person || '',
-        idNumber: selectedCustomer.id_number || '',
-        crNumber: selectedCustomer.cr_number || '',
-        taxNumber: selectedCustomer.tax_number || '',
-        city: selectedCustomer.city || '',
-        district: selectedCustomer.district || '',
-        street: selectedCustomer.street || '',
-        buildingNo: selectedCustomer.building_no || '',
-        postalCode: selectedCustomer.postal_code || '',
-        address: selectedCustomer.full_address || '',
-        mobile: selectedCustomer.mobile || '',
-        phone: selectedCustomer.phone || '',
-        email: selectedCustomer.email || '',
-        preferredContact: selectedCustomer.preferred_contact || '',
-        notes: selectedCustomer.notes || ''
-    } : null
-};
-
-
-            // حفظه في مصفوفة عروض الأسعار
+            // حفظ في مصفوفة العروض
             quotes.push(entry);
             saveQuotesToStorage(quotes);
             renderQuotesTable();
 
-            // 4) تجهيز بيانات عرض السعر الرسمي (لاستخدامها في elevator-quote-offer.html)
-            const offerData = {
-                quoteNumber,
-
-           customer: {
-    type: selectedCustomer?.customer_type || '',
-    contactPerson: selectedCustomer?.contact_person || '',
-    crNumber: selectedCustomer?.cr_number || '',
-    taxNumber: selectedCustomer?.tax_number || '',
-    mobile: selectedCustomer?.mobile || '',
-    email: selectedCustomer?.email || '',
-    city: selectedCustomer?.city || '',
-    district: selectedCustomer?.district || '',
-    fullAddress: selectedCustomer?.full_address || '',
-    notes: selectedCustomer?.notes || ''
-  },
-                  technical: {
-    brandLabel,
-    machineType: model.machineType,
-    capacity,
-    speed,
-    floors,
-    liftsCount,
-    cabinDimension: model.cabinSize,
-    shaftDimension: model.shaftSize,
-    pit: model.pit,
-    oh: model.oh,
-    cabinDesign: document.getElementById('cabin_design').value,
-    floorFinish: document.getElementById('floor_finish').value
-  },
-                 // ✅ المقاسات لكل مصعد
-  shafts: shaftData, // جدول المصاعد
-
-                project: {
-                    name: projectName,
-                    date: entry.timestamp,
-                    brandKey: entry.brandKey,
-                    brandLabel: entry.brandLabel,
-                    capacityKg: entry.capacity,
-                    speedMps: entry.speed,
-                    floors: entry.floors,
-                    liftsCount: entry.liftsCount
-                },
-
-                pricing: {
-    unitPrice: result.totalBeforeVatPerLift,
-    subtotal: result.totalBeforeVat,
-    vatRate,
-    vatAmount: result.vatAmount,
-    totalWithVat: result.totalWithVat,
-    payments: {
-      p50: result.totalWithVat * 0.5,
-      p25: result.totalWithVat * 0.25,
-      p20: result.totalWithVat * 0.20,
-      p5 : result.totalWithVat * 0.05
-    }
-  },
-
-                quoteText: document.getElementById('quote_text').value
-            };
-            // تجميع بيانات المقاسات من جدول المصاعد
-const shaftRows = document.querySelectorAll("#shaft-table tbody tr");
-const shaftData = [];
-
-shaftRows.forEach((row, index) => {
-    const shaft = row.querySelector(".shaft-select")?.value || "";
-    const cabin = row.querySelector(".cabin-cell")?.innerText || "";
-    const door = row.querySelector(".door-cell")?.innerText || "";
-    const note = row.querySelector(".note-input")?.value || "";
-
-    shaftData.push({
-        elevator: index + 1,
-        shaft,
-        cabin,
-        door,
-        note
-    });
-});
-
-// إضافة البيانات إلى offerData
-offerData.shafts = shaftData;
-
-
-            // حفظ بيانات العرض الرسمي لاستخدامها في elevator-quote-offer.html
-            localStorage.setItem('rkl_last_offer', JSON.stringify(offerData));
+            // حفظ نفس البيانات كآخر عرض رسمي (للاستخدامات الأخرى إن احتجتها)
+            localStorage.setItem('rkl_last_offer', JSON.stringify(entry));
 
             alert('تم حفظ عرض السعر الحالي في سجل هذا الجهاز.');
         });
+    }
+
     }
 
         // زر تصدير السجل إلى CSV
@@ -1607,6 +1565,7 @@ document.getElementById("lifts_count").addEventListener("input", function () {
 
 </body>
 </html>
+
 
 
 
