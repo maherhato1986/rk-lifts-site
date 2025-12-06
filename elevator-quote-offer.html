@@ -661,7 +661,31 @@
         لم يتم العثور على بيانات عرض أخير (rkl_last_offer). الرجاء العودة إلى نموذج التسعير وحفظ عرض السعر أولاً.
     </div>
 </div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
+    const index = Number(localStorage.getItem('rkl_current_quote_index'));
 
+    if (!quotes[index]) {
+        alert("لم يتم العثور على عرض السعر المحدد");
+        return;
+    }
+
+    const q = quotes[index];
+
+    // ✅ تعبئة البيانات
+    document.getElementById('customerName').textContent = q.customerName;
+    document.getElementById('projectName').textContent = q.projectName;
+    document.getElementById('quoteNumber').textContent = q.quoteNumber;
+    document.getElementById('brand').textContent = q.brandLabel;
+    document.getElementById('capacity').textContent = q.capacity;
+    document.getElementById('speed').textContent = q.speed;
+    document.getElementById('liftsCount').textContent = q.liftsCount;
+    document.getElementById('total').textContent = q.totalWithVat + ' ' + q.currency;
+});
+</script>
+
+    
 <script>
     function formatCurrency(value, currency) {
         if (value == null || isNaN(value)) return "—";
@@ -758,5 +782,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
+
 
 
