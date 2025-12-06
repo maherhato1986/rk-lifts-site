@@ -501,25 +501,6 @@
 
     <div class="page-index">Page 3</div>
 </div>
-<div class="page">
-  <div class="section-title">جدول المصاعد المختارة</div>
-
-  <table id="elevators-items" class="spec-table">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>رقم المصعد</th>
-        <th>الحمولة (kg)</th>
-        <th>السرعة (m/s)</th>
-        <th>عدد التوقفات</th>
-        <th>نوع الماكينة</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-
-  <div class="page-index">Page X</div>
-</div>
 
 <!-- ================= صفحة 4: ميزات الأمان + مخطط المقاسات ================= -->
 <div class="page">
@@ -692,160 +673,203 @@
         لم يتم العثور على بيانات عرض أخير (rkl_last_offer). الرجاء العودة إلى نموذج التسعير وحفظ عرض السعر أولاً.
     </div>
 </div>
+
 <script>
-/* ==============================
-   إعدادات التخزين
-============================== */
-const QUOTES_STORAGE_KEY = 'rkl_quotes';
+    function formatCurrency(value, currency) {
+        if (value == null || isNaN(value)) return "—";
+        const num = Number(value);
+        const formatted = num.toLocaleString("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+        if (currency === "USD") return "USD " + formatted;
+        return "SAR " + formatted;
+    }
 
-/* ==============================
-   أدوات مساعدة
-============================== */
-function loadStoredQuotes() {
-  try {
-    return JSON.parse(localStorage.getItem(QUOTES_STORAGE_KEY)) || [];
-  } catch {
-    return [];
-  }
+    function bindText(cls, value) {
+        const nodes = document.querySelectorAll("." + cls);
+        nodes.forEach(el => {
+            el.textContent = (value !== undefined && value !== null && value !== "")
+                ? value
+                : el.textContent || "—";
+        });
+    }
+
+    function loadStoredQuotes() {
+    try {
+        return JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
+    } catch (e) {
+        console.error("خطأ في قراءة عروض الأسعار", e);
+        return [];
+    }
 }
 
-function formatCurrency(value, currency = 'SAR') {
-  if (!value && value !== 0) return '—';
-  return new Intl.NumberFormat('ar-SA', {
-    style: 'currency',
-    currency
-  }).format(value);
-}
-
-/* ==============================
-   ربط النصوص (Bind)
-============================== */
-function bindText(className, value) {
-  document.querySelectorAll('.' + className).forEach(el => {
-    el.textContent =
-      value !== undefined && value !== null && value !== ''
-        ? value
-        : '—';
-  });
-}
-
-/* ==============================
-   تعبئة قائمة عروض السعر
-============================== */
 function populateQuoteSelector() {
-  const selector = document.getElementById('quote-selector');
-  if (!selector) return;
+    const selector = document.getElementById('quote-selector');
+    const quotes = loadStoredQuotes();
 
-  const quotes = loadStoredQuotes();
-  selector.innerHTML = '<option value="">— اختر عرض سعر —</option>';
+    selector.innerHTML = `<option value="">— اختر عرض سعر —</option>`;
 
-  quotes.forEach((q, index) => {
-    const label =
-      (q.quoteNumber || '—') + ' | ' +
-      (q.projectName || '') + ' | ' +
-      (q.customerName || '');
-    selector.innerHTML += `<option value="${index}">${label}</option>`;
-  });
-}
-
-/* ==============================
-   تحميل عرض سعر واحد
-============================== */
-function loadSelectedQuote(index) {
-  const quotes = loadStoredQuotes();
-  const q = quotes[index];
-  if (!q) return;
-
-  /* بيانات عامة */
-  bindText('bind_quote_number', q.quoteNumber);
-  bindText('bind_offer_date', q.timestamp?.slice(0, 10));
-  bindText('bind_customer_name', q.customerName);
-  bindText('bind_project_name', q.projectName);
-
-  /* مواصفات فنية */
-  bindText('bind_brand', q.brandLabel);
-  bindText('bind_capacity', q.capacity + ' kg');
-  bindText('bind_speed', q.speed + ' m/s');
-  bindText('bind_floors', q.floors);
-  bindText('bind_lifts', q.liftsCount);
-
-  /* تشطيبات */
-  bindText('bind_cabin_design', q.cabinDesign);
-  bindText('bind_floor_finish', q.floorFinish);
-
-  /* أبعاد */
-  bindText('bind_dim_cabin', q.dimensions?.cabin);
-  bindText('bind_dim_shaft', q.dimensions?.shaft);
-  bindText('bind_pit', q.dimensions?.pit);
-  bindText('bind_oh', q.dimensions?.oh);
-
-  /* أسعار */
-  bindText('bind_total_with_vat', formatCurrency(q.totalWithVat, q.currency));
-  bindText('bind_vat_rate', q.vatRate + '%');
-
-  renderElevatorsTable(q.elevators || []);
-}
-
-/* ==============================
-   جدول المصاعد
-============================== */
-function renderElevatorsTable(elevators) {
-  const tbody = document.querySelector('#elevators-items tbody');
-  if (!tbody) return;
-
-  tbody.innerHTML = '';
-
-  if (!elevators.length) {
-    tbody.innerHTML =
-      `<tr><td colspan="6" style="text-align:center;">— لا توجد مصاعد —</td></tr>`;
-    return;
-  }
-
-  elevators.forEach((e, i) => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${i + 1}</td>
-      <td>${e.no}</td>
-      <td>${e.capacity} kg</td>
-      <td>${e.speed} m/s</td>
-      <td>${e.floors}</td>
-      <td>${e.machine}</td>
-    `;
-    tbody.appendChild(tr);
-  });
-}
-
-/* ==============================
-   تشغيل الصفحة
-============================== */
-document.addEventListener('DOMContentLoaded', () => {
-  populateQuoteSelector();
-
-  document
-    .getElementById('quote-selector')
-    .addEventListener('change', function () {
-      if (this.value === '') return;
-      loadSelectedQuote(this.value);
+    quotes.forEach((q, index) => {
+        const label = `${q.quoteNumber} – ${q.projectName || ""} – ${q.customerName || ""}`;
+        selector.innerHTML += `<option value="${index}">${label}</option>`;
     });
+}
+document.getElementById("quote-selector").addEventListener("change", function () {
+    const index = this.value;
+    if (index === "") return;
+
+    const quotes = loadStoredQuotes();
+    const selected = quotes[index];
+
+    if (selected) {
+        // تحميل العرض الرسمي
+        const fullOffer = JSON.parse(localStorage.getItem('rkl_last_offer'));
+
+        // أو بناء offerData جديد لو كنت تحفظ لكل عرض على حدة
+        fillOfferPage(fullOffer);
+    }
 });
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const raw = localStorage.getItem("rkl_last_offer");
+        if (!raw) {
+            document.getElementById("warn_no_data").style.display = "block";
+            return;
+        }
+
+        let offer;
+        try {
+            offer = JSON.parse(raw);
+        } catch (e) {
+            console.error("Error parsing rkl_last_offer", e);
+            document.getElementById("warn_no_data").style.display = "block";
+            return;
+        }
+
+        const customer = offer.customer || {};
+        const project  = offer.project  || {};
+        const cabin    = offer.cabin    || {};
+        const pricing  = offer.pricing  || {};
+        const dimsEn81 = (offer.dimensions && offer.dimensions.en81) || {};
+        const dimsCustom = (offer.dimensions && offer.dimensions.custom) || {};
+
+        const dateStr = project.date ? project.date.slice(0, 10) : "";
+
+        // رأس العرض
+        bindText("bind_quote_number", offer.quoteNumber || "—");
+        bindText("bind_offer_date", dateStr || "—");
+
+        // بيانات العميل
+        const typeLabel =
+            customer.type === "company" ? "شركة / مؤسسة" :
+            customer.type === "individual" ? "عميل فردي" : "—";
+
+        bindText("bind_customer_type", typeLabel);
+        bindText("bind_customer_name", customer.name || "—");
+        bindText("bind_contact_person", customer.contactPerson || "—");
+        bindText("bind_id_number", customer.idNumber || "—");
+        bindText("bind_cr_number", customer.crNumber || "—");
+        bindText("bind_tax_number", customer.taxNumber || "—");
+        bindText("bind_city", customer.city || "—");
+        bindText("bind_district", customer.district || "—");
+        bindText("bind_street", customer.street || "—");
+        bindText("bind_building_no", customer.buildingNo || "—");
+        bindText("bind_postal_code", customer.postalCode || "—");
+        bindText("bind_full_address", customer.address || "—");
+        bindText("bind_mobile", customer.mobile || "—");
+        bindText("bind_phone", customer.phone || "—");
+        bindText("bind_email", customer.email || "—");
+
+        let pref = customer.preferredContact || "";
+        if (pref === "mobile") pref = "الجوال";
+        else if (pref === "email") pref = "البريد الإلكتروني";
+        else if (pref === "whatsapp") pref = "واتساب";
+        bindText("bind_preferred_contact", pref || "—");
+
+        bindText("bind_notes", customer.notes || "—");
+
+        // المشروع
+        bindText("bind_project_name", project.name || "—");
+
+        // بيانات فنية
+        bindText("bind_brand", project.brandLabel || "—");
+        if (project.capacityKg != null) {
+            bindText("bind_capacity", project.capacityKg + " kg");
+        }
+        if (project.speedMps != null) {
+            bindText("bind_speed", project.speedMps + " m/s");
+        }
+        bindText("bind_floors", project.floors != null ? project.floors : "—");
+        bindText("bind_lifts", project.liftsCount != null ? project.liftsCount : 1);
+
+        bindText("bind_cabin_design", cabin.design || "Standard");
+        bindText("bind_floor_finish", cabin.floorFinish || "Standard");
+
+        // أبعاد EN81 أو المخصصة
+        let cabinSize = "";
+        if (dimsEn81.cabinWidth && dimsEn81.cabinDepth) {
+            cabinSize = `${dimsEn81.cabinWidth} x ${dimsEn81.cabinDepth} mm`;
+        } else if (dimsCustom.cabinSizeText) {
+            cabinSize = dimsCustom.cabinSizeText;
+        }
+        bindText("bind_dim_cabin", cabinSize);
+
+        let shaftSize = "";
+        if (dimsEn81.shaftWidth && dimsEn81.shaftDepth) {
+            shaftSize = `${dimsEn81.shaftWidth} x ${dimsEn81.shaftDepth} mm`;
+        } else if (dimsCustom.shaftWidth && dimsCustom.shaftDepth) {
+            shaftSize = `${dimsCustom.shaftWidth} x ${dimsCustom.shaftDepth} mm`;
+        }
+        bindText("bind_dim_shaft", shaftSize);
+
+        // لاستخدامها في المخطط
+        let shaftWidth = "";
+        let shaftDepth = "";
+        if (dimsEn81.shaftWidth && dimsEn81.shaftDepth) {
+            shaftWidth = dimsEn81.shaftWidth;
+            shaftDepth = dimsEn81.shaftDepth;
+        } else if (dimsCustom.shaftWidth && dimsCustom.shaftDepth) {
+            shaftWidth = dimsCustom.shaftWidth;
+            shaftDepth = dimsCustom.shaftDepth;
+        } else if (shaftSize.includes("x")) {
+            const parts = shaftSize.split("x");
+            if (parts.length >= 2) {
+                shaftWidth = parts[0].trim();
+                shaftDepth = parts[1].trim();
+            }
+        }
+        bindText("bind_shaft_width", shaftWidth || "—");
+        bindText("bind_shaft_depth", shaftDepth || "—");
+
+        bindText("bind_pit", dimsEn81.pit || "—");
+        bindText("bind_oh", dimsEn81.oh || "—");
+
+        // التسعير
+        const currency = pricing.currency || "SAR";
+        const totalWithVat = pricing.totalWithVat ?? null;
+        const vatRate = pricing.vatRate ?? 15;
+
+        bindText("bind_vat_rate", vatRate);
+
+        if (totalWithVat != null) {
+            const liftsCount = project.liftsCount || 1;
+            const perLift = Number(totalWithVat) / Number(liftsCount || 1);
+
+            bindText("bind_price_per_unit", formatCurrency(perLift, currency));
+            bindText("bind_total_price", formatCurrency(totalWithVat, currency));
+            bindText("bind_total_with_vat", formatCurrency(totalWithVat, currency));
+
+            const t = Number(totalWithVat);
+            bindText("bind_pay_50", formatCurrency(t * 0.50, currency));
+            bindText("bind_pay_25", formatCurrency(t * 0.25, currency));
+            bindText("bind_pay_20", formatCurrency(t * 0.20, currency));
+            bindText("bind_pay_5",  formatCurrency(t * 0.05,  currency));
+        }
+    });
 </script>
 
-
-    
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
