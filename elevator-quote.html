@@ -1248,52 +1248,59 @@ lastQuoteSnapshot = {
 
     // ========================== تهيئة الأحداث عند تحميل الصفحة ==========================
        // ========================== تهيئة الأحداث عند تحميل الصفحة ==========================
-    (function init() {
-        // تحميل العملاء من صفحة customer-manager
-        populateCustomerDropdown();
+// ========================== تهيئة الصفحة عند التحميل ==========================
+(function init() {
+    // تحميل العملاء في القائمة
+    populateCustomerDropdown();
 
-        // تحميل عروض الأسعار الموجودة مسبقًا في الجدول
-        renderQuotesTable();
+    // تحميل جدول عروض الأسعار
+    renderQuotesTable();
 
-        const customerSelect = document.getElementById('customer_select');
+    // ربط تغيير العميل
+    const customerSelect = document.getElementById('customer_select');
+    if (customerSelect) {
+        customerSelect.addEventListener('change', () => {
+            const idx = customerSelect.value;
 
-if (customerSelect) {
-    customerSelect.addEventListener('change', () => {
-        const idx = customerSelect.value;
+            // في حال لم يتم اختيار عميل
+            if (idx === '') {
+                selectedCustomer = null;
+                renderCustomerDetails(null);
+                return;
+            }
 
-        if (idx === '') {
-            selectedCustomer = null;
-            renderCustomerDetails(null);
+            const customers = loadStoredCustomers();
+            const customer = customers[Number(idx)];
+
+            if (customer) {
+                applyCustomerToForm(customer);
+            }
+        });
+    }
+})();
+
+
+// ========================== زر طباعة عرض السعر ==========================
+const printBtn = document.getElementById("printOfferButton");
+if (printBtn) {
+    printBtn.addEventListener("click", function () {
+        const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
+
+        if (!quotes.length) {
+            alert("لا يوجد عرض سعر محفوظ");
             return;
         }
 
-        const customers = loadStoredCustomers();
-        const customer = customers[Number(idx)];
+        // إذا المستخدم اختار عرض من الجدول
+        const selected = document.querySelector('.quote-check:checked');
+        const quoteIndex = selected
+            ? Number(selected.dataset.index)
+            : quotes.length - 1; // آخر عرض تلقائيًا
 
-        if (customer) {
-            applyCustomerToForm(customer);
-        }
+        localStorage.setItem('rkl_current_quote_index', quoteIndex);
+        window.open("elevator-quote-offer.html", "_blank");
     });
 }
-
-      
-    document.getElementById("printOfferButton").addEventListener("click", function () {
-    const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
-
-    if (!quotes.length) {
-        alert("لا يوجد عرض سعر محفوظ");
-        return;
-    }
-
-    const selected = document.querySelector('.quote-check:checked');
-    const quoteIndex = selected 
-        ? Number(selected.dataset.index)
-        : quotes.length - 1; // آخر عرض تلقائيًا
-
-    localStorage.setItem('rkl_current_quote_index', quoteIndex);
-
-    window.open("elevator-quote-offer.html", "_blank");
-});
 
 
 
@@ -1551,6 +1558,7 @@ document.getElementById("lifts_count").addEventListener("input", function () {
 
 </body>
 </html>
+
 
 
 
