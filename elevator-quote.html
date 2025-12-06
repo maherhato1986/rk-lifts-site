@@ -1172,63 +1172,60 @@ const directCostSarFinal = directCostSar + cabinExtraCost;
         const brandLabel = BRAND_SOURCES[brandKey]?.label || brandKey;
 
 lastQuoteSnapshot = {
-    // بيانات عامة (بدون رقم العرض، سنولّده عند الحفظ)
-    timestamp: new Date().toISOString(),
+  // بيانات العرض
+  quoteNumber,
+  timestamp: new Date().toISOString(),
 
-    // احتفظ بهذه الحقول كما هي
-    customerName: finalCustomerName,
-    projectName: projectName,
+  // ✅ بيانات العميل كاملة (المفتاح المهم)
+  customer: selectedCustomer ? {
+    customer_name: selectedCustomer.customer_name || '',
+    customer_type: selectedCustomer.customer_type || '',
+    contact_person: selectedCustomer.contact_person || '',
+    id_number: selectedCustomer.id_number || '',
+    cr_number: selectedCustomer.cr_number || '',
+    tax_number: selectedCustomer.tax_number || '',
+    city: selectedCustomer.city || '',
+    district: selectedCustomer.district || '',
+    street: selectedCustomer.street || '',
+    building_no: selectedCustomer.building_no || '',
+    postal_code: selectedCustomer.postal_code || '',
+    full_address: selectedCustomer.full_address || '',
+    mobile: selectedCustomer.mobile || '',
+    phone: selectedCustomer.phone || '',
+    email: selectedCustomer.email || '',
+    preferred_contact: selectedCustomer.preferred_contact || '',
+    notes: selectedCustomer.notes || ''
+  } : null,
 
-    customer: selectedCustomer ? {
-        type: selectedCustomer.customer_type || '',
-        contactPerson: selectedCustomer.contact_person || '',
-        idNumber: selectedCustomer.id_number || '',
-        crNumber: selectedCustomer.cr_number || '',
-        taxNumber: selectedCustomer.tax_number || '',
-        city: selectedCustomer.city || '',
-        district: selectedCustomer.district || '',
-        street: selectedCustomer.street || '',
-        buildingNo: selectedCustomer.building_no || '',
-        postalCode: selectedCustomer.postal_code || '',
-        fullAddress: selectedCustomer.full_address || '',
-        mobile: selectedCustomer.mobile || '',
-        phone: selectedCustomer.phone || '',
-        email: selectedCustomer.email || '',
-        preferredContact: selectedCustomer.preferred_contact || '',
-        notes: selectedCustomer.notes || ''
-    } : null,
+  // عرض مختصر للجدول
+  customerName: selectedCustomer?.customer_name || document.getElementById('customer_name').value,
+  projectName: document.getElementById('project_name').value,
 
-    technical: {
-        brandLabel,
-        machineType: model.machineType || 'Traction – MRL',
-        capacity,
-        speed,
-        floors,
-        liftsCount,
-        cabinDimension: model.cabinSize || '',
-        shaftDimension: model.shaftSize || '',
-        pit: model.pit || '',
-        oh: model.oh || '',
-        cabinDesign: document.getElementById('cabin_design').value || 'Standard',
-        floorFinish: document.getElementById('floor_finish').value || 'Standard'
-    },
+  // ✅ البيانات الفنية
+  technical: {
+    brandLabel,
+    capacity,
+    speed,
+    floors,
+    liftsCount,
+    cabinDimension: model?.cabinSize || '',
+    shaftDimension: model?.shaftSize || '',
+    pit: model?.pit || '',
+    oh: model?.oh || '',
+    cabinDeal: document.getElementById('cabin_design').value,
+    floorFinish: document.getElementById('floor_finish').value
+  },
 
-    pricing: {
-        unitPrice: result.totalBeforeVatPerLift,
-        subtotal: result.totalBeforeVat,
-        vatRate,
-        vatAmount: result.vatAmount,
-        totalWithVat: result.totalWithVat,
-        payments: {
-            p50: result.totalWithVat * 0.50,
-            p25: result.totalWithVat * 0.25,
-            p20: result.totalWithVat * 0.20,
-            p5:  result.totalWithVat * 0.05
-        }
-    },
-
+  // ✅ الأسعار
+  pricing: {
+    subtotal: result.totalBeforeVat,
+    vatRate,
+    vatAmount: result.vatAmount,
+    totalWithVat: result.totalWithVat,
     currency
+  }
 };
+
 
 
 } 
@@ -1610,6 +1607,7 @@ document.getElementById("lifts_count").addEventListener("input", function () {
 
 </body>
 </html>
+
 
 
 
