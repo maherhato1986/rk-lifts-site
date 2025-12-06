@@ -694,6 +694,27 @@
 </div>
 
 <script>
+const QUOTES_STORAGE_KEY = 'rkl_quotes';
+
+function loadStoredQuotes() {
+  try {
+    return JSON.parse(localStorage.getItem(QUOTES_STORAGE_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
+function bindText(cls, value) {
+  document.querySelectorAll('.' + cls).forEach(el => {
+    el.textContent = (value !== undefined && value !== null && value !== "")
+      ? value
+      : "—";
+  });
+}
+</script>
+
+    
+<script>
 function renderElevatorItemsTable(quote) {
   const tbody = document.querySelector('#elevators-items tbody');
   if (!tbody) return;
@@ -1059,6 +1080,7 @@ function loadSelectedQuote(quoteIndex) {
     
 </body>
 </html>
+
 
 
 
