@@ -999,6 +999,10 @@ function fillSpeedOptions() {
 
         document.getElementById('quote_text').value = lines.join('\n');
     }
+function generateQuoteNumber() {
+  const d = new Date();
+  return `Q-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}-${Math.floor(100 + Math.random()*900)}`;
+}
 
     async function calculateQuote() {
         const brandKey = document.getElementById('brand').value;
@@ -1154,21 +1158,44 @@ const directCostSarFinal = directCostSar + cabinExtraCost;
 
         const brandLabel = BRAND_SOURCES[brandKey]?.label || brandKey;
 
-        lastQuoteSnapshot = {
-            timestamp: new Date().toISOString(),
-            customerName: finalCustomerName,
-            projectName: projectName,
-            brandKey,
-            brandLabel,
-            capacity: capacity + ' kg',
-            speed: speed + ' m/s',
-            floors,
-            liftsCount,
-            totalWithVat: result.totalWithVat,
-            currency,
-            vatRate,
-            includeVat
-        };
+     lastQuoteSnapshot = {
+  // ✅ رقم عرض السعر
+  quoteNumber: generateQuoteNumber(),
+
+  // ✅ التوقيت
+  timestamp: new Date().toISOString(),
+
+  // ✅ بيانات العرض الأساسية (للسجل + الجدول)
+  customerName: finalCustomerName,
+  projectName: projectName,
+
+  brandKey,
+  brandLabel,
+  capacity: capacity + ' kg',
+  speed: speed + ' m/s',
+  floors,
+  liftsCount,
+
+  totalWithVat: result.totalWithVat,
+  currency,
+  vatRate,
+  includeVat,
+
+  // ✅ مهم جدًا: نسخ كاملة للواجهة الثانية
+  customer: selectedCustomer || {
+    customer_name: finalCustomerName
+  },
+
+  project: {
+    name: projectName,
+    brandLabel,
+    capacityKg: capacity,
+    speedMps: speed,
+    stops: floors,
+    liftsCount
+  }
+};
+
 
     }
 
@@ -1509,6 +1536,7 @@ document.getElementById("lifts_count").addEventListener("input", function () {
 
 </body>
 </html>
+
 
 
 
