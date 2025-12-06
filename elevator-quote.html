@@ -1202,6 +1202,35 @@ const directCostSarFinal = directCostSar + cabinExtraCost;
 
         generateNumbersView(result, model, currency);
         generateQuoteText(result, model, currency);
+        // ✅ حفظ لقطة العرض الحالية لاستخدامها عند "حفظ عرض السعر"
+lastQuoteSnapshot = {
+    timestamp: new Date().toISOString(),
+    brandKey,
+    brandLabel: BRAND_SOURCES[brandKey]?.label || brandKey,
+    capacity: model.capacityKg,
+    speed: model.speedMps,
+    floors,
+    liftsCount,
+    currency,
+    vatRate,
+    includeVat,
+
+    // أرقام
+    factoryCost: result.factoryCost,
+    shippingInsuranceCost: result.shippingInsuranceCost,
+    clearanceTransportCost: result.clearanceTransportCost,
+    installationCommissioningCost: result.installationCommissioningCost,
+    overheadCost: result.overheadCost,
+    costBeforeProfit: result.costBeforeProfit,
+    profitAmount: result.profitAmount,
+    totalBeforeVat: result.totalBeforeVat,
+    vatAmount: result.vatAmount,
+    totalWithVat: result.totalWithVat,
+
+    // لكل مصعد
+    totalWithVatPerLift: result.totalWithVatPerLift
+};
+
 
                 // حفظ لقطة من هذا العرض لاستخدامها عند الضغط على "حفظ عرض السعر"
         const manualCustomerName = document.getElementById('customer_name').value.trim();
@@ -1334,8 +1363,7 @@ if (customerSelect) {
         });
 
          // زر حفظ عرض السعر الحالي في السجل
-    const saveBtn = document.getElementById('save-quote-btn');
-    if (saveBtn) {
+   
 
             // زر حفظ عرض السعر الحالي في السجل
     const saveBtn = document.getElementById('save-quote-btn');
@@ -1526,6 +1554,7 @@ document.getElementById("lifts_count").addEventListener("input", function () {
 
 </body>
 </html>
+
 
 
 
