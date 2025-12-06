@@ -663,125 +663,80 @@
 </div>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+
     const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
-    const index = Number(localStorage.getItem('rkl_current_quote_index'));
 
-    if (!quotes[index]) {
-        alert("لم يتم العثور على عرض السعر المحدد");
+    if (!quotes.length) {
+        document.getElementById('warn_no_data').style.display = 'block';
         return;
     }
 
-    const q = quotes[index];
+    // ✅ نأخذ آخر عرض محفوظ
+    const q = quotes[quotes.length - 1];
 
-    // ✅ تعبئة البيانات
-    document.getElementById('customerName').textContent = q.customerName;
-    document.getElementById('projectName').textContent = q.projectName;
-    document.getElementById('quoteNumber').textContent = q.quoteNumber;
-    document.getElementById('brand').textContent = q.brandLabel;
-    document.getElementById('capacity').textContent = q.capacity;
-    document.getElementById('speed').textContent = q.speed;
-    document.getElementById('liftsCount').textContent = q.liftsCount;
-    document.getElementById('total').textContent = q.totalWithVat + ' ' + q.currency;
-});
-</script>
-
-    
-<script>
-    function formatCurrency(value, currency) {
-        if (value == null || isNaN(value)) return "—";
-        const num = Number(value);
-        const formatted = num.toLocaleString("en-US", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        });
-        if (currency === "USD") return "USD " + formatted;
-        return "SAR " + formatted;
-    }
-
-    function bindText(cls, value) {
-        const nodes = document.querySelectorAll("." + cls);
-        nodes.forEach(el => {
-            el.textContent = (value !== undefined && value !== null && value !== "")
-                ? value
-                : el.textContent || "—";
+    /** helper لربط البيانات بالكلاسات */
+    function bind(selector, value) {
+        document.querySelectorAll(selector).forEach(el => {
+            el.textContent = value ?? '—';
         });
     }
 
-    function loadStoredQuotes() {
-    try {
-        return JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
-    } catch (e) {
-        console.error("خطأ في قراءة عروض الأسعار", e);
-        return [];
-    }
-}
+    /* ===== بيانات العرض ===== */
+    bind('.bind_quote_number', q.quoteNumber);
+    bind('.bind_offer_date', q.timestamp?.slice(0,10));
 
+    /* ===== بيانات العميل ===== */
+    bind('.bind_customer_name', q.customerName);
+    bind('.bind_customer_type', q.customerType);
+    bind('.bind_contact_person', q.contactPerson);
+    bind('.bind_id_number', q.idNumber);
+    bind('.bind_cr_number', q.crNumber);
+    bind('.bind_tax_number', q.taxNumber);
+    bind('.bind_city', q.city);
+    bind('.bind_district', q.district);
+    bind('.bind_street', q.street);
+    bind('.bind_building_no', q.buildingNo);
+    bind('.bind_postal_code', q.postalCode);
+    bind('.bind_full_address', q.fullAddress);
+    bind('.bind_mobile', q.mobile);
+    bind('.bind_phone', q.phone);
+    bind('.bind_email', q.email);
+    bind('.bind_preferred_contact', q.preferredContact);
+    bind('.bind_notes', q.notes);
 
-);
+    /* ===== المشروع والمصعد ===== */
+    bind('.bind_project_name', q.projectName);
+    bind('.bind_brand', q.brandLabel || q.brandKey);
+    bind('.bind_capacity', q.capacity);
+    bind('.bind_speed', q.speed);
+    bind('.bind_floors', q.floors);
+    bind('.bind_lifts', q.liftsCount);
 
-document.addEventListener("DOMContentLoaded", () => {
+    bind('.bind_dim_cabin', q.dimCabin);
+    bind('.bind_dim_shaft', q.dimShaft);
+    bind('.bind_pit', q.pit);
+    bind('.bind_oh', q.oh);
+    bind('.bind_shaft_width', q.shaftWidth);
+    bind('.bind_shaft_depth', q.shaftDepth);
 
-    const index = localStorage.getItem("rkl_selected_quote_index");
-    if (index === null) {
-        document.getElementById("warn_no_data").style.display = "block";
-        return;
-    }
+    /* ===== الأسعار ===== */
+    bind('.bind_price_per_unit', q.pricePerUnit);
+    bind('.bind_total_price', q.totalBeforeVat);
+    bind('.bind_total_with_vat', q.totalWithVat);
 
-    const quotes = loadStoredQuotes();
-    const selectedQuote = quotes[Number(index)];
+    /* ===== الدفعات ===== */
+    bind('.bind_vat_rate', q.vatRate || '15');
+    bind('.bind_pay_50', q.pay50);
+    bind('.bind_pay_25', q.pay25);
+    bind('.bind_pay_20', q.pay20);
+    bind('.bind_pay_5', q.pay5);
 
-    if (!selectedQuote) {
-        document.getElementById("warn_no_data").style.display = "block";
-        return;
-    }
-
-    // ✅ نبني بيانات العرض الرسمية من السجل
-    const offer = {
-        quoteNumber: selectedQuote.quoteNumber,
-        customer: {
-            name: selectedQuote.customerName
-        },
-        project: {
-            name: selectedQuote.projectName,
-            date: selectedQuote.timestamp
-        },
-        brand: {
-            label: selectedQuote.brandLabel
-        },
-        cabin: {
-            capacity: selectedQuote.capacity,
-            speed: selectedQuote.speed
-        },
-        pricing: {
-            totalWithVat: selectedQuote.totalWithVat,
-            currency: selectedQuote.currency,
-            vatRate: selectedQuote.vatRate
-        },
-        liftsCount: selectedQuote.liftsCount
-    };
-
-    // ===== تعبئة الصفحة =====
-    bindText("bind_quote_number", offer.quoteNumber);
-    bindText("bind_offer_date", offer.project.date?.slice(0, 10));
-
-    bindText("bind_customer_name", offer.customer.name);
-    bindText("bind_project_name", offer.project.name);
-
-    bindText("bind_brand", offer.brand.label);
-    bindText("bind_capacity", offer.cabin.capacity);
-    bindText("bind_speed", offer.cabin.speed);
-
-    bindText("bind_lifts", offer.liftsCount);
-    bindText("bind_total_with_vat",
-        formatCurrency(offer.pricing.totalWithVat, offer.pricing.currency)
-    );
 });
-
- 
 </script>
 
 </body>
 </html>
+
 
 
 
