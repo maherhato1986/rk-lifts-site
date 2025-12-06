@@ -1171,21 +1171,22 @@ const directCostSarFinal = directCostSar + cabinExtraCost;
 
         const brandLabel = BRAND_SOURCES[brandKey]?.label || brandKey;
 
-        lastQuoteSnapshot = {
-            timestamp: new Date().toISOString(),
-            customerName: finalCustomerName,
-            projectName: projectName,
-            brandKey,
-            brandLabel,
-            capacity: capacity + ' kg',
-            speed: speed + ' m/s',
-            floors,
-            liftsCount,
-            totalWithVat: result.totalWithVat,
-            currency,
-            vatRate,
-            includeVat
-        };
+  lastQuoteSnapshot = {
+    quoteNumber, // ✅ أضف هذا
+    timestamp: new Date().toISOString(),
+    customerName: finalCustomerName,
+    projectName: projectName,
+    brandKey,
+    brandLabel,
+    capacity: capacity + ' kg',
+    speed: speed + ' m/s',
+    floors,
+    liftsCount,
+    totalWithVat: result.totalWithVat,
+    currency,
+    vatRate,
+    includeVat
+};
 
     }
 
@@ -1214,23 +1215,24 @@ const directCostSarFinal = directCostSar + cabinExtraCost;
             });
         }
 
-        document.getElementById("printOfferButton").addEventListener("click", function () {
-    // لو حاب تتأكد إنه في عرض مخزَّن قبل الانتقال:
-    const saved = JSON.parse(localStorage.getItem(QUOTES_STORAGE_KEY) || "[]");
-    if (!saved.length) {
-        alert("لا يوجد أي عرض سعر محفوظ في السجل.");
+    document.getElementById("printOfferButton").addEventListener("click", function () {
+    const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
+
+    if (!quotes.length) {
+        alert("لا يوجد عرض سعر محفوظ");
         return;
     }
 
-    // آخر عرض مخزَّن سيكون هو الحالي
-    const lastQuote = saved[saved.length - 1];
+    const selected = document.querySelector('.quote-check:checked');
+    const quoteIndex = selected 
+        ? Number(selected.dataset.index)
+        : quotes.length - 1; // آخر عرض تلقائيًا
 
-    // خزّن رقم هذا العرض ليتم اختياره تلقائيًا في صفحة الطباعة
-    localStorage.setItem(CURRENT_QUOTE_SELECTION_KEY, lastQuote.quoteNumber);
+    localStorage.setItem('rkl_current_quote_index', quoteIndex);
 
-    // افتح صفحة نموذج عرض السعر الرسمي
     window.open("elevator-quote-offer.html", "_blank");
 });
+
 
 
         // رسالة أولية في صندوق الأرقام
@@ -1310,7 +1312,8 @@ const directCostSarFinal = directCostSar + cabinExtraCost;
             const nextIndex = quotes.length + 1;
             const today = new Date();
             const ymd = today.toISOString().slice(0, 10).replace(/-/g, '');
-            const quoteNumber = `Q-${ymd}-${String(nextIndex).padStart(3, '0')}`;
+            const quoteNumber = 'Q-' + new Date().toISOString().slice(0,10).replaceAll('-','') 
+                    + '-' + Math.floor(Math.random() * 1000);
 
             // 2) قراءة اسم العميل والمشروع من الحقول
             const manualCustomerName = document.getElementById('customer_name').value.trim();
@@ -1526,5 +1529,6 @@ document.getElementById("lifts_count").addEventListener("input", function () {
 
 </body>
 </html>
+
 
 
