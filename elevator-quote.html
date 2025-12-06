@@ -538,16 +538,18 @@
                 <div class="table-wrapper">
                     <table id="quotes-table">
                         <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>رقم عرض السعر</th>
-                                <th>التاريخ</th>
-                                <th>اسم العميل</th>
-                                <th>اسم المشروع</th>
-                                <th>الماركة / السعة / السرعة</th>
-                                <th>عدد المصاعد</th>
-                                <th>الإجمالي شامل الضريبة</th>
-                            </tr>
+                          <tr>
+    <th>اختيار</th>
+    <th>#</th>
+    <th>رقم عرض السعر</th>
+    <th>التاريخ</th>
+    <th>اسم العميل</th>
+    <th>اسم المشروع</th>
+    <th>الماركة / السعة / السرعة</th>
+    <th>عدد المصاعد</th>
+    <th>الإجمالي شامل الضريبة</th>
+</tr>
+
                         </thead>
                         <tbody>
                             <!-- سيتم تعبئته تلقائيًا من JavaScript -->
@@ -662,51 +664,66 @@ const CABIN_DESIGN_ADDITIONAL = {
 }
 
 
-    function renderQuotesTable() {
-        const tbody = document.querySelector('#quotes-table tbody');
-        if (!tbody) return;
+  function renderQuotesTable() {
+    const tbody = document.querySelector('#quotes-table tbody');
+    if (!tbody) return;
 
-        const quotes = loadStoredQuotes();
-        tbody.innerHTML = '';
+    const quotes = loadStoredQuotes();
+    tbody.innerHTML = '';
 
-        if (!quotes.length) {
-            const tr = document.createElement('tr');
-            const td = document.createElement('td');
-            td.colSpan = 8;
-            td.textContent = 'لا توجد عروض أسعار محفوظة في هذا الجهاز حتى الآن.';
-            td.style.textAlign = 'center';
-            td.style.color = '#9ca3af';
-            tr.appendChild(td);
-            tbody.appendChild(tr);
-            return;
-        }
-
-        quotes.forEach((q, index) => {
-            const tr = document.createElement('tr');
-
-            const dateStr = q.timestamp ? q.timestamp.slice(0, 10) : '';
-            const totalStr = formatCurrency(q.totalWithVat, q.currency || 'SAR');
-
-            const cols = [
-                index + 1,
-                q.quoteNumber || '',
-                dateStr,
-                q.customerName || '',
-                q.projectName || '',
-                `${q.brandLabel || q.brandKey || ''} / ${q.capacity || ''} / ${q.speed || ''}`,
-                q.liftsCount || '',
-                totalStr
-            ];
-
-            cols.forEach(val => {
-                const td = document.createElement('td');
-                td.textContent = val;
-                tr.appendChild(td);
-            });
-
-            tbody.appendChild(tr);
-        });
+    // ✅ في حال عدم وجود عروض
+    if (!quotes.length) {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = 9; // ← زاد عمود بسبب checkbox
+        td.textContent = 'لا توجد عروض أسعار محفوظة في هذا الجهاز حتى الآن.';
+        td.style.textAlign = 'center';
+        td.style.color = '#9ca3af';
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+        return;
     }
+
+    // ✅ تعبئة الجدول
+    quotes.forEach((q, index) => {
+        const tr = document.createElement('tr');
+
+        // 🟩 1) عمود الاختيار (Checkbox)
+        const tdCheck = document.createElement('td');
+        tdCheck.innerHTML = `
+            <input 
+                type="checkbox" 
+                class="quote-check" 
+                data-index="${index}"
+            >
+        `;
+        tr.appendChild(tdCheck);
+
+        const dateStr = q.timestamp ? q.timestamp.slice(0, 10) : '';
+        const totalStr = formatCurrency(q.totalWithVat, q.currency || 'SAR');
+
+        // 🟩 2) باقي الأعمدة
+        const cols = [
+            index + 1,
+            q.quoteNumber || '',
+            dateStr,
+            q.customerName || '',
+            q.projectName || '',
+            `${q.brandLabel || q.brandKey || ''} / ${q.capacity || ''} / ${q.speed || ''}`,
+            q.liftsCount || '',
+            totalStr
+        ];
+
+        cols.forEach(val => {
+            const td = document.createElement('td');
+            td.textContent = val;
+            tr.appendChild(td);
+        });
+
+        tbody.appendChild(tr);
+    });
+}
+
 
 
 
@@ -1509,4 +1526,5 @@ document.getElementById("lifts_count").addEventListener("input", function () {
 
 </body>
 </html>
+
 
