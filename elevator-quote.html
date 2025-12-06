@@ -1171,95 +1171,6 @@ const directCostSarFinal = directCostSar + cabinExtraCost;
 
         const brandLabel = BRAND_SOURCES[brandKey]?.label || brandKey;
 
-lastQuoteSnapshot = {
-  // بيانات العرض
-  quoteNumber,
-  timestamp: new Date().toISOString(),
-
-  // ✅ بيانات العميل كاملة (المفتاح المهم)
-  customer: selectedCustomer ? {
-    customer_name: selectedCustomer.customer_name || '',
-    customer_type: selectedCustomer.customer_type || '',
-    contact_person: selectedCustomer.contact_person || '',
-    id_number: selectedCustomer.id_number || '',
-    cr_number: selectedCustomer.cr_number || '',
-    tax_number: selectedCustomer.tax_number || '',
-    city: selectedCustomer.city || '',
-    district: selectedCustomer.district || '',
-    street: selectedCustomer.street || '',
-    building_no: selectedCustomer.building_no || '',
-    postal_code: selectedCustomer.postal_code || '',
-    full_address: selectedCustomer.full_address || '',
-    mobile: selectedCustomer.mobile || '',
-    phone: selectedCustomer.phone || '',
-    email: selectedCustomer.email || '',
-    preferred_contact: selectedCustomer.preferred_contact || '',
-    notes: selectedCustomer.notes || ''
-  } : null,
-
-  // عرض مختصر للجدول
-         // حفظ لقطة من هذا العرض لاستخدامها عند الضغط على "حفظ عرض السعر"
-        const manualCustomerName = document.getElementById('customer_name').value.trim();
-        const projectName        = document.getElementById('project_name').value.trim();
-
-        const finalCustomerName =
-            (selectedCustomer?.customer_name || manualCustomerName || 'العميل الكريم').trim();
-
-        const brandLabel = BRAND_SOURCES[brandKey]?.label || brandKey;
-
-        // حسبة الدفعات المقترحة على الإجمالي شامل الضريبة
-        const payments = {
-            p50: totalWithVatTotal * 0.50,
-            p25: totalWithVatTotal * 0.25,
-            p20: totalWithVatTotal * 0.20,
-            p5 : totalWithVatTotal * 0.05
-        };
-
-        lastQuoteSnapshot = {
-            // بيانات أساسية
-            timestamp: new Date().toISOString(),
-            brandKey,
-            brandLabel,
-            capacity,
-            speed,
-            floors,
-            liftsCount,
-            currency,
-            vatRate,
-            includeVat,
-
-            // لعرض الاسم في الجدول
-            customerName: finalCustomerName,
-            projectName,
-
-            // البيانات الفنية
-            technical: {
-                brandLabel,
-                capacity,
-                speed,
-                floors,
-                liftsCount,
-                cabinDimension: model?.cabinSize || '',
-                shaftDimension: model?.shaftSize || '',
-                pit: model?.pit || '',
-                oh: model?.oh || '',
-                cabinDesign: document.getElementById('cabin_design').value,
-                floorFinish: document.getElementById('floor_finish').value
-            },
-
-            // الأسعار
-            pricing: {
-                unitPrice:       totalBeforeVatPerLift,
-                subtotal:        totalBeforeVatTotal,
-                vatRate,
-                vatAmount:       vatAmountTotal,
-                totalWithVat:    totalWithVatTotal,
-                payments
-            },
-
-            // لتسهيل عرض الإجمالي في جدول السجل
-            totalWithVat: totalWithVatTotal
-        };
 
 
 } 
@@ -1565,6 +1476,7 @@ document.getElementById("lifts_count").addEventListener("input", function () {
 
 </body>
 </html>
+
 
 
 
