@@ -1156,47 +1156,67 @@ const directCostSarFinal = directCostSar + cabinExtraCost;
         const finalCustomerName =
             (selectedCustomer?.customer_name || manualCustomerName || 'العميل الكريم').trim();
 
-        const brandLabel = BRAND_SOURCES[brandKey]?.label || brandKey;
+       
 
-lastQuoteSnapshot = {
+// ===============================
+// إنشاء Snapshot نهائي لعرض السعر
+// ===============================
+
+// تأكد أن هذه المتغيرات معرفة فوق:
+// capacity, speed, floors, liftsCount, brandKey, currency, vatRate, result
+
+const quoteNumber = generateQuoteNumber();
+const timestamp = new Date().toISOString();
+
+const brandLabel =
+  BRAND_SOURCES[brandKey]?.label || brandKey || '';
+
+const lastQuoteSnapshot = {
+  // بيانات العرض
   quoteNumber,
   timestamp,
 
-  customerName: finalCustomerName,
-  projectName,
+  // بيانات العميل والمشروع
+  customerName: finalCustomerName || '',
+  projectName: projectName || '',
 
+  // بيانات المصعد الأساسية
+  brandKey,
   brandLabel,
-  capacity,
-  speed,
+  capacity,        // kg
+  speed,           // m/s
   floors,
   liftsCount,
 
-  cabinDesign: document.getElementById("cabin_design").value || "",
-  floorFinish: document.getElementById("floor_finish").value || "",
+  // التشطيبات
+  cabinDesign: document.getElementById('cabin_design')?.value || '',
+  floorFinish: document.getElementById('floor_finish')?.value || '',
 
+  // الأبعاد (ثابتة مؤقتًا)
   dimensions: {
-    cabin: "حسب EN81",
-    shaft: "حسب EN81",
-    pit: "حسب المخططات",
-    oh: "حسب المخططات"
+    cabin: 'حسب EN81',
+    shaft: 'حسب EN81',
+    pit: 'حسب المخططات',
+    oh: 'حسب المخططات'
   },
 
-  totalWithVat,
+  // الأسعار
   currency,
   vatRate,
+  totalBeforeVat: result.totalBeforeVat,
+  vatAmount: result.vatAmount,
+  totalWithVat: result.totalWithVat,
 
+  // تفاصيل كل مصعد (ضروري لجدول العرض)
   elevators: Array.from({ length: liftsCount }).map((_, i) => ({
-    no: i + 1,
+    no: `E-${String(i + 1).padStart(2, '0')}`,
     capacity,
     speed,
     floors,
-    machine: "MRL Gearless"
+    machine: 'MRL Gearless'
   }))
 };
 
-
-
-    }
 
     // ========================== تهيئة الأحداث عند تحميل الصفحة ==========================
        // ========================== تهيئة الأحداث عند تحميل الصفحة ==========================
@@ -1535,6 +1555,7 @@ document.getElementById("lifts_count").addEventListener("input", function () {
 
 </body>
 </html>
+
 
 
 
