@@ -1158,43 +1158,42 @@ const directCostSarFinal = directCostSar + cabinExtraCost;
 
         const brandLabel = BRAND_SOURCES[brandKey]?.label || brandKey;
 
-     lastQuoteSnapshot = {
-  // ✅ رقم عرض السعر
-  quoteNumber: generateQuoteNumber(),
+lastQuoteSnapshot = {
+  quoteNumber,
+  timestamp,
 
-  // ✅ التوقيت
-  timestamp: new Date().toISOString(),
-
-  // ✅ بيانات العرض الأساسية (للسجل + الجدول)
   customerName: finalCustomerName,
-  projectName: projectName,
+  projectName,
 
-  brandKey,
   brandLabel,
-  capacity: capacity + ' kg',
-  speed: speed + ' m/s',
+  capacity,
+  speed,
   floors,
   liftsCount,
 
-  totalWithVat: result.totalWithVat,
-  currency,
-  vatRate,
-  includeVat,
+  cabinDesign: document.getElementById("cabin_design").value || "",
+  floorFinish: document.getElementById("floor_finish").value || "",
 
-  // ✅ مهم جدًا: نسخ كاملة للواجهة الثانية
-  customer: selectedCustomer || {
-    customer_name: finalCustomerName
+  dimensions: {
+    cabin: "حسب EN81",
+    shaft: "حسب EN81",
+    pit: "حسب المخططات",
+    oh: "حسب المخططات"
   },
 
-  project: {
-    name: projectName,
-    brandLabel,
-    capacityKg: capacity,
-    speedMps: speed,
-    stops: floors,
-    liftsCount
-  }
+  totalWithVat,
+  currency,
+  vatRate,
+
+  elevators: Array.from({ length: liftsCount }).map((_, i) => ({
+    no: i + 1,
+    capacity,
+    speed,
+    floors,
+    machine: "MRL Gearless"
+  }))
 };
+
 
 
     }
@@ -1536,6 +1535,7 @@ document.getElementById("lifts_count").addEventListener("input", function () {
 
 </body>
 </html>
+
 
 
 
