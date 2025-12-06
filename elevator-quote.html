@@ -260,6 +260,12 @@
             يتم سحب هذه القائمة من صفحة "إضافة / إدارة بيانات العميل" (localStorage).
         </div>
     </div>
+<div class="card" id="customer-details" style="display:none">
+  <div class="card-header">
+    <h2>بيانات العميل المختار</h2>
+  </div>
+  <div class="form-grid" id="customer-details-body"></div>
+</div>
 
     <div>
         <label for="customer_name">اسم العميل (يمكن تعديله يدويًا)</label>
@@ -627,21 +633,56 @@ const CABIN_DESIGN_ADDITIONAL = {
             select.disabled = false;
         }
     }
-
     function applyCustomerToForm(customer) {
-        selectedCustomer = customer || null;
+    selectedCustomer = customer || null;
 
-        const nameInput = document.getElementById('customer_name');
-        const projectInput = document.getElementById('project_name');
-
-        if (customer) {
-            if (nameInput) nameInput.value = customer.customer_name || '';
-            if (projectInput && !projectInput.value) {
-                const city = customer.city ? ` - ${customer.city}` : '';
-                projectInput.value = `مشروع مصاعد للعميل ${customer.customer_name || ''}${city}`;
-            }
-        }
+    // اسم العميل
+    const nameInput = document.getElementById('customer_name');
+    if (nameInput) {
+        nameInput.value = customer?.customer_name || '';
     }
+
+    // اسم المشروع (فقط إذا كان فاضي)
+    const projectInput = document.getElementById('project_name');
+    if (projectInput && !projectInput.value) {
+        projectInput.value = `مشروع مصاعد للعميل ${customer?.customer_name || ''}`;
+    }
+
+    // عرض بيانات العميل
+    if (typeof renderCustomerDetails === 'function') {
+        renderCustomerDetails(customer);
+    }
+}
+
+
+   function renderCustomerDetails(customer) {
+    const box = document.getElementById("customer-details");
+    const body = document.getElementById("customer-details-body");
+
+    if (!customer) {
+        box.style.display = "none";
+        body.innerHTML = "";
+        return;
+    }
+
+    box.style.display = "block";
+
+    body.innerHTML = `
+        <div><strong>اسم العميل:</strong> ${customer.customer_name || '-'}</div>
+        <div><strong>نوع العميل:</strong> ${customer.customer_type === 'company' ? 'شركة' : 'فرد'}</div>
+        <div><strong>الشخص المخوّل:</strong> ${customer.contact_person || '-'}</div>
+        <div><strong>السجل التجاري:</strong> ${customer.cr_number || '-'}</div>
+        <div><strong>الرقم الضريبي:</strong> ${customer.tax_number || '-'}</div>
+        <div><strong>الجوال:</strong> ${customer.mobile || '-'}</div>
+        <div><strong>البريد الإلكتروني:</strong> ${customer.email || '-'}</div>
+        <div><strong>العنوان:</strong>
+            ${(customer.city || '')}
+            ${(customer.district || '')}
+            ${(customer.street || '')}
+        </div>
+    `;
+}
+
 
         // ========================== تخزين عروض الأسعار في LocalStorage ==========================
 
@@ -1186,18 +1227,27 @@ const directCostSarFinal = directCostSar + cabinExtraCost;
         renderQuotesTable();
 
         const customerSelect = document.getElementById('customer_select');
-        if (customerSelect) {
-            customerSelect.addEventListener('change', () => {
-                const idx = customerSelect.value;
-                if (idx === '') {
-                    selectedCustomer = null;
-                    return;
-                }
-                const customers = loadStoredCustomers();
-                const customer = customers[Number(idx)];
-                if (customer) {
-                    applyCustomerToForm(customer);
-                }
+
+if (customerSelect) {
+    customerSelect.addEventListener('change', () => {
+        const idx = customerSelect.value;
+
+        if (idx === '') {
+            selectedCustomer = null;
+            renderCustomerDetails(null);
+            return;
+        }
+
+        const customers = loadStoredCustomers();
+        const customer = customers[Number(idx)];
+
+        if (customer) {
+            applyCustomerToForm(customer);
+        }
+    });
+}
+
+      
             });
         }
 
@@ -1476,6 +1526,7 @@ document.getElementById("lifts_count").addEventListener("input", function () {
 
 </body>
 </html>
+
 
 
 
