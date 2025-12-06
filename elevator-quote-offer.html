@@ -675,6 +675,26 @@
 </div>
 
 <script>
+function renderElevatorItemsTable(quote) {
+  const tbody = document.querySelector('#elevators-items tbody');
+  if (!tbody) return;
+
+  tbody.innerHTML = '';
+
+  const count = quote.liftsCount || 1;
+
+  for (let i = 1; i <= count; i++) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>مصعد ${i}</td>
+      <td>${quote.capacityKg || '-'}</td>
+      <td>${quote.speedMps || '-'}</td>
+      <td>${quote.stops || '-'}</td>
+      <td>${quote.machineType || '-'}</td>
+    `;
+    tbody.appendChild(tr);
+  }
+}
 
     function loadStoredQuotes() {
     try {
@@ -1005,9 +1025,35 @@ document.getElementById('quote-selector').addEventListener('change', function ()
 }
 
 </script>
+function loadSelectedQuote(quoteIndex) {
+  const quotes = JSON.parse(localStorage.getItem(QUOTES_STORAGE_KEY) || '[]');
+  const quote = quotes[quoteIndex];
 
+  if (!quote) {
+    console.warn('عرض السعر غير موجود');
+    return;
+  }
+
+  // ملف العميل
+  document.getElementById('client_name').innerText = quote.customerName || '—';
+  document.getElementById('client_type').innerText = quote.customerType || '—';
+  document.getElementById('client_mobile').innerText = quote.customerMobile || '—';
+  document.getElementById('client_email').innerText = quote.customerEmail || '—';
+  document.getElementById('client_address').innerText = quote.customerAddress || '—';
+
+  // بيانات المشروع
+  document.getElementById('project_name').innerText = quote.projectName || '—';
+  document.getElementById('brand_model').innerText =
+    `${quote.brandLabel || ''} / ${quote.capacityKg || ''}kg / ${quote.speedMps || ''}`;
+
+  // ✅ عناصر المصاعد (اللي ناقصة عندك)
+  renderElevatorItemsTable(quote);
+}
+
+    
 </body>
 </html>
+
 
 
 
