@@ -676,11 +676,21 @@ function bind(selector, value) {
 }
 
 function format(amount) {
-    if (isNaN(amount)) return '—';
+    if (amount === undefined || amount === null || isNaN(amount)) return '—';
     return 'SAR ' + Number(amount).toLocaleString('en-US', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     });
+}
+
+/* =====================================================
+   Safe Getter (يدعم أكثر من مسار)
+===================================================== */
+function pick(obj, ...paths) {
+    for (const p of paths) {
+        if (p && p in obj) return obj[p];
+    }
+    return '';
 }
 
 /* =====================================================
@@ -691,73 +701,81 @@ function format(amount) {
     const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
     const index  = localStorage.getItem('rkl_current_quote_index');
 
-    if (!quotes.length || index === null) return;
+    if (!quotes.length || index === null) {
+        document.getElementById('warn_no_data')?.style.display = 'block';
+        return;
+    }
 
     const q = quotes[Number(index)];
     if (!q) return;
 
-    /* ========== (1) بيانات العرض ========== */
+    /* ================= 1) بيانات العرض ================= */
     bind('.bind_quote_number', q.quoteNumber);
-    bind('.bind_offer_date', q.timestamp?.slice(0, 10));
+    bind('.bind_offer_date', q.timestamp?.slice(0,10));
     bind('.bind_project_name', q.projectName);
 
-    /* ========== (2) ملف العميل (من customer-manager) ========== */
+    /* ================= 2) ملف العميل ================= */
     const c = q.customer || {};
 
-    bind('.bind_customer_name', c.customer_name);
-    bind(
-        '.bind_customer_type',
+    bind('.bind_customer_name',
+        pick(c, 'customer_name') || q.customerName
+    );
+
+    bind('.bind_customer_type',
         c.customer_type === 'company'
             ? 'شركة / مؤسسة'
             : c.customer_type === 'individual'
             ? 'فرد'
             : ''
     );
-    bind('.bind_contact_person', c.contact_person);
-    bind('.bind_id_number', c.id_number);
-    bind('.bind_cr_number', c.cr_number);
-    bind('.bind_tax_number', c.tax_number);
-    bind('.bind_city', c.city);
-    bind('.bind_district', c.district);
-    bind('.bind_street', c.street);
-    bind('.bind_building_no', c.building_no);
-    bind('.bind_postal_code', c.postal_code);
-    bind('.bind_full_address', c.full_address);
-    bind('.bind_mobile', c.mobile);
-    bind('.bind_phone', c.phone);
-    bind('.bind_email', c.email);
-    bind('.bind_preferred_contact', c.preferred_contact);
-    bind('.bind_notes', c.notes);
 
-    /* ========== (3) البيانات الفنية ========== */
+    bind('.bind_contact_person', pick(c,'contact_person'));
+    bind('.bind_id_number',      pick(c,'id_number'));
+    bind('.bind_cr_number',      pick(c,'cr_number'));
+    bind('.bind_tax_number',     pick(c,'tax_number'));
+    bind('.bind_city',           pick(c,'city'));
+    bind('.bind_district',       pick(c,'district'));
+    bind('.bind_street',         pick(c,'street'));
+    bind('.bind_building_no',    pick(c,'building_no'));
+    bind('.bind_postal_code',    pick(c,'postal_code'));
+    bind('.bind_full_address',   pick(c,'full_address'));
+    bind('.bind_mobile',         pick(c,'mobile'));
+    bind('.bind_phone',          pick(c,'phone'));
+    bind('.bind_email',          pick(c,'email'));
+    bind('.bind_preferred_contact', pick(c,'preferred_contact'));
+    bind('.bind_notes',          pick(c,'notes'));
+
+    /* ================= 3) البيانات الفنية ================= */
     const t = q.technical || {};
-    bind('.bind_brand', t.brandLabel);
-    bind('.bind_capacity', t.capacity);
-    bind('.bind_speed', t.speed);
-    bind('.bind_floors', t.floors);
-    bind('.bind_lifts', t.liftsCount);
-    bind('.bind_dim_cabin', t.cabinDimension);
-    bind('.bind_dim_shaft', t.shaftDimension);
-    bind('.bind_pit', t.pit);
-    bind('.bind_oh', t.oh);
-    bind('.bind_cabin_design', t.cabinDesign);
-    bind('.bind_floor_finish', t.floorFinish);
+
+    bind('.bind_brand',      pick(t,'brandLabel','brand'));
+    bind('.bind_capacity',   pick(t,'capacity'));
+    bind('.bind_speed',      pick(t,'speed'));
+    bind('.bind_floors',     pick(t,'floors'));
+    bind('.bind_lifts',      pick(t,'liftsCount'));
+    bind('.bind_dim_cabin',  pick(t,'cabinDimension'));
+    bind('.bind_dim_shaft',  pick(t,'shaftDimension'));
+    bind('.bind_pit',        pick(t,'pit'));
+    bind('.bind_oh',         pick(t,'oh'));
+    bind('.bind_cabin_design', pick(t,'cabinDesign'));
+    bind('.bind_floor_finish', pick(t,'floorFinish'));
 
     /* تفكيك مقاس البئر */
     if (t.shaftDimension && t.shaftDimension.includes('x')) {
-        const p = t.shaftDimension.split('x').map(v => v.trim());
-        bind('.bind_shaft_width', p[0]);
-        bind('.bind_shaft_depth', p[1]);
+        const parts = t.shaftDimension.split('x').map(v => v.trim());
+        bind('.bind_shaft_width', parts[0]);
+        bind('.bind_shaft_depth', parts[1]);
     }
 
-    /* ========== (6) ملخص القيمة المالية ========== */
+    /* ================= 4) القيمة المالية ================= */
     const p = q.pricing || {};
-    bind('.bind_price_per_unit', format(p.unitPrice));
-    bind('.bind_total_price', format(p.subtotal));
-    bind('.bind_vat_rate', (q.vatRate || 15) + '%');
-    bind('.bind_total_with_vat', format(p.totalWithVat));
 
-    /* ========== (7) جدول الدفعات ========== */
+    bind('.bind_price_per_unit', format(p.unitPrice));
+    bind('.bind_total_price',    format(p.subtotal));
+    bind('.bind_total_with_vat', format(p.totalWithVat));
+    bind('.bind_vat_rate', q.vatRate ?? 15);
+
+    /* ================= 5) جدول الدفعات ================= */
     const pay = p.payments || {};
     bind('.bind_pay_50', format(pay.p50));
     bind('.bind_pay_25', format(pay.p25));
@@ -768,9 +786,9 @@ function format(amount) {
 </script>
 
 
-
 </body>
 </html>
+
 
 
 
