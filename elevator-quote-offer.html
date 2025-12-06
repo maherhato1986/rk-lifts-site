@@ -705,14 +705,7 @@ function loadStoredQuotes() {
   }
 }
 
-function bindText(cls, value) {
-  document.querySelectorAll('.' + cls).forEach(el => {
-    el.textContent =
-      value !== undefined && value !== null && value !== ''
-        ? value
-        : '—';
-  });
-}
+
 
 /* ===== تعبئة القائمة ===== */
 function populateQuoteSelector() {
@@ -740,35 +733,41 @@ function populateQuoteSelector() {
 /* ===== تحميل عرض السعر ===== */
 function loadSelectedQuote(index) {
   const quotes = loadStoredQuotes();
-  const offer = quotes[index];
-  if (!offer) return;
+  const q = quotes[index];
 
-  const customer = offer.customer || {};
-  const project  = offer.project  || {};
+  if (!q) return;
 
-  bindText('bind_quote_number', offer.quoteNumber);
-  bindText('bind_offer_date', offer.timestamp?.slice(0,10));
+  // بيانات عامة
+  bindText('bind_quote_number', q.quoteNumber);
+  bindText('bind_offer_date', q.timestamp?.slice(0, 10));
+  bindText('bind_customer_name', q.customerName);
+  bindText('bind_project_name', q.projectName);
 
-  /* العميل */
-  bindText('bind_customer_name', customer.name);
-  bindText('bind_customer_type', customer.type);
-  bindText('bind_contact_person', customer.contactPerson);
-  bindText('bind_mobile', customer.mobile);
-  bindText('bind_email', customer.email);
+  // المواصفات الفنية
+  bindText('bind_brand', q.brandLabel);
+  bindText('bind_capacity', q.capacity + ' kg');
+  bindText('bind_speed', q.speed + ' m/s');
+  bindText('bind_floors', q.floors);
+  bindText('bind_lifts', q.liftsCount);
 
-  /* المشروع */
-  bindText('bind_project_name', project.name);
-  bindText('bind_brand', project.brandLabel);
-  bindText('bind_capacity', project.capacityKg ? project.capacityKg + ' kg' : '');
-  bindText('bind_speed', project.speedMps ? project.speedMps + ' m/s' : '');
-  bindText('bind_floors', project.stops);
-  bindText('bind_lifts', project.liftsCount);
+  // التشطيبات
+  bindText('bind_cabin_design', q.cabinDesign || '—');
+  bindText('bind_floor_finish', q.floorFinish || '—');
 
-  bindText('bind_dim_cabin', project.cabinSize);
-  bindText('bind_dim_shaft', project.shaftSize);
+  // الأبعاد
+  bindText('bind_dim_cabin', q.dimensions?.cabin);
+  bindText('bind_dim_shaft', q.dimensions?.shaft);
+  bindText('bind_pit', q.dimensions?.pit);
+  bindText('bind_oh', q.dimensions?.oh);
 
-  renderElevatorItemsTable(project);
+  // الأسعار
+  bindText('bind_total_with_vat', formatCurrency(q.totalWithVat, q.currency));
+  bindText('bind_vat_rate', q.vatRate);
+
+  // ========== جدول المصاعد ==========
+  renderElevatorsTable(q.elevators || []);
 }
+
 
 /* ===== جدول المصاعد ===== */
 function renderElevatorItemsTable(project) {
@@ -839,6 +838,31 @@ function renderElevatorItemsTable(project) {
     tbody.appendChild(tr);
   });
 }
+function renderElevatorsTable(elevators) {
+  const tbody = document.querySelector('#elevators-items tbody');
+  if (!tbody) return;
+
+  tbody.innerHTML = '';
+
+  if (!elevators.length) {
+    tbody.innerHTML =
+      '<tr><td colspan="6" style="text-align:center;">— لا توجد بيانات —</td></tr>';
+    return;
+  }
+
+  elevators.forEach((e, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${i + 1}</td>
+      <td>${e.no}</td>
+      <td>${e.capacity} kg</td>
+      <td>${e.speed} m/s</td>
+      <td>${e.floors}</td>
+      <td>${e.machine}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
 
 /* ===== تشغيل ===== */
 document.addEventListener('DOMContentLoaded', () => {
@@ -857,6 +881,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
 </body>
 </html>
+
 
 
 
