@@ -692,11 +692,15 @@
         لم يتم العثور على بيانات عرض أخير (rkl_last_offer). الرجاء العودة إلى نموذج التسعير وحفظ عرض السعر أولاً.
     </div>
 </div>
-
 <script>
+/* ==============================
+   إعدادات التخزين
+============================== */
 const QUOTES_STORAGE_KEY = 'rkl_quotes';
 
-/* ===== أدوات مساعدة ===== */
+/* ==============================
+   أدوات مساعدة
+============================== */
 function loadStoredQuotes() {
   try {
     return JSON.parse(localStorage.getItem(QUOTES_STORAGE_KEY)) || [];
@@ -705,9 +709,29 @@ function loadStoredQuotes() {
   }
 }
 
+function formatCurrency(value, currency = 'SAR') {
+  if (!value && value !== 0) return '—';
+  return new Intl.NumberFormat('ar-SA', {
+    style: 'currency',
+    currency
+  }).format(value);
+}
 
+/* ==============================
+   ربط النصوص (Bind)
+============================== */
+function bindText(className, value) {
+  document.querySelectorAll('.' + className).forEach(el => {
+    el.textContent =
+      value !== undefined && value !== null && value !== ''
+        ? value
+        : '—';
+  });
+}
 
-/* ===== تعبئة القائمة ===== */
+/* ==============================
+   تعبئة قائمة عروض السعر
+============================== */
 function populateQuoteSelector() {
   const selector = document.getElementById('quote-selector');
   if (!selector) return;
@@ -717,101 +741,54 @@ function populateQuoteSelector() {
 
   quotes.forEach((q, index) => {
     const label =
-      `${q.quoteNumber || '—'} – ` +
-      `${q.project?.name || ''} – ` +
-      `${q.customer?.name || ''}`;
+      (q.quoteNumber || '—') + ' | ' +
+      (q.projectName || '') + ' | ' +
+      (q.customerName || '');
     selector.innerHTML += `<option value="${index}">${label}</option>`;
   });
 }
-    function bindText(selector, value) {
-  document.querySelectorAll(selector).forEach(el => {
-    el.textContent = value ?? "—";
-  });
-}
 
-
-/* ===== تحميل عرض السعر ===== */
+/* ==============================
+   تحميل عرض سعر واحد
+============================== */
 function loadSelectedQuote(index) {
   const quotes = loadStoredQuotes();
   const q = quotes[index];
-
   if (!q) return;
 
-  // بيانات عامة
+  /* بيانات عامة */
   bindText('bind_quote_number', q.quoteNumber);
   bindText('bind_offer_date', q.timestamp?.slice(0, 10));
   bindText('bind_customer_name', q.customerName);
   bindText('bind_project_name', q.projectName);
 
-  // المواصفات الفنية
+  /* مواصفات فنية */
   bindText('bind_brand', q.brandLabel);
   bindText('bind_capacity', q.capacity + ' kg');
   bindText('bind_speed', q.speed + ' m/s');
   bindText('bind_floors', q.floors);
   bindText('bind_lifts', q.liftsCount);
 
-  // التشطيبات
-  bindText('bind_cabin_design', q.cabinDesign || '—');
-  bindText('bind_floor_finish', q.floorFinish || '—');
+  /* تشطيبات */
+  bindText('bind_cabin_design', q.cabinDesign);
+  bindText('bind_floor_finish', q.floorFinish);
 
-  // الأبعاد
+  /* أبعاد */
   bindText('bind_dim_cabin', q.dimensions?.cabin);
   bindText('bind_dim_shaft', q.dimensions?.shaft);
   bindText('bind_pit', q.dimensions?.pit);
   bindText('bind_oh', q.dimensions?.oh);
 
-  // الأسعار
+  /* أسعار */
   bindText('bind_total_with_vat', formatCurrency(q.totalWithVat, q.currency));
-  bindText('bind_vat_rate', q.vatRate);
+  bindText('bind_vat_rate', q.vatRate + '%');
 
-  // ========== جدول المصاعد ==========
   renderElevatorsTable(q.elevators || []);
 }
 
-
-/* ===== جدول المصاعد ===== */
-function renderElevatorItemsTable(project) {
-  const tbody = document.querySelector('#elevators-items tbody');
-  if (!tbody) return;
-
-  tbody.innerHTML = '';
-  const count = Number(project.liftsCount) || 1;
-
-  for (let i = 1; i <= count; i++) {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${i}</td>
-      <td>Lift-${String(i).padStart(2, '0')}</td>
-      <td>${project.capacityKg || '—'} kg</td>
-      <td>${project.speedMps || '—'} m/s</td>
-      <td>${project.stops || '—'}</td>
-      <td>MRL</td>
-    `;
-    tbody.appendChild(tr);
-  }
-}
-
-
-
-    function renderElevatorsTable(items = []) {
-  const tbody = document.querySelector("#elevators-items tbody");
-  if (!tbody) return;
-
-  tbody.innerHTML = "";
-
-  items.forEach((e, i) => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${i + 1}</td>
-      <td>E-${String(i + 1).padStart(2, "0")}</td>
-      <td>${e.capacity}</td>
-      <td>${e.speed}</td>
-      <td>${e.floors}</td>
-      <td>${e.machine}</td>
-    `;
-    tbody.appendChild(tr);
-  });
-}
+/* ==============================
+   جدول المصاعد
+============================== */
 function renderElevatorsTable(elevators) {
   const tbody = document.querySelector('#elevators-items tbody');
   if (!tbody) return;
@@ -820,7 +797,7 @@ function renderElevatorsTable(elevators) {
 
   if (!elevators.length) {
     tbody.innerHTML =
-      '<tr><td colspan="6" style="text-align:center;">— لا توجد بيانات —</td></tr>';
+      `<tr><td colspan="6" style="text-align:center;">— لا توجد مصاعد —</td></tr>`;
     return;
   }
 
@@ -838,11 +815,18 @@ function renderElevatorsTable(elevators) {
   });
 }
 
-/* ===== تشغيل ===== */
+/* ==============================
+   تشغيل الصفحة
+============================== */
 document.addEventListener('DOMContentLoaded', () => {
   populateQuoteSelector();
 
-
+  document
+    .getElementById('quote-selector')
+    .addEventListener('change', function () {
+      if (this.value === '') return;
+      loadSelectedQuote(this.value);
+    });
 });
 </script>
 
@@ -850,6 +834,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
 </body>
 </html>
+
 
 
 
