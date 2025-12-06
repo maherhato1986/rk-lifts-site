@@ -707,6 +707,18 @@ function format(amount) {
 
     const q = quotes[Number(index)];
     if (!q) return;
+const tbody = document.querySelector('#shafts-table tbody');
+(q.shafts || []).forEach(row => {
+  tbody.innerHTML += `
+    <tr>
+      <td>${row.elevator}</td>
+      <td>${row.shaft}</td>
+      <td>${row.cabin}</td>
+      <td>${row.door}</td>
+      <td>${row.note}</td>
+    </tr>
+  `;
+});
 
     /* =================================================
        (1) بيانات العرض
@@ -763,6 +775,12 @@ function format(amount) {
     bind('.bind_total_price', format(q.subTotal));
     bind('.bind_vat_rate', (q.vatRate || 15) + '%');
     bind('.bind_total_with_vat', format(q.totalWithVat));
+    bind('.bind_cabin_design', q.technical?.cabinDesign);
+bind('.bind_floor_finish', q.technical?.floorFinish);
+bind('.bind_machine_type', q.technical?.machineType);
+bind('.bind_pit', q.technical?.pit);
+bind('.bind_oh', q.technical?.oh);
+
 
     /* =================================================
        (7) جدول الدفعات
@@ -778,6 +796,7 @@ function format(amount) {
 
 </body>
 </html>
+
 
 
 
