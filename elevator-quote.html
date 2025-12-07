@@ -1225,6 +1225,13 @@ const directCostSarFinal = directCostSar + cabinExtraCost;
             liftsCount,
             // للمصعد الواحد
             factoryCostPerLift,
+              // ✅ سعر الوحدة (مهم)
+    unitPrice: totalBeforeVatPerLift,
+
+    // ✅ المجاميع
+    totalBeforeVat: totalBeforeVatTotal,
+    vatAmount: vatAmountTotal,
+    totalWithVat: totalWithVatTotal,
             shippingInsurancePerLift,
             clearanceTransportPerLift,
             installationCommissioningPerLift,
@@ -1246,6 +1253,12 @@ const directCostSarFinal = directCostSar + cabinExtraCost;
             vatRate,
             vatAmount: vatAmountTotal,
             totalWithVat: totalWithVatTotal,
+              payments: {
+        pay50: totalWithVatTotal * 0.50,
+        pay25: totalWithVatTotal * 0.25,
+        pay20: totalWithVatTotal * 0.20,
+        pay5:  totalWithVatTotal * 0.05
+    }
             includeVat,
             overheadPercent: COST_PARAMS.overheadPercent,
             profitPercent: COST_PARAMS.profitPercent
@@ -1324,6 +1337,19 @@ lastQuoteSnapshot = {
     currency,
     vatRate,
     includeVat,
+    // =========================
+// السعر (كامل للطباعة)
+// =========================
+unitPrice: result.unitPrice,
+totalBeforeVat: result.totalBeforeVat,
+vatAmount: result.vatAmount,
+totalWithVat: result.totalWithVat,
+
+payments: {
+    pay50: result.payments.pay50,
+    pay25: result.payments.pay25,
+    pay20: result.payments.pay20,
+    pay5:  result.payments.pay5
 
     // =========================
     // بيانات العميل الموسعة
@@ -1712,6 +1738,7 @@ document.getElementById("lifts_count").addEventListener("input", function () {
 
 </body>
 </html>
+
 
 
 
