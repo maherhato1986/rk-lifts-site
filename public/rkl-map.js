@@ -325,3 +325,4 @@ function rklInitMap() {
 
 // تهيئة الخريطة بعد تحميل الصفحة
 document.addEventListener('DOMContentLoaded', rklInitMap);
+window.RKL_CITY_DATA = cityData;
