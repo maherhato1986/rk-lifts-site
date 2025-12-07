@@ -732,6 +732,16 @@
   bind('.bind_cabin_design', t.cabinDesign);
   bind('.bind_floor_finish', t.floorFinish);
   bind('.bind_machine_type', t.machineType);
+    bind('.bind_dim_cabin', q.cabinSize);
+bind('.bind_dim_shaft', q.shaftSize);
+
+// استخراج العرض × العمق لو كانت بصيغة "2000 × 1600"
+if (q.shaftSize && q.shaftSize.includes('×')) {
+  const [w, d] = q.shaftSize.split('×').map(s => s.trim());
+  bind('.bind_shaft_width', w);
+  bind('.bind_shaft_depth', d);
+}
+
 
   /* ===============================
      (4) البيانات المالية
@@ -755,6 +765,7 @@
 
 </body>
 </html>
+
 
 
 
