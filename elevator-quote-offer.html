@@ -336,65 +336,87 @@
 
 <!-- ================= صفحة 2: مشاريع وخبرة RKL ================= -->
 <!-- ================= صفحة 2: نطاق أعمال RKL داخل المملكة ================= -->
+    <!-- ================= Page 2: RKL Coverage ================= -->
 <div class="page">
+
   <div class="header">
-    <div class="logo-box">
-      <div class="logo-title">نطاق أعمال مؤسسة RKL داخل المملكة</div>
-      <div class="logo-sub">RKL Coverage & Experience in Saudi Arabia</div>
+    <div>
+      <strong>نطاق أعمال مؤسسة RKL داخل المملكة</strong><br>
+      <span class="sub">
+        RKL Coverage & Experience in Saudi Arabia
+      </span>
     </div>
-    <div class="offer-meta">
+    <div class="meta">
       <div>Offer No: <span class="bind_quote_number">—</span></div>
       <div>Date: <span class="bind_offer_date">—</span></div>
     </div>
   </div>
 
-  <div class="two-col">
-    <!-- الخريطة -->
-    <div>
-      <div id="ksaMap" style="height:360px;border-radius:10px;"></div>
-      <div class="caption">
+  <div style="display:flex;gap:30px;margin-top:20px;align-items:flex-start">
+
+    <!-- صورة الخريطة -->
+    <div style="width:50%">
+      <img
+        src="/public/images/ksa-map.png"
+        alt="RKL Coverage Map"
+        style="width:100%;border-radius:10px;border:1px solid #e5e7eb"
+      />
+      <div style="font-size:11px;color:#6b7280;margin-top:6px;text-align:center">
         التوزيع الجغرافي لأعمال RKL داخل المملكة العربية السعودية
       </div>
     </div>
 
-    <!-- النبذة -->
-    <div>
-      <div class="section-title">نبذة عن RKL</div>
-      <p class="small-note">
-        مؤسسة آر كي ال RKL للمصاعد والسلالم الكهربائية هي مؤسسة سعودية متخصصة في
-        توريد وتركيب وصيانة المصاعد، نفذت أعمالها في عدد من مدن المملكة وفق أعلى
-        معايير الجودة والسلامة.
-      </p>
+    <!-- جدول المناطق -->
+    <div style="width:50%">
+      <h4 style="margin:0 0 10px 0">
+        ملخص الأعمال حسب المناطق
+      </h4>
 
-      <hr>
-
-      <p class="small-note">
-        <strong>About RKL</strong><br>
-        RKL Elevators & Escalators is a Saudi-based company specialized in the
-        supply, installation, and maintenance of elevators, with projects
-        executed across multiple Saudi cities in compliance with international
-        quality and safety standards.
-      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>المنطقة</th>
+            <th>Region</th>
+            <th>عدد المصاعد</th>
+            <th>Elevators</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>الرياض</td>
+            <td>Riyadh</td>
+            <td>421</td>
+            <td>421</td>
+          </tr>
+          <tr>
+            <td>مكة المكرمة</td>
+            <td>Makkah</td>
+            <td>98</td>
+            <td>98</td>
+          </tr>
+          <tr>
+            <td>المنطقة الشرقية</td>
+            <td>Eastern Region</td>
+            <td>72</td>
+            <td>72</td>
+          </tr>
+          <tr>
+            <td>المدينة المنورة</td>
+            <td>Madinah</td>
+            <td>34</td>
+            <td>34</td>
+          </tr>
+          <tr>
+            <td>عسير وجازان</td>
+            <td>Asir & Jazan</td>
+            <td>41</td>
+            <td>41</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  </div>
 
-  <div class="section-title" style="margin-top:18px;">
-    ملخص عدد المصاعد المنفذة حسب المدن
   </div>
-
-  <table>
-    <thead>
-      <tr>
-        <th>المدينة</th>
-        <th>City</th>
-        <th>عدد المصاعد</th>
-        <th>Elevators</th>
-      </tr>
-    </thead>
-    <tbody id="rkl-cities-summary">
-      <!-- يتم تعبئته تلقائيًا من rkl-summary.js -->
-    </tbody>
-  </table>
 
   <div class="page-index">Page 2</div>
 </div>
@@ -804,6 +826,7 @@ bind('.bind_pay_5',  formatCurrency(total * 0.05, q.currency));
 
 </body>
 </html>
+
 
 
 
