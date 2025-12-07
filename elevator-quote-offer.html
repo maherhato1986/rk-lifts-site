@@ -671,161 +671,91 @@
     </div>
 </div>
 
-    <script>
-/* =====================================================
-   Helpers
-===================================================== */
-function bind(selector, value) {
-    document.querySelectorAll(selector).forEach(el => {
-        el.textContent =
-            value !== undefined && value !== null && value !== ''
-                ? value
-                : '—';
-    });
-}
-
-function format(amount) {
-    if (amount === undefined || amount === null || isNaN(amount)) return '—';
-    return 'SAR ' + Number(amount).toLocaleString('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-    });
-}
-
-/* =====================================================
-   Load Selected Quote
-===================================================== */
+ <script>
 (function () {
 
-    const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
-    
+  /* ========= أدوات مساعدة ========= */
+  function qs(sel) {
+    return document.querySelector(sel);
+  }
 
-    if (!quotes.length || index === null) {
-        console.warn('لا يوجد عرض سعر محدد');
-        return;
-    }
+  function bind(selector, value) {
+    const el = qs(selector);
+    if (!el) return;
+    el.textContent = value ?? '-';
+  }
 
-    
-    if (!) return;
-const tbody = document.querySelector('#shafts-table tbody');
-(q.shafts || []).forEach(row => {
-  tbody.innerHTML += `
-    <tr>
-      <td>${row.elevator}</td>
-      <td>${row.shaft}</td>
-      <td>${row.cabin}</td>
-      <td>${row.door}</td>
-      <td>${row.note}</td>
-    </tr>
-  `;
-});
+  function format(n) {
+    if (n === undefined || n === null || isNaN(n)) return '-';
+    return Number(n).toLocaleString('en-US', { minimumFractionDigits: 2 }) + ' SAR';
+  }
 
-/* =================================================
-   (0) تحميل العرض المختار
-================================================= */
+  /* ========= تحميل العرض المختار ========= */
+  const index = localStorage.getItem('rkl_current_quote_index');
+  const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
 
-
-const index =
-    localStorage.getItem('rkl_current_quote_index') !== null
-        ? Number(localStorage.getItem('rkl_current_quote_index'))
-        : quotes.length - 1;
-const q = quotes[index];
-
-
-if (!q) {
-    console.warn('No quote data found');
+  if (index === null || !quotes[index]) {
+    alert('لم يتم العثور على عرض السعر المختار');
     return;
-}
+  }
 
-/* =================================================
-   (1) بيانات العرض العامة
-================================================= */
-bind('.bind_quote_number', q.quoteNumber);
-bind('.bind_offer_date', q.timestamp?.slice(0, 10));
-bind('.bind_project_name', q.projectName);
+  const q = quotes[index];
 
-/* =================================================
-   (2) ملف العميل – ✅ مباشرة من q
-================================================= */
-bind('.bind_customer_name', q.customerName);
-bind('.bind_customer_type', q.customerType);
-bind('.bind_contact_person', q.contactPerson);
+  /* =================================================
+     (1) بيانات العرض
+  ================================================= */
+  bind('.bind_quote_number', q.quoteNumber);
+  bind('.bind_offer_date', q.timestamp?.slice(0, 10));
+  bind('.bind_project_name', q.projectName);
+  bind('.bind_customer_name', q.customerName);
 
-bind('.bind_id_number', q.idNumber);
-bind('.bind_cr_number', q.crNumber);
-bind('.bind_tax_number', q.taxNumber);
+  /* =================================================
+     (2) بيانات العميل (من q.customer)
+  ================================================= */
+  const c = q.customer || {};
 
-bind('.bind_city', q.city);
-bind('.bind_district', q.district);
-bind('.bind_street', q.street);
-bind('.bind_building_no', q.buildingNo);
-bind('.bind_postal_code', q.postalCode);
-bind('.bind_full_address', q.fullAddress);
+  bind('.bind_customer_type', c.type);
+  bind('.bind_contact_person', c.contactPerson);
+  bind('.bind_id_number', c.idNumber);
+  bind('.bind_cr_number', c.crNumber);
+  bind('.bind_tax_number', c.taxNumber);
 
-bind('.bind_mobile', q.mobile);
-bind('.bind_phone', q.phone);
-bind('.bind_email', q.email);
+  bind('.bind_city', c.city);
+  bind('.bind_district', c.district);
+  bind('.bind_street, .bind_building_no', c.street + ' / ' + c.buildingNo);
+  bind('.bind_postal_code', c.postalCode);
+  bind('.bind_full_address', c.fullAddress);
 
-bind('.bind_preferred_contact', q.preferredContact);
-bind('.bind_notes', q.notes || '—');
+  bind('.bind_mobile', c.mobile);
+  bind('.bind_phone', c.phone);
+  bind('.bind_email', c.email);
+  bind('.bind_preferred_contact', c.preferredContact);
+  bind('.bind_notes', c.notes);
 
-/* =================================================
-   (3) البيانات الفنية للمصعد
-================================================= */
-bind('.bind_brand', q.brandLabel);
-bind('.bind_system_type', q.systemType);
+  /* =================================================
+     (3) البيانات الفنية
+  ================================================= */
+  bind('.bind_brand', q.brandLabel);
+  bind('.bind_capacity', q.capacity);
+  bind('.bind_speed', q.speed);
+  bind('.bind_floors', q.floors);
+  bind('.bind_lifts', q.liftsCount);
 
-bind('.bind_capacity', q.capacity + ' kg');
-bind('.bind_speed', q.speed + ' m/s');
-bind('.bind_floors', q.floors);
-bind('.bind_stops', q.stops);
-bind('.bind_lifts', q.liftsCount);
-
-/* =================================================
-   (4) المقاسات (Cabin / Shaft / Pit / OH)
-================================================= */
-bind('.bind_cabin_dimension', q.cabinDimension);
-bind('.bind_shaft_dimension', q.shaftDimension);
-    if (q.shaftDimension && q.shaftDimension.includes('x')) {
-    const [w, d] = q.shaftDimension.split('x').map(v => v.trim());
-    bind('.bind_shaft_width', w);
-    bind('.bind_shaft_depth', d);
-}
-
-bind('.bind_pit', q.pit);
-bind('.bind_oh', q.oh);
-
-/* =================================================
-   (5) التشطيبات والمواصفات الجمالية
-================================================= */
-bind('.bind_cabin_design', q.cabinDesign);
-bind('.bind_floor_finish', q.floorFinish);
-bind('.bind_machine_type', q.machineType);
-
-/* =================================================
-   (6) ملخص القيمة المالية
-================================================= */
-bind('.bind_price_per_unit', format(q.unitPrice));
-bind('.bind_total_price', format(q.subTotal));
-
-bind('.bind_vat_rate', (q.vatRate || 15) + '%');
-bind('.bind_total_with_vat', format(q.totalWithVat));
-
-/* =================================================
-   (7) جدول الدفعات
-================================================= */
-bind('.bind_pay_50', format(q.payment50));
-bind('.bind_pay_25', format(q.payment25));
-bind('.bind_pay_20', format(q.payment20));
-bind('.bind_pay_5',  format(q.payment5));
-
+  /* =================================================
+     (4) القيم المالية
+  ================================================= */
+  bind('.bind_total_with_vat', format(q.totalWithVat));
+  bind('.bind_vat_rate', (q.vatRate || 15) + '%');
+  bind('.bind_price_per_unit', format(q.totalWithVatPerLift));
 
 })();
 </script>
 
 
+
 </body>
 </html>
+
 
 
 
