@@ -1157,53 +1157,67 @@ bind('.bind_pay_5',  formatCurrency(total * 0.05, q.currency));
 
 </script>
 
+<script>
+function renderPricingTable(q) {
+  const tbody = document.querySelector("#pricing-table tbody");
+  if (!tbody || !q.items) return;
+
+  tbody.innerHTML = "";
+
+  q.items.forEach(item => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${item.description}</td>
+      <td style="text-align:center">${item.quantity}</td>
+      <td>${item.unitPrice.toLocaleString()} SAR</td>
+      <td>${item.total.toLocaleString()} SAR</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  document.querySelector(".bind_subtotal").textContent =
+    q.subtotal.toLocaleString() + " SAR";
+
+  document.querySelector(".bind_vat").textContent =
+    q.vatAmount.toLocaleString() + " SAR";
+
+  document.querySelector(".bind_total").textContent =
+    q.totalWithVat.toLocaleString() + " SAR";
+}
+</script>
+<script>
+function renderPayments(q) {
+  const tbody = document.querySelector("#payments-table tbody");
+  if (!tbody || !q.payments) return;
+
+  tbody.innerHTML = "";
+
+  q.payments.forEach(p => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${p.label}</td>
+      <td style="text-align:center">${p.percent}%</td>
+      <td>${p.amount.toLocaleString()} SAR</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+</script>
+<script>
+const quotes = JSON.parse(localStorage.getItem("rkl_quotes") || "[]");
+const idx = Number(localStorage.getItem("rkl_current_quote_index")) || quotes.length - 1;
+const q = quotes[idx];
+
+if (q) {
+  renderPricingTable(q);
+  renderPayments(q);
+}
+</script>
 
 
 
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
