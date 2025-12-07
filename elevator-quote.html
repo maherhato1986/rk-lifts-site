@@ -1280,21 +1280,73 @@ shaftRows.forEach((row, index) => {
 });
 
 lastQuoteSnapshot = {
+    // =========================
+    // بيانات عامة
+    // =========================
     timestamp: new Date().toISOString(),
     customerName: finalCustomerName,
     projectName: projectName,
+
     brandKey,
     brandLabel,
+
     capacity: capacity + ' kg',
     speed: speed + ' m/s',
     floors,
     liftsCount,
-    shaftsSummary: shaftsSummary, // ✅ هنا الإضافة المهمة
+
+    // =========================
+    // المقاسات (ملخص + تفصيلي)
+    // =========================
+    shaftsSummary: shaftsSummary,   // ملخص لكل مصعد (للعرض النصي)
+    cabinSize: selectedCabin,       // مقاس الكابينة
+    shaftSize: selectedShaft,       // مقاس البئر
+    pit: selectedPit,               // Pit
+    oh: selectedOH,                 // OH
+    doors: selectedDoor,            // Door size
+
+    // =========================
+    // التشطيب
+    // =========================
+    cabinDesign: document.getElementById("cabin_design").value || 'Standard',
+    floorFinish: document.getElementById("floor_finish").value || 'Standard',
+
+    // =========================
+    // مواصفات فنية
+    // =========================
+    machineType: model.machineType || 'MRL – Traction',
+
+    // =========================
+    // السعر
+    // =========================
     totalWithVat: result.totalWithVat,
     currency,
     vatRate,
-    includeVat
+    includeVat,
+
+    // =========================
+    // بيانات العميل الموسعة
+    // =========================
+    preferredContact: selectedCustomer?.preferred_contact || '',
+    customerDetails: selectedCustomer ? {
+        customer_type: selectedCustomer.customer_type || '',
+        contact_person: selectedCustomer.contact_person || '',
+        id_number: selectedCustomer.id_number || '',
+        cr_number: selectedCustomer.cr_number || '',
+        tax_number: selectedCustomer.tax_number || '',
+        city: selectedCustomer.city || '',
+        district: selectedCustomer.district || '',
+        street: selectedCustomer.street || '',
+        building_no: selectedCustomer.building_no || '',
+        postal_code: selectedCustomer.postal_code || '',
+        full_address: selectedCustomer.full_address || '',
+        mobile: selectedCustomer.mobile || '',
+        phone: selectedCustomer.phone || '',
+        email: selectedCustomer.email || '',
+        notes: selectedCustomer.notes || ''
+    } : null
 };
+
 
     }
 
@@ -1659,6 +1711,7 @@ document.getElementById("lifts_count").addEventListener("input", function () {
 
 </body>
 </html>
+
 
 
 
