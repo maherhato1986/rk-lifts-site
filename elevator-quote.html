@@ -1325,23 +1325,23 @@ lastQuoteSnapshot = {
 
         }
 
-    document.getElementById("printOfferButton").addEventListener("click", function () {
-    const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
+   document.getElementById("printOfferButton").addEventListener("click", function () {
+    const selected = document.querySelector(".quote-check:checked");
 
-    if (!quotes.length) {
-        alert("لا يوجد عرض سعر محفوظ");
+    if (!selected) {
+        alert("يرجى اختيار عرض سعر واحد من السجل أولاً");
         return;
     }
 
-    const selected = document.querySelector('.quote-check:checked');
-    const quoteIndex = selected 
-        ? Number(selected.dataset.index)
-        : quotes.length - 1; // آخر عرض تلقائيًا
+    const index = selected.dataset.index;
 
-    localStorage.setItem('rkl_current_quote_index', quoteIndex);
+    // حفظ رقم العرض المختار
+    localStorage.setItem("rkl_current_quote_index", index);
 
+    // فتح صفحة العرض
     window.open("elevator-quote-offer.html", "_blank");
 });
+
 
 
 
@@ -1659,6 +1659,7 @@ document.getElementById("lifts_count").addEventListener("input", function () {
 
 </body>
 </html>
+
 
 
 
