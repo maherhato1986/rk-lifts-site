@@ -1386,11 +1386,31 @@ const directCostSarFinal = directCostSar + cabinExtraCost;
 
             // 3) تجهيز العنصر الذي يذهب إلى جدول السجل
             const entry = {
-                ...lastQuoteSnapshot,
-                customerName: finalCustomerName,
-                projectName: projectName,
-                quoteNumber
-            };
+    ...lastQuoteSnapshot,
+    quoteNumber,
+    customerName: finalCustomerName,
+    projectName,
+
+    // ✅ تخزين بيانات العميل كاملة
+    customerDetails: selectedCustomer ? {
+        customer_type: selectedCustomer.customer_type || '',
+        contact_person: selectedCustomer.contact_person || '',
+        id_number: selectedCustomer.id_number || '',
+        cr_number: selectedCustomer.cr_number || '',
+        tax_number: selectedCustomer.tax_number || '',
+        city: selectedCustomer.city || '',
+        district: selectedCustomer.district || '',
+        street: selectedCustomer.street || '',
+        building_no: selectedCustomer.building_no || '',
+        postal_code: selectedCustomer.postal_code || '',
+        full_address: selectedCustomer.full_address || '',
+        mobile: selectedCustomer.mobile || '',
+        phone: selectedCustomer.phone || '',
+        email: selectedCustomer.email || '',
+        notes: selectedCustomer.notes || ''
+    } : null
+};
+
 
             // حفظه في مصفوفة عروض الأسعار
             quotes.push(entry);
@@ -1591,6 +1611,7 @@ document.getElementById("lifts_count").addEventListener("input", function () {
 
 </body>
 </html>
+
 
 
 
