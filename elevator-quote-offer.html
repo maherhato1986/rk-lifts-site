@@ -747,6 +747,14 @@ if (q.shaftSize && q.shaftSize.includes('×')) {
   const [w, d] = q.shaftSize.split('×').map(v => v.trim());
   bind('.bind_shaft_width', w);
   bind('.bind_shaft_depth', d);
+    bind('.bind_cabin_dimension', q.cabinSize);
+    bind('.bind_shaft_dimension', q.shaftSize);
+    bind('.bind_units_count', q.liftsCount);
+
+
+
+    bind('.bind_stops', q.floors);
+
 }
 
 /* =================================================
@@ -764,6 +772,10 @@ bind('.bind_price_per_unit', formatCurrency(q.pricePerUnit, q.currency));
 bind('.bind_total_price', formatCurrency(q.totalPrice, q.currency));
 bind('.bind_total_with_vat', formatCurrency(q.totalPrice, q.currency));
 bind('.bind_vat_rate', q.vatRate);
+    bind('.bind_price_unit', formatCurrency(q.pricePerUnit, q.currency));
+    bind('.bind_total_with_vat', formatCurrency(q.totalPrice, q.currency));
+
+
 
 /* =================================================
    (6) جدول الدفعات
@@ -779,6 +791,7 @@ bind('.bind_pay_5',  formatCurrency(total * 0.05, q.currency));
 
 </body>
 </html>
+
 
 
 
