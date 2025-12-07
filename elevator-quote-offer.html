@@ -720,75 +720,99 @@ const tbody = document.querySelector('#shafts-table tbody');
   `;
 });
 
-    /* =================================================
-       (1) بيانات العرض
-    ================================================= */
-    bind('.bind_quote_number', q.quoteNumber);
-    bind('.bind_offer_date', q.timestamp?.slice(0,10));
-    bind('.bind_project_name', q.projectName);
-    bind('.bind_customer_name', q.customerName);
+/* =================================================
+   (0) تحميل العرض المختار
+================================================= */
+const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || []);
 
-    /* =================================================
-       (2) ملف العميل – ✅ مباشرة من q
-    ================================================= */
-    bind('.bind_customer_type', q.customerType);
-    bind('.bind_contact_person', q.contactPerson);
-    bind('.bind_id_number', q.customerIdNumber);
-    bind('.bind_cr_number', q.customerCR);
-    bind('.bind_tax_number', q.customerVAT);
+const index =
+    localStorage.getItem('rkl_current_quote_index') !== null
+        ? Number(localStorage.getItem('rkl_current_quote_index'))
+        : quotes.length - 1;
 
-    bind('.bind_city', q.customerCity);
-    bind('.bind_district', q.customerDistrict);
-    bind('.bind_street', q.customerStreet);
-    bind('.bind_building_no', q.customerBuildingNo);
-    bind('.bind_postal_code', q.customerPostalCode);
-    bind('.bind_full_address', q.customerAddress);
+const q = quotes[index];
 
-    bind('.bind_mobile', q.customerMobile);
-    bind('.bind_phone', q.customerPhone);
-    bind('.bind_email', q.customerEmail);
-    bind('.bind_preferred_contact', q.preferredContactMethod);
-    bind('.bind_notes', q.customerNotes);
+if (!q) {
+    console.warn('No quote data found');
+    return;
+}
 
-    /* =================================================
-       (3) البيانات الفنية – ✅ مباشرة
-    ================================================= */
-    bind('.bind_brand', q.brandLabel);
-    bind('.bind_system_type', q.systemType);
-    bind('.bind_capacity', q.capacity);
-    bind('.bind_speed', q.speed);
-    bind('.bind_floors', q.floors);
-    bind('.bind_stops', q.stops);
-    bind('.bind_lifts', q.liftsCount);
+/* =================================================
+   (1) بيانات العرض العامة
+================================================= */
+bind('.bind_quote_number', q.quoteNumber);
+bind('.bind_offer_date', q.timestamp?.slice(0, 10));
+bind('.bind_project_name', q.projectName);
 
-    bind('.bind_cabin_dimension', q.cabinDimension);
-    bind('.bind_shaft_dimension', q.shaftDimension);
-    bind('.bind_pit', q.pit);
-    bind('.bind_oh', q.overHead);
-    bind('.bind_cabin_design', q.cabinDesign);
-    bind('.bind_floor_finish', q.floorFinish);
+/* =================================================
+   (2) ملف العميل – ✅ مباشرة من q
+================================================= */
+bind('.bind_customer_name', q.customerName);
+bind('.bind_customer_type', q.customerType);
+bind('.bind_contact_person', q.contactPerson);
 
-    /* =================================================
-       (6) ملخص القيمة المالية
-    ================================================= */
-    bind('.bind_price_per_unit', format(q.unitPrice));
-    bind('.bind_total_price', format(q.subTotal));
-    bind('.bind_vat_rate', (q.vatRate || 15) + '%');
-    bind('.bind_total_with_vat', format(q.totalWithVat));
-    bind('.bind_cabin_design', q.technical?.cabinDesign);
-bind('.bind_floor_finish', q.technical?.floorFinish);
-bind('.bind_machine_type', q.technical?.machineType);
-bind('.bind_pit', q.technical?.pit);
-bind('.bind_oh', q.technical?.oh);
+bind('.bind_id_number', q.idNumber);
+bind('.bind_cr_number', q.crNumber);
+bind('.bind_tax_number', q.taxNumber);
 
+bind('.bind_city', q.city);
+bind('.bind_district', q.district);
+bind('.bind_street', q.street);
+bind('.bind_building_no', q.buildingNo);
+bind('.bind_postal_code', q.postalCode);
+bind('.bind_full_address', q.fullAddress);
 
-    /* =================================================
-       (7) جدول الدفعات
-    ================================================= */
-    bind('.bind_pay_50', format(q.payment50));
-    bind('.bind_pay_25', format(q.payment25));
-    bind('.bind_pay_20', format(q.payment20));
-    bind('.bind_pay_5',  format(q.payment5));
+bind('.bind_mobile', q.mobile);
+bind('.bind_phone', q.phone);
+bind('.bind_email', q.email);
+
+bind('.bind_preferred_contact', q.preferredContact);
+bind('.bind_notes', q.notes || '—');
+
+/* =================================================
+   (3) البيانات الفنية للمصعد
+================================================= */
+bind('.bind_brand', q.brandLabel);
+bind('.bind_system_type', q.systemType);
+
+bind('.bind_capacity', q.capacity + ' kg');
+bind('.bind_speed', q.speed + ' m/s');
+bind('.bind_floors', q.floors);
+bind('.bind_stops', q.stops);
+bind('.bind_lifts', q.liftsCount);
+
+/* =================================================
+   (4) المقاسات (Cabin / Shaft / Pit / OH)
+================================================= */
+bind('.bind_cabin_dimension', q.cabinDimension);
+bind('.bind_shaft_dimension', q.shaftDimension);
+bind('.bind_pit', q.pit);
+bind('.bind_oh', q.overHead);
+
+/* =================================================
+   (5) التشطيبات والمواصفات الجمالية
+================================================= */
+bind('.bind_cabin_design', q.cabinDesign);
+bind('.bind_floor_finish', q.floorFinish);
+bind('.bind_machine_type', q.machineType);
+
+/* =================================================
+   (6) ملخص القيمة المالية
+================================================= */
+bind('.bind_price_per_unit', format(q.unitPrice));
+bind('.bind_total_price', format(q.subTotal));
+
+bind('.bind_vat_rate', (q.vatRate || 15) + '%');
+bind('.bind_total_with_vat', format(q.totalWithVat));
+
+/* =================================================
+   (7) جدول الدفعات
+================================================= */
+bind('.bind_pay_50', format(q.payment50));
+bind('.bind_pay_25', format(q.payment25));
+bind('.bind_pay_20', format(q.payment20));
+bind('.bind_pay_5',  format(q.payment5));
+
 
 })();
 </script>
@@ -796,6 +820,7 @@ bind('.bind_oh', q.technical?.oh);
 
 </body>
 </html>
+
 
 
 
