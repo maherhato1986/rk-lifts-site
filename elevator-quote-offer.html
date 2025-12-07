@@ -698,7 +698,7 @@ function format(amount) {
 (function () {
 
     const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
-    const index  = localStorage.getItem('rkl_current_quote_index');
+    
 
     if (!quotes.length || index === null) {
         console.warn('لا يوجد عرض سعر محدد');
@@ -706,7 +706,7 @@ function format(amount) {
     }
 
     
-    if (!q) return;
+    if (!) return;
 const tbody = document.querySelector('#shafts-table tbody');
 (q.shafts || []).forEach(row => {
   tbody.innerHTML += `
@@ -826,6 +826,7 @@ bind('.bind_pay_5',  format(q.payment5));
 
 </body>
 </html>
+
 
 
 
