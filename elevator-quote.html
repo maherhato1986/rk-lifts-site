@@ -793,7 +793,8 @@ const cols = [
     cd.city || '',
 
     q.projectName || '',
-    `${q.brandLabel || q.brandKey} / ${q.capacity} / ${q.speed}`,
+    `${q.brandLabel || q.brandKey} / ${q.capacity} / ${q.speed} / ${q.floors} Stops`,
+
 
     // ✅ عمود المقاسات
     (q.shaftsSummary && q.shaftsSummary.length)
@@ -1774,6 +1775,7 @@ document.getElementById("lifts_count").addEventListener("input", function () {
 
 </body>
 </html>
+
 
 
 
