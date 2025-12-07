@@ -322,6 +322,108 @@ th {
   margin-top: 6px;
   color: #4b5563;
 }
+   /* ===============================
+   صفحة المخطط الهندسي
+===============================*/
+
+.diagram-page {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-top: 30px;
+  align-items: center;
+}
+
+.section-view,
+.plan-view {
+  display: flex;
+  justify-content: center;
+}
+
+.shaft-vertical {
+  position: relative;
+  width: 160px;
+  height: 420px;
+  border: 2px solid #475569;
+  background: #f8fafc;
+}
+
+.car-vertical {
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  height: 45%;
+  border: 2px solid #10b981;
+  background: #ecfdf5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.oh-label {
+  position: absolute;
+  top: -24px;
+  width: 100%;
+  text-align: center;
+  font-size: 11px;
+}
+
+.pit-label {
+  position: absolute;
+  bottom: -24px;
+  width: 100%;
+  text-align: center;
+  font-size: 11px;
+}
+
+/* Plan View */
+.shaft-plan {
+  position: relative;
+  width: 260px;
+  height: 260px;
+  border: 2px solid #475569;
+  background: #f8fafc;
+}
+
+.cabin-plan {
+  position: absolute;
+  top: 20%;
+  left: 20%;
+  width: 60%;
+  height: 60%;
+  border: 2px solid #10b981;
+  background: #ecfdf5;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.dim-top {
+  position: absolute;
+  top: -22px;
+  width: 100%;
+  text-align: center;
+  font-size: 11px;
+}
+
+.dim-right {
+  position: absolute;
+  right: -22px;
+  top: 50%;
+  transform: rotate(-90deg) translateY(-50%);
+  transform-origin: right center;
+  font-size: 11px;
+}
+
+.center {
+  text-align: center;
+}
+
 
 /* ===============================
    زر الطباعة + الترقيم
@@ -677,8 +779,70 @@ th {
 
     <div class="page-index">Page 3</div>
 </div>
+<!-- ================= صفحة 4: مخطط استرشادي هندسي ================= -->
+<div class="page">
 
-<!-- ================= صفحة 4: ميزات الأمان + مخطط المقاسات ================= -->
+  <!-- Header -->
+  <div class="header">
+    <div class="logo-box">
+      <div class="logo-title">آر كي ال RKL للمصاعد والسلالم الكهربائية</div>
+      <div class="logo-sub">
+        السجل التجاري: 1010709355 – الرقم الضريبي: 302250422600003<br>
+        السليمانية – الرياض | 0114774021 | admin@rk-lifts.com
+      </div>
+    </div>
+    <div class="offer-meta">
+      رقم العرض: <span class="bind_quote_number">—</span><br>
+      تاريخ العرض: <span class="bind_offer_date">—</span>
+    </div>
+  </div>
+
+  <div class="section-title">٥) مخطط استرشادي لمقاسات البئر والكابينة</div>
+
+  <div class="diagram-page">
+    <!-- المقطع الرأسي (Section) -->
+    <div class="section-view">
+      <div class="shaft-vertical">
+        <div class="oh-label">
+          OH = <span class="bind_oh">—</span> mm
+        </div>
+
+        <div class="car-vertical">
+          Cabin
+        </div>
+
+        <div class="pit-label">
+          Pit = <span class="bind_pit">—</span> mm
+        </div>
+      </div>
+    </div>
+
+    <!-- المسقط الأفقي (Plan) -->
+    <div class="plan-view">
+      <div class="shaft-plan">
+        <span class="dim-top">
+          HW: <span class="bind_shaft_width">—</span> mm
+        </span>
+        <span class="dim-right">
+          HD: <span class="bind_shaft_depth">—</span> mm
+        </span>
+
+        <div class="cabin-plan">
+          CW / CD<br>
+          <span class="bind_dim_cabin">—</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="small-note center">
+    * هذا المخطط استرشادي فقط، ويجب اعتماد الرسومات التنفيذية (Shop Drawings) قبل التنفيذ الفعلي.
+  </p>
+
+  <div class="page-index">Page 4</div>
+</div>
+
+<!-- ================= صفحة 5: ميزات الأمان + مخطط المقاسات ================= -->
 <div class="page">
 
   <div class="header">
@@ -756,7 +920,7 @@ th {
     <div class="page-index">Page 4</div>
 </div>
 
-<!-- ================= صفحة 5: القيمة المالية + الدفعات + البنود ================= -->
+<!-- ================= صفحة 6: القيمة المالية + الدفعات + البنود ================= -->
 <div class="page">
 
   <div class="header">
@@ -940,37 +1104,54 @@ bind('.bind_notes', c.notes);
 /* =================================================
    (3) البيانات الفنية
 ================================================= */
+
+// المواصفات العامة
 bind('.bind_brand', q.brandLabel);
 bind('.bind_capacity', q.capacity);
 bind('.bind_speed', q.speed);
 bind('.bind_stops', q.floors);
 bind('.bind_lifts', q.liftsCount);
 
+// النظام والتجهيزات
 bind('.bind_machine_type', q.machineType);
 bind('.bind_cabin_design', q.cabinDesign);
 bind('.bind_floor_finish', q.floorFinish);
 
+// المقاسات الأساسية
 bind('.bind_dim_cabin', q.cabinSize);
 bind('.bind_dim_shaft', q.shaftSize);
 bind('.bind_pit', q.pit);
 bind('.bind_oh', q.oh);
+bind('.bind_units_count', q.liftsCount);
+
 
 /* =================================================
-   (4) مخطط البئر (العرض × العمق)
+   (4) مخطط البئر والكابينة (العرض × العمق)
 ================================================= */
+
+// تحليل مقاس البئر
 if (q.shaftSize && q.shaftSize.includes('×')) {
-  const [w, d] = q.shaftSize.split('×').map(v => v.trim());
-  bind('.bind_shaft_width', w);
-  bind('.bind_shaft_depth', d);
-    bind('.bind_cabin_dimension', q.cabinSize);
-    bind('.bind_shaft_dimension', q.shaftSize);
-    bind('.bind_units_count', q.liftsCount);
+  const [shaftW, shaftD] = q.shaftSize.split('×').map(v => v.trim());
 
-
-
-    bind('.bind_stops', q.floors);
-
+  bind('.bind_shaft_width', shaftW);
+  bind('.bind_shaft_depth', shaftD);
+  bind('.bind_shaft_dimension', q.shaftSize);
 }
+
+// تحليل مقاس الكابينة
+if (q.cabinSize && q.cabinSize.includes('×')) {
+  const [cabinW, cabinD] = q.cabinSize.split('×').map(v => v.trim());
+
+  bind('.bind_cabin_width', cabinW);
+  bind('.bind_cabin_depth', cabinD);
+  bind('.bind_cabin_dimension', q.cabinSize);
+}
+
+// عناصر إضافية للمخطط
+bind('.bind_pit_value', q.pit);
+bind('.bind_oh_value', q.oh);
+bind('.bind_stops_value', q.floors);
+
 
 /* =================================================
    (5) الأسعار
@@ -1009,6 +1190,7 @@ bind('.bind_pay_5',  formatCurrency(total * 0.05, q.currency));
 
 </body>
 </html>
+
 
 
 
