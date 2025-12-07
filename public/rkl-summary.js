@@ -1,37 +1,33 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-  if (typeof rklProjects === 'undefined') {
-    console.error('rklProjects not found');
+  if (typeof window.RKL_CITY_DATA === 'undefined') {
+    console.error('RKL_CITY_DATA not found (check rkl-map.js)');
     return;
   }
 
-  const totals = {};
   const tbody = document.getElementById('rkl-cities-summary');
-  if (!tbody) return;
-
-  rklProjects.forEach(p => {
-    if (!p.city_en) return;
-
-    if (!totals[p.city_en]) {
-      totals[p.city_en] = {
-        ar: p.city_ar || p.city_en,
-        en: p.city_en,
-        elevators: 0
-      };
-    }
-
-    totals[p.city_en].elevators += Number(p.elevators || 0);
-  });
+  if (!tbody) {
+    console.warn('Table body not found: rkl-cities-summary');
+    return;
+  }
 
   tbody.innerHTML = '';
 
-  Object.values(totals).forEach(c => {
+  Object.values(window.RKL_CITY_DATA).forEach(city => {
+    const totalLifts = city.projects.reduce(
+      (sum, p) => sum + (Number(p.lifts) || 0),
+      0
+    );
+
+    if (totalLifts === 0) return;
+
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td>${c.ar}</td>
-      <td>${c.en}</td>
-      <td>${c.elevators}</td>
-      <td>${c.elevators}</td>
+      <td>${city.name}</td>
+      <td>${city.name}</td>
+      <td style="text-align:center;font-weight:700;">
+        ${totalLifts}
+      </td>
     `;
     tbody.appendChild(tr);
   });
