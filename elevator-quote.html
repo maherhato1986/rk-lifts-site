@@ -596,6 +596,53 @@ const CABIN_DESIGN_ADDITIONAL = {
 
 
     // ========================== ربط واجهة عرض السعر ببيانات العملاء ==========================
+    function renderCustomerDetails(customer) {
+    const card = document.getElementById('customer-details-card');
+    const container = document.getElementById('customer-details');
+
+    if (!card || !container) return;
+
+    // لو لا يوجد عميل
+    if (!customer) {
+        card.style.display = 'none';
+        container.innerHTML = '';
+        return;
+    }
+
+    const fields = [
+        { label: 'نوع العميل', value: customer.customer_type },
+        { label: 'الشخص المسؤول', value: customer.contact_person },
+        { label: 'رقم الهوية', value: customer.id_number },
+        { label: 'السجل التجاري', value: customer.cr_number },
+        { label: 'الرقم الضريبي', value: customer.tax_number },
+        { label: 'المدينة', value: customer.city },
+        { label: 'الحي', value: customer.district },
+        { label: 'الشارع', value: customer.street },
+        { label: 'رقم المبنى', value: customer.building_no },
+        { label: 'الرمز البريدي', value: customer.postal_code },
+        { label: 'العنوان الكامل', value: customer.full_address },
+        { label: 'الجوال', value: customer.mobile },
+        { label: 'الهاتف', value: customer.phone },
+        { label: 'البريد الإلكتروني', value: customer.email },
+        { label: 'ملاحظات', value: customer.notes }
+    ];
+
+    container.innerHTML = '';
+
+    fields.forEach(f => {
+        if (!f.value) return;
+
+        const div = document.createElement('div');
+        div.innerHTML = `
+            <strong>${f.label}:</strong>
+            <div style="color:#374151;font-size:13px;">${f.value}</div>
+        `;
+        container.appendChild(div);
+    });
+
+    card.style.display = 'block';
+}
+
     const CUSTOMER_STORAGE_KEY = 'rkl_customers';
 
     let currentBrandData = null;
@@ -1544,6 +1591,7 @@ document.getElementById("lifts_count").addEventListener("input", function () {
 
 </body>
 </html>
+
 
 
 
