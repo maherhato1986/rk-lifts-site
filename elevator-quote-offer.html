@@ -1088,37 +1088,39 @@ bind('.bind_cabin_design', q.cabinDesign);
 bind('.bind_floor_finish', q.floorFinish);
 
 // المقاسات
-bind('.bind_dim_cabin', q.cabinSize);
+
 bind('.bind_dim_shaft', q.shaftSize);
 bind('.bind_pit',       q.pit);
 bind('.bind_oh',        q.oh);
 
 
 /* =================================================
-   (4) مخطط البئر والكابينة (العرض × العمق)
+   (4) مخطط البئر والكابينة – Factory Style
 ================================================= */
 
-/* =================================================
-   (4) مخطط البئر والكابينة (Shaft / Cabin Diagram)
-================================================= */
-
-// تحليل مقاس بئر المصعد
+// تفكيك مقاس البئر (HW × HD)
 if (q.shaftSize && q.shaftSize.includes('×')) {
-  const [shaftW, shaftD] = q.shaftSize.split('×').map(v => v.trim());
+  const [shaftW, shaftD] = q.shaftSize
+    .split('×')
+    .map(v => v.replace('mm', '').trim());
+
   bind('.bind_shaft_width', shaftW);
   bind('.bind_shaft_depth', shaftD);
 }
 
-// تحليل مقاس الكابينة
+// تفكيك مقاس الكابينة (CW × CD)
 if (q.cabinSize && q.cabinSize.includes('×')) {
-  const [cabinW, cabinD] = q.cabinSize.split('×').map(v => v.trim());
-  bind('.bind_cabin_width', cabinW);
-  bind('.bind_cabin_depth', cabinD);
+  const [cabinW, cabinD] = q.cabinSize
+    .split('×')
+    .map(v => v.replace('mm', '').trim());
+
+  bind('.bind_dim_cabin', `${cabinW} × ${cabinD}`);
 }
 
-// عناصر رأسية
+// القيم الرأسية
 bind('.bind_pit', q.pit);
 bind('.bind_oh',  q.oh);
+
 
 
 /* =================================================
@@ -1158,6 +1160,7 @@ bind('.bind_pay_5',  formatCurrency(total * 0.05, q.currency));
 
 </body>
 </html>
+
 
 
 
