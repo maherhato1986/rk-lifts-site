@@ -1278,8 +1278,9 @@ shaftRows.forEach((row, index) => {
         );
     }
 });
-
+const quoteNumber = `RKL-${new Date().getFullYear()}-${Date.now().toString().slice(-5)}`;
 lastQuoteSnapshot = {
+    quoteNumber,
     // =========================
     // بيانات عامة
     // =========================
@@ -1711,6 +1712,7 @@ document.getElementById("lifts_count").addEventListener("input", function () {
 
 </body>
 </html>
+
 
 
 
