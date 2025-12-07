@@ -1105,52 +1105,54 @@ bind('.bind_notes', c.notes);
    (3) البيانات الفنية
 ================================================= */
 
+/* =================================================
+   (3) البيانات الفنية الرئيسية
+================================================= */
+
 // المواصفات العامة
-bind('.bind_brand', q.brandLabel);
-bind('.bind_capacity', q.capacity);
-bind('.bind_speed', q.speed);
-bind('.bind_stops', q.floors);
-bind('.bind_lifts', q.liftsCount);
+bind('.bind_brand',        q.brandLabel);
+bind('.bind_capacity',     q.capacity);
+bind('.bind_speed',        q.speed);
+bind('.bind_floors',       q.floors);      // عدد التوقفات
+bind('.bind_lifts',        q.liftsCount);  // عدد المصاعد
 
 // النظام والتجهيزات
 bind('.bind_machine_type', q.machineType);
 bind('.bind_cabin_design', q.cabinDesign);
 bind('.bind_floor_finish', q.floorFinish);
 
-// المقاسات الأساسية
+// المقاسات
 bind('.bind_dim_cabin', q.cabinSize);
 bind('.bind_dim_shaft', q.shaftSize);
-bind('.bind_pit', q.pit);
-bind('.bind_oh', q.oh);
-bind('.bind_units_count', q.liftsCount);
+bind('.bind_pit',       q.pit);
+bind('.bind_oh',        q.oh);
 
 
 /* =================================================
    (4) مخطط البئر والكابينة (العرض × العمق)
 ================================================= */
 
-// تحليل مقاس البئر
+/* =================================================
+   (4) مخطط البئر والكابينة (Shaft / Cabin Diagram)
+================================================= */
+
+// تحليل مقاس بئر المصعد
 if (q.shaftSize && q.shaftSize.includes('×')) {
   const [shaftW, shaftD] = q.shaftSize.split('×').map(v => v.trim());
-
   bind('.bind_shaft_width', shaftW);
   bind('.bind_shaft_depth', shaftD);
-  bind('.bind_shaft_dimension', q.shaftSize);
 }
 
 // تحليل مقاس الكابينة
 if (q.cabinSize && q.cabinSize.includes('×')) {
   const [cabinW, cabinD] = q.cabinSize.split('×').map(v => v.trim());
-
   bind('.bind_cabin_width', cabinW);
   bind('.bind_cabin_depth', cabinD);
-  bind('.bind_cabin_dimension', q.cabinSize);
 }
 
-// عناصر إضافية للمخطط
-bind('.bind_pit_value', q.pit);
-bind('.bind_oh_value', q.oh);
-bind('.bind_stops_value', q.floors);
+// عناصر رأسية
+bind('.bind_pit', q.pit);
+bind('.bind_oh',  q.oh);
 
 
 /* =================================================
@@ -1190,6 +1192,7 @@ bind('.bind_pay_5',  formatCurrency(total * 0.05, q.currency));
 
 </body>
 </html>
+
 
 
 
