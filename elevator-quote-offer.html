@@ -901,7 +901,7 @@ const formatCurrency = (value, currency) => {
 
 bind('.bind_price_per_unit', formatCurrency(q.pricePerUnit, q.currency));
 bind('.bind_total_price', formatCurrency(q.totalPrice, q.currency));
-bind('.bind_total_with_vat', formatCurrency(q.totalPrice, q.currency));
+
 bind('.bind_vat_rate', q.vatRate);
     bind('.bind_price_unit', formatCurrency(q.pricePerUnit, q.currency));
     bind('.bind_total_with_vat', formatCurrency(q.totalPrice, q.currency));
@@ -925,6 +925,7 @@ bind('.bind_pay_5',  formatCurrency(total * 0.05, q.currency));
 
 </body>
 </html>
+
 
 
 
