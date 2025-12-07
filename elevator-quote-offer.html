@@ -670,51 +670,31 @@
       لم يتم العثور على عرض سعر محفوظ في السجل. الرجاء العودة إلى نموذج التسعير وحفظ عرض السعر أولاً.
     </div>
 </div>
+<script>
+(() => {
 
- <script>
-(function () {
+  const quote = JSON.parse(localStorage.getItem('rkl_selected_quote'));
+  if (!quote) return;
 
-  /* ========= أدوات مساعدة ========= */
-  function qs(sel) {
-    return document.querySelector(sel);
-  }
+  const bind = (selector, value) => {
+    const el = document.querySelector(selector);
+    if (el) el.textContent = value ?? '—';
+  };
 
-  function bind(selector, value) {
-    const el = qs(selector);
-    if (!el) return;
-    el.textContent = value ?? '-';
-  }
+  /* ===============================
+     (1) بيانات العرض العامة
+  =============================== */
+  bind('.bind_quote_number', quote.quoteNumber);
+  bind('.bind_offer_date', quote.date);
+  bind('.bind_project_name', quote.projectName);
 
-  function format(n) {
-    if (n === undefined || n === null || isNaN(n)) return '-';
-    return Number(n).toLocaleString('en-US', { minimumFractionDigits: 2 }) + ' SAR';
-  }
+  /* ===============================
+     (2) ملف العميل
+  =============================== */
+  const c = quote.customer || {};
 
-  /* ========= تحميل العرض المختار ========= */
-  const index = localStorage.getItem('rkl_current_quote_index');
-  const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
-
-  if (index === null || !quotes[index]) {
-    alert('لم يتم العثور على عرض السعر المختار');
-    return;
-  }
-
-  const q = quotes[index];
-
-  /* =================================================
-     (1) بيانات العرض
-  ================================================= */
-  bind('.bind_quote_number', q.quoteNumber);
-  bind('.bind_offer_date', q.timestamp?.slice(0, 10));
-  bind('.bind_project_name', q.projectName);
-  bind('.bind_customer_name', q.customerName);
-
-  /* =================================================
-     (2) بيانات العميل (من q.customer)
-  ================================================= */
-  const c = q.customer || {};
-
-  bind('.bind_customer_type', c.type);
+  bind('.bind_customer_name', c.customerName);
+  bind('.bind_customer_type', c.customerType);
   bind('.bind_contact_person', c.contactPerson);
   bind('.bind_id_number', c.idNumber);
   bind('.bind_cr_number', c.crNumber);
@@ -722,7 +702,8 @@
 
   bind('.bind_city', c.city);
   bind('.bind_district', c.district);
-  bind('.bind_street, .bind_building_no', c.street + ' / ' + c.buildingNo);
+  bind('.bind_street', c.street);
+  bind('.bind_building_no', c.buildingNo);
   bind('.bind_postal_code', c.postalCode);
   bind('.bind_full_address', c.fullAddress);
 
@@ -732,29 +713,49 @@
   bind('.bind_preferred_contact', c.preferredContact);
   bind('.bind_notes', c.notes);
 
-  /* =================================================
+  /* ===============================
      (3) البيانات الفنية
-  ================================================= */
-  bind('.bind_brand', q.brandLabel);
-  bind('.bind_capacity', q.capacity);
-  bind('.bind_speed', q.speed);
-  bind('.bind_floors', q.floors);
-  bind('.bind_lifts', q.liftsCount);
+  =============================== */
+  const t = quote.technical || {};
 
-  /* =================================================
-     (4) القيم المالية
-  ================================================= */
-  bind('.bind_total_with_vat', format(q.totalWithVat));
-  bind('.bind_vat_rate', (q.vatRate || 15) + '%');
-  bind('.bind_price_per_unit', format(q.totalWithVatPerLift));
+  bind('.bind_brand', t.brandLabel);
+  bind('.bind_system_type', t.systemType);
+  bind('.bind_capacity', t.capacity);
+  bind('.bind_speed', t.speed);
+  bind('.bind_stops', t.stops);
+  bind('.bind_lifts', t.liftsCount);
+
+  bind('.bind_cabin_dimension', t.cabinDimension);
+  bind('.bind_shaft_dimension', t.shaftDimension);
+  bind('.bind_pit', t.pit);
+  bind('.bind_oh', t.oh);
+  bind('.bind_cabin_design', t.cabinDesign);
+  bind('.bind_floor_finish', t.floorFinish);
+  bind('.bind_machine_type', t.machineType);
+
+  /* ===============================
+     (4) البيانات المالية
+  =============================== */
+  const f = quote.financial || {};
+  const fmt = v => v ? `${Number(v).toLocaleString()} SAR` : '—';
+
+  bind('.bind_price_per_unit', fmt(f.unitPrice));
+  bind('.bind_total_price', fmt(f.subTotal));
+  bind('.bind_vat_rate', (f.vatRate || 15) + '%');
+  bind('.bind_total_with_vat', fmt(f.totalWithVat));
+
+  bind('.bind_pay_50', fmt(f.payment50));
+  bind('.bind_pay_25', fmt(f.payment25));
+  bind('.bind_pay_20', fmt(f.payment20));
+  bind('.bind_pay_5',  fmt(f.payment5));
 
 })();
 </script>
 
 
-
 </body>
 </html>
+
 
 
 
