@@ -1278,7 +1278,33 @@ shaftRows.forEach((row, index) => {
         );
     }
 });
+        
 const quoteNumber = `RKL-${new Date().getFullYear()}-${Date.now().toString().slice(-5)}`;
+
+// ============================================
+// ✅ تجميع المقاسات بالتفصيل لكل مصعد
+// ============================================
+const selectedCabin = [];
+const selectedShaft = [];
+const selectedDoor  = [];
+const selectedPit   = [];
+const selectedOH    = [];
+
+shaftRows.forEach((row) => {
+    const shaft = row.querySelector(".shaft-select")?.value || '';
+    const cabin = row.querySelector(".cabin-cell")?.innerText || '';
+    const door  = row.querySelector(".door-cell")?.innerText || '';
+    const pit   = row.querySelector(".pit-cell")?.innerText || '';
+    const oh    = row.querySelector(".oh-cell")?.innerText || '';
+
+    if (cabin) selectedCabin.push(cabin);
+    if (shaft) selectedShaft.push(shaft);
+    if (door)  selectedDoor.push(door);
+    if (pit)   selectedPit.push(pit);
+    if (oh)    selectedOH.push(oh);
+});
+        
+        
 lastQuoteSnapshot = {
     quoteNumber,
 
@@ -1720,6 +1746,7 @@ document.getElementById("lifts_count").addEventListener("input", function () {
 
 </body>
 </html>
+
 
 
 
