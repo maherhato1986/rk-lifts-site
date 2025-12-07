@@ -566,9 +566,11 @@
     <th>المدينة</th>
 
     <th>اسم المشروع</th>
-    <th>المواصفات</th>
-    <th>عدد المصاعد</th>
-    <th>الإجمالي (شامل)</th>
+   <th>المواصفات</th>
+<th>مقاسات المصاعد</th>
+<th>عدد المصاعد</th>
+<th>الإجمالي (شامل)</th>
+
 </tr>
 </thead>
 
@@ -792,9 +794,16 @@ const cols = [
 
     q.projectName || '',
     `${q.brandLabel || q.brandKey} / ${q.capacity} / ${q.speed}`,
+
+    // ✅ عمود المقاسات
+    (q.shaftsSummary && q.shaftsSummary.length)
+        ? q.shaftsSummary.join(' | ')
+        : '—',
+
     q.liftsCount || '',
     totalStr
 ];
+
 
 
         cols.forEach(val => {
@@ -1254,7 +1263,23 @@ const directCostSarFinal = directCostSar + cabinExtraCost;
 
         const brandLabel = BRAND_SOURCES[brandKey]?.label || brandKey;
 
- lastQuoteSnapshot = {
+// ✅ استخراج المقاسات من جدول المصاعد
+const shaftRows = document.querySelectorAll("#shaft-table tbody tr");
+const shaftsSummary = [];
+
+shaftRows.forEach((row, index) => {
+    const shaft = row.querySelector(".shaft-select")?.value || "";
+    const cabin = row.querySelector(".cabin-cell")?.innerText || "";
+    const door  = row.querySelector(".door-cell")?.innerText || "";
+
+    if (shaft || cabin || door) {
+        shaftsSummary.push(
+            `مصعد ${index + 1}: بئر ${shaft} | كابين ${cabin} | باب ${door}`
+        );
+    }
+});
+
+lastQuoteSnapshot = {
     timestamp: new Date().toISOString(),
     customerName: finalCustomerName,
     projectName: projectName,
@@ -1264,6 +1289,7 @@ const directCostSarFinal = directCostSar + cabinExtraCost;
     speed: speed + ' m/s',
     floors,
     liftsCount,
+    shaftsSummary: shaftsSummary, // ✅ هنا الإضافة المهمة
     totalWithVat: result.totalWithVat,
     currency,
     vatRate,
@@ -1633,6 +1659,7 @@ document.getElementById("lifts_count").addEventListener("input", function () {
 
 </body>
 </html>
+
 
 
 
