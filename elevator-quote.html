@@ -1231,8 +1231,7 @@ const directCostSarFinal = directCostSar + cabinExtraCost;
 
         const brandLabel = BRAND_SOURCES[brandKey]?.label || brandKey;
 
-  lastQuoteSnapshot = {
-    quoteNumber, // ✅ أضف هذا
+ lastQuoteSnapshot = {
     timestamp: new Date().toISOString(),
     customerName: finalCustomerName,
     projectName: projectName,
@@ -1611,6 +1610,7 @@ document.getElementById("lifts_count").addEventListener("input", function () {
 
 </body>
 </html>
+
 
 
 
