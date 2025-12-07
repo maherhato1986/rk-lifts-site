@@ -667,7 +667,7 @@
 <div style="text-align:center; margin-top:10px;">
     <button class="btn-print" onclick="window.print()">طباعة / حفظ PDF</button>
     <div id="warn_no_data" class="warning" style="display:none;">
-        لم يتم العثور على بيانات عرض أخير (rkl_last_offer). الرجاء العودة إلى نموذج التسعير وحفظ عرض السعر أولاً.
+      لم يتم العثور على عرض سعر محفوظ في السجل. الرجاء العودة إلى نموذج التسعير وحفظ عرض السعر أولاً.
     </div>
 </div>
 
@@ -705,7 +705,7 @@ function format(amount) {
         return;
     }
 
-    const q = quotes[Number(index)];
+    
     if (!q) return;
 const tbody = document.querySelector('#shafts-table tbody');
 (q.shafts || []).forEach(row => {
@@ -723,14 +723,14 @@ const tbody = document.querySelector('#shafts-table tbody');
 /* =================================================
    (0) تحميل العرض المختار
 ================================================= */
-const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || []);
+
 
 const index =
     localStorage.getItem('rkl_current_quote_index') !== null
         ? Number(localStorage.getItem('rkl_current_quote_index'))
         : quotes.length - 1;
-
 const q = quotes[index];
+
 
 if (!q) {
     console.warn('No quote data found');
@@ -786,8 +786,14 @@ bind('.bind_lifts', q.liftsCount);
 ================================================= */
 bind('.bind_cabin_dimension', q.cabinDimension);
 bind('.bind_shaft_dimension', q.shaftDimension);
+    if (q.shaftDimension && q.shaftDimension.includes('x')) {
+    const [w, d] = q.shaftDimension.split('x').map(v => v.trim());
+    bind('.bind_shaft_width', w);
+    bind('.bind_shaft_depth', d);
+}
+
 bind('.bind_pit', q.pit);
-bind('.bind_oh', q.overHead);
+bind('.bind_oh', q.oh);
 
 /* =================================================
    (5) التشطيبات والمواصفات الجمالية
@@ -820,6 +826,7 @@ bind('.bind_pay_5',  format(q.payment5));
 
 </body>
 </html>
+
 
 
 
