@@ -271,6 +271,16 @@
         <input type="text" id="project_name" placeholder="مثال: مشروع مبنى المكاتب - الرياض" />
     </div>
 </div>
+                    <div class="card" id="customer-details-card" style="display:none; margin-top:10px;">
+    <div class="card-header">
+        <h2>بيانات العميل</h2>
+    </div>
+
+    <div class="form-grid" id="customer-details">
+        <!-- تُملأ تلقائيًا -->
+    </div>
+</div>
+
 
 
 
@@ -629,19 +639,22 @@ const CABIN_DESIGN_ADDITIONAL = {
     }
 
     function applyCustomerToForm(customer) {
-        selectedCustomer = customer || null;
+    selectedCustomer = customer || null;
 
-        const nameInput = document.getElementById('customer_name');
+    if (customer) {
+        document.getElementById('customer_name').value = customer.customer_name || '';
+
         const projectInput = document.getElementById('project_name');
-
-        if (customer) {
-            if (nameInput) nameInput.value = customer.customer_name || '';
-            if (projectInput && !projectInput.value) {
-                const city = customer.city ? ` - ${customer.city}` : '';
-                projectInput.value = `مشروع مصاعد للعميل ${customer.customer_name || ''}${city}`;
-            }
+        if (projectInput && !projectInput.value) {
+            projectInput.value = `مشروع للعميل ${customer.customer_name}`;
         }
+
+        renderCustomerDetails(customer); // ✅ هنا الإضافة
+    } else {
+        renderCustomerDetails(null);
     }
+}
+
 
         // ========================== تخزين عروض الأسعار في LocalStorage ==========================
 
@@ -1202,17 +1215,19 @@ const directCostSarFinal = directCostSar + cabinExtraCost;
         const customerSelect = document.getElementById('customer_select');
         if (customerSelect) {
             customerSelect.addEventListener('change', () => {
-                const idx = customerSelect.value;
-                if (idx === '') {
-                    selectedCustomer = null;
-                    return;
-                }
-                const customers = loadStoredCustomers();
-                const customer = customers[Number(idx)];
-                if (customer) {
-                    applyCustomerToForm(customer);
-                }
-            });
+    const idx = customerSelect.value;
+
+    if (idx === '') {
+        selectedCustomer = null;
+        renderCustomerDetails(null);
+        return;
+    }
+
+    const customers = loadStoredCustomers();
+    const customer = customers[Number(idx)];
+    applyCustomerToForm(customer);
+});
+
         }
 
     document.getElementById("printOfferButton").addEventListener("click", function () {
@@ -1529,6 +1544,7 @@ document.getElementById("lifts_count").addEventListener("input", function () {
 
 </body>
 </html>
+
 
 
 
