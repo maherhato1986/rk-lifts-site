@@ -549,18 +549,29 @@
                     <table id="quotes-table">
                         <thead>
                           <tr>
-    <th>اختيار</th>
+   <thead>
+<tr>
+    <th>✓</th>
     <th>#</th>
-    <th>رقم عرض السعر</th>
+    <th>رقم العرض</th>
     <th>التاريخ</th>
-    <th>اسم العميل</th>
-    <th>اسم المشروع</th>
-    <th>الماركة / السعة / السرعة</th>
-    <th>عدد المصاعد</th>
-    <th>الإجمالي شامل الضريبة</th>
-</tr>
 
-                        </thead>
+    <th>اسم العميل</th>
+    <th>نوعه</th>
+    <th>الشخص المسؤول</th>
+    <th>الجوال</th>
+    <th>البريد</th>
+    <th>السجل التجاري</th>
+    <th>الرقم الضريبي</th>
+    <th>المدينة</th>
+
+    <th>اسم المشروع</th>
+    <th>المواصفات</th>
+    <th>عدد المصاعد</th>
+    <th>الإجمالي (شامل)</th>
+</tr>
+</thead>
+
                         <tbody>
                             <!-- سيتم تعبئته تلقائيًا من JavaScript -->
                         </tbody>
@@ -763,16 +774,28 @@ const CABIN_DESIGN_ADDITIONAL = {
         const totalStr = formatCurrency(q.totalWithVat, q.currency || 'SAR');
 
         // 🟩 2) باقي الأعمدة
-        const cols = [
-            index + 1,
-            q.quoteNumber || '',
-            dateStr,
-            q.customerName || '',
-            q.projectName || '',
-            `${q.brandLabel || q.brandKey || ''} / ${q.capacity || ''} / ${q.speed || ''}`,
-            q.liftsCount || '',
-            totalStr
-        ];
+        const cd = q.customerDetails || {};
+
+const cols = [
+    index + 1,
+    q.quoteNumber || '',
+    dateStr,
+
+    q.customerName || '',
+    cd.customer_type || '',
+    cd.contact_person || '',
+    cd.mobile || '',
+    cd.email || '',
+    cd.cr_number || '',
+    cd.tax_number || '',
+    cd.city || '',
+
+    q.projectName || '',
+    `${q.brandLabel || q.brandKey} / ${q.capacity} / ${q.speed}`,
+    q.liftsCount || '',
+    totalStr
+];
+
 
         cols.forEach(val => {
             const td = document.createElement('td');
@@ -1610,6 +1633,7 @@ document.getElementById("lifts_count").addEventListener("input", function () {
 
 </body>
 </html>
+
 
 
 
