@@ -671,100 +671,115 @@
     </div>
 </div>
 <script>
-(() => {
+/* =================================================
+   Helper: bind text safely
+================================================= */
+const bind = (selector, value) => {
+  const el = document.querySelector(selector);
+  if (el) el.textContent = (value !== undefined && value !== null && value !== '') ? value : '—';
+};
 
-  const quote = JSON.parse(localStorage.getItem('rkl_selected_quote'));
-  if (!quote) return;
+/* =================================================
+   تحميل عرض السعر من LocalStorage
+================================================= */
+const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
+const currentIndex = localStorage.getItem('rkl_current_quote_index');
+const q = quotes[currentIndex ?? quotes.length - 1];
 
-  const bind = (selector, value) => {
-    const el = document.querySelector(selector);
-    if (el) el.textContent = value ?? '—';
-  };
+if (!q) {
+  alert('لا يوجد عرض سعر لعرضه');
+}
 
-  /* ===============================
-     (1) بيانات العرض العامة
-  =============================== */
-  bind('.bind_quote_number', quote.quoteNumber);
-  bind('.bind_offer_date', quote.date);
-  bind('.bind_project_name', quote.projectName);
+/* =================================================
+   (1) بيانات العرض العامة
+================================================= */
+bind('.bind_quote_number', q.quoteNumber);
+bind('.bind_offer_date', q.timestamp?.slice(0, 10));
+bind('.bind_customer_name', q.customerName);
+bind('.bind_project_name', q.projectName);
 
-  /* ===============================
-     (2) ملف العميل
-  =============================== */
-  const c = quote.customer || {};
+/* =================================================
+   (2) ملف العميل
+================================================= */
+const c = q.customerDetails || {};
 
-  bind('.bind_customer_name', c.customerName);
-  bind('.bind_customer_type', c.customerType);
-  bind('.bind_contact_person', c.contactPerson);
-  bind('.bind_id_number', c.idNumber);
-  bind('.bind_cr_number', c.crNumber);
-  bind('.bind_tax_number', c.taxNumber);
+bind('.bind_customer_type', c.customer_type);
+bind('.bind_contact_person', c.contact_person);
+bind('.bind_id_number', c.id_number);
+bind('.bind_cr_number', c.cr_number);
+bind('.bind_tax_number', c.tax_number);
 
-  bind('.bind_city', c.city);
-  bind('.bind_district', c.district);
-  bind('.bind_street', c.street);
-  bind('.bind_building_no', c.buildingNo);
-  bind('.bind_postal_code', c.postalCode);
-  bind('.bind_full_address', c.fullAddress);
+bind('.bind_city', c.city);
+bind('.bind_district', c.district);
+bind('.bind_street', c.street);
+bind('.bind_building_no', c.building_no);
+bind('.bind_postal_code', c.postal_code);
+bind('.bind_full_address', c.full_address);
 
-  bind('.bind_mobile', c.mobile);
-  bind('.bind_phone', c.phone);
-  bind('.bind_email', c.email);
-  bind('.bind_preferred_contact', c.preferredContact);
-  bind('.bind_notes', c.notes);
+bind('.bind_mobile', c.mobile);
+bind('.bind_phone', c.phone);
+bind('.bind_email', c.email);
+bind('.bind_preferred_contact', q.preferredContact);
+bind('.bind_notes', c.notes);
 
-  /* ===============================
-     (3) البيانات الفنية
-  =============================== */
-  const t = quote.technical || {};
+/* =================================================
+   (3) البيانات الفنية
+================================================= */
+bind('.bind_brand', q.brandLabel);
+bind('.bind_capacity', q.capacity);
+bind('.bind_speed', q.speed);
+bind('.bind_stops', q.floors);
+bind('.bind_lifts', q.liftsCount);
 
-  bind('.bind_brand', t.brandLabel);
-  bind('.bind_system_type', t.systemType);
-  bind('.bind_capacity', t.capacity);
-  bind('.bind_speed', t.speed);
-  bind('.bind_stops', t.stops);
-  bind('.bind_lifts', t.liftsCount);
+bind('.bind_machine_type', q.machineType);
+bind('.bind_cabin_design', q.cabinDesign);
+bind('.bind_floor_finish', q.floorFinish);
 
-  bind('.bind_cabin_dimension', t.cabinDimension);
-  bind('.bind_shaft_dimension', t.shaftDimension);
-  bind('.bind_pit', t.pit);
-  bind('.bind_oh', t.oh);
-  bind('.bind_cabin_design', t.cabinDesign);
-  bind('.bind_floor_finish', t.floorFinish);
-  bind('.bind_machine_type', t.machineType);
-    bind('.bind_dim_cabin', q.cabinSize);
+bind('.bind_dim_cabin', q.cabinSize);
 bind('.bind_dim_shaft', q.shaftSize);
+bind('.bind_pit', q.pit);
+bind('.bind_oh', q.oh);
 
-// استخراج العرض × العمق لو كانت بصيغة "2000 × 1600"
+/* =================================================
+   (4) مخطط البئر (العرض × العمق)
+================================================= */
 if (q.shaftSize && q.shaftSize.includes('×')) {
-  const [w, d] = q.shaftSize.split('×').map(s => s.trim());
+  const [w, d] = q.shaftSize.split('×').map(v => v.trim());
   bind('.bind_shaft_width', w);
   bind('.bind_shaft_depth', d);
 }
 
+/* =================================================
+   (5) الأسعار
+================================================= */
+const formatCurrency = (value, currency) => {
+  if (value === undefined || value === null) return '—';
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currency || 'SAR'
+  }).format(value);
+};
 
-  /* ===============================
-     (4) البيانات المالية
-  =============================== */
-  const f = quote.financial || {};
-  const fmt = v => v ? `${Number(v).toLocaleString()} SAR` : '—';
+bind('.bind_price_per_unit', formatCurrency(q.pricePerUnit, q.currency));
+bind('.bind_total_price', formatCurrency(q.totalPrice, q.currency));
+bind('.bind_total_with_vat', formatCurrency(q.totalPrice, q.currency));
+bind('.bind_vat_rate', q.vatRate);
 
-  bind('.bind_price_per_unit', fmt(f.unitPrice));
-  bind('.bind_total_price', fmt(f.subTotal));
-  bind('.bind_vat_rate', (f.vatRate || 15) + '%');
-  bind('.bind_total_with_vat', fmt(f.totalWithVat));
+/* =================================================
+   (6) جدول الدفعات
+================================================= */
+const total = q.totalPrice || 0;
 
-  bind('.bind_pay_50', fmt(f.payment50));
-  bind('.bind_pay_25', fmt(f.payment25));
-  bind('.bind_pay_20', fmt(f.payment20));
-  bind('.bind_pay_5',  fmt(f.payment5));
-
-})();
+bind('.bind_pay_50', formatCurrency(total * 0.50, q.currency));
+bind('.bind_pay_25', formatCurrency(total * 0.25, q.currency));
+bind('.bind_pay_20', formatCurrency(total * 0.20, q.currency));
+bind('.bind_pay_5',  formatCurrency(total * 0.05, q.currency));
 </script>
 
 
 </body>
 </html>
+
 
 
 
