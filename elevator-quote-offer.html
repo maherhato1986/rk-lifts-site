@@ -5,7 +5,7 @@
 
 /* ===============================
    إعدادات الطباعة A4
-================================ */
+===============================*/
 @media print {
   @page {
     size: A4;
@@ -14,19 +14,18 @@
 
   body {
     margin: 0;
+    padding: 0;
+    background: #ffffff;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
-    font-family: 'Cairo', 'Tajawal', Arial, sans-serif;
-    background: #ffffff;
-    padding: 0;
+    font-family: "Cairo","Tajawal",Arial,sans-serif;
   }
 
   .page {
     page-break-after: always;
-    position: relative;
     min-height: 297mm;
-    margin: 0;
     width: 100%;
+    margin: 0;
     box-shadow: none;
   }
 
@@ -36,8 +35,8 @@
 }
 
 /* ===============================
-   Watermark الشعار
-================================ */
+   خلفية الشعار (Watermark)
+===============================*/
 .page::before {
   content: "";
   position: absolute;
@@ -58,8 +57,8 @@
 }
 
 /* ===============================
-   تنسيقات عامة
-================================ */
+   تنسيقات العرض على الشاشة
+===============================*/
 body {
   font-family: "Cairo", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: #f3f4f6;
@@ -67,256 +66,221 @@ body {
   padding: 20px;
   color: #111827;
 }
+
+.page {
+  max-width: 900px;
+  margin: 0 auto 30px auto;
+  background: #ffffff;
+  box-shadow: 0 0 8px rgba(15,23,42,0.08);
+  padding: 25px 35px;
+  position: relative;
+}
+
+/* ===============================
+   Header
+===============================*/
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+}
+
+.logo-box {
+  text-align: right;
+  font-size: 12px;
+}
+
+.logo-title {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.logo-sub {
+  font-size: 11px;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+.offer-meta {
+  text-align: left;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+/* ===============================
+   العناوين والجداول
+===============================*/
+h1.main-title {
+  text-align: center;
+  font-size: 18px;
+  margin: 8px 0 15px;
+}
+
+.section-title {
+  font-weight: 700;
+  font-size: 14px;
+  margin: 18px 0 8px;
+  border-right: 4px solid #2563eb;
+  padding-right: 6px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+th, td {
+  border: 1px solid #d1d5db;
+  padding: 6px 8px;
+  vertical-align: top;
+}
+
+th {
+  background: #f9fafb;
+  font-weight: 600;
+}
+
+/* ===============================
+   جداول المواصفات
+===============================*/
+.spec-table th:nth-child(1),
+.spec-table td:nth-child(1) {
+  width: 6%;
+  text-align: center;
+}
+
+.spec-table th:nth-child(2),
+.spec-table td:nth-child(2) {
+  width: 44%;
+}
+
+.spec-table th:nth-child(3),
+.spec-table td:nth-child(3) {
+  width: 18%;
+  text-align: center;
+}
+
+.spec-table th:nth-child(4),
+.spec-table td:nth-child(4) {
+  width: 32%;
+}
+
+/* ===============================
+   تقسيمات وملاحظات
+===============================*/
+.two-col {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.small-note {
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+.terms p {
+  font-size: 11.5px;
+  margin: 4px 0;
+  text-align: justify;
+}
+
+.signature-row {
+  margin-top: 25px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+/* ===============================
+   رسم المخطط
+===============================*/
+.diagram-container {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+}
+
+.shaft {
+  position: relative;
+  border: 2px solid #4b5563;
+  width: 260px;
+  height: 340px;
+  background: #f9fafb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cabin {
+  border: 2px solid #10b981;
+  background: #ecfdf5;
+  width: 65%;
+  height: 55%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  text-align: center;
+}
+
+.dim-label {
+  position: absolute;
+  font-size: 11px;
+  background: rgba(255,255,255,0.9);
+  padding: 1px 4px;
+}
+
+.dim-top {
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.dim-right {
+  right: -5px;
+  top: 50%;
+  transform: translate(100%, -50%) rotate(-90deg);
+  transform-origin: left top;
+}
+
+.caption {
+  font-size: 11px;
+  text-align: center;
+  margin-top: 6px;
+  color: #4b5563;
+}
+
+/* ===============================
+   زر الطباعة + الترقيم
+===============================*/
+.btn-print {
+  display: inline-block;
+  margin: 10px auto 0;
+  padding: 8px 18px;
+  font-size: 13px;
+  background: #2563eb;
+  color: #ffffff;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+}
+
+.page-index {
+  position: absolute;
+  left: 35px;
+  bottom: 8px;
+  font-size: 11px;
+  color: #9ca3af;
+}
+
 </style>
 
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 400px;
-  height: 400px;
-  background: url("rk-lifts-site/logo.png") no-repeat center;
-  background-size: contain;
-  opacity: 0.05;
-  transform: translate(-50%, -50%);
-  z-index: 0;
-}
-
-.page > * {
-  position: relative;
-  z-index: 1;
-}
-
-        body {
-            font-family: "Cairo", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: #f3f4f6;
-            margin: 0;
-            padding: 20px;
-            color: #111827;
-        }
-
-        .page {
-            max-width: 900px;
-            margin: 0 auto 30px auto;
-            background: #ffffff;
-            box-shadow: 0 0 8px rgba(15,23,42,0.08);
-            padding: 25px 35px;
-            position: relative;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            border-bottom: 2px solid #e5e7eb;
-            padding-bottom: 8px;
-            margin-bottom: 10px;
-        }
-
-        .logo-box {
-            text-align: right;
-            font-size: 12px;
-        }
-
-        .logo-title {
-            font-weight: 700;
-            font-size: 18px;
-        }
-
-        .logo-sub {
-            font-size: 11px;
-            color: #6b7280;
-            line-height: 1.5;
-        }
-
-        .offer-meta {
-            text-align: left;
-            font-size: 11px;
-            line-height: 1.6;
-        }
-
-        h1.main-title {
-            text-align: center;
-            font-size: 18px;
-            margin: 8px 0 15px;
-        }
-
-        .section-title {
-            font-weight: 700;
-            font-size: 14px;
-            margin: 18px 0 8px;
-            border-right: 4px solid #2563eb;
-            padding-right: 6px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-        }
-
-        th, td {
-            border: 1px solid #d1d5db;
-            padding: 6px 8px;
-            vertical-align: top;
-        }
-
-        th {
-            background: #f9fafb;
-            font-weight: 600;
-        }
-
-        .two-col {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px;
-        }
-
-        .editable {
-            outline: none;
-        }
-
-        .small-note {
-            font-size: 11px;
-            color: #6b7280;
-            margin-top: 4px;
-        }
-
-        .terms p {
-            font-size: 11.5px;
-            margin: 4px 0;
-            text-align: justify;
-        }
-
-        .signature-row {
-            margin-top: 25px;
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-        }
-
-        .btn-print {
-            display: inline-block;
-            margin: 10px auto 0;
-            padding: 8px 18px;
-            font-size: 13px;
-            background: #2563eb;
-            color: #fff;
-            border-radius: 4px;
-            border: none;
-            cursor: pointer;
-        }
-
-        .warning {
-            color: #b91c1c;
-            font-size: 11.5px;
-            margin-top: 8px;
-        }
-
-        .page-index {
-            position: absolute;
-            left: 35px;
-            bottom: 8px;
-            font-size: 11px;
-            color: #9ca3af;
-        }
-
-        .spec-table th:nth-child(1),
-        .spec-table td:nth-child(1) {
-            width: 6%;
-            text-align: center;
-        }
-
-        .spec-table th:nth-child(2),
-        .spec-table td:nth-child(2) {
-            width: 44%;
-        }
-
-        .spec-table th:nth-child(3),
-        .spec-table td:nth-child(3) {
-            width: 18%;
-            text-align: center;
-        }
-
-        .spec-table th:nth-child(4),
-        .spec-table td:nth-child(4) {
-            width: 32%;
-        }
-
-        /* صفحة المخطط */
-        .diagram-container {
-            margin-top: 15px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .shaft {
-            position: relative;
-            border: 2px solid #4b5563;
-            width: 260px;
-            height: 340px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #f9fafb;
-        }
-
-        .cabin {
-            border: 2px solid #10b981;
-            background: #ecfdf5;
-            width: 65%;
-            height: 55%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            text-align: center;
-        }
-
-        .dim-label {
-            position: absolute;
-            font-size: 11px;
-            color: #111827;
-            background: rgba(255,255,255,0.9);
-            padding: 1px 4px;
-        }
-
-        .dim-top {
-            top: -18px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .dim-right {
-            right: -5px;
-            top: 50%;
-            transform: translate(100%, -50%) rotate(-90deg);
-            transform-origin: left top;
-        }
-
-        .caption {
-            font-size: 11px;
-            text-align: center;
-            margin-top: 6px;
-            color: #4b5563;
-        }
-
-        @media print {
-            body {
-                background: #ffffff;
-                padding: 0;
-            }
-            .page {
-                margin: 0;
-                width: 100%;
-                box-shadow: none;
-                page-break-after: always;
-            }
-            .btn-print {
-                display: none;
-            }
-        }
-    </style>
 </head>
 <body>
 
@@ -961,6 +925,7 @@ bind('.bind_pay_5',  formatCurrency(total * 0.05, q.currency));
 
 </body>
 </html>
+
 
 
 
