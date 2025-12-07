@@ -6,6 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <style>
+        .page::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 400px;
+  height: 400px;
+  background: url("rk-lifts-site/logo.png") no-repeat center;
+  background-size: contain;
+  opacity: 0.05;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+}
+
+.page > * {
+  position: relative;
+  z-index: 1;
+}
+
         body {
             font-family: "Cairo", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             background: #f3f4f6;
@@ -871,10 +890,40 @@ bind('.bind_pay_20', formatCurrency(total * 0.20, q.currency));
 bind('.bind_pay_5',  formatCurrency(total * 0.05, q.currency));
 </script>
 
+    <style>
+/* ===============================
+   إعدادات الطباعة A4
+================================ */
+@media print {
+  @page {
+    size: A4;
+    margin: 20mm 15mm 20mm 15mm;
+  }
+
+  body {
+    margin: 0;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    font-family: 'Cairo', 'Tajawal', Arial, sans-serif;
+  }
+
+  .page {
+    page-break-after: always;
+    position: relative;
+    min-height: 297mm;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
+</style>
+
 
 
 </body>
 </html>
+
 
 
 
