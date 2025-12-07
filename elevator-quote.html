@@ -1345,6 +1345,7 @@ lastQuoteSnapshot = {
        4) مواصفات فنية
     ========================= */
     machineType: model?.machineType || 'MRL – Traction',
+    stops: floors || '',
 
     /* =========================
        5) السعر
@@ -1354,6 +1355,15 @@ lastQuoteSnapshot = {
     currency: currency || 'SAR',
     vatRate: vatRate || 0.15,
     includeVat: includeVat === true,
+    pricePerUnit: liftsCount
+    ? (result.totalWithVat / liftsCount)
+    : result.totalWithVat,
+    payments: {
+    advance50: result.totalWithVat * 0.50,
+    mechanical25: result.totalWithVat * 0.25,
+    electrical20: result.totalWithVat * 0.20,
+    handover5: result.totalWithVat * 0.05
+  },
 
     /* =========================
        6) بيانات العميل الموسعة
@@ -1746,6 +1756,7 @@ document.getElementById("lifts_count").addEventListener("input", function () {
 
 </body>
 </html>
+
 
 
 
