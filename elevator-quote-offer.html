@@ -335,67 +335,70 @@
 </div>
 
 <!-- ================= صفحة 2: مشاريع وخبرة RKL ================= -->
+<!-- ================= صفحة 2: نطاق أعمال RKL داخل المملكة ================= -->
 <div class="page">
-    <div class="header">
-        <div class="logo-box">
-            <div class="logo-title">مشاريع وخبرة مؤسسة RKL</div>
-            <div class="logo-sub">Elevator Installations & Maintenance Projects in Saudi Arabia</div>
-        </div>
-        <div class="offer-meta">
-            <div>العميل: <span class="bind_customer_name">—</span></div>
-            <div>المشروع: <span class="bind_project_name">—</span></div>
-        </div>
+  <div class="header">
+    <div class="logo-box">
+      <div class="logo-title">نطاق أعمال مؤسسة RKL داخل المملكة</div>
+      <div class="logo-sub">RKL Coverage & Experience in Saudi Arabia</div>
+    </div>
+    <div class="offer-meta">
+      <div>Offer No: <span class="bind_quote_number">—</span></div>
+      <div>Date: <span class="bind_offer_date">—</span></div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <!-- الخريطة -->
+    <div>
+      <div id="ksaMap" style="height:360px;border-radius:10px;"></div>
+      <div class="caption">
+        التوزيع الجغرافي لأعمال RKL داخل المملكة العربية السعودية
+      </div>
     </div>
 
-    <div class="section-title">١) ملخص خبرة RKL في المملكة</div>
-    <p class="small-note editable" contenteditable="true">
-        نفذت مؤسسة RKL عددًا من مشاريع المصاعد في مختلف مناطق المملكة، تشمل مباني حكومية، ومجمعات سكنية،
-        ومراكز تجارية، ومستشفيات، ومدارس. يوضح الجدول التالي نموذجًا لبعض المشاريع المرجعية، ويمكن تعديله
-        حسب متطلبات كل عرض سعر.
-    </p>
+    <!-- النبذة -->
+    <div>
+      <div class="section-title">نبذة عن RKL</div>
+      <p class="small-note">
+        مؤسسة آر كي ال RKL للمصاعد والسلالم الكهربائية هي مؤسسة سعودية متخصصة في
+        توريد وتركيب وصيانة المصاعد، نفذت أعمالها في عدد من مدن المملكة وفق أعلى
+        معايير الجودة والسلامة.
+      </p>
 
-    <div class="section-title">٢) عينة من مشاريع RKL (قابلة للتعديل)</div>
-    <table>
-        <thead>
-        <tr>
-            <th style="width: 6%;">#</th>
-            <th style="width: 34%;">اسم المشروع</th>
-            <th style="width: 20%;">المدينة</th>
-            <th style="width: 20%;">نوع العمل</th>
-            <th style="width: 20%;">عدد المصاعد</th>
-        </tr>
-        </thead>
-        <tbody class="editable" contenteditable="true">
-        <tr>
-            <td>1</td>
-            <td>مشروع مصاعد مباني القطاع الشرقي</td>
-            <td>الدمام</td>
-            <td>توريد وتركيب</td>
-            <td>8 مصاعد ركاب</td>
-        </tr>
-        <tr>
-            <td>2</td>
-            <td>مشروع مباني تعليم المدينة – الحرة الشرقية</td>
-            <td>المدينة المنورة</td>
-            <td>استبدال وتحديث</td>
-            <td>4 مصاعد ركاب</td>
-        </tr>
-        <tr>
-            <td>3</td>
-            <td>مشروع أبراج سكنية خاصة</td>
-            <td>الرياض</td>
-            <td>توريد وتركيب وصيانة</td>
-            <td>10 مصاعد</td>
-        </tr>
-        </tbody>
-    </table>
+      <hr>
 
-    <div class="small-note editable" contenteditable="true">
-        يمكن لمندوب المبيعات تعديل المشاريع أعلاه أو إضافة مشاريع جديدة لتناسب نوع القطاع (سكني، تجاري، طبي، مدارس، إلخ).
+      <p class="small-note">
+        <strong>About RKL</strong><br>
+        RKL Elevators & Escalators is a Saudi-based company specialized in the
+        supply, installation, and maintenance of elevators, with projects
+        executed across multiple Saudi cities in compliance with international
+        quality and safety standards.
+      </p>
     </div>
+  </div>
 
-    <div class="page-index">Page 2</div>
+  <div class="section-title" style="margin-top:18px;">
+    ملخص عدد المصاعد المنفذة حسب المدن
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>المدينة</th>
+        <th>City</th>
+        <th>عدد المصاعد</th>
+        <th>Elevators</th>
+      </tr>
+    </thead>
+    <tbody id="citiesTable">
+      <!-- يتم تعبئته تلقائيًا من rkl-summary.js -->
+    </tbody>
+  </table>
+
+  <div class="page-index">Page 2</div>
 </div>
+
 
 <!-- ================= صفحة 3: المواصفات الفنية العامة ================= -->
 <div class="page">
@@ -670,6 +673,9 @@
       لم يتم العثور على عرض سعر محفوظ في السجل. الرجاء العودة إلى نموذج التسعير وحفظ عرض السعر أولاً.
     </div>
 </div>
+    <script src="/public/rkl-map.js"></script>
+<script src="/public/rkl-summary.js"></script>
+
 <script>
 /* =================================================
    Helper: bind text safely
@@ -791,6 +797,7 @@ bind('.bind_pay_5',  formatCurrency(total * 0.05, q.currency));
 
 </body>
 </html>
+
 
 
 
