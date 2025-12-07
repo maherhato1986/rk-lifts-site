@@ -1281,54 +1281,60 @@ shaftRows.forEach((row, index) => {
 const quoteNumber = `RKL-${new Date().getFullYear()}-${Date.now().toString().slice(-5)}`;
 lastQuoteSnapshot = {
     quoteNumber,
-    // =========================
-    // بيانات عامة
-    // =========================
+
+    /* =========================
+       1) بيانات عامة
+    ========================= */
     timestamp: new Date().toISOString(),
-    customerName: finalCustomerName,
-    projectName: projectName,
+    customerName: finalCustomerName || '',
+    projectName: projectName || '',
 
     brandKey,
     brandLabel,
 
-    capacity: capacity + ' kg',
-    speed: speed + ' m/s',
-    floors,
-    liftsCount,
+    capacity: capacity ? (capacity + ' kg') : '',
+    speed: speed ? (speed + ' m/s') : '',
+    floors: floors || '',
+    liftsCount: liftsCount || 1,
 
-    // =========================
-    // المقاسات (ملخص + تفصيلي)
-    // =========================
-    shaftsSummary: shaftsSummary,   // ملخص لكل مصعد (للعرض النصي)
-    cabinSize: selectedCabin,       // مقاس الكابينة
-    shaftSize: selectedShaft,       // مقاس البئر
-    pit: selectedPit,               // Pit
-    oh: selectedOH,                 // OH
-    doors: selectedDoor,            // Door size
+    /* =========================
+       2) المقاسات – (مطابق لواجهة العرض)
+    ========================= */
+    shaftsSummary: shaftsSummary || '',
 
-    // =========================
-    // التشطيب
-    // =========================
-    cabinDesign: document.getElementById("cabin_design").value || 'Standard',
-    floorFinish: document.getElementById("floor_finish").value || 'Standard',
+    // تظهر في Page 3 + Page 4
+    cabinSize: Array.isArray(selectedCabin) ? selectedCabin.join(' | ') : (selectedCabin || ''),
+    shaftSize: Array.isArray(selectedShaft) ? selectedShaft.join(' | ') : (selectedShaft || ''),
+    doors:     Array.isArray(selectedDoor)  ? selectedDoor.join(' | ')  : (selectedDoor || ''),
+    pit:       Array.isArray(selectedPit)   ? selectedPit.join(' | ')   : (selectedPit || ''),
+    oh:        Array.isArray(selectedOH)    ? selectedOH.join(' | ')    : (selectedOH || ''),
 
-    // =========================
-    // مواصفات فنية
-    // =========================
-    machineType: model.machineType || 'MRL – Traction',
+    /* =========================
+       3) التشطيب
+    ========================= */
+    cabinDesign: document.getElementById("cabin_design")?.value || 'Standard',
+    floorFinish: document.getElementById("floor_finish")?.value || 'Standard',
 
-    // =========================
-    // السعر
-    // =========================
-    totalWithVat: result.totalWithVat,
-    currency,
-    vatRate,
-    includeVat,
+    /* =========================
+       4) مواصفات فنية
+    ========================= */
+    machineType: model?.machineType || 'MRL – Traction',
 
-    // =========================
-    // بيانات العميل الموسعة
-    // =========================
+    /* =========================
+       5) السعر
+    ========================= */
+    totalWithVat: result?.totalWithVat || 0,
+    pricePerUnit: liftsCount ? (result.totalWithVat / liftsCount) : result.totalWithVat,
+    currency: currency || 'SAR',
+    vatRate: vatRate || 0.15,
+    includeVat: includeVat === true,
+
+    /* =========================
+       6) بيانات العميل الموسعة
+       (مطابقة 1:1 مع elevator-quote-offer.html)
+    ========================= */
     preferredContact: selectedCustomer?.preferred_contact || '',
+
     customerDetails: selectedCustomer ? {
         customer_type: selectedCustomer.customer_type || '',
         contact_person: selectedCustomer.contact_person || '',
@@ -1344,9 +1350,11 @@ lastQuoteSnapshot = {
         mobile: selectedCustomer.mobile || '',
         phone: selectedCustomer.phone || '',
         email: selectedCustomer.email || '',
+        preferred_contact: selectedCustomer.preferred_contact || '',
         notes: selectedCustomer.notes || ''
-    } : null
+    } : {}
 };
+
 
 
     }
@@ -1712,5 +1720,6 @@ document.getElementById("lifts_count").addEventListener("input", function () {
 
 </body>
 </html>
+
 
 
