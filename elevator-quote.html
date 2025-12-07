@@ -748,7 +748,7 @@ const CABIN_DESIGN_ADDITIONAL = {
     if (!quotes.length) {
         const tr = document.createElement('tr');
         const td = document.createElement('td');
-        td.colSpan = 17;
+        td.colSpan = 18;
         td.textContent = 'لا توجد عروض أسعار محفوظة في هذا الجهاز حتى الآن.';
         td.style.textAlign = 'center';
         td.style.color = '#9ca3af';
@@ -1348,22 +1348,40 @@ lastQuoteSnapshot = {
     stops: floors || '',
 
     /* =========================
-       5) السعر
-    ========================= */
-    totalWithVat: result?.totalWithVat || 0,
-    pricePerUnit: liftsCount ? (result.totalWithVat / liftsCount) : result.totalWithVat,
-    currency: currency || 'SAR',
-    vatRate: vatRate || 0.15,
-    includeVat: includeVat === true,
-    pricePerUnit: liftsCount
+/* =========================
+   5) السعر
+========================= */
+totalWithVat: result?.totalWithVat || 0,
+
+pricePerUnit: liftsCount && result?.totalWithVat
     ? (result.totalWithVat / liftsCount)
-    : result.totalWithVat,
-    payments: {
-    advance50: result.totalWithVat * 0.50,
-    mechanical25: result.totalWithVat * 0.25,
-    electrical20: result.totalWithVat * 0.20,
-    handover5: result.totalWithVat * 0.05
-  },
+    : (result?.totalWithVat || 0),
+
+currency: currency || 'SAR',
+
+// نسبة الضريبة كنسبة مئوية (15 = 15%)
+vatRate: vatRate || 15,
+
+includeVat: includeVat === true,
+
+payments: {
+    advance50: result?.totalWithVat
+        ? (result.totalWithVat * 0.50)
+        : 0,
+
+    mechanical25: result?.totalWithVat
+        ? (result.totalWithVat * 0.25)
+        : 0,
+
+    electrical20: result?.totalWithVat
+        ? (result.totalWithVat * 0.20)
+        : 0,
+
+    handover5: result?.totalWithVat
+        ? (result.totalWithVat * 0.05)
+        : 0
+}
+
 
     /* =========================
        6) بيانات العميل الموسعة
@@ -1572,7 +1590,7 @@ lastQuoteSnapshot = {
                     contactPerson: selectedCustomer?.contact_person || null,
                     idNumber: selectedCustomer?.id_number || null,
                     crNumber: selectedCustomer?.cr_number || null,
-                    taxNumber: selectedCustomer?.tax_number || null,
+                    tax_Number: selectedCustomer?.tax_number || null,
                     city: selectedCustomer?.city || null,
                     district: selectedCustomer?.district || null,
                     street: selectedCustomer?.street || null,
@@ -1756,6 +1774,7 @@ document.getElementById("lifts_count").addEventListener("input", function () {
 
 </body>
 </html>
+
 
 
 
