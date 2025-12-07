@@ -337,7 +337,7 @@
             <td>450</td>
             <td>1100 × 1000</td>
             <td>1700 × 1500</td>
-            <td>800</td>
+            <td>700</td>
             <td>1200</td>
             <td>3500</td>
         </tr>
@@ -345,7 +345,7 @@
             <td>630</td>
             <td>1100 × 1400</td>
             <td>1800 × 1600</td>
-            <td>800</td>
+            <td>7000OR800</td>
             <td>1200</td>
             <td>3500</td>
         </tr>
@@ -451,15 +451,17 @@
 <div id="shaft-table-container" style="margin-top:20px; display:none;">
     <h3>⚙️ اختيار مقاسات المصاعد</h3>
     <table class="table" id="shaft-table">
-        <thead>
-            <tr>
-                <th>رقم المصعد</th>
-                <th>مقاس البئر (Shaft)</th>
-                <th>الكابينة (Cabin)</th>
-                <th>الباب (Door)</th>
-                <th>ملاحظات</th>
-            </tr>
-        </thead>
+       <thead>
+  <tr>
+    <th>رقم المصعد</th>
+    <th>مقاس البئر (Shaft)</th>
+    <th>الكابينة (Cabin)</th>
+    <th>الباب (Door)</th>
+    <th>Pit</th>
+    <th>OH</th>
+    <th>ملاحظات</th>
+  </tr>
+</thead>
         <tbody></tbody>
     </table>
 </div>
@@ -1716,13 +1718,14 @@ offerData.shafts = shaftData;
 
     const CURRENT_QUOTE_SELECTION_KEY = "rkl_current_quote_number";
 
-    const en81Options = [
-  { shaft: "1500 × 1700", cabin: "1000 × 1100", door: "800" },
-  { shaft: "1600 × 1800", cabin: "1100 × 1200", door: "800" },
-  { shaft: "1800 × 2000", cabin: "1100 × 1400", door: "900" },
-  { shaft: "2000 × 2400", cabin: "1400 × 1600", door: "1000" },
-  { shaft: "2400 × 2600", cabin: "1600 × 1800", door: "1100" }
+   const en81Options = [
+  { shaft: "1500 × 1700", cabin: "1000 × 1100", door: "700", pit: "1200", oh: "3500" },
+  { shaft: "1600 × 1800", cabin: "1100 × 1200", door: "700", pit: "1200", oh: "3500" },
+  { shaft: "1800 × 2000", cabin: "1100 × 1400", door: "900", pit: "1300", oh: "3600" },
+  { shaft: "2000 × 2400", cabin: "1400 × 1600", door: "1000", pit: "1400", oh: "3700" },
+  { shaft: "2400 × 2600", cabin: "1600 × 1800", door: "1100", pit: "1400", oh: "3800" }
 ];
+
 
 // عند تغيير عدد المصاعد
 document.getElementById("lifts_count").addEventListener("input", function () {
@@ -1738,18 +1741,21 @@ document.getElementById("lifts_count").addEventListener("input", function () {
     for (let i = 1; i <= count; i++) {
         const row = document.createElement("tr");
 
-        row.innerHTML = `
-            <td>${i}</td>
-            <td>
-                <select class="shaft-select">
-                    <option value="">اختر مقاس البئر…</option>
-                    ${en81Options.map(o => `<option value="${o.shaft}">${o.shaft}</option>`).join("")}
-                </select>
-            </td>
-            <td class="cabin-cell"></td>
-            <td class="door-cell"></td>
-            <td><input type="text" class="note-input" placeholder="ملاحظات" /></td>
-        `;
+       row.innerHTML = `
+  <td>${i}</td>
+  <td>
+    <select class="shaft-select">
+      <option value="">اختر مقاس البئر…</option>
+      ${en81Options.map(o => `<option value="${o.shaft}">${o.shaft}</option>`).join("")}
+    </select>
+  </td>
+  <td class="cabin-cell"></td>
+  <td class="door-cell"></td>
+  <td class="pit-cell"></td>
+  <td class="oh-cell"></td>
+  <td><input type="text" class="note-input" placeholder="ملاحظات" /></td>
+`;
+
         
         tbody.appendChild(row);
     }
@@ -1761,7 +1767,10 @@ document.getElementById("lifts_count").addEventListener("input", function () {
             const row = this.closest("tr");
             if (opt) {
                 row.querySelector(".cabin-cell").innerText = opt.cabin;
-                row.querySelector(".door-cell").innerText = opt.door;
+row.querySelector(".door-cell").innerText  = opt.door;
+row.querySelector(".pit-cell").innerText   = opt.pit;
+row.querySelector(".oh-cell").innerText    = opt.oh;
+
             }
         });
     });
@@ -1775,6 +1784,7 @@ document.getElementById("lifts_count").addEventListener("input", function () {
 
 </body>
 </html>
+
 
 
 
