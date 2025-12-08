@@ -1250,6 +1250,16 @@ const doorH = q.doorHeight || '2100';
 bind('.bind_door_width',  doorW);
 bind('.bind_door_height', doorH);
 
+   /* =================================================
+   Helper: format currency (SAR)
+================================================= */
+function formatCurrency(value, currency) {
+  const v = Number(value) || 0;
+  return v.toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }) + ' SAR';
+}
 
 /* =================================================
    (5) الأسعار – حساب صحيح
@@ -1257,7 +1267,7 @@ bind('.bind_door_height', doorH);
 /* =================================================
    (5) الأسعار – معتمدة من سجل عروض الأسعار (شامل الضريبة)
 ================================================= */
-const grandTotal = Number(q.totalWithVat || 0);   // ✅ شامل الضريبة جاهز
+const grandTotal = Number(q.totalWithVat || 0);   // ✅ من سجل عروض الأسعار
 const units      = Number(q.liftsCount || 1);
 const unitPrice  = units ? (grandTotal / units) : 0;
 
@@ -1268,6 +1278,7 @@ bind('.bind_vat_rate',       q.vatRate || 15);
 
 
 
+
 /* =================================================
    (6) جدول الدفعات – محسوب على الإجمالي الشامل
 ================================================= */
@@ -1275,6 +1286,7 @@ bind('.bind_pay_50', formatCurrency(grandTotal * 0.50, q.currency));
 bind('.bind_pay_25', formatCurrency(grandTotal * 0.25, q.currency));
 bind('.bind_pay_20', formatCurrency(grandTotal * 0.20, q.currency));
 bind('.bind_pay_5',  formatCurrency(grandTotal * 0.05, q.currency));
+
 
 
 
@@ -1333,6 +1345,7 @@ function renderPayments(q) {
 
 </body>
 </html>
+
 
 
 
