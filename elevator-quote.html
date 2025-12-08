@@ -1355,6 +1355,8 @@ lastQuoteSnapshot = {
     capacity: capacity ? (capacity + ' kg') : '',
     speed: speed ? (speed + ' m/s') : '',
     floors: floors || '',
+    floorHeight: document.getElementById('floorHeight')?.value || '',
+travelHeight: document.getElementById('travelHeight')?.value || '',
     liftsCount: liftsCount || 1,
 
     /* =========================
@@ -1784,8 +1786,9 @@ document.getElementById("lifts_count").addEventListener("input", function () {
   <td class="door-cell"></td>
   <td class="pit-cell"></td>
   <td class="oh-cell"></td>
-   <td>${q.floorHeight || '-'} م</td>
-  <td>${q.travelHeight || '-'} م</td>
+  <td>${document.getElementById('floorHeight')?.value || '-' } م</td>
+<td>${document.getElementById('travelHeight')?.value || '-' } م</td>
+
   <td><input type="text" class="note-input" placeholder="ملاحظات" /></td>
 `;
 
@@ -1813,28 +1816,30 @@ row.querySelector(".oh-cell").innerText    = opt.oh;
 
 </script>
 <script>
-function calculateTravelHeight() {
-  const stops = parseFloat(document.getElementById('stops')?.value || 0);
-  const floorHeight = parseFloat(document.getElementById('floorHeight')?.value || 0);
+    function calculateTravelHeight() {
+    const floors = parseFloat(document.getElementById('floors')?.value || 0);
+    const floorHeight = parseFloat(document.getElementById('floorHeight')?.value || 0);
+    const travelInput = document.getElementById('travelHeight');
 
-  if (stops > 1 && floorHeight > 0) {
-    const travel = (stops - 1) * floorHeight;
-    document.getElementById('travelHeight').value = travel.toFixed(2);
-  } else {
-    document.getElementById('travelHeight').value = '';
-  }
+    if (floors >= 2 && floorHeight > 0) {
+        const travel = (floors - 1) * floorHeight;
+        travelInput.value = travel.toFixed(2);
+    } else {
+        travelInput.value = '';
+    }
 }
 
-document.getElementById('stops')?.addEventListener('input', calculateTravelHeight);
+document.getElementById('floors')?.addEventListener('input', calculateTravelHeight);
 document.getElementById('floorHeight')?.addEventListener('input', calculateTravelHeight);
+
+
 </script>
-
-
 
 
 
 </body>
 </html>
+
 
 
 
