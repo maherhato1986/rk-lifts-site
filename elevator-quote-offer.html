@@ -1191,6 +1191,23 @@ if (q.cabinSize && q.cabinSize.includes('×')) {
 bind('.bind_pit', q.pit);
 bind('.bind_oh',  q.oh);
 
+   /* ========= استخراج مقاسات البئر ========= */
+let shaftWidth = '—';
+let shaftDepth = '—';
+
+if (q.shaftSize) {
+  // نتعامل مع "2000 × 1600" أو "2000 x 1600"
+  const parts = q.shaftSize.replace('×', 'x').split('x').map(s => s.trim());
+  shaftWidth = parts[0] || '—';
+  shaftDepth = parts[1] || '—';
+}
+
+bind('.bind_oh', q.oh);
+bind('.bind_pit', q.pit);
+bind('.bind_dim_cabin', q.cabinSize);
+
+bind('.bind_shaft_width', shaftWidth);
+bind('.bind_shaft_depth', shaftDepth);
 
 /* =================================================
    (5) الأسعار – حساب صحيح
@@ -1282,6 +1299,7 @@ if (q) {
 
 </body>
 </html>
+
 
 
 
