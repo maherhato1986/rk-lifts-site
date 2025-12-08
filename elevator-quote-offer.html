@@ -1,6 +1,29 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+   <style>
+  body[contenteditable="true"] {
+    cursor: text;
+  }
+
+  [contenteditable="true"]:focus {
+    outline: none;
+  }
+
+  .editable-highlight:hover {
+    background: rgba(59,130,246,0.06);
+  }
+
+  @media print {
+    body[contenteditable="true"] {
+      cursor: default;
+    }
+    .editable-highlight:hover {
+      background: transparent;
+    }
+  }
+</style>
+
 <style>
 /* ===============================
    رسم المخطط
@@ -452,6 +475,9 @@ th {
 
 </head>
 <body>
+
+   <body contenteditable="true" spellcheck="false">
+
 
 
 <!-- ================= صفحة 1: تعريف RKL + ملف العميل ================= -->
@@ -1306,6 +1332,7 @@ function renderPayments(q) {
 
 </body>
 </html>
+
 
 
 
