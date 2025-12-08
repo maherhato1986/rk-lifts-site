@@ -1343,151 +1343,113 @@ shaftRows.forEach((row) => {
     if (pit)   selectedPit.push(pit);
     if (oh)    selectedOH.push(oh);
 });
-       // ===== استخراج المقاسات من اختيار المستخدم أو من جدول EN81 =====
-const selectedShaft = document.querySelector('#shaft-table tbody tr');
-
-let shaftWidth = '';
-let shaftDepth = '';
-let cabinSize = '';
-let pit = '';
-let oh = '';
-
-if (selectedShaft) {
-  shaftWidth = selectedShaft.querySelector('.shaft-width')?.textContent || '';
-  shaftDepth = selectedShaft.querySelector('.shaft-depth')?.textContent || '';
-  cabinSize  = selectedShaft.querySelector('.cabin-size')?.textContent || '';
-  pit        = selectedShaft.querySelector('.pit')?.textContent || '';
-  oh         = selectedShaft.querySelector('.oh')?.textContent || '';
-}
- 
         
-const lastQuoteSnapshot = {
-  /* =================================================
-     رقم العرض
-  ================================================= */
-  quoteNumber,
+        
+lastQuoteSnapshot = {
+    quoteNumber,
 
-  /* =================================================
-     1) بيانات عامة
-  ================================================= */
-  timestamp: new Date().toISOString(),
-  customerName: finalCustomerName || '',
-  projectName: projectName || '',
+    /* =========================
+       1) بيانات عامة
+    ========================= */
+    timestamp: new Date().toISOString(),
+    customerName: finalCustomerName || '',
+    projectName: projectName || '',
 
-  /* =================================================
-     2) بيانات المصعد الأساسية
-  ================================================= */
-  brandKey,
-  brandLabel,
+    brandKey,
+    brandLabel,
 
-  capacity: capacity ? `${capacity} kg` : '',
-  speed: speed ? `${speed} m/s` : '',
-  floors: floors || '',
-  stops: floors || '',
+    capacity: capacity ? (capacity + ' kg') : '',
+    speed: speed ? (speed + ' m/s') : '',
+    floors: floors || '',
+    floorHeight: document.getElementById('floorHeight')?.value || '',
+travelHeight: document.getElementById('travelHeight')?.value || '',
+    liftsCount: liftsCount || 1,
 
-  floorHeight: document.getElementById('floorHeight')?.value || '',
-  travelHeight: document.getElementById('travelHeight')?.value || '',
+    /* =========================
+       2) المقاسات – (مطابق لواجهة العرض)
+    ========================= */
+    shaftsSummary: shaftsSummary || '',
 
-  liftsCount: liftsCount || 1,
+    // تظهر في Page 3 + Page 4
+    cabinSize: Array.isArray(selectedCabin) ? selectedCabin.join(' | ') : (selectedCabin || ''),
+    shaftSize: Array.isArray(selectedShaft) ? selectedShaft.join(' | ') : (selectedShaft || ''),
+    doors:     Array.isArray(selectedDoor)  ? selectedDoor.join(' | ')  : (selectedDoor || ''),
+    pit:       Array.isArray(selectedPit)   ? selectedPit.join(' | ')   : (selectedPit || ''),
+    oh:        Array.isArray(selectedOH)    ? selectedOH.join(' | ')    : (selectedOH || ''),
 
-  /* =================================================
-     3) المقاسات (تُستخدم في Page 3 + Page 4)
-  ================================================= */
+    /* =========================
+       3) التشطيب
+    ========================= */
+    cabinDesign: document.getElementById("cabin_design")?.value || 'Standard',
+    floorFinish: document.getElementById("floor_finish")?.value || 'Standard',
 
-  // ملخص هندسي نصي
-  shaftsSummary: shaftsSummary || '',
+    /* =========================
+       4) مواصفات فنية
+    ========================= */
+    machineType: model?.machineType || 'MRL – Traction',
+    stops: floors || '',
 
-  // المقاسات الأساسية (كنص EN81)
-  cabinSize: Array.isArray(selectedCabin)
-      ? selectedCabin.join(' | ')
-      : (selectedCabin || ''),
+    /* =========================
+/* =========================
+   5) السعر
+========================= */
+totalWithVat: result?.totalWithVat || 0,
 
-  shaftSize: Array.isArray(selectedShaft)
-      ? selectedShaft.join(' | ')
-      : (selectedShaft || ''),
+pricePerUnit: liftsCount && result?.totalWithVat
+    ? (result.totalWithVat / liftsCount)
+    : (result?.totalWithVat || 0),
 
-  doors: Array.isArray(selectedDoor)
-      ? selectedDoor.join(' | ')
-      : (selectedDoor || ''),
+currency: currency || 'SAR',
 
-  pit: Array.isArray(selectedPit)
-      ? selectedPit.join(' | ')
-      : (selectedPit || ''),
+// نسبة الضريبة كنسبة مئوية (15 = 15%)
+vatRate: vatRate || 15,
 
-  oh: Array.isArray(selectedOH)
-      ? selectedOH.join(' | ')
-      : (selectedOH || ''),
+includeVat: includeVat === true,
 
-  /* =================================================
-     4) التشطيب والتصميم
-  ================================================= */
-  cabinDesign: document.getElementById('cabin_design')?.value || 'Standard',
-  floorFinish: document.getElementById('floor_finish')?.value || 'Standard',
+payments: {
+    advance50: result?.totalWithVat
+        ? (result.totalWithVat * 0.50)
+        : 0,
 
-  /* =================================================
-     5) المواصفات الفنية
-  ================================================= */
-  machineType: model?.machineType || 'MRL – Traction',
+    mechanical25: result?.totalWithVat
+        ? (result.totalWithVat * 0.25)
+        : 0,
 
-  /* =================================================
-     6) الأسعار
-  ================================================= */
-  totalWithVat: result?.totalWithVat || 0,
+    electrical20: result?.totalWithVat
+        ? (result.totalWithVat * 0.20)
+        : 0,
 
-  pricePerUnit:
-      liftsCount && result?.totalWithVat
-          ? (result.totalWithVat / liftsCount)
-          : (result?.totalWithVat || 0),
+    handover5: result?.totalWithVat
+        ? (result.totalWithVat * 0.05)
+        : 0
+},
 
-  currency: currency || 'SAR',
 
-  vatRate: vatRate || 15,
-  includeVat: includeVat === true,
+    /* =========================
+       6) بيانات العميل الموسعة
+       (مطابقة 1:1 مع elevator-quote-offer.html)
+    ========================= */
+    preferredContact: selectedCustomer?.preferred_contact || '',
 
-  payments: {
-      advance50: result?.totalWithVat
-          ? (result.totalWithVat * 0.50)
-          : 0,
-
-      mechanical25: result?.totalWithVat
-          ? (result.totalWithVat * 0.25)
-          : 0,
-
-      electrical20: result?.totalWithVat
-          ? (result.totalWithVat * 0.20)
-          : 0,
-
-      handover5: result?.totalWithVat
-          ? (result.totalWithVat * 0.05)
-          : 0
-  },
-
-  /* =================================================
-     7) بيانات العميل الموسعة
-     (مطابقة 1:1 مع elevator-quote-offer.html)
-  ================================================= */
-  preferredContact: selectedCustomer?.preferred_contact || '',
-
-  customerDetails: selectedCustomer ? {
-      customer_type: selectedCustomer.customer_type || '',
-      contact_person: selectedCustomer.contact_person || '',
-      id_number: selectedCustomer.id_number || '',
-      cr_number: selectedCustomer.cr_number || '',
-      tax_number: selectedCustomer.tax_number || '',
-      city: selectedCustomer.city || '',
-      district: selectedCustomer.district || '',
-      street: selectedCustomer.street || '',
-      building_no: selectedCustomer.building_no || '',
-      postal_code: selectedCustomer.postal_code || '',
-      full_address: selectedCustomer.full_address || '',
-      mobile: selectedCustomer.mobile || '',
-      phone: selectedCustomer.phone || '',
-      email: selectedCustomer.email || '',
-      preferred_contact: selectedCustomer.preferred_contact || '',
-      notes: selectedCustomer.notes || ''
-  } : {}
+    customerDetails: selectedCustomer ? {
+        customer_type: selectedCustomer.customer_type || '',
+        contact_person: selectedCustomer.contact_person || '',
+        id_number: selectedCustomer.id_number || '',
+        cr_number: selectedCustomer.cr_number || '',
+        tax_number: selectedCustomer.tax_number || '',
+        city: selectedCustomer.city || '',
+        district: selectedCustomer.district || '',
+        street: selectedCustomer.street || '',
+        building_no: selectedCustomer.building_no || '',
+        postal_code: selectedCustomer.postal_code || '',
+        full_address: selectedCustomer.full_address || '',
+        mobile: selectedCustomer.mobile || '',
+        phone: selectedCustomer.phone || '',
+        email: selectedCustomer.email || '',
+        preferred_contact: selectedCustomer.preferred_contact || '',
+        notes: selectedCustomer.notes || ''
+    } : {}
 };
-
 
 
 
@@ -1884,7 +1846,6 @@ document.getElementById('floorHeight')?.addEventListener('input', calculateTrave
 
 </body>
 </html>
-
 
 
 
