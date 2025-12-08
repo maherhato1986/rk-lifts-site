@@ -1198,14 +1198,42 @@ bind('.bind_shaft_depth', shaftD);
    /* =======================
    Cabin dimensions
 ======================= */
-bind('.bind_cabin_width', q.cabinWidth);
-bind('.bind_cabin_depth', q.cabinDepth);
+/* =======================
+   Cabin + Door dimensions
+   مأخوذة من cabinSize
+======================= */
+
+let cabinW = '—';
+let cabinD = '—';
+
+// نفك مقاس الكابينة (مثال: 1200 × 1100)
+const rawCabin = normalizeSize(q.cabinSize);
+
+if (rawCabin && (rawCabin.includes('×') || rawCabin.includes('x'))) {
+  const parts = rawCabin
+    .replace('×', 'x')
+    .split('x')
+    .map(v => v.replace(/[^\d]/g, ''));
+
+  cabinW = parts[0] || '—';
+  cabinD = parts[1] || '—';
+}
+
+// عرض في المخطط
+bind('.bind_cabin_width', cabinW);
+bind('.bind_cabin_depth', cabinD);
 
 /* =======================
-   Door opening
+   Door Opening (تقديري EN81)
 ======================= */
-bind('.bind_door_width', q.doorWidth);
-bind('.bind_door_height', q.doorHeight);
+// افتراضيًا حسب الشائع
+let doorW = '800';
+let doorH = '2100';
+
+// تقدر لاحقًا تربطها فعليًا من نموذج الإدخال
+bind('.bind_door_width', doorW);
+bind('.bind_door_height', doorH);
+
 
 
 /* =======================
@@ -1303,6 +1331,7 @@ function renderPayments(q) {
 
 </body>
 </html>
+
 
 
 
