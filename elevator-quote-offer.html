@@ -1163,91 +1163,66 @@ bind('.bind_oh',        q.oh);
 
 
 
-
 /* =================================================
-   (4) مخطط استرشادي – مأخوذ مباشرة من جدول (3)
+   (4) مخطط استرشادي – ربط كامل للقياسات
 ================================================= */
 
-/* توحيد شكل النص */
-const normalizeSize = (val) => {
-  if (!val) return null;
-  return val.split('|')[0].trim(); // ناخذ أول مقاس فقط
+// helper
+const pickFirstSize = (v) => {
+  if (!v) return null;
+  return v.split("|")[0].trim();
 };
 
-/* =======================
-   مقاس بئر المصعد
-======================= */
+// ==================
+// Shaft dimensions
+// ==================
 let shaftW = '—';
 let shaftD = '—';
 
-const rawShaft = normalizeSize(q.shaftSize);
-
-if (rawShaft && (rawShaft.includes('×') || rawShaft.includes('x'))) {
-  const parts = rawShaft
-    .replace('×', 'x')
-    .split('x')
-    .map(v => v.replace(/[^\d]/g, ''));
-
-  shaftW = parts[0] || '—';
-  shaftD = parts[1] || '—';
+const shaftRaw = pickFirstSize(q.shaftSize);
+if (shaftRaw && (shaftRaw.includes('x') || shaftRaw.includes('×'))) {
+  const p = shaftRaw.replace('×','x').split('x').map(v => v.replace(/[^\d]/g,''));
+  shaftW = p[0] || '—';
+  shaftD = p[1] || '—';
 }
 
 bind('.bind_shaft_width', shaftW);
 bind('.bind_shaft_depth', shaftD);
 
-   /* =======================
-   Cabin dimensions
-======================= */
-/* =======================
-   Cabin + Door dimensions
-   مأخوذة من cabinSize
-======================= */
-
+// ==================
+// Cabin dimensions
+// ==================
 let cabinW = '—';
 let cabinD = '—';
 
-// نفك مقاس الكابينة (مثال: 1200 × 1100)
-const rawCabin = normalizeSize(q.cabinSize);
-
-if (rawCabin && (rawCabin.includes('×') || rawCabin.includes('x'))) {
-  const parts = rawCabin
-    .replace('×', 'x')
-    .split('x')
-    .map(v => v.replace(/[^\d]/g, ''));
-
-  cabinW = parts[0] || '—';
-  cabinD = parts[1] || '—';
+const cabinRaw = pickFirstSize(q.cabinSize);
+if (cabinRaw && (cabinRaw.includes('x') || cabinRaw.includes('×'))) {
+  const p = cabinRaw.replace('×','x').split('x').map(v => v.replace(/[^\d]/g,''));
+  cabinW = p[0] || '—';
+  cabinD = p[1] || '—';
 }
 
-// عرض في المخطط
+// عرض في PLAN VIEW
 bind('.bind_cabin_width', cabinW);
 bind('.bind_cabin_depth', cabinD);
 
-/* =======================
-   Door Opening (تقديري EN81)
-======================= */
-// افتراضيًا حسب الشائع
-let doorW = '800';
-let doorH = '2100';
+// عرض النص أسفل الكابينة
+bind('.bind_dim_cabin', cabinRaw);
 
-// تقدر لاحقًا تربطها فعليًا من نموذج الإدخال
-bind('.bind_door_width', doorW);
-bind('.bind_door_height', doorH);
-
-
-
-/* =======================
-   مقاس الكابينة
-======================= */
-const cabin = normalizeSize(q.cabinSize);
-bind('.bind_dim_cabin', cabin);
-
-/* =======================
-   PIT و OH
-======================= */
+// ==================
+// PIT + OH (موحّد للرسمين)
+// ==================
 bind('.bind_pit', q.pit);
 bind('.bind_oh',  q.oh);
 
+// ==================
+// Door Opening (افتراضي EN81 – قابل للتطوير لاحقًا)
+// ==================
+const doorW = q.doorWidth  || '800';
+const doorH = q.doorHeight || '2100';
+
+bind('.bind_door_width',  doorW);
+bind('.bind_door_height', doorH);
 
 
 /* =================================================
@@ -1331,6 +1306,7 @@ function renderPayments(q) {
 
 </body>
 </html>
+
 
 
 
