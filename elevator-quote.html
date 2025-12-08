@@ -1808,24 +1808,25 @@ row.querySelector(".oh-cell").innerText    = opt.oh;
 
 </script>
     <script>
-  function calculateTravelHeight() {
-    const stops = parseInt(document.getElementById('stops')?.value || 0);
-    const floorHeight = parseFloat(document.getElementById('floorHeight')?.value || 0);
-    const travelInput = document.getElementById('travelHeight');
+function calculateTravelHeight() {
+  const floors = parseInt(document.getElementById('floors')?.value || 0);
+  const floorHeight = parseFloat(document.getElementById('floorHeight')?.value || 0);
+  const travelInput = document.getElementById('travelHeight');
 
-    if (stops >= 2 && floorHeight > 0) {
-      const travelHeight = (stops - 1) * floorHeight;
-      travelInput.value = travelHeight.toFixed(2);
-    } else {
-      travelInput.value = '';
-    }
+  if (floors >= 2 && floorHeight > 0) {
+    const travelHeight = (floors - 1) * floorHeight;
+    travelInput.value = travelHeight.toFixed(2);
+  } else {
+    travelInput.value = '';
   }
+}
 
-  document.getElementById('stops')?.addEventListener('input', calculateTravelHeight);
-  document.getElementById('floorHeight')?.addEventListener('input', calculateTravelHeight);
+document.getElementById('floors')?.addEventListener('input', calculateTravelHeight);
+document.getElementById('floorHeight')?.addEventListener('input', calculateTravelHeight);
 
-  // تشغيل أولي
-  calculateTravelHeight();
+// تشغيل أولي
+calculateTravelHeight();
+
 </script>
 
 
@@ -1833,6 +1834,7 @@ row.querySelector(".oh-cell").innerText    = opt.oh;
 
 </body>
 </html>
+
 
 
 
