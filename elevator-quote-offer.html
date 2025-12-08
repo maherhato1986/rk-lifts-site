@@ -1146,20 +1146,17 @@ bind('.bind_project_name', q.projectName);
    (2) ملف العميل
 ================================================= */
 const c = q.customerDetails || {};
-
 bind('.bind_customer_type', c.customer_type);
 bind('.bind_contact_person', c.contact_person);
 bind('.bind_id_number', c.id_number);
 bind('.bind_cr_number', c.cr_number);
 bind('.bind_tax_number', c.tax_number);
-
 bind('.bind_city', c.city);
 bind('.bind_district', c.district);
 bind('.bind_street', c.street);
 bind('.bind_building_no', c.building_no);
 bind('.bind_postal_code', c.postal_code);
 bind('.bind_full_address', c.full_address);
-
 bind('.bind_mobile', c.mobile);
 bind('.bind_phone', c.phone);
 bind('.bind_email', c.email);
@@ -1167,99 +1164,25 @@ bind('.bind_preferred_contact', q.preferredContact);
 bind('.bind_notes', c.notes);
 
 /* =================================================
-   (3) البيانات الفنية
-================================================= */
-
-/* =================================================
    (3) البيانات الفنية الرئيسية
 ================================================= */
-
-// المواصفات العامة
-bind('.bind_brand',        q.brandLabel);
-bind('.bind_capacity',     q.capacity);
-bind('.bind_speed',        q.speed);
-bind('.bind_floors',       q.floors);      // عدد التوقفات
-bind('.bind_lifts',        q.liftsCount);  // عدد المصاعد
-   bind('.bind_dim_cabin', q.cabinSize);
-
-// النظام والتجهيزات
+bind('.bind_brand', q.brandLabel);
+bind('.bind_capacity', q.capacity);
+bind('.bind_speed', q.speed);
+bind('.bind_floors', q.floors);
+bind('.bind_lifts', q.liftsCount);
 bind('.bind_machine_type', q.machineType);
 bind('.bind_cabin_design', q.cabinDesign);
 bind('.bind_floor_finish', q.floorFinish);
-
-// المقاسات
-
 bind('.bind_dim_shaft', q.shaftSize);
-bind('.bind_pit',       q.pit);
-bind('.bind_oh',        q.oh);
-
-
+bind('.bind_dim_cabin', q.cabinSize);
+bind('.bind_pit', q.pit);
+bind('.bind_oh', q.oh);
 
 /* =================================================
-   (4) مخطط استرشادي – ربط كامل للقياسات
-================================================= */
-
-// helper
-const pickFirstSize = (v) => {
-  if (!v) return null;
-  return v.split("|")[0].trim();
-};
-
-// ==================
-// Shaft dimensions
-// ==================
-let shaftW = '—';
-let shaftD = '—';
-
-const shaftRaw = pickFirstSize(q.shaftSize);
-if (shaftRaw && (shaftRaw.includes('x') || shaftRaw.includes('×'))) {
-  const p = shaftRaw.replace('×','x').split('x').map(v => v.replace(/[^\d]/g,''));
-  shaftW = p[0] || '—';
-  shaftD = p[1] || '—';
-}
-
-bind('.bind_shaft_width', shaftW);
-bind('.bind_shaft_depth', shaftD);
-
-// ==================
-// Cabin dimensions
-// ==================
-let cabinW = '—';
-let cabinD = '—';
-
-const cabinRaw = pickFirstSize(q.cabinSize);
-if (cabinRaw && (cabinRaw.includes('x') || cabinRaw.includes('×'))) {
-  const p = cabinRaw.replace('×','x').split('x').map(v => v.replace(/[^\d]/g,''));
-  cabinW = p[0] || '—';
-  cabinD = p[1] || '—';
-}
-
-// عرض في PLAN VIEW
-bind('.bind_cabin_width', cabinW);
-bind('.bind_cabin_depth', cabinD);
-
-// عرض النص أسفل الكابينة
-bind('.bind_dim_cabin', cabinRaw);
-
-// ==================
-// PIT + OH (موحّد للرسمين)
-// ==================
-bind('.bind_pit', q.pit);
-bind('.bind_oh',  q.oh);
-
-// ==================
-// Door Opening (افتراضي EN81 – قابل للتطوير لاحقًا)
-// ==================
-const doorW = q.doorWidth  || '800';
-const doorH = q.doorHeight || '2100';
-
-bind('.bind_door_width',  doorW);
-bind('.bind_door_height', doorH);
-
-   /* =================================================
    Helper: format currency (SAR)
 ================================================= */
-function formatCurrency(value, currency) {
+function formatCurrency(value) {
   const v = Number(value) || 0;
   return v.toLocaleString('en-US', {
     minimumFractionDigits: 2,
@@ -1268,16 +1191,10 @@ function formatCurrency(value, currency) {
 }
 
 /* =================================================
-   (5) الأسعار – حساب صحيح
-================================================= */
-/* =================================================
-   (5) الأسعار – معتمدة من سجل عروض الأسعار (شامل الضريبة)
-================================================= */
-/* =================================================
-   تعريف المتغيرات الأساسية
+   (5 + 6 + 6-1 + 7) الحساب المالي الكامل
 ================================================= */
 
-// ✅ الإجمالي الشامل من سجل عروض الأسعار
+// ✅ الإجمالي الشامل القادم من سجل عروض الأسعار
 const grandTotal = Number(q.totalWithVat || 0);
 
 // ✅ عدد المصاعد
@@ -1286,123 +1203,53 @@ const units = Number(q.liftsCount || 1);
 // ✅ نسبة الضريبة
 const vatRate = Number(q.vatRate || 15);
 
-/* =================================================
-   دالة تطبيق التعديل قبل الضريبة
-================================================= */
-function applyAdjustment(baseSubtotal) {
-  const typeEl  = document.getElementById('adjust_type');
-  const valueEl = document.getElementById('adjust_value');
-
-  if (!typeEl || !valueEl) return baseSubtotal;
-
-  const type  = typeEl.value;
-  const value = Number(valueEl.value || 0);
-
-  if (!type || !value) return baseSubtotal;
-
-  let result = baseSubtotal;
-
-  switch (type) {
-    case 'percent_add':
-      result += baseSubtotal * (value / 100);
-      break;
-
-    case 'percent_minus':
-      result -= baseSubtotal * (value / 100);
-      break;
-
-    case 'fixed_add':
-      result += value;
-      break;
-
-    case 'fixed_minus':
-      result -= value;
-      break;
-  }
-
-  return result;
-}
-
-   // ✅ الأساس قبل الضريبة (عكسي)
+// ✅ السعر قبل الضريبة (عكسي)
 const baseSubtotal = grandTotal / (1 + vatRate / 100);
 
-   function recalcFinancialSummary() {
-  const adjustType  = document.getElementById('adjust_type').value;
-  const adjustValue = Number(document.getElementById('adjust_value').value || 0);
-
-  // السعر قبل الضريبة (عكسي)
-  const baseSubtotal = grandTotal / (1 + vatRate / 100);
+function recalcFinancialSummary() {
+  const type  = document.getElementById('adjust_type')?.value || '';
+  const value = Number(document.getElementById('adjust_value')?.value || 0);
 
   let adjustedSubtotal = baseSubtotal;
 
-  if (adjustType === 'percent_add') {
-    adjustedSubtotal += baseSubtotal * (adjustValue / 100);
-  }
-  else if (adjustType === 'percent_minus') {
-    adjustedSubtotal -= baseSubtotal * (adjustValue / 100);
-  }
-  else if (adjustType === 'fixed_add') {
-    adjustedSubtotal += adjustValue;
-  }
-  else if (adjustType === 'fixed_minus') {
-    adjustedSubtotal -= adjustValue;
+  if (type === 'percent_add') {
+    adjustedSubtotal += baseSubtotal * (value / 100);
+  } else if (type === 'percent_minus') {
+    adjustedSubtotal -= baseSubtotal * (value / 100);
+  } else if (type === 'fixed_add') {
+    adjustedSubtotal += value;
+  } else if (type === 'fixed_minus') {
+    adjustedSubtotal -= value;
   }
 
-  const vatAmount  = adjustedSubtotal * (vatRate / 100);
-  const finalTotal = adjustedSubtotal + vatAmount;
+  const vatAmount   = adjustedSubtotal * (vatRate / 100);
+  const finalTotal  = adjustedSubtotal + vatAmount;
 
-  // ✅ عرض القيم
+  /* ===== (6) ملخص القيمة المالية ===== */
+  bind('.bind_subtotal_before_vat', formatCurrency(baseSubtotal));
+  bind('.bind_adjustment_amount', formatCurrency(adjustedSubtotal - baseSubtotal));
+  bind('.bind_subtotal_after_adjustment', formatCurrency(adjustedSubtotal));
+  bind('.bind_vat_amount', formatCurrency(vatAmount));
   bind('.bind_total_with_vat', formatCurrency(finalTotal));
+
+  /* ===== سعر الوحدة ===== */
+  bind('.bind_price_per_unit', formatCurrency(finalTotal / units));
+
+  /* ===== (7) جدول الدفعات ===== */
   bind('.bind_pay_50', formatCurrency(finalTotal * 0.50));
   bind('.bind_pay_25', formatCurrency(finalTotal * 0.25));
   bind('.bind_pay_20', formatCurrency(finalTotal * 0.20));
   bind('.bind_pay_5',  formatCurrency(finalTotal * 0.05));
 }
 
-// ✅ تشغيل أولي
+/* ✅ تشغيل أولي */
 recalcFinancialSummary();
 
-// ✅ إعادة الحساب عند أي تعديل
-document.getElementById('adjust_type').addEventListener('change', recalcFinancialSummary);
-document.getElementById('adjust_value').addEventListener('input', recalcFinancialSummary);
-
-   
-
-
-
-// ===== تحديث جدول الدفعات 7) =====
-bind('.bind_pay_50', formatCurrency(finalTotalWithVat * 0.50));
-bind('.bind_pay_25', formatCurrency(finalTotalWithVat * 0.25));
-bind('.bind_pay_20', formatCurrency(finalTotalWithVat * 0.20));
-bind('.bind_pay_5',  formatCurrency(finalTotalWithVat * 0.05));
-
-
-// ✅ تطبيق التعديل
-const adjustedSubtotal = applyAdjustment(baseSubtotal);
-
-// ✅ حساب الضريبة والإجمالي
-const vatAmount  = adjustedSubtotal * (vatRate / 100);
-const finalTotal = adjustedSubtotal + vatAmount;
-
-// ✅ عرض النتائج
-bind('.bind_price_per_unit', formatCurrency(finalTotal / units, q.currency));
-bind('.bind_total_with_vat', formatCurrency(finalTotal, q.currency));
-
-// ✅ جدول الدفعات (من الإجمالي النهائي)
-bind('.bind_pay_50', formatCurrency(finalTotal * 0.50, q.currency));
-bind('.bind_pay_25', formatCurrency(finalTotal * 0.25, q.currency));
-bind('.bind_pay_20', formatCurrency(finalTotal * 0.20, q.currency));
-bind('.bind_pay_5',  formatCurrency(finalTotal * 0.05, q.currency));
-
-
-
-/* =================================================
-   (6) جدول الدفعات – محسوب على الإجمالي الشامل
-================================================= */
-
-
-
+/* ✅ إعادة الحساب عند أي تعديل */
+document.getElementById('adjust_type')?.addEventListener('change', recalcFinancialSummary);
+document.getElementById('adjust_value')?.addEventListener('input', recalcFinancialSummary);
 </script>
+
 
 <script>
 function renderPricingTable(q) {
@@ -1457,6 +1304,7 @@ function renderPayments(q) {
 
 </body>
 </html>
+
 
 
 
