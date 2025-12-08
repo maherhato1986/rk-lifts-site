@@ -16,6 +16,21 @@ body[contenteditable="true"] {
 .editable-highlight:hover {
   background: rgba(59,130,246,0.06);
 }
+.pdf-cover {
+  padding: 0 !important;
+}
+
+.fixed-pdf-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+@media print {
+  .pdf-cover {
+    page-break-after: always;
+  }
+}
 
 /* =================================================
    تنسيق العرض على الشاشة
@@ -1217,6 +1232,7 @@ function printWithName() {
 
 </body>
 </html>
+
 
 
 
