@@ -320,6 +320,29 @@
                             <div class="hint">السعر الأساسي يشمل عادةً دورين. الزيادة تُحسب لكل دور إضافي.</div>
                         </div>
                     </div>
+                    <!-- ارتفاع الدور -->
+<div class="form-group">
+  <label>ارتفاع الدور الواحد (متر)</label>
+  <input
+    type="number"
+    id="floorHeight"
+    step="0.1"
+    value="3.5"
+    placeholder="مثال: 3.5"
+  >
+</div>
+
+<!-- ارتفاع الرحلة -->
+<div class="form-group">
+  <label>ارتفاع الرحلة الكلي (متر)</label>
+  <input
+    type="number"
+    id="travelHeight"
+    readonly
+    placeholder="يتم الحساب تلقائيًا"
+  >
+</div>
+
                     <div class="section-title">📌 جدول المقاسات القياسية (EN81)</div>
 
 <table class="standard-table">
@@ -1784,11 +1807,33 @@ row.querySelector(".oh-cell").innerText    = opt.oh;
 
 
 </script>
+    <script>
+  function calculateTravelHeight() {
+    const stops = parseInt(document.getElementById('stops')?.value || 0);
+    const floorHeight = parseFloat(document.getElementById('floorHeight')?.value || 0);
+    const travelInput = document.getElementById('travelHeight');
+
+    if (stops >= 2 && floorHeight > 0) {
+      const travelHeight = (stops - 1) * floorHeight;
+      travelInput.value = travelHeight.toFixed(2);
+    } else {
+      travelInput.value = '';
+    }
+  }
+
+  document.getElementById('stops')?.addEventListener('input', calculateTravelHeight);
+  document.getElementById('floorHeight')?.addEventListener('input', calculateTravelHeight);
+
+  // تشغيل أولي
+  calculateTravelHeight();
+</script>
+
 
 
 
 </body>
 </html>
+
 
 
 
