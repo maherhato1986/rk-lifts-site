@@ -596,7 +596,11 @@
 
     <th>اسم المشروع</th>
    <th>المواصفات</th>
-<th>مقاسات المصاعد</th>
+<th>مقاس البئر</th>
+<th>مقاس الكابينة</th>
+<th>الباب</th>
+<th>PIT</th>
+<th>OH</th>
 <th>عدد المصاعد</th>
 <th>الإجمالي (شامل)</th>
 
@@ -808,31 +812,33 @@ const CABIN_DESIGN_ADDITIONAL = {
         const cd = q.customerDetails || {};
 
 const cols = [
-    index + 1,
-    q.quoteNumber || '',
-    dateStr,
+  index + 1,
+  q.quoteNumber || '',
+  dateStr,
 
-    q.customerName || '',
-    cd.customer_type || '',
-    cd.contact_person || '',
-    cd.mobile || '',
-    cd.email || '',
-    cd.cr_number || '',
-    cd.tax_number || '',
-    cd.city || '',
+  q.customerName || '',
+  cd.customer_type || '',
+  cd.contact_person || '',
+  cd.mobile || '',
+  cd.email || '',
+  cd.cr_number || '',
+  cd.tax_number || '',
+  cd.city || '',
 
-    q.projectName || '',
-    `${q.brandLabel || q.brandKey} / ${q.capacity} / ${q.speed} / ${q.floors} Stops`,
+  q.projectName || '',
+  `${q.brandLabel} / ${q.capacity} / ${q.speed} / ${q.floors} Stops`,
 
+  // ✅ المقاسات (الجزء المهم!)
+  q.shaftSize || '—',
+  q.cabinSize || '—',
+  q.doors || '—',
+  q.pit || '—',
+  q.oh || '—',
 
-    // ✅ عمود المقاسات
-    (q.shaftsSummary && q.shaftsSummary.length)
-        ? q.shaftsSummary.join(' | ')
-        : '—',
-
-    q.liftsCount || '',
-    totalStr
+  q.liftsCount || '',
+  totalStr
 ];
+
 
 
 
@@ -1840,6 +1846,7 @@ document.getElementById('floorHeight')?.addEventListener('input', calculateTrave
 
 </body>
 </html>
+
 
 
 
