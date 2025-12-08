@@ -1127,29 +1127,33 @@ bind('.bind_oh', quote.dimensions?.oh);
 /* =================================================
    (4) مخطط البئر والكابينة – Factory Style
 ================================================= */
+/* ===============================
+   فك وربط المقاسات للمخطط
+=============================== */
 
-// تفكيك مقاس البئر (HW × HD)
+// مقاس البئر HW × HD
 if (q.shaftSize && q.shaftSize.includes('×')) {
   const [shaftW, shaftD] = q.shaftSize
     .split('×')
-    .map(v => v.replace('mm', '').trim());
+    .map(v => v.replace(/mm/i, '').trim());
 
   bind('.bind_shaft_width', shaftW);
   bind('.bind_shaft_depth', shaftD);
 }
 
-// تفكيك مقاس الكابينة (CW × CD)
+// مقاس الكابينة CW × CD
 if (q.cabinSize && q.cabinSize.includes('×')) {
   const [cabinW, cabinD] = q.cabinSize
     .split('×')
-    .map(v => v.replace('mm', '').trim());
+    .map(v => v.replace(/mm/i, '').trim());
 
   bind('.bind_dim_cabin', `${cabinW} × ${cabinD}`);
 }
 
-// القيم الرأسية
+// Pit & OH
 bind('.bind_pit', q.pit);
 bind('.bind_oh',  q.oh);
+
 
 
 
@@ -1243,6 +1247,7 @@ if (q) {
 
 </body>
 </html>
+
 
 
 
