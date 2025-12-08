@@ -1273,30 +1273,75 @@ function formatCurrency(value, currency) {
 /* =================================================
    (5) الأسعار – معتمدة من سجل عروض الأسعار (شامل الضريبة)
 ================================================= */
+/* =================================================
+   تعريف المتغيرات الأساسية
+================================================= */
+
+// ✅ الإجمالي الشامل من سجل عروض الأسعار
+const grandTotal = Number(q.totalWithVat || 0);
+
+// ✅ عدد المصاعد
+const units = Number(q.liftsCount || 1);
+
+// ✅ نسبة الضريبة
 const vatRate = Number(q.vatRate || 15);
 
-// ✅ الأساس قبل الضريبة (محسوب عكسيًا)
+/* =================================================
+   دالة تطبيق التعديل قبل الضريبة
+================================================= */
+function applyAdjustment(baseSubtotal) {
+  const typeEl  = document.getElementById('adjust_type');
+  const valueEl = document.getElementById('adjust_value');
+
+  if (!typeEl || !valueEl) return baseSubtotal;
+
+  const type  = typeEl.value;
+  const value = Number(valueEl.value || 0);
+
+  if (!type || !value) return baseSubtotal;
+
+  let result = baseSubtotal;
+
+  switch (type) {
+    case 'percent_add':
+      result += baseSubtotal * (value / 100);
+      break;
+
+    case 'percent_minus':
+      result -= baseSubtotal * (value / 100);
+      break;
+
+    case 'fixed_add':
+      result += value;
+      break;
+
+    case 'fixed_minus':
+      result -= value;
+      break;
+  }
+
+  return result;
+}
+
+   // ✅ الأساس قبل الضريبة (عكسي)
 const baseSubtotal = grandTotal / (1 + vatRate / 100);
 
 // ✅ تطبيق التعديل
 const adjustedSubtotal = applyAdjustment(baseSubtotal);
 
-// ✅ إعادة الحساب
-const vatAmount   = adjustedSubtotal * (vatRate / 100);
-const finalTotal  = adjustedSubtotal + vatAmount;
+// ✅ حساب الضريبة والإجمالي
+const vatAmount  = adjustedSubtotal * (vatRate / 100);
+const finalTotal = adjustedSubtotal + vatAmount;
 
-// ✅ العرض
+// ✅ عرض النتائج
 bind('.bind_price_per_unit', formatCurrency(finalTotal / units, q.currency));
-bind('.bind_total_price',    formatCurrency(finalTotal, q.currency));
 bind('.bind_total_with_vat', formatCurrency(finalTotal, q.currency));
-bind('.bind_vat_rate',       vatRate);
 
-// ✅ تحديث الدفعات
+// ✅ جدول الدفعات (من الإجمالي النهائي)
 bind('.bind_pay_50', formatCurrency(finalTotal * 0.50, q.currency));
 bind('.bind_pay_25', formatCurrency(finalTotal * 0.25, q.currency));
 bind('.bind_pay_20', formatCurrency(finalTotal * 0.20, q.currency));
 bind('.bind_pay_5',  formatCurrency(finalTotal * 0.05, q.currency));
-
 
 
 
@@ -1366,6 +1411,7 @@ function renderPayments(q) {
 
 </body>
 </html>
+
 
 
 
