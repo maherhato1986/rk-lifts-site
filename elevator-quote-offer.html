@@ -14,14 +14,61 @@
     background: rgba(59,130,246,0.06);
   }
 
-  @media print {
-    body[contenteditable="true"] {
-      cursor: default;
-    }
-    .editable-highlight:hover {
-      background: transparent;
-    }
+ @media print {
+
+  @page {
+    size: A4;
+    margin: 18mm 15mm 18mm 15mm;
   }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* كل صفحة تطلع A4 مستقلة */
+  .page {
+    page-break-after: always;
+    page-break-inside: avoid;
+    min-height: 297mm;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  /* لا تطبع زر الطباعة */
+  .btn-print,
+  #warn_no_data {
+    display: none !important;
+  }
+
+  /* تثبيت الترويسة في أعلى كل صفحة */
+  .header {
+    position: relative;
+    top: 0;
+    margin-bottom: 10px;
+  }
+
+  /* منع كسر الجداول */
+  table {
+    page-break-inside: avoid;
+  }
+
+  tr, td, th {
+    page-break-inside: avoid;
+  }
+
+  /* منع كسر SVG */
+  svg {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+}
+
 </style>
 
 <style>
@@ -1331,6 +1378,7 @@ function renderPayments(q) {
 
 </body>
 </html>
+
 
 
 
