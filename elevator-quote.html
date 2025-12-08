@@ -1609,6 +1609,14 @@ payments: {
         notes: selectedCustomer.notes || ''
     } : null
 };
+quote.dimensions = {
+  cabinSize: document.getElementById('cabinSize')?.textContent || '',
+  shaftSize: document.getElementById('shaftSize')?.textContent || '',
+  doorWidth: document.getElementById('doorWidth')?.textContent || '',
+  pit: document.getElementById('pitValue')?.textContent || '',
+  oh: document.getElementById('ohValue')?.textContent || '',
+  capacity: document.getElementById('capacity')?.value || '',
+};
 
 
             // حفظه في مصفوفة عروض الأسعار
@@ -1839,6 +1847,7 @@ document.getElementById('floorHeight')?.addEventListener('input', calculateTrave
 
 </body>
 </html>
+
 
 
 
