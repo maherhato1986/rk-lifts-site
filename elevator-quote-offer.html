@@ -799,76 +799,67 @@ th {
 
   <div class="section-title">٥) مخطط استرشادي لمقاسات البئر والكابينة</div>
 
-  <div class="diagram-page">
-    <!-- المقطع الرأسي (Section) -->
-    <div class="section-view">
-      <div class="shaft-vertical">
-        <div class="oh-label">
-          OH = <span class="bind_oh">—</span> mm
-        </div>
+ <div style="display:flex; justify-content:center; margin-top:20px">
 
-        <div class="car-vertical">
-          Cabin
-        </div>
-
-        <div class="pit-label">
-          Pit = <span class="bind_pit">—</span> mm
-        </div>
-      </div>
-    </div>
-
-     <div class="shaft-diagram" style="margin-top:20px; display:flex; justify-content:center;">
-
-<svg width="360" height="520" viewBox="0 0 360 520"
+<svg width="700" height="420" viewBox="0 0 700 420"
      xmlns="http://www.w3.org/2000/svg"
      style="border:1px solid #d1d5db; background:#fff">
 
-  <!-- Shaft -->
-  <rect x="80" y="40" width="200" height="420" fill="none" stroke="#111827" stroke-width="2"/>
-  <text x="180" y="30" text-anchor="middle" font-size="12">Lift Shaft</text>
-
-  <!-- Cabin -->
-  <rect x="110" y="170" width="140" height="160" fill="#f3f4f6" stroke="#111827"/>
-  <text x="180" y="260" text-anchor="middle" font-size="12">Cabin</text>
-
-  <!-- Door -->
-  <line x1="110" y1="330" x2="250" y2="330" stroke="#111827"/>
-  <text x="180" y="348" text-anchor="middle" font-size="11">Door Width</text>
-
-  <!-- Pit -->
-  <line x1="80" y1="460" x2="280" y2="460" stroke="#111827"/>
-  <text x="180" y="490" text-anchor="middle" font-size="11">PIT</text>
+  <!-- ===== SECTION VIEW ===== -->
+  <rect x="60" y="40" width="180" height="300" fill="none" stroke="#0f172a" stroke-width="2"/>
+  <text x="150" y="24" text-anchor="middle" font-size="13" font-weight="600">SECTION</text>
 
   <!-- OH -->
-  <line x1="80" y1="40" x2="280" y2="40" stroke="#111827"/>
-  <text x="180" y="18" text-anchor="middle" font-size="11">OH</text>
+  <line x1="60" y1="40" x2="240" y2="40" stroke="#0f172a"/>
+  <text x="150" y="18" text-anchor="middle" font-size="11">
+    OH = <tspan class="bind_oh">—</tspan> mm
+  </text>
+
+  <!-- Cabin -->
+  <rect x="85" y="140" width="130" height="140"
+        fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+  <text x="150" y="215" text-anchor="middle" font-size="11">Cabin</text>
+
+  <!-- Pit -->
+  <line x1="60" y1="340" x2="240" y2="340" stroke="#0f172a"/>
+  <text x="150" y="368" text-anchor="middle" font-size="11">
+    PIT = <tspan class="bind_pit">—</tspan> mm
+  </text>
+
+  <!-- ===== PLAN VIEW ===== -->
+  <rect x="360" y="80" width="260" height="200"
+        fill="none" stroke="#0f172a" stroke-width="2"/>
+  <text x="490" y="60" text-anchor="middle" font-size="13" font-weight="600">PLAN</text>
+
+  <!-- Shaft dims -->
+  <text x="490" y="305" text-anchor="middle" font-size="11">
+    HW = <tspan class="bind_shaft_width">—</tspan> mm
+  </text>
+
+  <text x="340" y="180" transform="rotate(-90 340,180)" font-size="11">
+    HD = <tspan class="bind_shaft_depth">—</tspan> mm
+  </text>
+
+  <!-- Cabin -->
+  <rect x="395" y="115" width="180" height="130"
+        fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+  <text x="490" y="185" text-anchor="middle" font-size="11">
+    Cabin<br/>
+    <tspan class="bind_dim_cabin">—</tspan>
+  </text>
 
 </svg>
 
 </div>
 
 
-    <!-- المسقط الأفقي (Plan) -->
-    <div class="plan-view">
-      <div class="shaft-plan">
-        <span class="dim-top">
-          HW: <span class="bind_shaft_width">—</span> mm
-        </span>
-        <span class="dim-right">
-          HD: <span class="bind_shaft_depth">—</span> mm
-        </span>
 
-        <div class="cabin-plan">
-          CW / CD<br>
-          <span class="bind_dim_cabin">—</span>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <p class="small-note center">
     * هذا المخطط استرشادي فقط، ويجب اعتماد الرسومات التنفيذية (Shop Drawings) قبل التنفيذ الفعلي.
   </p>
+
+   
 
   <div class="page-index">Page 4</div>
 </div>
@@ -1252,6 +1243,7 @@ if (q) {
 
 </body>
 </html>
+
 
 
 
