@@ -1254,18 +1254,18 @@ bind('.bind_door_height', doorH);
 /* =================================================
    (5) الأسعار – حساب صحيح
 ================================================= */
-const unitPrice   = Number(q.pricePerUnit || 0);
-const units       = Number(q.liftsCount || 1);
-const vatRate     = Number(q.vatRate || 15) / 100;
-
-const subtotal    = unitPrice * units;        // قبل الضريبة
-const vatAmount   = subtotal * vatRate;       // الضريبة
-const grandTotal  = subtotal + vatAmount;     // شامل الضريبة
+/* =================================================
+   (5) الأسعار – معتمدة من سجل عروض الأسعار (شامل الضريبة)
+================================================= */
+const grandTotal = Number(q.totalWithVat || 0);   // ✅ شامل الضريبة جاهز
+const units      = Number(q.liftsCount || 1);
+const unitPrice  = units ? (grandTotal / units) : 0;
 
 bind('.bind_price_per_unit', formatCurrency(unitPrice, q.currency));
-bind('.bind_total_price',    formatCurrency(subtotal, q.currency));
+bind('.bind_total_price',    formatCurrency(grandTotal, q.currency));
 bind('.bind_total_with_vat', formatCurrency(grandTotal, q.currency));
 bind('.bind_vat_rate',       q.vatRate || 15);
+
 
 
 /* =================================================
@@ -1275,6 +1275,7 @@ bind('.bind_pay_50', formatCurrency(grandTotal * 0.50, q.currency));
 bind('.bind_pay_25', formatCurrency(grandTotal * 0.25, q.currency));
 bind('.bind_pay_20', formatCurrency(grandTotal * 0.20, q.currency));
 bind('.bind_pay_5',  formatCurrency(grandTotal * 0.05, q.currency));
+
 
 
 </script>
@@ -1332,6 +1333,7 @@ function renderPayments(q) {
 
 </body>
 </html>
+
 
 
 
