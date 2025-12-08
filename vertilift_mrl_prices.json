@@ -1,30 +1,142 @@
 {
   "brand": "VERTILIFT ITALY",
-  "system": "MRL",
-  "currency": "USD",
-  "prices": [
+  "series": "MRL Passenger",
+  "exchangeRateToSAR": 3.75,
+  "models": [
     {
-      "capacity": 630,
-      "speed": 1.0,
-      "stops": 5,
-      "base_price": 16800
+      "code": "VL-MRL-320-1.0",
+      "capacityKg": "320-450",
+      "speedMps": 1.0,
+      "baseFloors": 2,
+      "basePriceUsd": 8100,
+      "extraPerFloorUsd": 255,
+      "machineType": "MRL",
+      "doorType": "Average (Center / Side)",
+      "notes": "FOB Shanghai"
     },
     {
-      "capacity": 800,
-      "speed": 1.0,
-      "stops": 6,
-      "base_price": 18200
+      "code": "VL-MRL-320-1.6",
+      "capacityKg": "320-450",
+      "speedMps": 1.6,
+      "baseFloors": 2,
+      "basePriceUsd": 8400,
+      "extraPerFloorUsd": 265,
+      "machineType": "MRL",
+      "doorType": "Average (Center / Side)",
+      "notes": "FOB Shanghai"
     },
     {
-      "capacity": 1000,
-      "speed": 1.6,
-      "stops": 8,
-      "base_price": 21500
+      "code": "VL-MRL-320-1.75",
+      "capacityKg": "320-450",
+      "speedMps": 1.75,
+      "baseFloors": 2,
+      "basePriceUsd": 8600,
+      "extraPerFloorUsd": 275,
+      "machineType": "MRL",
+      "doorType": "Average (Center / Side)",
+      "notes": "FOB Shanghai"
+    },
+
+    {
+      "code": "VL-MRL-630-1.0",
+      "capacityKg": "630",
+      "speedMps": 1.0,
+      "baseFloors": 2,
+      "basePriceUsd": 8300,
+      "extraPerFloorUsd": 260,
+      "machineType": "MRL",
+      "doorType": "Average (Center / Side)",
+      "notes": "FOB Shanghai"
+    },
+    {
+      "code": "VL-MRL-630-1.6",
+      "capacityKg": "630",
+      "speedMps": 1.6,
+      "baseFloors": 2,
+      "basePriceUsd": 8600,
+      "extraPerFloorUsd": 370,
+      "machineType": "MRL",
+      "doorType": "Average (Center / Side)",
+      "notes": "FOB Shanghai"
+    },
+    {
+      "code": "VL-MRL-630-1.75",
+      "capacityKg": "630",
+      "speedMps": 1.75,
+      "baseFloors": 2,
+      "basePriceUsd": 8900,
+      "extraPerFloorUsd": 380,
+      "machineType": "MRL",
+      "doorType": "Average (Center / Side)",
+      "notes": "FOB Shanghai"
+    },
+
+    {
+      "code": "VL-MRL-800-1.0",
+      "capacityKg": "800",
+      "speedMps": 1.0,
+      "baseFloors": 2,
+      "basePriceUsd": 8700,
+      "extraPerFloorUsd": 270,
+      "machineType": "MRL",
+      "doorType": "Average (Center / Side)",
+      "notes": "FOB Shanghai"
+    },
+    {
+      "code": "VL-MRL-800-1.6",
+      "capacityKg": "800",
+      "speedMps": 1.6,
+      "baseFloors": 2,
+      "basePriceUsd": 9050,
+      "extraPerFloorUsd": 380,
+      "machineType": "MRL",
+      "doorType": "Average (Center / Side)",
+      "notes": "FOB Shanghai"
+    },
+    {
+      "code": "VL-MRL-800-1.75",
+      "capacityKg": "800",
+      "speedMps": 1.75,
+      "baseFloors": 2,
+      "basePriceUsd": 9350,
+      "extraPerFloorUsd": 390,
+      "machineType": "MRL",
+      "doorType": "Average (Center / Side)",
+      "notes": "FOB Shanghai"
+    },
+
+    {
+      "code": "VL-MRL-1000-1.0",
+      "capacityKg": "1000",
+      "speedMps": 1.0,
+      "baseFloors": 2,
+      "basePriceUsd": 9150,
+      "extraPerFloorUsd": 290,
+      "machineType": "MRL",
+      "doorType": "Average (Center / Side)",
+      "notes": "FOB Shanghai"
+    },
+    {
+      "code": "VL-MRL-1000-1.6",
+      "capacityKg": "1000",
+      "speedMps": 1.6,
+      "baseFloors": 2,
+      "basePriceUsd": 9850,
+      "extraPerFloorUsd": 410,
+      "machineType": "MRL",
+      "doorType": "Average (Center / Side)",
+      "notes": "FOB Shanghai"
+    },
+    {
+      "code": "VL-MRL-1000-1.75",
+      "capacityKg": "1000",
+      "speedMps": 1.75,
+      "baseFloors": 2,
+      "basePriceUsd": 10150,
+      "extraPerFloorUsd": 425,
+      "machineType": "MRL",
+      "doorType": "Average (Center / Side)",
+      "notes": "FOB Shanghai"
     }
-  ],
-  "options": {
-    "extra_stop": 950,
-    "panoramic_cabin": 3200,
-    "heavy_duty_rails": 1800
-  }
+  ]
 }
