@@ -842,9 +842,13 @@ th {
   <text x="520" y="24" text-anchor="middle" font-size="14" font-weight="600">
     PLAN VIEW
   </text>
-  <text x="520" y="44" text-anchor="middle" font-size="11" fill="#475569">
-    Shaft &amp; Cabin Dimensions
-  </text>
+
+<!-- Cabin dimensions -->
+<text x="520" y="205" text-anchor="middle" font-size="10">
+  CW = <tspan class="bind_cabin_width">—</tspan> mm
+  &nbsp;|&nbsp;
+  CD = <tspan class="bind_cabin_depth">—</tspan> mm
+</text>
 
   <!-- Shaft plan -->
   <rect x="390" y="80" width="260" height="200"
@@ -878,11 +882,12 @@ th {
     <tspan class="bind_dim_cabin">—</tspan>
   </text>
 
-  <!-- Door opening -->
-  <rect x="485" y="115" width="70" height="6" fill="#0f172a"/>
-  <text x="520" y="108" text-anchor="middle" font-size="10">
-    Door Opening
-  </text>
+<text x="520" y="96" text-anchor="middle" font-size="10">
+  Door Opening:
+  <tspan class="bind_door_width">—</tspan> ×
+  <tspan class="bind_door_height">—</tspan> mm
+</text>
+
 
   <!-- Footer note -->
   <text x="380" y="420" text-anchor="middle" font-size="10" fill="#64748b">
@@ -1190,6 +1195,19 @@ if (rawShaft && (rawShaft.includes('×') || rawShaft.includes('x'))) {
 bind('.bind_shaft_width', shaftW);
 bind('.bind_shaft_depth', shaftD);
 
+   /* =======================
+   Cabin dimensions
+======================= */
+bind('.bind_cabin_width', q.cabinWidth);
+bind('.bind_cabin_depth', q.cabinDepth);
+
+/* =======================
+   Door opening
+======================= */
+bind('.bind_door_width', q.doorWidth);
+bind('.bind_door_height', q.doorHeight);
+
+
 /* =======================
    مقاس الكابينة
 ======================= */
@@ -1285,6 +1303,7 @@ function renderPayments(q) {
 
 </body>
 </html>
+
 
 
 
