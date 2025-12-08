@@ -1325,6 +1325,60 @@ function applyAdjustment(baseSubtotal) {
 
    // ✅ الأساس قبل الضريبة (عكسي)
 const baseSubtotal = grandTotal / (1 + vatRate / 100);
+   // ==========================================
+// (6-1) تعديل السعر قبل الضريبة (اختياري)
+// ==========================================
+
+const vatRate = 15;
+
+// الإجمالي الشامل القادم من سجل عروض الأسعار
+const totalWithVat = grandTotal;
+
+// استخراج السعر قبل الضريبة (عكسي)
+const subtotalBeforeVat = totalWithVat / (1 + vatRate / 100);
+
+// قراءة نوع التعديل
+const adjustmentType = document.getElementById('price-adjust-type')?.value || 'none';
+const adjustmentValue = parseFloat(document.getElementById('price-adjust-value')?.value || 0);
+
+let adjustmentAmount = 0;
+
+// تحديد التعديل
+if (adjustmentType === 'increase_percent') {
+  adjustmentAmount = subtotalBeforeVat * (adjustmentValue / 100);
+}
+else if (adjustmentType === 'discount_percent') {
+  adjustmentAmount = - subtotalBeforeVat * (adjustmentValue / 100);
+}
+else if (adjustmentType === 'increase_fixed') {
+  adjustmentAmount = adjustmentValue;
+}
+else if (adjustmentType === 'discount_fixed') {
+  adjustmentAmount = - adjustmentValue;
+}
+
+// الإجمالي بعد التعديل
+const subtotalAfterAdjustment = subtotalBeforeVat + adjustmentAmount;
+
+// الضريبة
+const vatAmount = subtotalAfterAdjustment * (vatRate / 100);
+
+// الإجمالي النهائي
+const finalTotalWithVat = subtotalAfterAdjustment + vatAmount;
+
+// ===== عرض القيم في ٦) =====
+bind('.bind_subtotal_before_vat', formatCurrency(subtotalBeforeVat));
+bind('.bind_adjustment_amount', formatCurrency(adjustmentAmount));
+bind('.bind_subtotal_after_adjustment', formatCurrency(subtotalAfterAdjustment));
+bind('.bind_vat_amount', formatCurrency(vatAmount));
+bind('.bind_total_after_vat', formatCurrency(finalTotalWithVat));
+
+// ===== تحديث جدول الدفعات 7) =====
+bind('.bind_pay_50', formatCurrency(finalTotalWithVat * 0.50));
+bind('.bind_pay_25', formatCurrency(finalTotalWithVat * 0.25));
+bind('.bind_pay_20', formatCurrency(finalTotalWithVat * 0.20));
+bind('.bind_pay_5',  formatCurrency(finalTotalWithVat * 0.05));
+
 
 // ✅ تطبيق التعديل
 const adjustedSubtotal = applyAdjustment(baseSubtotal);
@@ -1406,6 +1460,7 @@ function renderPayments(q) {
 
 </body>
 </html>
+
 
 
 
