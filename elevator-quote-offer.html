@@ -1163,51 +1163,37 @@ bind('.bind_oh', quote.dimensions?.oh);
 
 
 
-
 /* =================================================
-   (4) مخطط البئر والكابينة – Factory Style
+   (4) مخطط استرشادي – مرتبط بجدول (3) البيانات الفنية
 ================================================= */
 
-/* ========== مقاس البئر HW × HD ========== */
-if (q.shaftSize && q.shaftSize.includes('×')) {
-  const [shaftW, shaftD] = q.shaftSize
-    .split('×')
-    .map(v => v.replace(/[^\d]/g, '').trim());
-
-  bind('.bind_shaft_width', shaftW);
-  bind('.bind_shaft_depth', shaftD);
-}
-
-/* ========== مقاس الكابينة CW × CD ========== */
-if (q.cabinSize && q.cabinSize.includes('×')) {
-  const [cabinW, cabinD] = q.cabinSize
-    .split('×')
-    .map(v => v.replace(/[^\d]/g, '').trim());
-
-  bind('.bind_dim_cabin', `${cabinW} × ${cabinD}`);
-}
-
-/* ========== PIT و OH ========== */
-bind('.bind_pit', q.pit);
-bind('.bind_oh',  q.oh);
-
-   /* ========= استخراج مقاسات البئر ========= */
+/* ===== مقاس البئر HW × HD ===== */
 let shaftWidth = '—';
 let shaftDepth = '—';
 
 if (q.shaftSize) {
-  // نتعامل مع "2000 × 1600" أو "2000 x 1600"
-  const parts = q.shaftSize.replace('×', 'x').split('x').map(s => s.trim());
+  // يقبل: 2000 × 1800 أو 2000 x 1800
+  const parts = q.shaftSize
+    .replace('×', 'x')
+    .split('x')
+    .map(v => v.replace(/[^\d]/g, '').trim());
+
   shaftWidth = parts[0] || '—';
   shaftDepth = parts[1] || '—';
 }
 
-bind('.bind_oh', q.oh);
-bind('.bind_pit', q.pit);
-bind('.bind_dim_cabin', q.cabinSize);
-
 bind('.bind_shaft_width', shaftWidth);
 bind('.bind_shaft_depth', shaftDepth);
+
+/* ===== مقاس الكابينة CW × CD ===== */
+if (q.cabinSize) {
+  bind('.bind_dim_cabin', q.cabinSize);
+}
+
+/* ===== PIT & OH ===== */
+bind('.bind_pit', q.pit);
+bind('.bind_oh',  q.oh);
+
 
 /* =================================================
    (5) الأسعار – حساب صحيح
@@ -1299,6 +1285,7 @@ if (q) {
 
 </body>
 </html>
+
 
 
 
