@@ -998,34 +998,40 @@ th {
   </div>
 
   <div class="section-title">٦) ملخص القيمة المالية</div>
-    <table>
-        <thead>
-        <tr>
-            <th style="width: 40%;">البند</th>
-            <th style="width: 15%;">عدد الوحدات</th>
-            <th style="width: 20%;">سعر الوحدة</th>
-            <th style="width: 25%;">الإجمالي</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td class="editable" contenteditable="true">
-                توريد وتركيب وتشغيل مصعد ركاب كامل حسب المواصفات المذكورة في هذا العرض.
-            </td>
-            <td class="bind_lifts">1</td>
-            <td class="bind_price_per_unit">—</td>
-            <td class="bind_total_price">—</td>
-        </tr>
-        </tbody>
-        <tfoot>
-        <tr>
-            <th colspan="3">
-                الإجمالي شامل ضريبة القيمة المضافة (%<span class="bind_vat_rate">15</span>)
-            </th>
-            <th class="bind_total_with_vat">—</th>
-        </tr>
-        </tfoot>
-    </table>
+<div class="section-title">٦-١) تعديل السعر قبل الضريبة (اختياري)</div>
+
+<table>
+  <tbody>
+    <tr>
+      <th style="width:35%">نوع التعديل</th>
+      <td style="width:65%">
+        <select id="adjust_type">
+          <option value="">— بدون تعديل —</option>
+          <option value="percent_add">زيادة بنسبة (%)</option>
+          <option value="percent_minus">خصم بنسبة (%)</option>
+          <option value="fixed_add">زيادة بمبلغ ثابت</option>
+          <option value="fixed_minus">خصم بمبلغ ثابت</option>
+        </select>
+      </td>
+    </tr>
+
+    <tr>
+      <th>قيمة التعديل</th>
+      <td>
+        <input
+          type="number"
+          id="adjust_value"
+          placeholder="أدخل النسبة أو المبلغ"
+          style="width:100%"
+        />
+        <div class="small-note">
+          * يتم احتساب التعديل على المبلغ قبل الضريبة فقط
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
 
     <div class="section-title">٧) جدول الدفعات المقترح</div>
     <table>
@@ -1267,14 +1273,29 @@ function formatCurrency(value, currency) {
 /* =================================================
    (5) الأسعار – معتمدة من سجل عروض الأسعار (شامل الضريبة)
 ================================================= */
-const grandTotal = Number(q.totalWithVat || 0);   // ✅ من سجل عروض الأسعار
-const units      = Number(q.liftsCount || 1);
-const unitPrice  = units ? (grandTotal / units) : 0;
+const vatRate = Number(q.vatRate || 15);
 
-bind('.bind_price_per_unit', formatCurrency(unitPrice, q.currency));
-bind('.bind_total_price',    formatCurrency(grandTotal, q.currency));
-bind('.bind_total_with_vat', formatCurrency(grandTotal, q.currency));
-bind('.bind_vat_rate',       q.vatRate || 15);
+// ✅ الأساس قبل الضريبة (محسوب عكسيًا)
+const baseSubtotal = grandTotal / (1 + vatRate / 100);
+
+// ✅ تطبيق التعديل
+const adjustedSubtotal = applyAdjustment(baseSubtotal);
+
+// ✅ إعادة الحساب
+const vatAmount   = adjustedSubtotal * (vatRate / 100);
+const finalTotal  = adjustedSubtotal + vatAmount;
+
+// ✅ العرض
+bind('.bind_price_per_unit', formatCurrency(finalTotal / units, q.currency));
+bind('.bind_total_price',    formatCurrency(finalTotal, q.currency));
+bind('.bind_total_with_vat', formatCurrency(finalTotal, q.currency));
+bind('.bind_vat_rate',       vatRate);
+
+// ✅ تحديث الدفعات
+bind('.bind_pay_50', formatCurrency(finalTotal * 0.50, q.currency));
+bind('.bind_pay_25', formatCurrency(finalTotal * 0.25, q.currency));
+bind('.bind_pay_20', formatCurrency(finalTotal * 0.20, q.currency));
+bind('.bind_pay_5',  formatCurrency(finalTotal * 0.05, q.currency));
 
 
 
@@ -1345,6 +1366,7 @@ function renderPayments(q) {
 
 </body>
 </html>
+
 
 
 
