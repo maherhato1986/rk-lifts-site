@@ -1155,25 +1155,28 @@ bind('.bind_floor_finish', q.floorFinish);
 bind('.bind_dim_shaft', q.shaftSize);
 bind('.bind_pit',       q.pit);
 bind('.bind_oh',        q.oh);
-   bind('.bind_cabin_size', quote.dimensions?.cabinSize);
-bind('.bind_shaft_size', quote.dimensions?.shaftSize);
-bind('.bind_door_width', quote.dimensions?.doorWidth);
-bind('.bind_pit', quote.dimensions?.pit);
-bind('.bind_oh', quote.dimensions?.oh);
+
 
 
 
 /* =================================================
-   (4) مخطط استرشادي – مرتبط بجدول (3) البيانات الفنية
+   (4) مخطط استرشادي – مأخوذ 100% من جدول (3)
 ================================================= */
+
+/* ✅ نأخذ أول خيار فقط إذا كان فيه | */
+const normalizeSize = (val) => {
+  if (!val) return '';
+  return val.split('|')[0].trim(); // أول مقاس فقط
+};
 
 /* ===== مقاس البئر HW × HD ===== */
 let shaftWidth = '—';
 let shaftDepth = '—';
 
-if (q.shaftSize) {
-  // يقبل: 2000 × 1800 أو 2000 x 1800
-  const parts = q.shaftSize
+const shaftSize = normalizeSize(q.shaftSize);
+
+if (shaftSize && shaftSize.includes('×')) {
+  const parts = shaftSize
     .replace('×', 'x')
     .split('x')
     .map(v => v.replace(/[^\d]/g, '').trim());
@@ -1185,14 +1188,14 @@ if (q.shaftSize) {
 bind('.bind_shaft_width', shaftWidth);
 bind('.bind_shaft_depth', shaftDepth);
 
-/* ===== مقاس الكابينة CW × CD ===== */
-if (q.cabinSize) {
-  bind('.bind_dim_cabin', q.cabinSize);
-}
+/* ===== مقاس الكابينة ===== */
+const cabinSize = normalizeSize(q.cabinSize);
+bind('.bind_dim_cabin', cabinSize || '—');
 
-/* ===== PIT & OH ===== */
+/* ===== PIT و OH ===== */
 bind('.bind_pit', q.pit);
 bind('.bind_oh',  q.oh);
+
 
 
 /* =================================================
@@ -1269,22 +1272,14 @@ function renderPayments(q) {
   });
 }
 </script>
-<script>
-const quotes = JSON.parse(localStorage.getItem("rkl_quotes") || "[]");
-const idx = Number(localStorage.getItem("rkl_current_quote_index")) || quotes.length - 1;
-const q = quotes[idx];
 
-if (q) {
-  renderPricingTable(q);
-  renderPayments(q);
-}
-</script>
 
 
 
 
 </body>
 </html>
+
 
 
 
