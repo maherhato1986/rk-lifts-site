@@ -322,29 +322,7 @@
                     </div>
                     <!-- ارتفاع الدور -->
                     <!-- ارتفاع الدور الواحد -->
-<div class="form-group">
-  <label>ارتفاع الدور الواحد (متر)</label>
-  <input 
-    type="number"
-    step="0.1"
-    id="floorHeight"
-    class="form-control"
-    placeholder="مثال: 3.8"
-  >
-</div>
 
-<!-- ارتفاع الرحلة الكلي -->
-<div class="form-group">
-  <label>ارتفاع الرحلة الكلي (متر)</label>
-  <input 
-    type="number"
-    step="0.1"
-    id="travelHeight"
-    class="form-control"
-    readonly
-    placeholder="يتم الحساب تلقائيًا"
-  >
-</div>
 
 <div class="form-group">
   <label>ارتفاع الدور الواحد (متر)</label>
@@ -1834,27 +1812,8 @@ row.querySelector(".oh-cell").innerText    = opt.oh;
 
 
 </script>
-    <script>
+<script>
 function calculateTravelHeight() {
-  const floors = parseInt(document.getElementById('floors')?.value || 0);
-  const floorHeight = parseFloat(document.getElementById('floorHeight')?.value || 0);
-  const travelInput = document.getElementById('travelHeight');
-
-  if (floors >= 2 && floorHeight > 0) {
-    const travelHeight = (floors - 1) * floorHeight;
-    travelInput.value = travelHeight.toFixed(2);
-  } else {
-    travelInput.value = '';
-  }
-}
-
-document.getElementById('floors')?.addEventListener('input', calculateTravelHeight);
-document.getElementById('floorHeight')?.addEventListener('input', calculateTravelHeight);
-
-// تشغيل أولي
-calculateTravelHeight();
-
-        function calculateTravelHeight() {
   const stops = parseFloat(document.getElementById('stops')?.value || 0);
   const floorHeight = parseFloat(document.getElementById('floorHeight')?.value || 0);
 
@@ -1868,15 +1827,15 @@ calculateTravelHeight();
 
 document.getElementById('stops')?.addEventListener('input', calculateTravelHeight);
 document.getElementById('floorHeight')?.addEventListener('input', calculateTravelHeight);
-
-
 </script>
+
 
 
 
 
 </body>
 </html>
+
 
 
 
