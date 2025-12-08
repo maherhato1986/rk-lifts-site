@@ -1034,42 +1034,71 @@ th {
 
 
     <div class="section-title">٧) جدول الدفعات المقترح</div>
-    <table>
-        <thead>
-        <tr>
-            <th style="width: 45%;">البيان</th>
-            <th style="width: 15%;">النسبة</th>
-            <th style="width: 40%;">المبلغ بالريال السعودي</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td class="editable" contenteditable="true">عند توقيع العقد</td>
-            <td>50%</td>
-            <td class="bind_pay_50">—</td>
-        </tr>
-        <tr>
-            <td class="editable" contenteditable="true">عند الانتهاء من الأعمال الميكانيكية</td>
-            <td>25%</td>
-            <td class="bind_pay_25">—</td>
-        </tr>
-        <tr>
-            <td class="editable" contenteditable="true">بعد الانتهاء من الأعمال الكهربائية والتشغيل</td>
-            <td>20%</td>
-            <td class="bind_pay_20">—</td>
-        </tr>
-        <tr>
-            <td class="editable" contenteditable="true">عند التسليم النهائي للمصعد</td>
-            <td>5%</td>
-            <td class="bind_pay_5">—</td>
-        </tr>
-        <tr>
-            <th>الإجمالي (شامل ضريبة القيمة المضافة)</th>
-            <th>100%</th>
-            <th class="bind_total_with_vat">—</th>
-        </tr>
-        </tbody>
-    </table>
+<table>
+  <thead>
+    <tr>
+      <th style="width:45%">البيان</th>
+      <th style="width:15%">النسبة</th>
+      <th style="width:40%">المبلغ بالريال السعودي</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>عند توقيع العقد</td>
+      <td>50%</td>
+      <td class="bind_pay_50">—</td>
+    </tr>
+    <tr>
+      <td>عند الانتهاء من الأعمال الميكانيكية</td>
+      <td>25%</td>
+      <td class="bind_pay_25">—</td>
+    </tr>
+    <tr>
+      <td>بعد الانتهاء من الأعمال الكهربائية والتشغيل</td>
+      <td>20%</td>
+      <td class="bind_pay_20">—</td>
+    </tr>
+    <tr>
+      <td>عند التسليم النهائي للمصعد</td>
+      <td>5%</td>
+      <td class="bind_pay_5">—</td>
+    </tr>
+
+    <!-- ✅ ملخص مالي تفصيلي -->
+    <tr>
+      <th>الإجمالي قبل التعديل (قبل الضريبة)</th>
+      <th>—</th>
+      <th class="bind_subtotal_before_vat">—</th>
+    </tr>
+
+    <tr>
+      <th>قيمة الخصم / الزيادة</th>
+      <th>—</th>
+      <th class="bind_adjustment_amount">—</th>
+    </tr>
+
+    <tr>
+      <th>الإجمالي بعد التعديل (قبل الضريبة)</th>
+      <th>—</th>
+      <th class="bind_subtotal_after_adjustment">—</th>
+    </tr>
+
+    <tr>
+      <th>ضريبة القيمة المضافة (15%)</th>
+      <th>—</th>
+      <th class="bind_vat_amount">—</th>
+    </tr>
+
+    <tr>
+      <th style="background:#f0f9ff;font-weight:bold">
+        الإجمالي النهائي (شامل ضريبة القيمة المضافة)
+      </th>
+      <th>100%</th>
+      <th class="bind_total_with_vat" style="font-weight:bold">—</th>
+    </tr>
+  </tbody>
+</table>
+
 
     <div class="section-title">٨) بنود رئيسية للعقد (قابلة للتعديل)</div>
     <div class="terms editable" contenteditable="true">
@@ -1222,25 +1251,23 @@ function recalcFinancialSummary() {
     adjustedSubtotal -= value;
   }
 
-  const vatAmount   = adjustedSubtotal * (vatRate / 100);
-  const finalTotal  = adjustedSubtotal + vatAmount;
+  const vatAmount  = adjustedSubtotal * (vatRate / 100);
+  const finalTotal = adjustedSubtotal + vatAmount;
 
-  /* ===== (6) ملخص القيمة المالية ===== */
+  // ✅ الملخص
   bind('.bind_subtotal_before_vat', formatCurrency(baseSubtotal));
   bind('.bind_adjustment_amount', formatCurrency(adjustedSubtotal - baseSubtotal));
   bind('.bind_subtotal_after_adjustment', formatCurrency(adjustedSubtotal));
   bind('.bind_vat_amount', formatCurrency(vatAmount));
   bind('.bind_total_with_vat', formatCurrency(finalTotal));
 
-  /* ===== سعر الوحدة ===== */
-  bind('.bind_price_per_unit', formatCurrency(finalTotal / units));
-
-  /* ===== (7) جدول الدفعات ===== */
+  // ✅ جدول الدفعات
   bind('.bind_pay_50', formatCurrency(finalTotal * 0.50));
   bind('.bind_pay_25', formatCurrency(finalTotal * 0.25));
   bind('.bind_pay_20', formatCurrency(finalTotal * 0.20));
   bind('.bind_pay_5',  formatCurrency(finalTotal * 0.05));
 }
+
 
 /* ✅ تشغيل أولي */
 recalcFinancialSummary();
@@ -1304,6 +1331,7 @@ function renderPayments(q) {
 
 </body>
 </html>
+
 
 
 
