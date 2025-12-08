@@ -321,6 +321,31 @@
                         </div>
                     </div>
                     <!-- ارتفاع الدور -->
+                    <!-- ارتفاع الدور الواحد -->
+<div class="form-group">
+  <label>ارتفاع الدور الواحد (متر)</label>
+  <input 
+    type="number"
+    step="0.1"
+    id="floorHeight"
+    class="form-control"
+    placeholder="مثال: 3.8"
+  >
+</div>
+
+<!-- ارتفاع الرحلة الكلي -->
+<div class="form-group">
+  <label>ارتفاع الرحلة الكلي (متر)</label>
+  <input 
+    type="number"
+    step="0.1"
+    id="travelHeight"
+    class="form-control"
+    readonly
+    placeholder="يتم الحساب تلقائيًا"
+  >
+</div>
+
 <div class="form-group">
   <label>ارتفاع الدور الواحد (متر)</label>
   <input
@@ -1781,6 +1806,8 @@ document.getElementById("lifts_count").addEventListener("input", function () {
   <td class="door-cell"></td>
   <td class="pit-cell"></td>
   <td class="oh-cell"></td>
+   <td>${q.floorHeight || '-'} م</td>
+  <td>${q.travelHeight || '-'} م</td>
   <td><input type="text" class="note-input" placeholder="ملاحظات" /></td>
 `;
 
@@ -1827,6 +1854,22 @@ document.getElementById('floorHeight')?.addEventListener('input', calculateTrave
 // تشغيل أولي
 calculateTravelHeight();
 
+        function calculateTravelHeight() {
+  const stops = parseFloat(document.getElementById('stops')?.value || 0);
+  const floorHeight = parseFloat(document.getElementById('floorHeight')?.value || 0);
+
+  if (stops > 1 && floorHeight > 0) {
+    const travel = (stops - 1) * floorHeight;
+    document.getElementById('travelHeight').value = travel.toFixed(2);
+  } else {
+    document.getElementById('travelHeight').value = '';
+  }
+}
+
+document.getElementById('stops')?.addEventListener('input', calculateTravelHeight);
+document.getElementById('floorHeight')?.addEventListener('input', calculateTravelHeight);
+
+
 </script>
 
 
@@ -1834,6 +1877,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
