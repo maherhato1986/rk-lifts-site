@@ -777,7 +777,7 @@ const CABIN_DESIGN_ADDITIONAL = {
     if (!quotes.length) {
         const tr = document.createElement('tr');
         const td = document.createElement('td');
-        td.colSpan = 25;
+        td.colSpan = 18;
         td.textContent = 'لا توجد عروض أسعار محفوظة في هذا الجهاز حتى الآن.';
         td.style.textAlign = 'center';
         td.style.color = '#9ca3af';
@@ -1609,14 +1609,7 @@ payments: {
         notes: selectedCustomer.notes || ''
     } : null
 };
-quote.dimensions = {
-  cabinSize: document.getElementById('cabinSize')?.textContent || '',
-  shaftSize: document.getElementById('shaftSize')?.textContent || '',
-  doorWidth: document.getElementById('doorWidth')?.textContent || '',
-  pit: document.getElementById('pitValue')?.textContent || '',
-  oh: document.getElementById('ohValue')?.textContent || '',
-  capacity: document.getElementById('capacity')?.value || '',
-};
+
 
 
             // حفظه في مصفوفة عروض الأسعار
@@ -1847,6 +1840,7 @@ document.getElementById('floorHeight')?.addEventListener('input', calculateTrave
 
 </body>
 </html>
+
 
 
 
