@@ -817,6 +817,37 @@ th {
       </div>
     </div>
 
+     <div class="shaft-diagram" style="margin-top:20px; display:flex; justify-content:center;">
+
+<svg width="360" height="520" viewBox="0 0 360 520"
+     xmlns="http://www.w3.org/2000/svg"
+     style="border:1px solid #d1d5db; background:#fff">
+
+  <!-- Shaft -->
+  <rect x="80" y="40" width="200" height="420" fill="none" stroke="#111827" stroke-width="2"/>
+  <text x="180" y="30" text-anchor="middle" font-size="12">Lift Shaft</text>
+
+  <!-- Cabin -->
+  <rect x="110" y="170" width="140" height="160" fill="#f3f4f6" stroke="#111827"/>
+  <text x="180" y="260" text-anchor="middle" font-size="12">Cabin</text>
+
+  <!-- Door -->
+  <line x1="110" y1="330" x2="250" y2="330" stroke="#111827"/>
+  <text x="180" y="348" text-anchor="middle" font-size="11">Door Width</text>
+
+  <!-- Pit -->
+  <line x1="80" y1="460" x2="280" y2="460" stroke="#111827"/>
+  <text x="180" y="490" text-anchor="middle" font-size="11">PIT</text>
+
+  <!-- OH -->
+  <line x1="80" y1="40" x2="280" y2="40" stroke="#111827"/>
+  <text x="180" y="18" text-anchor="middle" font-size="11">OH</text>
+
+</svg>
+
+</div>
+
+
     <!-- المسقط الأفقي (Plan) -->
     <div class="plan-view">
       <div class="shaft-plan">
@@ -1093,6 +1124,12 @@ bind('.bind_floor_finish', q.floorFinish);
 bind('.bind_dim_shaft', q.shaftSize);
 bind('.bind_pit',       q.pit);
 bind('.bind_oh',        q.oh);
+   bind('.bind_cabin_size', quote.dimensions?.cabinSize);
+bind('.bind_shaft_size', quote.dimensions?.shaftSize);
+bind('.bind_door_width', quote.dimensions?.doorWidth);
+bind('.bind_pit', quote.dimensions?.pit);
+bind('.bind_oh', quote.dimensions?.oh);
+
 
 
 
@@ -1215,6 +1252,7 @@ if (q) {
 
 </body>
 </html>
+
 
 
 
