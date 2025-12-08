@@ -1,201 +1,25 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-   <style>
-  body[contenteditable="true"] {
-    cursor: text;
-  }
-
-  [contenteditable="true"]:focus {
-    outline: none;
-  }
-
-  .editable-highlight:hover {
-    background: rgba(59,130,246,0.06);
-  }
-
- @media print {
-
-  @page {
-    size: A4;
-    margin: 18mm 15mm 18mm 15mm;
-  }
-
-  body {
-    margin: 0;
-    padding: 0;
-    background: #fff;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
-
-  /* كل صفحة تطلع A4 مستقلة */
-  .page {
-    page-break-after: always;
-    page-break-inside: avoid;
-    min-height: 297mm;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    box-shadow: none;
-  }
-
-  /* لا تطبع زر الطباعة */
-  .btn-print,
-  #warn_no_data {
-    display: none !important;
-  }
-
-  /* تثبيت الترويسة في أعلى كل صفحة */
-  .header {
-    position: relative;
-    top: 0;
-    margin-bottom: 10px;
-  }
-
-  /* منع كسر الجداول */
-  table {
-    page-break-inside: avoid;
-  }
-
-  tr, td, th {
-    page-break-inside: avoid;
-  }
-
-  /* منع كسر SVG */
-  svg {
-    page-break-inside: avoid;
-    break-inside: avoid;
-  }
-}
-
-</style>
-
+   
 <style>
-/* ===============================
-   رسم المخطط
-===============================*/
-.diagram-container {
-  margin-top: 15px;
-  display: flex;
-  justify-content: center;
+
+/* =================================================
+   إعدادات عامة + Editable
+=================================================*/
+body[contenteditable="true"] {
+  cursor: text;
+}
+[contenteditable="true"]:focus {
+  outline: none;
+}
+.editable-highlight:hover {
+  background: rgba(59,130,246,0.06);
 }
 
-.shaft {
-  position: relative;
-  border: 2px solid #4b5563;
-  width: 260px;
-  height: 340px;
-  background: #f9fafb;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.cabin {
-  border: 2px solid #10b981;
-  background: #ecfdf5;
-  width: 65%;
-  height: 55%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  text-align: center;
-}
-/* ===============================
-   مخطط متكامل (Shaft + Cabin + Pit + OH)
-===============================*/
-.full-diagram {
-  position: relative;
-  width: 260px;
-  height: 420px;
-  border: 2px solid #374151;
-  background: #f9fafb;
-}
-
-.oh-area {
-  position: absolute;
-  top: -26px;
-  width: 100%;
-  text-align: center;
-  font-size: 11px;
-  color: #374151;
-}
-
-.pit-area {
-  position: absolute;
-  bottom: -26px;
-  width: 100%;
-  text-align: center;
-  font-size: 11px;
-  color: #374151;
-}
-
-.full-diagram .cabin {
-  position: absolute;
-  top: 28%;
-  left: 17%;
-  width: 65%;
-  height: 45%;
-}
-
-/* ===============================
-   إعدادات الطباعة A4
-===============================*/
-@media print {
-  @page {
-    size: A4;
-    margin: 20mm 15mm 20mm 15mm;
-  }
-
-  body {
-    margin: 0;
-    padding: 0;
-    background: #ffffff;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-    font-family: "Cairo","Tajawal",Arial,sans-serif;
-  }
-
-  .page {
-    page-break-after: always;
-    min-height: 297mm;
-    width: 100%;
-    margin: 0;
-    box-shadow: none;
-  }
-
-  .btn-print {
-    display: none !important;
-  }
-}
-
-/* ===============================
-   خلفية الشعار (Watermark)
-===============================*/
-.page::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 400px;
-  height: 400px;
-  background: url("rk-lifts-site/logo.png") no-repeat center;
-  background-size: contain;
-  opacity: 0.05;
-  transform: translate(-50%, -50%);
-  z-index: 0;
-}
-
-.page > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* ===============================
-   تنسيقات العرض على الشاشة
-===============================*/
+/* =================================================
+   تنسيق العرض على الشاشة
+=================================================*/
 body {
   font-family: "Cairo", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: #f3f4f6;
@@ -213,16 +37,16 @@ body {
   position: relative;
 }
 
-/* ===============================
+/* =================================================
    Header
-===============================*/
+=================================================*/
 .header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   border-bottom: 2px solid #e5e7eb;
   padding-bottom: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .logo-box {
@@ -247,9 +71,9 @@ body {
   line-height: 1.6;
 }
 
-/* ===============================
+/* =================================================
    العناوين والجداول
-===============================*/
+=================================================*/
 h1.main-title {
   text-align: center;
   font-size: 18px;
@@ -281,34 +105,31 @@ th {
   font-weight: 600;
 }
 
-/* ===============================
+/* =================================================
    جداول المواصفات
-===============================*/
+=================================================*/
 .spec-table th:nth-child(1),
 .spec-table td:nth-child(1) {
   width: 6%;
   text-align: center;
 }
-
 .spec-table th:nth-child(2),
 .spec-table td:nth-child(2) {
   width: 44%;
 }
-
 .spec-table th:nth-child(3),
 .spec-table td:nth-child(3) {
   width: 18%;
   text-align: center;
 }
-
 .spec-table th:nth-child(4),
 .spec-table td:nth-child(4) {
   width: 32%;
 }
 
-/* ===============================
+/* =================================================
    تقسيمات وملاحظات
-===============================*/
+=================================================*/
 .two-col {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -318,7 +139,6 @@ th {
 .small-note {
   font-size: 11px;
   color: #6b7280;
-  margin-top: 4px;
 }
 
 .terms p {
@@ -334,15 +154,16 @@ th {
   font-size: 12px;
 }
 
-/* ===============================
-   رسم المخطط
-===============================*/
+/* =================================================
+   الرسومات والمخططات
+=================================================*/
 .diagram-container {
   margin-top: 15px;
   display: flex;
   justify-content: center;
 }
 
+/* Shaft + Cabin */
 .shaft {
   position: relative;
   border: 2px solid #4b5563;
@@ -366,48 +187,42 @@ th {
   text-align: center;
 }
 
-.dim-label {
-  position: absolute;
-  font-size: 11px;
-  background: rgba(255,255,255,0.9);
-  padding: 1px 4px;
+/* مخطط متكامل */
+.full-diagram {
+  position: relative;
+  width: 260px;
+  height: 420px;
+  border: 2px solid #374151;
+  background: #f9fafb;
 }
 
-.dim-top {
-  top: -18px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.dim-right {
-  right: -5px;
-  top: 50%;
-  transform: translate(100%, -50%) rotate(-90deg);
-  transform-origin: left top;
-}
-
-.caption {
-  font-size: 11px;
+.oh-area,
+.pit-area {
+  width: 100%;
   text-align: center;
-  margin-top: 6px;
-  color: #4b5563;
+  font-size: 11px;
+  color: #374151;
+  position: absolute;
 }
-   /* ===============================
-   صفحة المخطط الهندسي
-===============================*/
 
+.oh-area { top: -26px; }
+.pit-area { bottom: -26px; }
+
+.full-diagram .cabin {
+  position: absolute;
+  top: 28%;
+  left: 17%;
+  width: 65%;
+  height: 45%;
+}
+
+/* مخطط هندسي كامل */
 .diagram-page {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 40px;
   margin-top: 30px;
   align-items: center;
-}
-
-.section-view,
-.plan-view {
-  display: flex;
-  justify-content: center;
 }
 
 .shaft-vertical {
@@ -433,71 +248,9 @@ th {
   font-size: 12px;
 }
 
-.oh-label {
-  position: absolute;
-  top: -24px;
-  width: 100%;
-  text-align: center;
-  font-size: 11px;
-}
-
-.pit-label {
-  position: absolute;
-  bottom: -24px;
-  width: 100%;
-  text-align: center;
-  font-size: 11px;
-}
-
-/* Plan View */
-.shaft-plan {
-  position: relative;
-  width: 260px;
-  height: 260px;
-  border: 2px solid #475569;
-  background: #f8fafc;
-}
-
-.cabin-plan {
-  position: absolute;
-  top: 20%;
-  left: 20%;
-  width: 60%;
-  height: 60%;
-  border: 2px solid #10b981;
-  background: #ecfdf5;
-  font-size: 11px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-
-.dim-top {
-  position: absolute;
-  top: -22px;
-  width: 100%;
-  text-align: center;
-  font-size: 11px;
-}
-
-.dim-right {
-  position: absolute;
-  right: -22px;
-  top: 50%;
-  transform: rotate(-90deg) translateY(-50%);
-  transform-origin: right center;
-  font-size: 11px;
-}
-
-.center {
-  text-align: center;
-}
-
-
-/* ===============================
-   زر الطباعة + الترقيم
-===============================*/
+/* =================================================
+   زر الطباعة والترقيم
+=================================================*/
 .btn-print {
   display: inline-block;
   margin: 10px auto 0;
@@ -518,7 +271,64 @@ th {
   color: #9ca3af;
 }
 
+/* =================================================
+   الطباعة – A4 احترافية
+=================================================*/
+@media print {
+
+  @page {
+    size: A4;
+    margin: 20mm 15mm 20mm 15mm;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    font-family: "Cairo","Tajawal",Arial,sans-serif;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .page {
+    page-break-after: always;
+    min-height: 297mm;
+    margin: 0;
+    box-shadow: none;
+  }
+
+  .btn-print {
+    display: none !important;
+  }
+
+  table, tr, td, th,
+  svg, .diagram-page {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Watermark للطباعة فقط */
+  .page::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 380px;
+    height: 380px;
+    background: url("rk-lifts-site/logo.png") no-repeat center;
+    background-size: contain;
+    opacity: 0.04;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+  }
+
+  .page > * {
+    position: relative;
+    z-index: 1;
+  }
+}
 </style>
+
 
 </head>
 <body>
@@ -1378,6 +1188,7 @@ function renderPayments(q) {
 
 </body>
 </html>
+
 
 
 
