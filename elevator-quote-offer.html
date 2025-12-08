@@ -1160,39 +1160,45 @@ bind('.bind_oh',        q.oh);
 
 
 /* =================================================
-   (4) مخطط استرشادي – مأخوذ 100% من جدول (3)
+   (4) مخطط استرشادي – مأخوذ مباشرة من جدول (3)
 ================================================= */
 
-/* ✅ نأخذ أول خيار فقط إذا كان فيه | */
+/* توحيد شكل النص */
 const normalizeSize = (val) => {
-  if (!val) return '';
-  return val.split('|')[0].trim(); // أول مقاس فقط
+  if (!val) return null;
+  return val.split('|')[0].trim(); // ناخذ أول مقاس فقط
 };
 
-/* ===== مقاس البئر HW × HD ===== */
-let shaftWidth = '—';
-let shaftDepth = '—';
+/* =======================
+   مقاس بئر المصعد
+======================= */
+let shaftW = '—';
+let shaftD = '—';
 
-const shaftSize = normalizeSize(q.shaftSize);
+const rawShaft = normalizeSize(q.shaftSize);
 
-if (shaftSize && shaftSize.includes('×')) {
-  const parts = shaftSize
+if (rawShaft && (rawShaft.includes('×') || rawShaft.includes('x'))) {
+  const parts = rawShaft
     .replace('×', 'x')
     .split('x')
-    .map(v => v.replace(/[^\d]/g, '').trim());
+    .map(v => v.replace(/[^\d]/g, ''));
 
-  shaftWidth = parts[0] || '—';
-  shaftDepth = parts[1] || '—';
+  shaftW = parts[0] || '—';
+  shaftD = parts[1] || '—';
 }
 
-bind('.bind_shaft_width', shaftWidth);
-bind('.bind_shaft_depth', shaftDepth);
+bind('.bind_shaft_width', shaftW);
+bind('.bind_shaft_depth', shaftD);
 
-/* ===== مقاس الكابينة ===== */
-const cabinSize = normalizeSize(q.cabinSize);
-bind('.bind_dim_cabin', cabinSize || '—');
+/* =======================
+   مقاس الكابينة
+======================= */
+const cabin = normalizeSize(q.cabinSize);
+bind('.bind_dim_cabin', cabin);
 
-/* ===== PIT و OH ===== */
+/* =======================
+   PIT و OH
+======================= */
 bind('.bind_pit', q.pit);
 bind('.bind_oh',  q.oh);
 
@@ -1279,6 +1285,7 @@ function renderPayments(q) {
 
 </body>
 </html>
+
 
 
 
