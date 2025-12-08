@@ -292,8 +292,8 @@ th {
 
   .page {
     page-break-after: always;
-    min-height: 297mm;
-    margin: 0;
+    break-after: page;
+    min-height: auto;        /* ✅ إزالة السبب الرئيسي */
     box-shadow: none;
   }
 
@@ -986,7 +986,7 @@ th {
 
 <!-- زر طباعة عام -->
 <div style="text-align:center; margin-top:10px;">
-    <button class="btn-print" onclick="window.print()">طباعة / حفظ PDF</button>
+  <button class="btn-print" onclick="printWithName()">طباعة / حفظ PDF</button>
     <div id="warn_no_data" class="warning" style="display:none;">
       لم يتم العثور على عرض سعر محفوظ في السجل. الرجاء العودة إلى نموذج التسعير وحفظ عرض السعر أولاً.
     </div>
@@ -1184,10 +1184,27 @@ function renderPayments(q) {
 
 
 
+<script>
+function printWithName() {
+  const quoteNo = document.querySelector('.bind_quote_number')?.textContent?.trim() || 'quotation';
+  const cleanNo = quoteNo.replace(/[^\w\d-]/g, '');
+
+  document.title = `RKL_Quotation_${cleanNo}`;
+  window.print();
+
+  // إرجاع العنوان بعد الطباعة
+  setTimeout(() => {
+    document.title = 'RKL Elevator Offer';
+  }, 1000);
+}
+</script>
+
+
 
 
 </body>
 </html>
+
 
 
 
