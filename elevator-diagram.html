@@ -2,184 +2,132 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>مخطط المصعد الاسترشادي</title>
+<title>Factory Elevator Drawing</title>
 
 <style>
-body {
-  font-family: "Cairo", Arial, sans-serif;
-  background:#f8fafc;
-  margin:0;
-  padding:30px;
+body{
+  font-family: Arial, sans-serif;
+  background:#f5f6f7;
   direction: rtl;
+  padding:20px;
 }
 
-/* ===============================
-   عنوان
-================================*/
-.section-title {
-  font-size:17px;
-  font-weight:700;
-  margin-bottom:15px;
+h3{
+  font-size:16px;
   border-right:4px solid #16a34a;
   padding-right:10px;
-  color:#0f172a;
 }
 
-/* ===============================
-   مخطط SVG
-================================*/
-.diagram-wrap {
-  display:flex;
-  justify-content:center;
-  margin-top:20px;
+svg{
+  background:#fff;
+  border:1px solid #cbd5e1;
 }
 
-svg {
-  background:#ffffff;
-  border:1px solid #d1d5db;
-}
-
-/* خطوط القياس */
-.dim-line {
-  stroke:#374151;
+.dim{
+  stroke:#1f2937;
   stroke-width:1;
 }
-.dim-text {
+
+.arrow{
+  marker-end:url(#arrow);
+}
+
+.text{
+  font-size:12px;
   fill:#111827;
-  font-size:12px;
-  font-weight:600;
 }
 
-/* حدود البئر */
-.shaft {
-  fill:none;
-  stroke:#111827;
-  stroke-width:2;
-}
-
-/* حدود الكبينة */
-.cabin {
-  fill:#dcfce7;
-  stroke:#16a34a;
-  stroke-width:2;
-}
-
-/* الباب */
-.door {
-  fill:#e5e7eb;
-  stroke:#6b7280;
-  stroke-width:1.5;
-}
-
-/* باسم الجزء */
-.part-label {
-  font-size:12px;
-  fill:#1f2937;
-  font-weight:700;
+.label{
+  font-weight:bold;
+  font-size:13px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="section-title">
-٥) مخطط استرشادي لمقاسات البئر والكابينة (Factory Drawing)
-</div>
+<h3>٥) مخطط استرشادي لمقاسات البئر والكابينة (Factory Drawing)</h3>
 
-<div class="diagram-wrap">
+<svg width="900" height="520" viewBox="0 0 900 520">
 
-<svg width="780" height="460" viewBox="0 0 780 460"
-     xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+    <path d="M0,0 L6,3 L0,6 Z" fill="#111"/>
+  </marker>
+</defs>
 
-<!-- ======================
-     SECTION VIEW
-====================== -->
-<text x="200" y="25" text-anchor="middle" class="part-label">SECTION VIEW</text>
+<!----------------------------------
+ SECTION VIEW
+----------------------------------->
+<text x="220" y="30" class="label">SECTION VIEW</text>
 
 <!-- Shaft -->
-<rect x="120" y="40" width="200" height="330" class="shaft"/>
+<rect x="150" y="60" width="220" height="350" fill="none" stroke="#111" stroke-width="2"/>
 
 <!-- Cabin -->
-<rect x="150" y="120" width="140" height="180" class="cabin"/>
+<rect x="175" y="150" width="170" height="190" fill="#d1fae5" stroke="#16a34a" stroke-width="2"/>
 
 <!-- PIT -->
-<line x1="120" y1="370" x2="320" y2="370" class="dim-line"/>
-<line x1="120" y1="360" x2="120" y2="380" class="dim-line"/>
-<line x1="320" y1="360" x2="320" y2="380" class="dim-line"/>
-<text x="220" y="395" text-anchor="middle" class="dim-text">
-PIT = <tspan id="pitVal">—</tspan> mm
-</text>
+<line x1="150" y1="430" x2="370" y2="430" class="dim arrow"/>
+<line x1="150" y1="420" x2="150" y2="440" class="dim"/>
+<line x1="370" y1="420" x2="370" y2="440" class="dim"/>
+<text x="235" y="455" class="text">PIT = <tspan id="pit">1500</tspan> mm</text>
 
 <!-- OH -->
-<line x1="120" y1="40" x2="120" y2="15" class="dim-line"/>
-<line x1="320" y1="40" x2="320" y2="15" class="dim-line"/>
-<line x1="120" y1="15" x2="320" y2="15" class="dim-line"/>
-<text x="220" y="12" text-anchor="middle" class="dim-text">
-OH = <tspan id="ohVal">—</tspan> mm
-</text>
+<line x1="150" y1="40" x2="370" y2="40" class="dim arrow"/>
+<line x1="150" y1="40" x2="150" y2="60" class="dim"/>
+<line x1="370" y1="40" x2="370" y2="60" class="dim"/>
+<text x="230" y="30" class="text">OH = <tspan id="oh">4500</tspan> mm</text>
 
-<!-- Cabin height -->
-<line x1="300" y1="120" x2="300" y2="300" class="dim-line"/>
-<line x1="292" y1="120" x2="308" y2="120" class="dim-line"/>
-<line x1="292" y1="300" x2="308" y2="300" class="dim-line"/>
-<text x="315" y="215" class="dim-text">
-Cabin H = <tspan id="cabinH">—</tspan>
-</text>
+<!-- Cabin Height -->
+<line x1="355" y1="150" x2="355" y2="340" class="dim arrow"/>
+<line x1="345" y1="150" x2="365" y2="150" class="dim"/>
+<line x1="345" y1="340" x2="365" y2="340" class="dim"/>
+<text x="370" y="255" class="text">Cabin H = <tspan id="cabinH">2300</tspan></text>
 
-<!-- ======================
-     FRONT VIEW
-====================== -->
-<text x="570" y="25" text-anchor="middle" class="part-label">FRONT VIEW</text>
+<!----------------------------------
+ FRONT VIEW
+----------------------------------->
+<text x="650" y="30" class="label">FRONT VIEW</text>
 
-<!-- Shaft Front -->
-<rect x="470" y="40" width="200" height="330" class="shaft"/>
+<!-- Shaft -->
+<rect x="560" y="60" width="220" height="350" fill="none" stroke="#111" stroke-width="2"/>
 
-<!-- Cabin Front -->
-<rect x="500" y="120" width="140" height="180" class="cabin"/>
+<!-- Cabin -->
+<rect x="585" y="150" width="170" height="190" fill="#d1fae5" stroke="#16a34a" stroke-width="2"/>
 
 <!-- Door -->
-<rect x="525" y="150" width="90" height="150" class="door"/>
+<rect x="610" y="175" width="120" height="140" fill="#e5e7eb" stroke="#6b7280" stroke-width="2"/>
 
-<!-- Shaft width -->
-<line x1="470" y1="390" x2="670" y2="390" class="dim-line"/>
-<line x1="470" y1="380" x2="470" y2="400" class="dim-line"/>
-<line x1="670" y1="380" x2="670" y2="400" class="dim-line"/>
-<text x="570" y="415" text-anchor="middle" class="dim-text">
-Shaft W = <tspan id="shaftW">—</tspan> mm
-</text>
+<!-- Shaft Width -->
+<line x1="560" y1="430" x2="780" y2="430" class="dim arrow"/>
+<text x="645" y="455" class="text">Shaft W = <tspan id="shaftW">2000</tspan> mm</text>
 
-<!-- Cabin width -->
-<line x1="500" y1="345" x2="640" y2="345" class="dim-line"/>
-<line x1="500" y1="338" x2="500" y2="352" class="dim-line"/>
-<line x1="640" y1="338" x2="640" y2="352" class="dim-line"/>
-<text x="570" y="335" text-anchor="middle" class="dim-text">
-Cabin W = <tspan id="cabinW">—</tspan>
-</text>
+<!-- Cabin Width -->
+<line x1="585" y1="365" x2="755" y2="365" class="dim arrow"/>
+<text x="635" y="355" class="text">Cabin W = <tspan id="cabinW">1600</tspan></text>
 
-<!-- Door width -->
-<text x="570" y="305" text-anchor="middle" class="dim-text">
-Door = <tspan id="doorW">—</tspan>
-</text>
+<!-- Door Width -->
+<text x="640" y="330" class="text">Door = <tspan id="doorW">900</tspan></text>
 
 </svg>
-</div>
 
 <script>
-/* =================================
-   ربط القيم من elevator-quote.html
-================================= */
+/* ==============================
+   ربط مباشر مع elevator-quote.html
+============================== */
 
-function val(id) {
-  return document.getElementById(id)?.value || '—';
+function bind(id, inputId, def){
+  document.getElementById(id).textContent =
+    parent?.document?.getElementById(inputId)?.value || def;
 }
 
-/* الأسماء متوافقة مع الواجهة الرئيسية */
-document.getElementById("shaftW").textContent  = val('shaft_width');
-document.getElementById("cabinW").textContent  = val('cabin_width');
-document.getElementById("cabinH").textContent  = val('cabin_height');
-document.getElementById("doorW").textContent   = val('door_width');
-document.getElementById("pitVal").textContent  = val('pit');
-document.getElementById("ohVal").textContent   = val('oh');
+bind('pit','pit','1500');
+bind('oh','oh','4500');
+bind('cabinH','cabin_height','2300');
+bind('cabinW','cabin_width','1600');
+bind('shaftW','shaft_width','2000');
+bind('doorW','door_width','900');
 
 </script>
 
