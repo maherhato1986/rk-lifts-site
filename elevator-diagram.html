@@ -1,95 +1,150 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>Elevator Factory Drawing</title>
+<title>EN81 Elevator Shaft Drawing</title>
+
 <style>
 body{
-  background:#eee;
-  font-family:Arial;
+  background:#e5e5e5;
+  font-family:Arial, sans-serif;
+  direction:ltr;
+  padding:20px;
+}
+
+h3{
+  font-size:16px;
+  margin-bottom:10px;
+}
+
+.wrapper{
+  display:flex;
+  gap:30px;
 }
 
 svg{
-  background:#e6e6e6;
+  background:#f2f2f2;
 }
 
-/* General strokes */
 .line{ stroke:#111; stroke-width:1; fill:none; }
 .bold{ stroke-width:2; }
-.dim{ stroke:#111; stroke-width:0.8; }
+.dim{ stroke:#000; stroke-width:0.8; }
+.center{ stroke-dasharray:4,4; }
 
 .text{
   font-size:11px;
   fill:#000;
-  font-family:Arial;
 }
-.small{ font-size:10px; }
-
+.label{
+  font-size:12px;
+  font-weight:bold;
+}
 </style>
 </head>
 
 <body>
 
-<svg width="520" height="1100" viewBox="0 0 520 1100">
+<h3>EN 81 – Shaft Arrangement Drawing (Indicative)</h3>
 
-<!-----------------------
- Vertical Section View
------------------------->
+<div class="wrapper">
 
-<!-- WELL -->
-<rect x="200" y="80" width="120" height="900" class="line bold"/>
+<!-- ======================================================
+     SHAFT ELEVATION (VERTICAL SECTION)
+=======================================================-->
+<svg width="420" height="1100" viewBox="0 0 420 1100">
 
-<!-- GUIDE RAILS -->
-<line x1="215" y1="80" x2="215" y2="980" class="line"/>
-<line x1="305" y1="80" x2="305" y2="980" class="line"/>
+<!-- Shaft -->
+<rect x="150" y="40" width="120" height="980" class="line bold"/>
 
-<!-- CAR -->
-<rect x="225" y="350" width="70" height="160" class="line bold"/>
+<!-- Guide Rails -->
+<line x1="165" y1="40" x2="165" y2="1020" class="line"/>
+<line x1="255" y1="40" x2="255" y2="1020" class="line"/>
 
-<!-- COUNTER WEIGHT -->
-<rect x="305" y="360" width="25" height="140" class="line"/>
+<!-- Car -->
+<rect x="175" y="420" width="70" height="180" class="line bold"/>
 
-<!-- ROPES -->
-<line x1="260" y1="350" x2="260" y2="200" class="line"/>
-<line x1="270" y1="350" x2="270" y2="200" class="line"/>
+<!-- Counterweight -->
+<rect x="255" y="440" width="25" height="150" class="line"/>
 
-<!-- MACHINE -->
-<rect x="220" y="130" width="90" height="60" class="line bold"/>
-<circle cx="255" cy="160" r="12" class="line"/>
+<!-- Ropes -->
+<line x1="210" y1="420" x2="210" y2="150" class="line"/>
+<line x1="220" y1="420" x2="220" y2="150" class="line"/>
+
+<!-- Machine -->
+<rect x="170" y="80" width="90" height="50" class="line"/>
+<circle cx="215" cy="105" r="10" class="line"/>
 
 <!-- PIT -->
-<rect x="220" y="980" width="90" height="50" class="line"/>
-<rect x="265" y="960" width="30" height="20" class="line"/>
-<text x="272" y="950" class="text small">Buffer</text>
+<rect x="170" y="1020" width="90" height="50" class="line"/>
 
-<!-----------------------
- DIMENSIONS
------------------------->
+<!-- Buffers -->
+<rect x="185" y="1000" width="15" height="20" class="line"/>
+<rect x="240" y="1000" width="15" height="20" class="line"/>
+
+<!-- CENTER LINE -->
+<line x1="210" y1="40" x2="210" y2="1020" class="line center"/>
+
+<!-- ================= DIMENSIONS ================= -->
 
 <!-- OH -->
-<line x1="170" y1="80" x2="170" y2="200" class="dim"/>
-<line x1="165" y1="80" x2="175" y2="80" class="dim"/>
-<line x1="165" y1="200" x2="175" y2="200" class="dim"/>
-<text x="120" y="145" class="text">OH = 4500</text>
-
-<!-- PIT -->
-<line x1="170" y1="980" x2="170" y2="1030" class="dim"/>
-<line x1="165" y1="980" x2="175" y2="980" class="dim"/>
-<line x1="165" y1="1030" x2="175" y2="1030" class="dim"/>
-<text x="120" y="1010" class="text">Pit = 1500</text>
+<line x1="110" y1="40" x2="110" y2="150" class="dim"/>
+<line x1="105" y1="40" x2="115" y2="40" class="dim"/>
+<line x1="105" y1="150" x2="115" y2="150" class="dim"/>
+<text x="40" y="100" class="text">OH = 4500 mm</text>
 
 <!-- Travel Height -->
-<line x1="350" y1="200" x2="350" y2="900" class="dim"/>
-<text x="360" y="550" class="text">Travel Height</text>
+<line x1="300" y1="150" x2="300" y2="950" class="dim"/>
+<text x="305" y="550" class="text">Travel Height</text>
 
-<!-----------------------
- TITLES
------------------------->
-<text x="200" y="40" class="text" font-weight="bold">
-VERTICAL SECTION OF WELL
+<!-- PIT -->
+<line x1="110" y1="1020" x2="110" y2="1070" class="dim"/>
+<line x1="105" y1="1070" x2="115" y2="1070" class="dim"/>
+<text x="40" y="1050" class="text">PIT = 1500 mm</text>
+
+<text x="150" y="25" class="label">SHAFT ELEVATION</text>
+</svg>
+
+<!-- ======================================================
+     SHAFT LAYOUT (PLAN VIEW)
+=======================================================-->
+<svg width="420" height="420" viewBox="0 0 420 420">
+
+<!-- Shaft -->
+<rect x="60" y="60" width="300" height="300" class="line bold"/>
+
+<!-- Car -->
+<rect x="110" y="110" width="200" height="160" class="line"/>
+
+<!-- Door -->
+<rect x="165" y="60" width="90" height="10" class="line"/>
+
+<!-- Counterweight -->
+<rect x="330" y="140" width="20" height="120" class="line"/>
+
+<!-- Center lines -->
+<line x1="210" y1="60" x2="210" y2="360" class="line center"/>
+<line x1="60" y1="210" x2="360" y2="210" class="line center"/>
+
+<!-- ================= DIMENSIONS ================= -->
+
+<!-- Shaft Width -->
+<line x1="60" y1="380" x2="360" y2="380" class="dim"/>
+<text x="160" y="400" class="text">Shaft Width ≈ 2000 mm</text>
+
+<!-- Shaft Depth -->
+<line x1="380" y1="60" x2="380" y2="360" class="dim"/>
+<text x="390" y="220" class="text" transform="rotate(90 390,220)">
+Shaft Depth ≈ 2100 mm
 </text>
 
+<text x="150" y="40" class="label">SHAFT LAYOUT (PLAN)</text>
 </svg>
+
+</div>
+
+<p class="text">
+Indicative drawing based on EN 81-20. Not for construction.
+</p>
 
 </body>
 </html>
