@@ -43,35 +43,15 @@ body {
   padding: 20px;
   color: #111827;
 }
-.page::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-
-  background-image: url("public/images/logo.png");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 45%;
-
-  opacity: 0.05;   /* شفافية عالية – احترافي */
-  pointer-events: none;
-}
 
 .page {
   min-height: 297mm; /* A4 */
   padding: 25mm 20mm;
   box-sizing: border-box;
+
   display: flex;
   justify-content: center;   /* توسيط عمودي */
   align-items: center;       /* توسيط رأسي */
-}
-
-.page-content {
-  width: 100%;
-  max-width: 170mm; /* عرض مريح للطباعة */
-}
-.cover-page::before {
-  display: none;
 }
 
 
@@ -1290,6 +1270,7 @@ function printWithName() {
 
 </body>
 </html>
+
 
 
 
