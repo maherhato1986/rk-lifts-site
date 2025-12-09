@@ -27,10 +27,11 @@ body[contenteditable="true"] {
 }
 
 @media print {
-  .pdf-cover {
-    page-break-after: always;
+  .before-vat-adjustment {
+    display: none !important;
   }
 }
+
 
 /* =================================================
    تنسيق العرض على الشاشة
@@ -903,39 +904,46 @@ th {
   </div>
 
   <div class="section-title">سابعا ملخص القيمة المالية</div>
-<div class="section-title">٦-١) تعديل السعر قبل الضريبة (اختياري)</div>
+<div class="before-vat-adjustment">
 
-<table>
-  <tbody>
-    <tr>
-      <th style="width:35%">نوع التعديل</th>
-      <td style="width:65%">
-        <select id="adjust_type">
-          <option value="">— بدون تعديل —</option>
-          <option value="percent_add">زيادة بنسبة (%)</option>
-          <option value="percent_minus">خصم بنسبة (%)</option>
-          <option value="fixed_add">زيادة بمبلغ ثابت</option>
-          <option value="fixed_minus">خصم بمبلغ ثابت</option>
-        </select>
-      </td>
-    </tr>
+  <div class="section-title">
+    ٦-١) تعديل السعر قبل الضريبة (اختياري)
+  </div>
 
-    <tr>
-      <th>قيمة التعديل</th>
-      <td>
-        <input
-          type="number"
-          id="adjust_value"
-          placeholder="أدخل النسبة أو المبلغ"
-          style="width:100%"
-        />
-        <div class="small-note">
-          * يتم احتساب التعديل على المبلغ قبل الضريبة فقط
-        </div>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <table>
+    <tbody>
+      <tr>
+        <th style="width:35%">نوع التعديل</th>
+        <td style="width:65%">
+          <select id="adjust_type">
+            <option value="">— بدون تعديل —</option>
+            <option value="percent_add">زيادة بنسبة (%)</option>
+            <option value="percent_minus">خصم بنسبة (%)</option>
+            <option value="fixed_add">زيادة بمبلغ ثابت</option>
+            <option value="fixed_minus">خصم بمبلغ ثابت</option>
+          </select>
+        </td>
+      </tr>
+
+      <tr>
+        <th>قيمة التعديل</th>
+        <td>
+          <input
+            type="number"
+            id="adjust_value"
+            placeholder="أدخل النسبة أو المبلغ"
+            style="width:100%"
+          />
+          <div class="small-note">
+            * يتم احتساب التعديل على المبلغ قبل الضريبة فقط
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+
 
 
     <div class="section-title">٧) جدول الدفعات المقترح</div>
@@ -1285,6 +1293,7 @@ function printWithName() {
 
 </body>
 </html>
+
 
 
 
