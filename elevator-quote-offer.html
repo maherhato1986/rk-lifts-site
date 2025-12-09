@@ -705,9 +705,11 @@ th {
     </div>
   </div>
 
-<div class="section-title">خامسا مخطط استرشادي لمقاسات البئر والكابينة</div>
-
+<div class="section-title">
+  خامسًا: مخطط استرشادي هندسي لمقاسات البئر والكابينة (EN81)
+</div>
 <div style="display:flex; justify-content:center; margin-top:20px">
+   
 
 <svg width="760" height="440" viewBox="0 0 760 440"
      xmlns="http://www.w3.org/2000/svg"
@@ -717,16 +719,35 @@ th {
   <text x="180" y="24" text-anchor="middle" font-size="14" font-weight="600">
     SECTION VIEW
   </text>
+<table style="margin-top:15px;font-size:12px">
+  <thead>
+    <tr>
+      <th>البند</th>
+      <th>القيمة (mm)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>مقاس البئر (عرض × عمق)</td><td class="bind_dim_shaft">—</td></tr>
+    <tr><td>مقاس الكابينة (عرض × عمق)</td><td class="bind_dim_cabin">—</td></tr>
+    <tr><td>عرض فتحة الباب</td><td><span class="bind_door_width">—</span></td></tr>
+    <tr><td>عمق الحفرة (PIT)</td><td class="bind_pit">—</td></tr>
+    <tr><td>ارتفاع فوق آخر دور (OH)</td><td class="bind_oh">—</td></tr>
+  </tbody>
+</table>
 
 
   <!-- Shaft outline -->
   <rect x="90" y="70" width="180" height="290"
-        fill="none" stroke="#0f172a" stroke-width="2"/>
+        fill="none" stroke="#1e293b"
+stroke-width="1.8" stroke-width="2"/>
 
   <!-- OH arrow -->
-  <line x1="90" y1="60" x2="270" y2="60" stroke="#0f172a"/>
-  <line x1="90" y1="55" x2="90" y2="65" stroke="#0f172a"/>
-  <line x1="270" y1="55" x2="270" y2="65" stroke="#0f172a"/>
+  <line x1="90" y1="60" x2="270" y2="60" stroke="#1e293b"
+stroke-width="1.8"/>
+  <line x1="90" y1="55" x2="90" y2="65" stroke="#1e293b"
+stroke-width="1.8"/>
+  <line x1="270" y1="55" x2="270" y2="65" stroke="#1e293b"
+stroke-width="1.8"/>
   <text x="180" y="48" text-anchor="middle" font-size="11">
     OH = <tspan class="bind_oh">—</tspan> mm
   </text>
@@ -737,9 +758,12 @@ th {
   <text x="180" y="245" text-anchor="middle" font-size="11">Cabin</text>
 
   <!-- PIT arrow -->
-  <line x1="90" y1="370" x2="270" y2="370" stroke="#0f172a"/>
-  <line x1="90" y1="365" x2="90" y2="375" stroke="#0f172a"/>
-  <line x1="270" y1="365" x2="270" y2="375" stroke="#0f172a"/>
+  <line x1="90" y1="370" x2="270" y2="370" stroke="#1e293b"
+stroke-width="1.8"/>
+  <line x1="90" y1="365" x2="90" y2="375" stroke="#1e293b"
+stroke-width="1.8"/>
+  <line x1="270" y1="365" x2="270" y2="375" stroke="#1e293b"
+stroke-width="1.8"/>
   <text x="180" y="395" text-anchor="middle" font-size="11">
     PIT = <tspan class="bind_pit">—</tspan> mm
   </text>
@@ -750,7 +774,7 @@ th {
   </text>
 
 <!-- Cabin dimensions -->
-<text x="520" y="205" text-anchor="middle" font-size="10">
+<text x="520" y="205" text-anchor="middle" font-size="12">
   CW = <tspan class="bind_cabin_width">—</tspan> mm
   &nbsp;|&nbsp;
   CD = <tspan class="bind_cabin_depth">—</tspan> mm
@@ -758,20 +782,27 @@ th {
 
   <!-- Shaft plan -->
   <rect x="390" y="80" width="260" height="200"
-        fill="none" stroke="#0f172a" stroke-width="2"/>
+        fill="none" stroke="#1e293b"
+stroke-width="1.8" stroke-width="2"/>
 
   <!-- Shaft width arrow -->
-  <line x1="390" y1="300" x2="650" y2="300" stroke="#0f172a"/>
-  <line x1="390" y1="295" x2="390" y2="305" stroke="#0f172a"/>
-  <line x1="650" y1="295" x2="650" y2="305" stroke="#0f172a"/>
+  <line x1="390" y1="300" x2="650" y2="300" stroke="#1e293b"
+stroke-width="1.8"/>
+  <line x1="390" y1="295" x2="390" y2="305" stroke="#1e293b"
+stroke-width="1.8"/>
+  <line x1="650" y1="295" x2="650" y2="305" stroke="#1e293b"
+stroke-width="1.8"/>
   <text x="520" y="318" text-anchor="middle" font-size="11">
     HW = <tspan class="bind_shaft_width">—</tspan> mm
   </text>
 
   <!-- Shaft depth arrow -->
-  <line x1="370" y1="80" x2="370" y2="280" stroke="#0f172a"/>
-  <line x1="365" y1="80" x2="375" y2="80" stroke="#0f172a"/>
-  <line x1="365" y1="280" x2="375" y2="280" stroke="#0f172a"/>
+  <line x1="370" y1="80" x2="370" y2="280" stroke="#1e293b"
+stroke-width="1.8"/>
+  <line x1="365" y1="80" x2="375" y2="80" stroke="#1e293b"
+stroke-width="1.8"/>
+  <line x1="365" y1="280" x2="375" y2="280" stroke="#1e293b"
+stroke-width="1.8"/>
   <text x="350" y="180" transform="rotate(-90 350,180)" font-size="11">
     HD = <tspan class="bind_shaft_depth">—</tspan> mm
   </text>
@@ -784,11 +815,11 @@ th {
   <text x="520" y="170" text-anchor="middle" font-size="11">
     Cabin
   </text>
-  <text x="520" y="188" text-anchor="middle" font-size="10" fill="#065f46">
+  <text x="520" y="188" text-anchor="middle" font-size="12" fill="#065f46">
     <tspan class="bind_dim_cabin">—</tspan>
   </text>
 
-<text x="520" y="96" text-anchor="middle" font-size="10">
+<text x="520" y="96" text-anchor="middle" font-size="12">
   Door Opening:
   <tspan class="bind_door_width">—</tspan> ×
   <tspan class="bind_door_height">—</tspan> mm
@@ -796,7 +827,7 @@ th {
 
 
   <!-- Footer note -->
-  <text x="380" y="420" text-anchor="middle" font-size="10" fill="#64748b">
+  <text x="380" y="420" text-anchor="middle"font-size="12" fill="#64748b">
     هذا المخطط استرشادي فقط، ويتم اعتماد الرسومات التنفيذية (Shop Drawings) قبل التنفيذ الفعلي.
   </text>
 
@@ -1093,6 +1124,10 @@ bind('.bind_dim_cabin', q.cabinSize);
 bind('.bind_pit', q.pit);
 bind('.bind_oh', q.oh);
 
+
+
+
+
 /* =================================================
    Helper: format currency (SAR)
 ================================================= */
@@ -1116,6 +1151,32 @@ const units = Number(q.liftsCount || 1);
 
 // ✅ نسبة الضريبة
 const vatRate = Number(q.vatRate || 15);
+
+   /* =================================================
+   مخطط المقاسات – فك القيم بالأرقام
+================================================= */
+
+// Cabin: "1100 x 1000"
+if (q.cabinSize) {
+  const [cw, cd] = q.cabinSize.split('x').map(v => v.trim());
+  bind('.bind_cabin_width', cw);
+  bind('.bind_cabin_depth', cd);
+}
+
+// Shaft: "1700 x 1500"
+if (q.shaftSize) {
+  const [sw, sd] = q.shaftSize.split('x').map(v => v.trim());
+  bind('.bind_shaft_width', sw);
+  bind('.bind_shaft_depth', sd);
+}
+
+// Door: "700 x 2100" أو "700"
+if (q.doorSize) {
+  const [dw, dh] = q.doorSize.split('x').map(v => v.trim());
+  bind('.bind_door_width', dw);
+  bind('.bind_door_height', dh || '—');
+}
+
 
 // ✅ السعر قبل الضريبة (عكسي)
 const baseSubtotal = grandTotal / (1 + vatRate / 100);
@@ -1232,6 +1293,7 @@ function printWithName() {
 
 </body>
 </html>
+
 
 
 
