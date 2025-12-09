@@ -926,17 +926,37 @@ function fillSpeedOptions() {
         return;
     }
 
-    // 🔥 دعم السعات المركبة مثل 320-450
+    let minCap = null;
+    let maxCap = null;
+
+    // ✅ إذا كانت السعة Range مثل "320-450"
+    if (selectedCapacity.includes('-')) {
+        [minCap, maxCap] = selectedCapacity.split('-').map(Number);
+    }
+
     const speeds = Array.from(
         new Set(
             currentBrandData.models
                 .filter(m => {
-                    // إذا كانت السعة مثل 320-450
-                    if (m.capacityKg.includes('-')) {
-                        const [min, max] = m.capacityKg.split('-').map(Number);
-                        return Number(selectedCapacity) >= min && Number(selectedCapacity) <= max;
+                    // ✅ model بسعة مفردة
+                    if (!m.capacityKg.includes('-')) {
+                        if (minCap !== null) {
+                            return (
+                                Number(m.capacityKg) >= minCap &&
+                                Number(m.capacityKg) <= maxCap
+                            );
+                        }
+                        return m.capacityKg === selectedCapacity;
                     }
-                    // سعات مفردة
+
+                    // ✅ model بسعة Range
+                    const [mMin, mMax] = m.capacityKg.split('-').map(Number);
+                    if (minCap !== null) {
+                        return (
+                            mMin <= maxCap &&
+                            mMax >= minCap
+                        );
+                    }
                     return m.capacityKg === selectedCapacity;
                 })
                 .map(m => m.speedMps)
@@ -950,8 +970,9 @@ function fillSpeedOptions() {
         speedSelect.appendChild(opt);
     });
 
-    speedSelect.disabled = false;
+    speedSelect.disabled = speeds.length === 0;
 }
+
 
 
     function findModel(capacity, speed) {
@@ -1859,6 +1880,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
