@@ -712,40 +712,49 @@ th {
 
 <div style="display:grid; grid-template-columns: 340px 1fr; gap:24px; margin-top:20px">
 
-  <!-- ✅ جدول المقاسات -->
-  <table style="font-size:12px">
-    <thead>
-      <tr>
-        <th>البند</th>
-        <th>القيمة (mm)</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>مقاس البئر (عرض × عمق)</td>
-        <td class="bind_dim_shaft">—</td>
-      </tr>
-      <tr>
-        <td>مقاس الكابينة (عرض × عمق)</td>
-        <td class="bind_dim_cabin">—</td>
-      </tr>
-      <tr>
-        <td>عرض فتحة الباب</td>
-        <td>
-          <span class="bind_door_width">—</span> ×
-          <span class="bind_door_height">—</span>
-        </td>
-      </tr>
-      <tr>
-        <td>عمق الحفرة (PIT)</td>
-        <td class="bind_pit">—</td>
-      </tr>
-      <tr>
-        <td>ارتفاع فوق آخر دور (OH)</td>
-        <td class="bind_oh">—</td>
-      </tr>
-    </tbody>
-  </table>
+ <table class="tech-table">
+  <thead>
+    <tr>
+      <th>م</th>
+      <th>البند</th>
+      <th>القيمة (mm)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>مقاس البئر (عرض × عمق)</td>
+      <td class="bind_dim_shaft">—</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>مقاس الكابينة (عرض × عمق)</td>
+      <td class="bind_dim_cabin">—</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>فتحة الباب (عرض × ارتفاع)</td>
+      <td>
+        <span class="bind_door_width">—</span> ×
+        <span class="bind_door_height">—</span>
+      </td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>عمق الحفرة (PIT)</td>
+      <td class="bind_pit">—</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>ارتفاع فوق آخر دور (OH)</td>
+      <td class="bind_oh">—</td>
+    </tr>
+  </tbody>
+</table>
+
+   <p class="small-note">
+* هذا المخطط استرشادي فقط، ويتم اعتماد الرسومات التنفيذية (Shop Drawings) قبل التنفيذ الفعلي.
+</p>
 
   <!-- ✅ المخطط الهندسي -->
   <svg width="520" height="420" viewBox="0 0 520 420"
@@ -1276,6 +1285,7 @@ function printWithName() {
 
 </body>
 </html>
+
 
 
 
