@@ -325,19 +325,18 @@
 
 
 <div class="form-group">
-  <label>ارتفاع الدور الواحد (متر)</label>
+  <label>ارتفاع الدور الواحد (mm)</label>
   <input
     type="number"
     id="floorHeight"
-    step="0.1"
-    value="3.5"
-    placeholder="مثال: 3.5"
+    step="10"
+    value="3500"
+    placeholder="مثال: 3500"
   >
 </div>
 
-<!-- ارتفاع الرحلة -->
 <div class="form-group">
-  <label>ارتفاع الرحلة الكلي (متر)</label>
+  <label>ارتفاع الرحلة الكلي (mm)</label>
   <input
     type="number"
     id="travelHeight"
@@ -1845,17 +1844,19 @@ row.querySelector(".oh-cell").innerText    = opt.oh;
 <script>
 function calculateTravelHeight() {
     const floors = Number(document.getElementById('floors')?.value);
-    const floorHeight = Number(document.getElementById('floorHeight')?.value);
+    const floorHeightM = Number(document.getElementById('floorHeight')?.value);
     const travelInput = document.getElementById('travelHeight');
 
     if (!travelInput) return;
 
-    if (floors >= 2 && floorHeight > 0) {
-        travelInput.value = ((floors - 1) * floorHeight).toFixed(2);
+    if (floors >= 2 && floorHeightM > 0) {
+        const travelMM = (floors - 1) * floorHeightM * 1000;
+        travelInput.value = Math.round(travelMM);
     } else {
         travelInput.value = '';
     }
 }
+
 
 // ربط الأحداث
 ['floors', 'floorHeight'].forEach(id => {
@@ -1879,6 +1880,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
