@@ -708,130 +708,112 @@ th {
 <div class="section-title">
   خامسًا: مخطط استرشادي هندسي لمقاسات البئر والكابينة (EN81)
 </div>
-<div style="display:flex; justify-content:center; margin-top:20px">
-   
 
-<svg width="760" height="440" viewBox="0 0 760 440"
-     xmlns="http://www.w3.org/2000/svg"
-     style="border:1px solid #d1d5db; background:#fff; font-family:Arial">
+<div style="display:grid; grid-template-columns: 340px 1fr; gap:24px; margin-top:20px">
 
-  <!-- ================= SECTION VIEW ================= -->
-  <text x="180" y="24" text-anchor="middle" font-size="14" font-weight="600">
-    SECTION VIEW
-  </text>
-<table style="margin-top:15px;font-size:12px">
-  <thead>
-    <tr>
-      <th>البند</th>
-      <th>القيمة (mm)</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td>مقاس البئر (عرض × عمق)</td><td class="bind_dim_shaft">—</td></tr>
-    <tr><td>مقاس الكابينة (عرض × عمق)</td><td class="bind_dim_cabin">—</td></tr>
-    <tr><td>عرض فتحة الباب</td><td><span class="bind_door_width">—</span></td></tr>
-    <tr><td>عمق الحفرة (PIT)</td><td class="bind_pit">—</td></tr>
-    <tr><td>ارتفاع فوق آخر دور (OH)</td><td class="bind_oh">—</td></tr>
-  </tbody>
-</table>
+  <!-- ✅ جدول المقاسات -->
+  <table style="font-size:12px">
+    <thead>
+      <tr>
+        <th>البند</th>
+        <th>القيمة (mm)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>مقاس البئر (عرض × عمق)</td>
+        <td class="bind_dim_shaft">—</td>
+      </tr>
+      <tr>
+        <td>مقاس الكابينة (عرض × عمق)</td>
+        <td class="bind_dim_cabin">—</td>
+      </tr>
+      <tr>
+        <td>عرض فتحة الباب</td>
+        <td>
+          <span class="bind_door_width">—</span> ×
+          <span class="bind_door_height">—</span>
+        </td>
+      </tr>
+      <tr>
+        <td>عمق الحفرة (PIT)</td>
+        <td class="bind_pit">—</td>
+      </tr>
+      <tr>
+        <td>ارتفاع فوق آخر دور (OH)</td>
+        <td class="bind_oh">—</td>
+      </tr>
+    </tbody>
+  </table>
 
+  <!-- ✅ المخطط الهندسي -->
+  <svg width="520" height="420" viewBox="0 0 520 420"
+       xmlns="http://www.w3.org/2000/svg"
+       style="border:1px solid #d1d5db; background:#fff">
 
-  <!-- Shaft outline -->
-  <rect x="90" y="70" width="180" height="290"
-        fill="none" stroke="#1e293b"
-stroke-width="1.8" stroke-width="2"/>
+    <!-- ===== SECTION VIEW ===== -->
+    <text x="130" y="20" font-size="13" font-weight="700" text-anchor="middle">
+      SECTION VIEW
+    </text>
 
-  <!-- OH arrow -->
-  <line x1="90" y1="60" x2="270" y2="60" stroke="#1e293b"
-stroke-width="1.8"/>
-  <line x1="90" y1="55" x2="90" y2="65" stroke="#1e293b"
-stroke-width="1.8"/>
-  <line x1="270" y1="55" x2="270" y2="65" stroke="#1e293b"
-stroke-width="1.8"/>
-  <text x="180" y="48" text-anchor="middle" font-size="11">
-    OH = <tspan class="bind_oh">—</tspan> mm
-  </text>
+    <!-- Shaft -->
+    <rect x="50" y="40" width="160" height="280"
+          fill="none" stroke="#1f2937" stroke-width="2"/>
 
-  <!-- Cabin -->
-  <rect x="115" y="170" width="130" height="140"
-        fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
-  <text x="180" y="245" text-anchor="middle" font-size="11">Cabin</text>
+    <!-- Cabin -->
+    <rect x="75" y="130" width="110" height="120"
+          fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
 
-  <!-- PIT arrow -->
-  <line x1="90" y1="370" x2="270" y2="370" stroke="#1e293b"
-stroke-width="1.8"/>
-  <line x1="90" y1="365" x2="90" y2="375" stroke="#1e293b"
-stroke-width="1.8"/>
-  <line x1="270" y1="365" x2="270" y2="375" stroke="#1e293b"
-stroke-width="1.8"/>
-  <text x="180" y="395" text-anchor="middle" font-size="11">
-    PIT = <tspan class="bind_pit">—</tspan> mm
-  </text>
+    <text x="130" y="195" font-size="11" text-anchor="middle">
+      CABIN
+    </text>
 
-  <!-- ================= PLAN VIEW ================= -->
-  <text x="520" y="24" text-anchor="middle" font-size="14" font-weight="600">
-    PLAN VIEW
-  </text>
+    <!-- OH -->
+    <line x1="50" y1="30" x2="210" y2="30" stroke="#1f2937"/>
+    <text x="130" y="18" font-size="11" text-anchor="middle">
+      OH = <tspan class="bind_oh">—</tspan> mm
+    </text>
 
-<!-- Cabin dimensions -->
-<text x="520" y="205" text-anchor="middle" font-size="12">
-  CW = <tspan class="bind_cabin_width">—</tspan> mm
-  &nbsp;|&nbsp;
-  CD = <tspan class="bind_cabin_depth">—</tspan> mm
-</text>
+    <!-- PIT -->
+    <line x1="50" y1="330" x2="210" y2="330" stroke="#1f2937"/>
+    <text x="130" y="360" font-size="11" text-anchor="middle">
+      PIT = <tspan class="bind_pit">—</tspan> mm
+    </text>
 
-  <!-- Shaft plan -->
-  <rect x="390" y="80" width="260" height="200"
-        fill="none" stroke="#1e293b"
-stroke-width="1.8" stroke-width="2"/>
+    <!-- ===== PLAN VIEW ===== -->
+    <text x="385" y="20" font-size="13" font-weight="700" text-anchor="middle">
+      PLAN VIEW
+    </text>
 
-  <!-- Shaft width arrow -->
-  <line x1="390" y1="300" x2="650" y2="300" stroke="#1e293b"
-stroke-width="1.8"/>
-  <line x1="390" y1="295" x2="390" y2="305" stroke="#1e293b"
-stroke-width="1.8"/>
-  <line x1="650" y1="295" x2="650" y2="305" stroke="#1e293b"
-stroke-width="1.8"/>
-  <text x="520" y="318" text-anchor="middle" font-size="11">
-    HW = <tspan class="bind_shaft_width">—</tspan> mm
-  </text>
+    <!-- Shaft plan -->
+    <rect x="300" y="60" width="180" height="160"
+          fill="none" stroke="#1f2937" stroke-width="2"/>
 
-  <!-- Shaft depth arrow -->
-  <line x1="370" y1="80" x2="370" y2="280" stroke="#1e293b"
-stroke-width="1.8"/>
-  <line x1="365" y1="80" x2="375" y2="80" stroke="#1e293b"
-stroke-width="1.8"/>
-  <line x1="365" y1="280" x2="375" y2="280" stroke="#1e293b"
-stroke-width="1.8"/>
-  <text x="350" y="180" transform="rotate(-90 350,180)" font-size="11">
-    HD = <tspan class="bind_shaft_depth">—</tspan> mm
-  </text>
+    <!-- Cabin plan -->
+    <rect x="330" y="90" width="120" height="100"
+          fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
 
-  <!-- Cabin plan -->
-  <rect x="425" y="115" width="190" height="130"
-        fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+    <text x="390" y="145" font-size="11" text-anchor="middle">
+      CABIN
+    </text>
 
-  <!-- Cabin label -->
-  <text x="520" y="170" text-anchor="middle" font-size="11">
-    Cabin
-  </text>
-  <text x="520" y="188" text-anchor="middle" font-size="12" fill="#065f46">
-    <tspan class="bind_dim_cabin">—</tspan>
-  </text>
+    <text x="390" y="245" font-size="11" text-anchor="middle">
+      HW = <tspan class="bind_shaft_width">—</tspan> mm
+      &nbsp;|&nbsp;
+      HD = <tspan class="bind_shaft_depth">—</tspan> mm
+    </text>
 
-<text x="520" y="96" text-anchor="middle" font-size="12">
-  Door Opening:
-  <tspan class="bind_door_width">—</tspan> ×
-  <tspan class="bind_door_height">—</tspan> mm
-</text>
+    <text x="390" y="270" font-size="11" text-anchor="middle" fill="#065f46">
+      <tspan class="bind_dim_cabin">—</tspan>
+    </text>
+  </svg>
 
+</div>
 
-  <!-- Footer note -->
-  <text x="380" y="420" text-anchor="middle"font-size="12" fill="#64748b">
-    هذا المخطط استرشادي فقط، ويتم اعتماد الرسومات التنفيذية (Shop Drawings) قبل التنفيذ الفعلي.
-  </text>
+<p class="small-note" style="text-align:center;margin-top:8px">
+  * هذا المخطط استرشادي فقط، ويتم اعتماد الرسومات التنفيذية (Shop Drawings) قبل التنفيذ.
+</p>
 
-</svg>
 
 </div>
 
@@ -1293,6 +1275,7 @@ function printWithName() {
 
 </body>
 </html>
+
 
 
 
