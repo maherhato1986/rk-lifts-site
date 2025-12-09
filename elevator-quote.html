@@ -602,6 +602,9 @@
 <th>الباب</th>
 <th>PIT</th>
 <th>OH</th>
+    <th>FH </th>
+<th>TH </th>
+
 <th>عدد المصاعد</th>
 <th>الإجمالي (شامل)</th>
 
@@ -835,6 +838,8 @@ const cols = [
   q.doors || '—',
   q.pit || '—',
   q.oh || '—',
+      q.floorHeight ? q.floorHeight || '—',   // ✅
+  q.travelHeight ? q.travelHeight || '—', // ✅
 
   q.liftsCount || '',
   totalStr
@@ -1881,6 +1886,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
