@@ -412,8 +412,8 @@ th {
     <tr>
       <th>اسم المخوّل بالتوقيع</th>
       <td class="bind_contact_person">—</td>
-      <th>تاريخ العرض</th>
-      <td class="bind_offer_date">—</td>
+      <th>موقع المشروع</th>
+      <td class="bind_project_name">—</td>
     </tr>
 
     <tr>
@@ -424,17 +424,17 @@ th {
     </tr>
 
     <tr>
-      <th>موقع المشروع</th>
-      <td class="bind_project_name">—</td>
-      <th>الحي</th>
-      <td class="bind_district">—</td>
+      <th>نوع المصعد</th>
+      <td>Passenger</td>
+      <th>عدد المصاعد</th>
+      <td class="bind_lifts">—</td>
     </tr>
 
     <tr>
-      <th>نوع المصاعد</th>
+      <th>الماركة / النظام</th>
       <td class="bind_brand">—</td>
-      <th>نوع المصعد</th>
-      <td>Passenger</td>
+      <th>نظام التركيب</th>
+      <td>MRL (Machine Room-Less)</td>
     </tr>
 
     <tr>
@@ -445,10 +445,17 @@ th {
     </tr>
 
     <tr>
-      <th>فترة الضمان</th>
-      <td>عشرة سنوات</td>
-      <th>فترة الصيانة الوقائية</th>
-      <td>سنة.</td>
+      <th>الاستخدام</th>
+      <td class="bind_usage">—</td>
+      <th>بلد المنشأ</th>
+      <td class="bind_origin">—</td>
+    </tr>
+
+    <tr>
+      <th>مدة التوريد</th>
+      <td>8 – 12 أسبوع</td>
+      <th>مدة التركيب</th>
+      <td>30 – 45 يوم</td>
     </tr>
 
     <tr>
@@ -457,15 +464,9 @@ th {
       <th>المطابقة المحلية</th>
       <td>SABER</td>
     </tr>
-
-    <tr>
-      <th>صلاحية العرض</th>
-      <td>30 يوم</td>
-      <th>رقم العرض</th>
-      <td class="bind_quote_number">—</td>
-    </tr>
   </tbody>
 </table>
+
 
 
 
@@ -1072,24 +1073,25 @@ bind('.bind_customer_name', q.customerName);
 bind('.bind_project_name', q.projectName);
 
 /* =================================================
-   (2) ملف العميل
+   (2) ملف العميل – بيانات محسوبة من عرض السعر
 ================================================= */
-const c = q.customerDetails || {};
-bind('.bind_customer_type', c.customer_type);
-bind('.bind_contact_person', c.contact_person);
-bind('.bind_id_number', c.id_number);
-bind('.bind_cr_number', c.cr_number);
-bind('.bind_tax_number', c.tax_number);
+bind('.bind_customer_name', q.customerName);
+bind('.bind_project_name', q.projectName);
+bind('.bind_contact_person', q.customerDetails?.contact_person || '—');
+bind('.bind_cr_number', q.customerDetails?.cr_number || '—');
+bind('.bind_tax_number', q.customerDetails?.tax_number || '—');
 
-bind('.bind_street', c.street);
-bind('.bind_building_no', c.building_no);
-bind('.bind_postal_code', c.postal_code);
-bind('.bind_full_address', c.full_address);
-bind('.bind_mobile', c.mobile);
-bind('.bind_phone', c.phone);
-bind('.bind_email', c.email);
-bind('.bind_preferred_contact', q.preferredContact);
-bind('.bind_notes', c.notes);
+/* ===== بيانات المصعد ===== */
+bind('.bind_brand', q.brandLabel);
+bind('.bind_capacity', q.capacity);
+bind('.bind_speed', q.speed);
+bind('.bind_floors', q.floors);
+bind('.bind_lifts', q.liftsCount);
+
+/* ===== عناصر ذكية جديدة ===== */
+bind('.bind_usage', inferUsage(q.projectName));
+bind('.bind_origin', inferOrigin(q.brandLabel));
+
 
 /* =================================================
    (3) البيانات الفنية الرئيسية
@@ -1108,6 +1110,24 @@ bind('.bind_pit', q.pit);
 bind('.bind_oh', q.oh);
 
 
+function inferUsage(projectName = '') {
+  if (!projectName) return '—';
+  const name = projectName.toLowerCase();
+
+  if (name.includes('مستشفى') || name.includes('medical')) return 'طبي';
+  if (name.includes('مدرسة') || name.includes('school')) return 'تعليمي';
+  if (name.includes('مول') || name.includes('commercial')) return 'تجاري';
+  if (name.includes('سكن') || name.includes('residential')) return 'سكني';
+
+  return 'عام';
+}
+
+function inferOrigin(brandLabel = '') {
+  if (brandLabel.includes('JAPAN')) return 'اليابان';
+  if (brandLabel.includes('ITALY')) return 'إيطاليا';
+  if (brandLabel.includes('EU')) return 'الاتحاد الأوروبي';
+  return 'حسب عرض المصنع';
+}
 
 
 
@@ -1303,6 +1323,7 @@ function printWithName() {
 
 </body>
 </html>
+
 
 
 
