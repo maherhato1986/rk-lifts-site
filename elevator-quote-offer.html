@@ -1250,21 +1250,46 @@ function renderPayments(q) {
 }
 </script>
 
+<script>
+function syncEditableFieldsToStorage() {
+  const index = localStorage.getItem('rkl_current_quote_index');
+  if (index === null) return;
+
+  const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
+  const q = quotes[index];
+  if (!q) return;
+
+  // ✅ البيانات المعدلة يدويًا
+  q.brandLabel   = document.querySelector('.bind_brand')?.textContent?.trim() || q.brandLabel;
+  q.capacity     = document.querySelector('.bind_capacity')?.textContent?.trim() || q.capacity;
+  q.speed        = document.querySelector('.bind_speed')?.textContent?.trim() || q.speed;
+  q.floors       = document.querySelector('.bind_floors')?.textContent?.trim() || q.floors;
+  q.cabinSize    = document.querySelector('.bind_dim_cabin')?.textContent?.trim() || q.cabinSize;
+  q.shaftSize    = document.querySelector('.bind_dim_shaft')?.textContent?.trim() || q.shaftSize;
+  q.pit          = document.querySelector('.bind_pit')?.textContent?.trim() || q.pit;
+  q.oh           = document.querySelector('.bind_oh')?.textContent?.trim() || q.oh;
+
+  quotes[index] = q;
+  localStorage.setItem('rkl_quotes', JSON.stringify(quotes));
+}
+</script>
 
 
 <script>
 function printWithName() {
+  syncEditableFieldsToStorage();
+
   const quoteNo = document.querySelector('.bind_quote_number')?.textContent?.trim() || 'quotation';
   const cleanNo = quoteNo.replace(/[^\w\d-]/g, '');
 
   document.title = `RKL_Quotation_${cleanNo}`;
   window.print();
 
-  // إرجاع العنوان بعد الطباعة
   setTimeout(() => {
     document.title = 'RKL Elevator Offer';
   }, 1000);
 }
+
 </script>
 
 
@@ -1272,6 +1297,7 @@ function printWithName() {
 
 </body>
 </html>
+
 
 
 
