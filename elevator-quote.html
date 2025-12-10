@@ -268,6 +268,7 @@
 
     <div>
         <label for="project_name">اسم المشروع (اختياري)</label>
+        <input type="text" id="project_location" placeholder="مثال: الرياض – حي الياسمين" />
         <input type="text" id="project_name" placeholder="مثال: مشروع مبنى المكاتب - الرياض" />
     </div>
 </div>
@@ -593,7 +594,7 @@
     <th>الرقم الضريبي</th>
     <th>المدينة</th>
 
-    <th>اسم المشروع</th>
+    <th>اسم المشروع / الموقع</th>
     <th>المواصفات</th>
     <th>مقاس البئر</th>
     <th>مقاس الكابينة</th>
@@ -826,7 +827,9 @@ const cols = [
   cd.tax_number || '',
   cd.city || '',
 
-  q.projectName || '',
+  (q.projectName || '') + 
+(q.projectLocation ? ' – ' + q.projectLocation : ''),
+
   `${q.brandLabel} / ${q.capacity} / ${q.speed} / ${q.floors} Stops`,
 
   // ✅ المقاسات (الجزء المهم!)
@@ -1182,6 +1185,8 @@ function fillSpeedOptions() {
         const currency = document.getElementById('currency').value;
         const vatRate = Number(document.getElementById('vat_rate').value) || 0;
         const includeVat = document.getElementById('include_vat').checked;
+        const projectLocation = document.getElementById('project_location')?.value || '';
+
      
 
 
@@ -1378,6 +1383,7 @@ lastQuoteSnapshot = {
     timestamp: new Date().toISOString(),
     customerName: finalCustomerName || '',
     projectName: projectName || '',
+    projectLocation: projectLocation || '',   // ✅ جديد
 
     brandKey,
     brandLabel,
@@ -1619,6 +1625,7 @@ payments: {
     quoteNumber,
     customerName: finalCustomerName,
     projectName,
+    projectLocation: projectLocation || '', // ✅
 
     // ✅ تخزين بيانات العميل كاملة
     customerDetails: selectedCustomer ? {
@@ -1883,6 +1890,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
