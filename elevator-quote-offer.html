@@ -27,12 +27,15 @@ body[contenteditable="true"] {
 }
 
 @media print {
-  .before-vat-adjustment {
-    display: none !important;
+  .page {
+    page-break-after: always;
+    min-height: auto;
   }
 }
 
-
+table {
+  break-inside: avoid;
+}
 
 /* =================================================
    تنسيق العرض على الشاشة
@@ -335,7 +338,8 @@ th {
     left: 50%;
     width: 380px;
     height: 380px;
-    background: url("rk-lifts-site/logo.png") no-repeat center;
+    background: url("/public/images/logo.png") no-repeat center;
+
     background-size: contain;
     opacity: 0.04;
     transform: translate(-50%, -50%);
@@ -354,6 +358,7 @@ th {
 <body>
 
    <body contenteditable="true" spellcheck="false">
+
  
 
 
@@ -420,10 +425,7 @@ th {
 
     <tr>
       <th>موقع المشروع</th>
-      <td>
-        <td class="bind_project_name">—</td>
-
-      </td>
+      <td class="bind_project_name">—</td>
       <th>الحي</th>
       <td class="bind_district">—</td>
     </tr>
@@ -738,9 +740,7 @@ th {
         </tr>
 
    
-        <span class="bind_door_width">—</span>
-      
-        <span class="bind_door_height">—</span>
+       
       </td>
     </tr>
 
@@ -1149,8 +1149,10 @@ if (q.cabinSize) {
 // Shaft: "1700 x 1500"
 if (q.shaftSize) {
   const [sw, sd] = q.shaftSize.split('x').map(v => v.trim());
-  bind('.bind_shaft_width', sw);
-  bind('.bind_shaft_depth', sd);
+ // لازم تكون القيمة: "1700 x 1500"
+q.shaftSize = "1700 x 1500";
+q.cabinSize = "1100 x 1000";
+
 }
 
 // Door: "700 x 2100" أو "700"
@@ -1301,6 +1303,7 @@ function printWithName() {
 
 </body>
 </html>
+
 
 
 
