@@ -812,7 +812,10 @@ const CABIN_DESIGN_ADDITIONAL = {
         const totalStr = formatCurrency(q.totalWithVat, q.currency || 'SAR');
 
         // 🟩 2) باقي الأعمدة
-        const cd = q.customerDetails || {};
+        const cd = (q.customerDetails && typeof q.customerDetails === 'object')
+    ? q.customerDetails
+    : {};
+
 
 const cols = [
   index + 1,
@@ -1899,6 +1902,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
