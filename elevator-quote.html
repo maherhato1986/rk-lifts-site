@@ -1323,6 +1323,8 @@ const directCostSarFinal = directCostSar + cabinExtraCost;
 
         generateNumbersView(result, model, currency);
         generateQuoteText(result, model, currency);
+        const projectLocation = document.getElementById("project_location")?.value || "";
+
 
                 // حفظ لقطة من هذا العرض لاستخدامها عند الضغط على "حفظ عرض السعر"
         const manualCustomerName = document.getElementById('customer_name').value.trim();
@@ -1619,6 +1621,8 @@ payments: {
 
             const finalCustomerName =
                 (selectedCustomer?.customer_name || manualCustomerName || 'العميل الكريم').trim();
+            
+
 
             // 3) تجهيز العنصر الذي يذهب إلى جدول السجل
             const entry = {
@@ -1644,6 +1648,8 @@ payments: {
         mobile: selectedCustomer.mobile || '',
         phone: selectedCustomer.phone || '',
         email: selectedCustomer.email || '',
+       
+
         notes: selectedCustomer.notes || ''
     } : null
 };
@@ -1891,6 +1897,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
