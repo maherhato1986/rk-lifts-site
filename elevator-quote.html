@@ -1618,10 +1618,12 @@ payments: {
             // 2) قراءة اسم العميل والمشروع من الحقول
             const manualCustomerName = document.getElementById('customer_name').value.trim();
             const projectName = document.getElementById('project_name').value.trim();
+            const projectLocation = document.getElementById("project_location")?.value || "";
 
             const finalCustomerName =
                 (selectedCustomer?.customer_name || manualCustomerName || 'العميل الكريم').trim();
             
+
 
 
             // 3) تجهيز العنصر الذي يذهب إلى جدول السجل
@@ -1897,6 +1899,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
