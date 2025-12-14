@@ -191,11 +191,32 @@ th {
     print-color-adjust: exact !important;
   }
 
+  /* كل div.page صفحة مستقلة */
   .page {
-    box-shadow: none;
     page-break-after: always;
     break-after: page;
+    min-height: 297mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* توسيط عمودي */
   }
+
+  /* منع أي عنصر من الانقسام */
+  table,
+  tr,
+  td,
+  th,
+  svg,
+  img {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* إخفاء زر الطباعة */
+  .btn-print {
+    display: none !important;
+  }
+}
 
   .btn-print { display: none !important; }
 
@@ -1559,6 +1580,7 @@ window.addEventListener('load', () => {
 
 </body>
 </html>
+
 
 
 
