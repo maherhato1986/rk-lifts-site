@@ -1065,26 +1065,29 @@ th {
 
    <div class="section-title">٦-٢) ملخص عرض السعر والبنود</div>
 
-<table id="items-table">
+<table id="price-summary-table">
   <thead>
     <tr>
-      <th style="width:40%">وصف البند</th>
-      <th style="width:10%">الكمية</th>
-      <th style="width:20%">سعر الوحدة (SAR)</th>
-      <th style="width:20%">الإجمالي (SAR)</th>
-      <th style="width:10%">✖</th>
+      <th>✖</th>
+      <th>وصف البند</th>
+      <th>الكمية</th>
+      <th>سعر الوحدة (SAR)</th>
+      <th>الإجمالي (SAR)</th>
     </tr>
   </thead>
   <tbody>
-    <!-- بند افتراضي -->
-    <tr>
-      <td contenteditable="true">توريد وتركيب مصعد كهربائي حمولة 450 كجم</td>
-      <td><input type="number" value="1" min="1" class="qty"></td>
-      <td><input type="number" value="0" min="0" class="unit"></td>
-      <td class="row-total">0.00</td>
-      <td style="text-align:center">
-        <button onclick="removeRow(this)">✖</button>
+    <tr class="price-row main-item">
+      <td></td>
+      <td>
+        <input type="text" id="mainItemDesc" readonly>
       </td>
+      <td>
+        <input type="number" id="mainItemQty" readonly>
+      </td>
+      <td>
+        <input type="number" id="mainItemUnitPrice" readonly>
+      </td>
+      <td class="row-total" id="mainItemTotal">0.00</td>
     </tr>
   </tbody>
 </table>
@@ -1579,12 +1582,39 @@ document.addEventListener("input", e => {
     recalcItems();
   }
 });
+
+   function fillMainPriceItemFromSelectedQuote() {
+  const selected = document.querySelector(".quote-check:checked");
+  if (!selected) return;
+
+  const quotes = loadStoredQuotes();
+  const q = quotes[selected.dataset.index];
+  if (!q) return;
+
+  // 🔹 وصف البند
+  document.getElementById("mainItemDesc").value =
+    `توريد وتركيب وتشغيل مصعد كهربائي وفق عرض السعر رقم ${q.quoteNumber}`;
+
+  // 🔹 الكمية = عدد المصاعد
+  const qty = Number(q.liftsCount || 1);
+  document.getElementById("mainItemQty").value = qty;
+
+  // 🔹 سعر الوحدة (شامل الضريبة)
+  const unitPrice = Number(q.pricePerUnit || 0);
+  document.getElementById("mainItemUnitPrice").value = unitPrice.toFixed(2);
+
+  // 🔹 الإجمالي
+  const total = qty * unitPrice;
+  document.getElementById("mainItemTotal").innerText = total.toFixed(2);
+}
+
 </script>
 
 
 
 </body>
 </html>
+
 
 
 
