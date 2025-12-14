@@ -1112,39 +1112,48 @@ if (!q) {
 /* =================================================
    (1) بيانات العرض العامة
 ================================================= */
-bind('.bind_quote_number', q.quoteNumber || '—');
-bind('.bind_offer_date', q.timestamp?.slice(0, 10) || '—');
-
-/* اسم المشروع + الموقع (صيغة رسمية واحدة) */
-bind(
-  '.bind_project_name',
-  q.projectName
-    ? q.projectName + (q.projectLocation ? ' – ' + q.projectLocation : '')
-    : '—'
-);
-
-/* الموقع فقط (إذا احتجته منفصل) */
-bind('.bind_project_location', q.projectLocation || '—');
-
+bind('.bind_quote_number', q.quoteNumber);
+bind('.bind_offer_date', q.timestamp?.slice(0, 10));
 
 /* =================================================
-   (2) ملف العميل – البيانات الرسمية
+   (2) بيانات العميل
 ================================================= */
-bind('.bind_customer_name', q.customerName || '—');
+bind('.bind_customer_name', q.customerName);
+bind('.bind_customer_type', q.customerDetails?.customer_type || '—');
 bind('.bind_contact_person', q.customerDetails?.contact_person || '—');
 bind('.bind_cr_number', q.customerDetails?.cr_number || '—');
 bind('.bind_tax_number', q.customerDetails?.tax_number || '—');
-bind('.bind_preferred_contact', q.customerDetails?.preferred_contact || 'جوال');
-
+bind('.bind_customer_phone', q.customerDetails?.mobile || q.customerDetails?.phone || '—');
+bind('.bind_customer_email', q.customerDetails?.email || '—');
 
 /* =================================================
-   (3) بيانات المصعد
+   (3) عنوان العميل
+================================================= */
+bind('.bind_city', q.customerDetails?.city || '—');
+bind('.bind_district', q.customerDetails?.district || '—');
+bind('.bind_street', q.customerDetails?.street || '—');
+bind('.bind_building_number', q.customerDetails?.building_no || '—');
+bind('.bind_postal_code', q.customerDetails?.postal_code || '—');
+bind('.bind_national_address', q.customerDetails?.full_address || '—');
+
+/* =================================================
+   (4) بيانات المشروع
+================================================= */
+bind('.bind_project_name', q.projectName || '—');
+bind('.bind_project_location', q.projectLocation || '—');
+
+/* =================================================
+   (5) بيانات المصاعد
 ================================================= */
 bind('.bind_brand', q.brandLabel || '—');
+bind('.bind_usage', 'Passenger Elevator');
+bind('.bind_lifts', q.liftsCount || '—');
 bind('.bind_capacity', q.capacity || '—');
 bind('.bind_speed', q.speed || '—');
 bind('.bind_stops', q.stops || q.floors || '—');
-bind('.bind_lifts', q.liftsCount || '—');
+bind('.bind_fh', q.floorHeight ? q.floorHeight + ' mm' : '—');
+bind('.bind_th', q.travelHeight ? q.travelHeight + ' mm' : '—');
+bind('.bind_machine_type', q.machineType || 'MRL – Machine Room Less');
 
 /* ارتفاع الرحلة */
 bind(
@@ -1525,6 +1534,7 @@ window.addEventListener('load', () => {
 
 </body>
 </html>
+
 
 
 
