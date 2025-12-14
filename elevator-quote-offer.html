@@ -1576,12 +1576,17 @@ function recalcItems() {
   bind('.bind_pay_5',  formatCurrency(finalTotal * 0.05));
 }
 
-// إعادة الحساب عند أي تغيير
-document.addEventListener("input", e => {
-  if (e.target.closest("#items-table")) {
-    recalcItems();
+document.addEventListener("change", function (e) {
+  if (e.target.classList.contains("quote-check")) {
+    // إلغاء تحديد باقي العروض
+    document.querySelectorAll(".quote-check").forEach(c => {
+      if (c !== e.target) c.checked = false;
+    });
+
+    fillMainPriceItemFromSelectedQuote();
   }
 });
+
 
    function fillMainPriceItemFromSelectedQuote() {
   const selected = document.querySelector(".quote-check:checked");
@@ -1614,6 +1619,7 @@ document.addEventListener("input", e => {
 
 </body>
 </html>
+
 
 
 
