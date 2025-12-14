@@ -61,16 +61,28 @@ body {
 
 
 /* =================================================
-   Header
+   Header موحد للصفحات الداخلية
 =================================================*/
-.header {
+.page-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   border-bottom: 2px solid #e5e7eb;
   padding-bottom: 8px;
   margin-bottom: 12px;
+  font-size: 12px;
 }
+
+.page-header .header-left {
+  text-align: right;
+  line-height: 1.6;
+}
+
+.page-header .header-right {
+  text-align: left;
+  line-height: 1.6;
+}
+
 
 .logo-box {
   text-align: right;
@@ -1406,6 +1418,7 @@ function printWithName() {
 
 </body>
 </html>
+
 
 
 
