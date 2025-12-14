@@ -409,12 +409,12 @@ th {
       <td class="bind_project_name">—</td>
     </tr>
 
-    <tr>
-      <th>اسم المخوّل بالتوقيع</th>
-      <td class="bind_contact_person">—</td>
-      <th>موقع المشروع</th>
-      <td class="bind_project_name">—</td>
-    </tr>
+   <tr>
+  <th>اسم المخوّل بالتوقيع</th>
+  <td class="bind_contact_person">—</td>
+  <th>موقع المشروع</th>
+  <td class="bind_project_location">—</td>
+</tr>
 
     <tr>
       <th>السجل التجاري</th>
@@ -1070,6 +1070,7 @@ if (!q) {
 bind('.bind_quote_number', q.quoteNumber);
 bind('.bind_offer_date', q.timestamp?.slice(0, 10));
 bind('.bind_customer_name', q.customerName);
+   bind('.bind_project_location', q.projectLocation || '—');
 bind('.bind_project_name',q.projectName + (q.projectLocation ? ' – ' + q.projectLocation : ''));
 
 /* =================================================
@@ -1323,6 +1324,7 @@ function printWithName() {
 
 </body>
 </html>
+
 
 
 
