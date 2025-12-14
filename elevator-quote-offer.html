@@ -1080,8 +1080,17 @@ th {
       <th style="width:10%">✖</th>
     </tr>
   </thead>
+   <tr class="summary-row">
+  <th colspan="3" style="text-align:right">
+    الإجمالي قبل الضريبة
+  </th>
+  <th id="itemsSubtotal">SAR 0.00</th>
+  <th></th>
+</tr>
+
   <tbody>
     <!-- يتم التعبئة تلقائياً -->
+     
   </tbody>
 </table>
 
@@ -1498,42 +1507,58 @@ function printWithName() {
   سكربت الربط والحساب
 ================================ -->
 <script>
-(function initPriceSummary() {
+function recalcItemsTable() {
+  const rows = document.querySelectorAll('#items-table tbody tr');
+  let subtotal = 0;
 
-  const idx = localStorage.getItem('rkl_current_quote_index');
-  if (idx === null) return;
+  rows.forEach(row => {
+    const qtyInput = row.querySelector('.qty');
+    const unitInput = row.querySelector('.unit');
+    const totalCell = row.querySelector('.row-total');
 
-  const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
-  const q = quotes[Number(idx)];
-  if (!q) return;
+    if (!qtyInput || !unitInput || !totalCell) return;
 
-  const tbody = document.querySelector("#items-table tbody");
-  tbody.innerHTML = "";
+    const qty = Number(qtyInput.value || 0);
+    const unit = Number(unitInput.value || 0);
+    const rowTotal = qty * unit;
 
-  const qty = Number(q.liftsCount || 1);
-  const totalWithVat = Number(q.totalWithVat || 0);
-  const vatRate = 0.15;
-  const subtotal = totalWithVat / (1 + vatRate);
-  const vat = totalWithVat - subtotal;
-  const unitPrice = subtotal / qty;
+    totalCell.textContent = rowTotal.toFixed(2);
+    subtotal += rowTotal;
+  });
 
-  const tr = document.createElement("tr");
+  // تحديث إجمالي جدول 7-1
+  document.getElementById('itemsSubtotal').textContent =
+    'SAR ' + subtotal.toFixed(2);
+
+  // تحديث جدول الدفعات
+  updatePayments(subtotal);
+}
+function addExtraRow() {
+  const tbody = document.querySelector('#items-table tbody');
+  const tr = document.createElement('tr');
+
   tr.innerHTML = `
-    <td contenteditable="true">
-      توريد وتركيب وتشغيل مصعد كهربائي حسب عرض السعر رقم ${q.quoteNumber}
-      للمواصفات الموضحة أعلاه
+    <td contenteditable="true">بند إضافي</td>
+    <td><input type="number" class="qty" value="1" min="1"></td>
+    <td><input type="number" class="unit" value="0" min="0"></td>
+    <td class="row-total">0.00</td>
+    <td style="text-align:center">
+      <button onclick="this.closest('tr').remove(); recalcItemsTable()">✖</button>
     </td>
-    <td><input type="number" value="${qty}" readonly></td>
-    <td><input type="number" value="${unitPrice.toFixed(2)}" readonly></td>
-    <td class="row-total">${subtotal.toFixed(2)}</td>
-    <td></td>
   `;
-  tbody.appendChild(tr);
 
-  // ربط القيم المالية
-  bind('.bind_subtotal_before_vat', formatCurrency(subtotal));
+  tbody.appendChild(tr);
+  recalcItemsTable();
+}
+
+function updatePayments(subtotalBeforeVat) {
+  const vatRate = 0.15;
+  const vat = subtotalBeforeVat * vatRate;
+  const totalWithVat = subtotalBeforeVat + vat;
+
+  bind('.bind_subtotal_before_vat', formatCurrency(subtotalBeforeVat));
   bind('.bind_adjustment_amount', formatCurrency(0));
-  bind('.bind_subtotal_after_adjustment', formatCurrency(subtotal));
+  bind('.bind_subtotal_after_adjustment', formatCurrency(subtotalBeforeVat));
   bind('.bind_vat_amount', formatCurrency(vat));
   bind('.bind_total_with_vat', formatCurrency(totalWithVat));
 
@@ -1541,27 +1566,23 @@ function printWithName() {
   bind('.bind_pay_25', formatCurrency(totalWithVat * 0.25));
   bind('.bind_pay_20', formatCurrency(totalWithVat * 0.20));
   bind('.bind_pay_5',  formatCurrency(totalWithVat * 0.05));
-
-})();
-
-function addExtraRow() {
-  const tbody = document.querySelector("#items-table tbody");
-  const tr = document.createElement("tr");
-  tr.innerHTML = `
-    <td contenteditable="true">بند إضافي</td>
-    <td><input type="number" value="1" min="1"></td>
-    <td><input type="number" value="0" min="0"></td>
-    <td class="row-total">0.00</td>
-    <td style="text-align:center">
-      <button onclick="this.closest('tr').remove()">✖</button>
-    </td>
-  `;
-  tbody.appendChild(tr);
 }
+
+// إعادة الحساب عند أي تغيير
+document.addEventListener('input', e => {
+  if (e.target.closest('#items-table')) {
+    recalcItemsTable();
+  }
+});
+
+// أول تحميل
+window.addEventListener('load', recalcItemsTable);
 </script>
+
 
 </body>
 </html>
+
 
 
 
