@@ -1449,11 +1449,70 @@ function printWithName() {
 
 </script>
 
+   <script>
+(function () {
+
+  const idx = localStorage.getItem('rkl_current_quote_index');
+  if (idx === null) return;
+
+  const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
+  const q = quotes[Number(idx)];
+  if (!q) return;
+
+  const bind = (selector, value) => {
+    const el = document.querySelector(selector);
+    if (el) el.textContent = value ?? '—';
+  };
+
+  /* ===============================
+     Page 1 + Headers
+  =============================== */
+  bind('.bind_quote_number', q.quoteNumber);
+  bind('.bind_offer_date', q.timestamp?.slice(0,10));
+  bind('.bind_customer_name', q.customerName);
+  bind('.bind_project_name', q.projectName);
+  bind('.bind_project_location', q.projectLocation);
+
+  /* ===============================
+     Page 3 – البيانات الفنية الرئيسية
+  =============================== */
+  bind('.bind_brand', q.brandLabel);
+  bind('.bind_usage', 'Passenger Elevator');
+
+  // بلد المنشأ حسب الماركة
+  const origin =
+    q.brandLabel?.includes('FUJI') ? 'Japan' :
+    q.brandLabel?.includes('VERTILIFT') ? 'Italy' : '—';
+  bind('.bind_origin', origin);
+
+  bind('.bind_capacity', q.capacity);
+  bind('.bind_speed', q.speed);
+  bind('.bind_floors', q.floors);
+  bind('.bind_lifts', q.liftsCount);
+
+  bind('.bind_machine_type', 'MRL – Machine Room Less');
+
+  bind('.bind_cabin_design', q.cabinDesign);
+  bind('.bind_floor_finish', q.floorFinish);
+
+  bind('.bind_dim_shaft', q.shaftSize);
+  bind('.bind_dim_cabin', q.cabinSize);
+
+  bind('.bind_pit', q.pit);
+  bind('.bind_oh', q.oh);
+
+  bind('.bind_floor_height', q.floorHeight);
+  bind('.bind_travel_height', q.travelHeight);
+
+})();
+</script>
+
 
 
 
 </body>
 </html>
+
 
 
 
