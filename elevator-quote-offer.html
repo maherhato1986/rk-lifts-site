@@ -1237,33 +1237,28 @@ bind(
 
 
 /* =================================================
-   (3) البيانات الفنية الرئيسية
+   (3) البيانات الفنية الرئيسية – ربط نهائي صحيح
 ================================================= */
-bind('.bind_brand', q.brandLabel);
-bind('.bind_capacity', q.capacity);
-bind('.bind_speed', q.speed);
-bind('.bind_floors', q.floors);
-bind('.bind_lifts', q.liftsCount);
 
-bind('.bind_machine_type', q.machineType);
-bind('.bind_cabin_design', q.cabinDesign);
-bind('.bind_floor_finish', q.floorFinish);
+bind('.bind_brand', q.brandLabel);                 // ماركة المصعد / النظام
+bind('.bind_usage', inferUsage(q.projectName));   // الاستخدام
+bind('.bind_capacity', q.capacity);               // الحمولة
+bind('.bind_speed', q.speed);                     // السرعة
+bind('.bind_stops', q.stops);                     // عدد التوقفات
+bind('.bind_lifts', q.liftsCount);                // عدد المصاعد
+bind('.bind_machine_type', q.machineType);        // نوع الماكينة
 
-bind('.bind_dim_shaft', q.shaftSize);
-bind('.bind_dim_cabin', q.cabinSize);
-bind('.bind_pit', q.pit);
-bind('.bind_oh', q.oh);
+bind('.bind_cabin_design', q.cabinDesign);        // تشطيب داخلي
+bind('.bind_floor_finish', q.floorFinish);        // أرضية الكابينة
 
-bind('.bind_floor_height', q.floorHeight);
-bind('.bind_travel_height', q.travelHeight);
+bind('.bind_dim_shaft', q.shaftSize);              // مقاس البئر
+bind('.bind_dim_cabin', q.cabinSize);              // مقاس الكابينة
 
-/* استنتاج الاستخدام */
-bind('.bind_usage', inferUsage(q.projectName));
+bind('.bind_pit', q.pit);                          // PIT
+bind('.bind_oh', q.oh);                            // OH
 
-/* استنتاج بلد المنشأ */
-bind('.bind_origin', inferOrigin(q.brandLabel));
-
-
+bind('.bind_fh', q.floorHeight);                   // FH
+bind('.bind_th', q.travelHeight);                  // TH
 
 
 
@@ -1459,6 +1454,7 @@ function printWithName() {
 
 </body>
 </html>
+
 
 
 
