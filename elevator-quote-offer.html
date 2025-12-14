@@ -214,6 +214,26 @@ th {
     z-index: 1;
   }
 }
+   .client-letter-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin: 20px 0;
+  font-size: 13px;
+}
+
+.client-col h4 {
+  font-size: 14px;
+  margin-bottom: 8px;
+  border-right: 3px solid #2563eb;
+  padding-right: 6px;
+}
+
+.client-col p {
+  margin: 4px 0;
+  line-height: 1.6;
+}
+
 </style>
 
 
@@ -263,36 +283,41 @@ th {
     </p>
 
 <div class="section-title">ثانياً: ملف العميل</div>
-<div class="formal-letter">
+ر<div class="formal-letter">
 
   <p>
     إشارةً إلى طلبكم الكريم، نفيدكم بأن
     <strong>مؤسسة آر كي ال RKL للمصاعد والسلالم الكهربائية</strong>
     قامت بإعداد هذا العرض الفني والمالي بناءً على البيانات والمعلومات الرسمية
-    المقدمة من طرفكم، وذلك حسب التفاصيل التالية:
+    المقدمة من طرفكم، وذلك وفق التفاصيل التالية:
   </p>
 
-  <p>
-    <strong>بيانات العميل:</strong><br>
-    الاسم: <strong class="bind_customer_name">—</strong><br>
-    نوع العميل: <span class="bind_customer_type">—</span><br>
-    الشخص المسؤول: <span class="bind_contact_person">—</span><br>
-    السجل التجاري: <span class="bind_cr_number">—</span><br>
-    الرقم الضريبي: <span class="bind_tax_number">—</span><br>
-    رقم الهوية: <span class="bind_id_number">—</span><br>
-    رقم الهاتف: <span class="bind_customer_phone">—</span><br>
-    البريد الإلكتروني: <span class="bind_customer_email">—</span>
-  </p>
+  <!-- ====== معلومات العميل / صفّين ====== -->
+  <div class="client-letter-box">
 
-  <p>
-    <strong>عنوان العميل:</strong><br>
-    المدينة: <span class="bind_city">—</span><br>
-    الحي: <span class="bind_district">—</span><br>
-    الشارع: <span class="bind_street">—</span><br>
-    رقم المبنى: <span class="bind_building_number">—</span><br>
-    الرمز البريدي: <span class="bind_postal_code">—</span><br>
-    العنوان الوطني: <span class="bind_national_address">—</span>
-  </p>
+    <div class="client-col">
+      <h4>بيانات العميل</h4>
+      <p>اسم العميل: <strong class="bind_customer_name">—</strong></p>
+      <p>نوع العميل: <span class="bind_customer_type">—</span></p>
+      <p>الشخص المسؤول: <span class="bind_contact_person">—</span></p>
+      <p>السجل التجاري: <span class="bind_cr_number">—</span></p>
+      <p>الرقم الضريبي: <span class="bind_tax_number">—</span></p>
+      <p>رقم الهوية: <span class="bind_id_number">—</span></p>
+      <p>رقم الهاتف: <span class="bind_customer_phone">—</span></p>
+      <p>البريد الإلكتروني: <span class="bind_customer_email">—</span></p>
+    </div>
+
+    <div class="client-col">
+      <h4>عنوان العميل</h4>
+      <p>المدينة: <span class="bind_city">—</span></p>
+      <p>الحي: <span class="bind_district">—</span></p>
+      <p>الشارع: <span class="bind_street">—</span></p>
+      <p>رقم المبنى: <span class="bind_building_number">—</span></p>
+      <p>الرمز البريدي: <span class="bind_postal_code">—</span></p>
+      <p>العنوان الوطني: <span class="bind_national_address">—</span></p>
+    </div>
+
+  </div>
 
   <p>
     وبناءً على ما سبق، قامت مؤسسة آر كي ال بإعداد عرض سعر تفصيلي
@@ -1403,6 +1428,7 @@ window.addEventListener('load', () => {
 
 </body>
 </html>
+
 
 
 
