@@ -1104,7 +1104,8 @@ const bind = (selector, value) => {
 ================================================= */
 const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
 const currentIndex = localStorage.getItem('rkl_current_quote_index');
-const q = quotes[currentIndex ?? quotes.length - 1];
+window.q = quotes[currentIndex ?? quotes.length - 1];
+
 
 if (!q) {
   alert('لا يوجد عرض سعر لعرضه');
@@ -1547,6 +1548,7 @@ window.addEventListener('load', () => {
 
 </body>
 </html>
+
 
 
 
