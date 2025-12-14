@@ -1063,6 +1063,37 @@ th {
   <div class="section-title">سابعا ملخص القيمة المالية</div>
 <div class="before-vat-adjustment">
 
+   <div class="section-title">٦-٢) ملخص عرض السعر والبنود</div>
+
+<table id="items-table">
+  <thead>
+    <tr>
+      <th style="width:40%">وصف البند</th>
+      <th style="width:10%">الكمية</th>
+      <th style="width:20%">سعر الوحدة (SAR)</th>
+      <th style="width:20%">الإجمالي (SAR)</th>
+      <th style="width:10%">✖</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- بند افتراضي -->
+    <tr>
+      <td contenteditable="true">توريد وتركيب مصعد كهربائي حمولة 450 كجم</td>
+      <td><input type="number" value="1" min="1" class="qty"></td>
+      <td><input type="number" value="0" min="0" class="unit"></td>
+      <td class="row-total">0.00</td>
+      <td style="text-align:center">
+        <button onclick="removeRow(this)">✖</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div style="margin-top:8px">
+  <button onclick="addRow()">➕ إضافة بند</button>
+</div>
+
+
   <div class="section-title">
     ٦-١) تعديل السعر قبل الضريبة (اختياري)
   </div>
@@ -1333,38 +1364,7 @@ if (q.doorSize) {
 // ✅ السعر قبل الضريبة (عكسي)
 const baseSubtotal = grandTotal / (1 + vatRate / 100);
 
-function recalcFinancialSummary() {
-  const type  = document.getElementById('adjust_type')?.value || '';
-  const value = Number(document.getElementById('adjust_value')?.value || 0);
 
-  let adjustedSubtotal = baseSubtotal;
-
-  if (type === 'percent_add') {
-    adjustedSubtotal += baseSubtotal * (value / 100);
-  } else if (type === 'percent_minus') {
-    adjustedSubtotal -= baseSubtotal * (value / 100);
-  } else if (type === 'fixed_add') {
-    adjustedSubtotal += value;
-  } else if (type === 'fixed_minus') {
-    adjustedSubtotal -= value;
-  }
-
-  const vatAmount  = adjustedSubtotal * (vatRate / 100);
-  const finalTotal = adjustedSubtotal + vatAmount;
-
-  // ✅ الملخص
-  bind('.bind_subtotal_before_vat', formatCurrency(baseSubtotal));
-  bind('.bind_adjustment_amount', formatCurrency(adjustedSubtotal - baseSubtotal));
-  bind('.bind_subtotal_after_adjustment', formatCurrency(adjustedSubtotal));
-  bind('.bind_vat_amount', formatCurrency(vatAmount));
-  bind('.bind_total_with_vat', formatCurrency(finalTotal));
-
-  // ✅ جدول الدفعات
-  bind('.bind_pay_50', formatCurrency(finalTotal * 0.50));
-  bind('.bind_pay_25', formatCurrency(finalTotal * 0.25));
-  bind('.bind_pay_20', formatCurrency(finalTotal * 0.20));
-  bind('.bind_pay_5',  formatCurrency(finalTotal * 0.05));
-}
 
 
 /* ✅ تشغيل أولي */
@@ -1523,11 +1523,70 @@ function printWithName() {
 })();
 </script>
 
+<script>
+function addRow() {
+  const tbody = document.querySelector("#items-table tbody");
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td contenteditable="true">بند جديد</td>
+    <td><input type="number" value="1" min="1" class="qty"></td>
+    <td><input type="number" value="0" min="0" class="unit"></td>
+    <td class="row-total">0.00</td>
+    <td style="text-align:center">
+      <button onclick="removeRow(this)">✖</button>
+    </td>
+  `;
+  tbody.appendChild(tr);
+  recalcItems();
+}
+
+function removeRow(btn) {
+  btn.closest("tr").remove();
+  recalcItems();
+}
+
+function recalcItems() {
+  let subtotal = 0;
+
+  document.querySelectorAll("#items-table tbody tr").forEach(row => {
+    const qty  = Number(row.querySelector(".qty")?.value || 0);
+    const unit = Number(row.querySelector(".unit")?.value || 0);
+    const total = qty * unit;
+    row.querySelector(".row-total").textContent = total.toFixed(2);
+    subtotal += total;
+  });
+
+  const vatRate = 0.15;
+  const vat = subtotal * vatRate;
+  const finalTotal = subtotal + vat;
+
+  // ربط مع الملخص المالي الموجود عندك
+  bind('.bind_subtotal_before_vat', formatCurrency(subtotal));
+  bind('.bind_adjustment_amount', formatCurrency(0));
+  bind('.bind_subtotal_after_adjustment', formatCurrency(subtotal));
+  bind('.bind_vat_amount', formatCurrency(vat));
+  bind('.bind_total_with_vat', formatCurrency(finalTotal));
+
+  // جدول الدفعات
+  bind('.bind_pay_50', formatCurrency(finalTotal * 0.50));
+  bind('.bind_pay_25', formatCurrency(finalTotal * 0.25));
+  bind('.bind_pay_20', formatCurrency(finalTotal * 0.20));
+  bind('.bind_pay_5',  formatCurrency(finalTotal * 0.05));
+}
+
+// إعادة الحساب عند أي تغيير
+document.addEventListener("input", e => {
+  if (e.target.closest("#items-table")) {
+    recalcItems();
+  }
+});
+</script>
 
 
 
 </body>
 </html>
+
 
 
 
