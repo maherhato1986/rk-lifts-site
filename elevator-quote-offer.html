@@ -314,29 +314,55 @@ th {
     </p>
   </div>
 
-  <!-- ===== Client Summary (Two Columns) ===== -->
-  <div class="client-summary">
+<!-- ===== Client Data – Formal Letter Style ===== -->
+<div class="client-letter-box">
 
-    <div>
-      <h4>بيانات العميل</h4>
-      <p>اسم العميل: <strong class="bind_customer_name">—</strong></p>
-      <p>نوع العميل: <span class="bind_customer_type">—</span></p>
-      <p>الشخص المسؤول: <span class="bind_contact_person">—</span></p>
-      <p>السجل التجاري: <span class="bind_cr_number">—</span></p>
-      <p>الرقم الضريبي: <span class="bind_tax_number">—</span></p>
-      <p>رقم الهاتف: <span class="bind_customer_phone">—</span></p>
-      <p>البريد الإلكتروني: <span class="bind_customer_email">—</span></p>
-    </div>
+  <div class="client-line">
+    <span>اسم العميل:</span>
+    <strong class="bind_customer_name">—</strong>
+    <span class="sep">|</span>
+    <span>نوع العميل:</span>
+    <strong class="bind_customer_type">—</strong>
+  </div>
 
-    <div>
-      <h4>عنوان العميل</h4>
-      <p>المدينة: <span class="bind_city">—</span></p>
-      <p>الحي: <span class="bind_district">—</span></p>
-      <p>الشارع: <span class="bind_street">—</span></p>
-      <p>رقم المبنى: <span class="bind_building_number">—</span></p>
-      <p>الرمز البريدي: <span class="bind_postal_code">—</span></p>
-      <p>العنوان الوطني: <span class="bind_national_address">—</span></p>
-    </div>
+  <div class="client-line">
+    <span>الشخص المسؤول:</span>
+    <strong class="bind_contact_person">—</strong>
+    <span class="sep">|</span>
+    <span>السجل التجاري:</span>
+    <strong class="bind_cr_number">—</strong>
+  </div>
+
+  <div class="client-line">
+    <span>الرقم الضريبي:</span>
+    <strong class="bind_tax_number">—</strong>
+    <span class="sep">|</span>
+    <span>رقم الهاتف:</span>
+    <strong class="bind_customer_phone">—</strong>
+  </div>
+
+  <div class="client-line">
+    <span>البريد الإلكتروني:</span>
+    <strong class="bind_customer_email">—</strong>
+  </div>
+
+  <div class="client-line">
+    <span>العنوان:</span>
+    <strong>
+      <span class="bind_city">—</span> /
+      <span class="bind_district">—</span> /
+      <span class="bind_street">—</span> /
+      مبنى <span class="bind_building_number">—</span> /
+      <span class="bind_postal_code">—</span>
+    </strong>
+  </div>
+
+  <div class="client-line">
+    <span>العنوان الوطني:</span>
+    <strong class="bind_national_address">—</strong>
+  </div>
+
+</div>
 
   </div>
 
@@ -1503,6 +1529,7 @@ window.addEventListener('load', () => {
 
 </body>
 </html>
+
 
 
 
