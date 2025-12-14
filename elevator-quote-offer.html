@@ -1061,9 +1061,9 @@ th {
 </div>
 
 <!-- ===============================
-  سابعا: ملخص القيمة المالية
+  سابعاً: ملخص القيمة المالية
 ================================ -->
-<div class="section-title">سابعا: ملخص القيمة المالية</div>
+<div class="section-title">سابعاً: ملخص القيمة المالية</div>
 
 <!-- ===============================
   7-1) ملخص عرض السعر والبنود
@@ -1080,18 +1080,24 @@ th {
       <th style="width:10%">✖</th>
     </tr>
   </thead>
-   <tr class="summary-row">
-  <th colspan="3" style="text-align:right">
-    الإجمالي قبل الضريبة
-  </th>
-  <th id="itemsSubtotal">SAR 0.00</th>
-  <th></th>
-</tr>
-
   <tbody>
-    <!-- يتم التعبئة تلقائياً -->
-     
+    <!-- بند رئيسي تلقائي من عرض السعر -->
+    <tr>
+      <td contenteditable="true" class="item-desc"></td>
+      <td><input type="number" class="qty" value="1" min="1"></td>
+      <td><input type="number" class="unit" value="0" min="0"></td>
+      <td class="row-total">0.00</td>
+      <td style="text-align:center">—</td>
+    </tr>
   </tbody>
+
+  <tfoot>
+    <tr style="background:#f8fafc;font-weight:bold">
+      <td colspan="3" style="text-align:right">الإجمالي قبل الضريبة</td>
+      <td id="itemsSubtotal">SAR 0.00</td>
+      <td></td>
+    </tr>
+  </tfoot>
 </table>
 
 <div style="margin-top:8px">
@@ -1109,7 +1115,7 @@ th {
   <option value="increase">زيادة</option>
 </select>
 
-<input type="number" id="adjustmentValue" placeholder="أدخل المبلغ أو النسبة">
+<input type="number" id="adjustmentValue" placeholder="أدخل المبلغ">
 
 <!-- ===============================
   7-3) جدول الدفعات المقترح
@@ -1117,68 +1123,25 @@ th {
 <div class="section-title">7-3) جدول الدفعات المقترح</div>
 
 <table>
-  <thead>
-    <tr>
-      <th style="width:45%">البيان</th>
-      <th style="width:15%">النسبة</th>
-      <th style="width:40%">المبلغ بالريال السعودي</th>
-    </tr>
-  </thead>
   <tbody>
-    <tr>
-      <td>عند توقيع العقد</td>
-      <td>50%</td>
-      <td class="bind_pay_50">—</td>
-    </tr>
-    <tr>
-      <td>عند الانتهاء من الأعمال الميكانيكية</td>
-      <td>25%</td>
-      <td class="bind_pay_25">—</td>
-    </tr>
-    <tr>
-      <td>بعد الانتهاء من الأعمال الكهربائية والتشغيل</td>
-      <td>20%</td>
-      <td class="bind_pay_20">—</td>
-    </tr>
-    <tr>
-      <td>عند التسليم النهائي للمصعد</td>
-      <td>5%</td>
-      <td class="bind_pay_5">—</td>
-    </tr>
+    <tr><td>عند توقيع العقد</td><td>50%</td><td class="pay50">—</td></tr>
+    <tr><td>عند الانتهاء من الأعمال الميكانيكية</td><td>25%</td><td class="pay25">—</td></tr>
+    <tr><td>بعد الانتهاء من الأعمال الكهربائية والتشغيل</td><td>20%</td><td class="pay20">—</td></tr>
+    <tr><td>عند التسليم النهائي للمصعد</td><td>5%</td><td class="pay5">—</td></tr>
 
-    <tr>
-      <th>الإجمالي قبل التعديل (قبل الضريبة)</th>
-      <th>—</th>
-      <th class="bind_subtotal_before_vat">—</th>
-    </tr>
-
-    <tr>
-      <th>قيمة الخصم / الزيادة</th>
-      <th>—</th>
-      <th class="bind_adjustment_amount">—</th>
-    </tr>
-
-    <tr>
-      <th>الإجمالي بعد التعديل (قبل الضريبة)</th>
-      <th>—</th>
-      <th class="bind_subtotal_after_adjustment">—</th>
-    </tr>
-
-    <tr>
-      <th>ضريبة القيمة المضافة (15%)</th>
-      <th>—</th>
-      <th class="bind_vat_amount">—</th>
-    </tr>
-
-    <tr>
-      <th style="background:#f0f9ff;font-weight:bold">
-        الإجمالي النهائي (شامل ضريبة القيمة المضافة)
-      </th>
+    <tr><th>الإجمالي قبل التعديل</th><th></th><th class="subtotalBefore">—</th></tr>
+    <tr><th>قيمة الخصم / الزيادة</th><th></th><th class="adjustmentAmount">—</th></tr>
+    <tr><th>الإجمالي بعد التعديل</th><th></th><th class="subtotalAfter">—</th></tr>
+    <tr><th>ضريبة القيمة المضافة (15%)</th><th></th><th class="vatAmount">—</th></tr>
+    <tr style="background:#f0f9ff;font-weight:bold">
+      <th>الإجمالي النهائي (شامل الضريبة)</th>
       <th>100%</th>
-      <th class="bind_total_with_vat" style="font-weight:bold">—</th>
+      <th class="grandTotal">—</th>
     </tr>
   </tbody>
 </table>
+
+
 
     <div class="section-title">٨) بنود رئيسية للعقد (قابلة للتعديل)</div>
     <div class="terms editable" contenteditable="true">
@@ -1502,86 +1465,89 @@ function printWithName() {
 })();
 </script>
 
-
-<!-- ===============================
-  سكربت الربط والحساب
-================================ -->
 <script>
-function recalcItemsTable() {
+function formatSAR(v){
+  return 'SAR ' + (Number(v)||0).toLocaleString('en-US',{minimumFractionDigits:2});
+}
+
+function recalcPricing(){
   const rows = document.querySelectorAll('#items-table tbody tr');
   let subtotal = 0;
 
-  rows.forEach(row => {
-    const qtyInput = row.querySelector('.qty');
-    const unitInput = row.querySelector('.unit');
-    const totalCell = row.querySelector('.row-total');
-
-    if (!qtyInput || !unitInput || !totalCell) return;
-
-    const qty = Number(qtyInput.value || 0);
-    const unit = Number(unitInput.value || 0);
-    const rowTotal = qty * unit;
-
-    totalCell.textContent = rowTotal.toFixed(2);
-    subtotal += rowTotal;
+  rows.forEach(r=>{
+    const q = r.querySelector('.qty');
+    const u = r.querySelector('.unit');
+    const t = r.querySelector('.row-total');
+    if(!q||!u||!t) return;
+    const val = (Number(q.value)||0)*(Number(u.value)||0);
+    t.textContent = val.toFixed(2);
+    subtotal += val;
   });
 
-  // تحديث إجمالي جدول 7-1
-  document.getElementById('itemsSubtotal').textContent =
-    'SAR ' + subtotal.toFixed(2);
+  document.getElementById('itemsSubtotal').textContent = formatSAR(subtotal);
 
-  // تحديث جدول الدفعات
-  updatePayments(subtotal);
+  const adjType = document.getElementById('adjustmentType').value;
+  const adjVal  = Number(document.getElementById('adjustmentValue').value||0);
+  let adjAmount = 0;
+
+  if(adjType==='discount') adjAmount = -adjVal;
+  if(adjType==='increase') adjAmount = adjVal;
+
+  const afterAdj = subtotal + adjAmount;
+  const vat = afterAdj * 0.15;
+  const total = afterAdj + vat;
+
+  document.querySelector('.subtotalBefore').textContent = formatSAR(subtotal);
+  document.querySelector('.adjustmentAmount').textContent = formatSAR(adjAmount);
+  document.querySelector('.subtotalAfter').textContent = formatSAR(afterAdj);
+  document.querySelector('.vatAmount').textContent = formatSAR(vat);
+  document.querySelector('.grandTotal').textContent = formatSAR(total);
+
+  document.querySelector('.pay50').textContent = formatSAR(total*0.50);
+  document.querySelector('.pay25').textContent = formatSAR(total*0.25);
+  document.querySelector('.pay20').textContent = formatSAR(total*0.20);
+  document.querySelector('.pay5').textContent  = formatSAR(total*0.05);
 }
-function addExtraRow() {
+
+function addExtraRow(){
   const tbody = document.querySelector('#items-table tbody');
   const tr = document.createElement('tr');
-
   tr.innerHTML = `
     <td contenteditable="true">بند إضافي</td>
     <td><input type="number" class="qty" value="1" min="1"></td>
     <td><input type="number" class="unit" value="0" min="0"></td>
     <td class="row-total">0.00</td>
     <td style="text-align:center">
-      <button onclick="this.closest('tr').remove(); recalcItemsTable()">✖</button>
-    </td>
-  `;
-
+      <button onclick="this.closest('tr').remove();recalcPricing()">✖</button>
+    </td>`;
   tbody.appendChild(tr);
-  recalcItemsTable();
 }
 
-function updatePayments(subtotalBeforeVat) {
-  const vatRate = 0.15;
-  const vat = subtotalBeforeVat * vatRate;
-  const totalWithVat = subtotalBeforeVat + vat;
-
-  bind('.bind_subtotal_before_vat', formatCurrency(subtotalBeforeVat));
-  bind('.bind_adjustment_amount', formatCurrency(0));
-  bind('.bind_subtotal_after_adjustment', formatCurrency(subtotalBeforeVat));
-  bind('.bind_vat_amount', formatCurrency(vat));
-  bind('.bind_total_with_vat', formatCurrency(totalWithVat));
-
-  bind('.bind_pay_50', formatCurrency(totalWithVat * 0.50));
-  bind('.bind_pay_25', formatCurrency(totalWithVat * 0.25));
-  bind('.bind_pay_20', formatCurrency(totalWithVat * 0.20));
-  bind('.bind_pay_5',  formatCurrency(totalWithVat * 0.05));
-}
-
-// إعادة الحساب عند أي تغيير
-document.addEventListener('input', e => {
-  if (e.target.closest('#items-table')) {
-    recalcItemsTable();
+document.addEventListener('input',e=>{
+  if(e.target.closest('#items-table') ||
+     e.target.id==='adjustmentType' ||
+     e.target.id==='adjustmentValue'){
+    recalcPricing();
   }
 });
 
-// أول تحميل
-window.addEventListener('load', recalcItemsTable);
+window.addEventListener('load',()=>{
+  // وصف البند الرئيسي تلقائي
+  const desc = document.querySelector('.item-desc');
+  if(desc && window.q){
+    desc.textContent =
+      `توريد وتركيب وتشغيل مصعد حسب عرض السعر رقم ${q.quoteNumber} للمواصفات الموضحة أعلاه`;
+    document.querySelector('.unit').value =
+      Number(q.totalWithVat||0) / 1.15;
+  }
+  recalcPricing();
+});
 </script>
 
 
 </body>
 </html>
+
 
 
 
