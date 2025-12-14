@@ -1098,37 +1098,36 @@ th {
     ٦-١) تعديل السعر قبل الضريبة (اختياري)
   </div>
 
-  <table>
-    <tbody>
-      <tr>
-        <th style="width:35%">نوع التعديل</th>
-        <td style="width:65%">
-          <select id="adjust_type">
-            <option value="">— بدون تعديل —</option>
-            <option value="percent_add">زيادة بنسبة (%)</option>
-            <option value="percent_minus">خصم بنسبة (%)</option>
-            <option value="fixed_add">زيادة بمبلغ ثابت</option>
-            <option value="fixed_minus">خصم بمبلغ ثابت</option>
-          </select>
-        </td>
-      </tr>
+ <div class="section-title">٦-٢) ملخص عرض السعر والبنود</div>
 
-      <tr>
-        <th>قيمة التعديل</th>
-        <td>
-          <input
-            type="number"
-            id="adjust_value"
-            placeholder="أدخل النسبة أو المبلغ"
-            style="width:100%"
-          />
-          <div class="small-note">
-            * يتم احتساب التعديل على المبلغ قبل الضريبة فقط
-          </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+<table id="items-table">
+  <thead>
+    <tr>
+      <th style="width:40%">وصف البند</th>
+      <th style="width:10%">الكمية</th>
+      <th style="width:20%">سعر الوحدة (SAR)</th>
+      <th style="width:20%">الإجمالي (SAR)</th>
+      <th style="width:10%">✖</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- بند افتراضي -->
+    <tr>
+      <td contenteditable="true">توريد وتركيب مصعد كهربائي حمولة 450 كجم</td>
+      <td><input type="number" value="1" min="1" class="qty"></td>
+      <td><input type="number" value="0" min="0" class="unit"></td>
+      <td class="row-total">0.00</td>
+      <td style="text-align:center">
+        <button onclick="removeRow(this)">✖</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div style="margin-top:8px">
+  <button onclick="addRow()">➕ إضافة بند</button>
+</div>
+
 
 </div>
 
@@ -1586,6 +1585,7 @@ document.addEventListener("input", e => {
 
 </body>
 </html>
+
 
 
 
