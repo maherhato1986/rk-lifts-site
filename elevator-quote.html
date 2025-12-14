@@ -1326,7 +1326,7 @@ const directCostSarFinal = directCostSar + cabinExtraCost;
 
         generateNumbersView(result, model, currency);
         generateQuoteText(result, model, currency);
-        const projectLocation = document.getElementById("project_location")?.value || "";
+      
 
 
                 // حفظ لقطة من هذا العرض لاستخدامها عند الضغط على "حفظ عرض السعر"
@@ -1429,6 +1429,8 @@ travelHeight: document.getElementById('travelHeight')?.value || '',
        5) السعر
     ========================= */
     totalWithVat: result?.totalWithVat || 0,
+
+
 
 
 pricePerUnit: liftsCount && result?.totalWithVat
@@ -1902,6 +1904,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
