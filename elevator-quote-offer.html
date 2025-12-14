@@ -839,66 +839,67 @@ th {
    
 
   <!-- ✅ المخطط الهندسي -->
-  <svg width="520" height="420" viewBox="0 0 520 420"
-       xmlns="http://www.w3.org/2000/svg"
-       style="border:1px solid #d1d5db; background:#fff">
+<div class="diagram-container" style="display:flex;gap:30px">
 
-    <!-- ===== SECTION VIEW ===== -->
-    <text x="130" y="20" font-size="13" font-weight="700" text-anchor="middle">
-      SECTION VIEW
-    </text>
+<!-- ================= SECTION VIEW ================= -->
+<svg width="220" height="420" viewBox="0 0 220 420"
+     style="border:1px solid #cbd5e1;background:#fff">
 
-    <!-- Shaft -->
-    <rect x="50" y="40" width="160" height="280"
-          fill="none" stroke="#1f2937" stroke-width="2"/>
+  <!-- Shaft -->
+  <rect x="60" y="40" width="100" height="320"
+        fill="none" stroke="#0f172a" stroke-width="2"/>
 
-    <!-- Cabin -->
-    <rect x="75" y="130" width="110" height="120"
-          fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+  <!-- Cabin -->
+  <rect x="80" y="140" width="60" height="120"
+        fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
 
-    <text x="130" y="195" font-size="11" text-anchor="middle">
-      CABIN
-    </text>
+  <!-- Labels -->
+  <text x="110" y="30" text-anchor="middle" font-size="12" font-weight="600">
+    SECTION VIEW
+  </text>
 
-    <!-- OH -->
-    <line x1="50" y1="30" x2="210" y2="30" stroke="#1f2937"/>
-    <text x="130" y="18" font-size="11" text-anchor="middle">
-      OH = <tspan class="bind_oh">—</tspan> mm
-    </text>
+  <text x="110" y="205" text-anchor="middle" font-size="11">CABIN</text>
 
-    <!-- PIT -->
-    <line x1="50" y1="330" x2="210" y2="330" stroke="#1f2937"/>
-    <text x="130" y="360" font-size="11" text-anchor="middle">
-      PIT = <tspan class="bind_pit">—</tspan> mm
-    </text>
+  <!-- PIT -->
+  <line x1="60" y1="360" x2="160" y2="360" stroke="#0f172a"/>
+  <text x="110" y="390" text-anchor="middle" font-size="11">
+    PIT = 1200 mm
+  </text>
 
-    <!-- ===== PLAN VIEW ===== -->
-    <text x="385" y="20" font-size="13" font-weight="700" text-anchor="middle">
-      PLAN VIEW
-    </text>
+  <!-- OH -->
+  <line x1="60" y1="40" x2="160" y2="40" stroke="#0f172a"/>
+  <text x="110" y="20" text-anchor="middle" font-size="11">
+    OH = 3500 mm
+  </text>
+</svg>
 
-    <!-- Shaft plan -->
-    <rect x="300" y="60" width="180" height="160"
-          fill="none" stroke="#1f2937" stroke-width="2"/>
+<!-- ================= PLAN VIEW ================= -->
+<svg width="220" height="220" viewBox="0 0 220 220"
+     style="border:1px solid #cbd5e1;background:#fff">
 
-    <!-- Cabin plan -->
-    <rect x="330" y="90" width="120" height="100"
-          fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+  <!-- Shaft -->
+  <rect x="40" y="40" width="140" height="140"
+        fill="none" stroke="#0f172a" stroke-width="2"/>
 
-    <text x="390" y="145" font-size="11" text-anchor="middle">
-      CABIN
-    </text>
+  <!-- Cabin -->
+  <rect x="70" y="70" width="80" height="80"
+        fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
 
-    <text x="390" y="245" font-size="11" text-anchor="middle">
-      HW = <tspan class="bind_shaft_width">—</tspan> mm
-      &nbsp;|&nbsp;
-      HD = <tspan class="bind_shaft_depth">—</tspan> mm
-    </text>
+  <text x="110" y="30" text-anchor="middle" font-size="12" font-weight="600">
+    PLAN VIEW
+  </text>
 
-    <text x="390" y="270" font-size="11" text-anchor="middle" fill="#065f46">
-      <tspan class="bind_dim_cabin">—</tspan>
-    </text>
-  </svg>
+  <text x="110" y="115" text-anchor="middle" font-size="11">
+    CABIN
+  </text>
+
+  <text x="110" y="200" text-anchor="middle" font-size="11">
+    HW = 1700 mm | HD = 1500 mm
+  </text>
+</svg>
+
+</div>
+
 
 </div>
 
@@ -1444,6 +1445,7 @@ function printWithName() {
 
 </body>
 </html>
+
 
 
 
