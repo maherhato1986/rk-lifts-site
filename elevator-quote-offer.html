@@ -484,9 +484,9 @@ th {
     <tr>
       <th>ارتفاع الرحلة (TH)</th>
       <td class="bind_travel_height">—</td>
-
-      <th>بلد المنشأ</th>
-      <td class="bind_origin">—</td>
+       
+  <th>وسيلة التواصل المفضلة</th>
+  <td class="bind_preferred_contact">—</td>
     </tr>
 
     <tr>
@@ -1185,7 +1185,11 @@ bind('.bind_lifts', q.liftsCount);
 /* ===== عناصر ذكية جديدة ===== */
 bind('.bind_travel_height', q.travelHeight ? (q.travelHeight + ' mm') : '—');
 
-bind('.bind_origin', inferOrigin(q.brandLabel));
+bind(
+  '.bind_preferred_contact',
+  q.customerDetails?.preferred_contact || 'جوال'
+);
+;
 
 
 /* =================================================
@@ -1418,6 +1422,7 @@ function printWithName() {
 
 </body>
 </html>
+
 
 
 
