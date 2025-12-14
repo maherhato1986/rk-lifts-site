@@ -115,6 +115,20 @@ th {
   font-weight: 600;
 }
 
+   .spec-table th {
+  background: #f8fafc;
+  width: 22%;
+}
+
+.spec-table td {
+  width: 28%;
+}
+
+.client-letter-box {
+  margin-bottom: 10px;
+}
+
+
 /* =================================================
    تقسيمات
 ================================================= */
@@ -284,6 +298,13 @@ th {
 
 <div class="section-title">ثانياً: ملف العميل</div>
 <div class="formal-letter">
+<style>
+.formal-letter {
+  font-size: 13px;
+  line-height: 1.9;
+  margin-bottom: 18px;
+}
+</style>
 
   <p>
     إشارةً إلى طلبكم الكريم، نفيدكم بأن
@@ -292,35 +313,38 @@ th {
     المقدمة من طرفكم، وذلك وفق التفاصيل التالية:
   </p>
 
-  <!-- ====== معلومات العميل / صفّين ====== -->
-  <div class="client-letter-box">
+<div class="section-title">ثانياً: بيانات العميل</div>
 
-    <div class="client-col">
-      <h4>بيانات العميل</h4>
-      <p>اسم العميل: <strong class="bind_customer_name">—</strong></p>
-      <p>نوع العميل: <span class="bind_customer_type">—</span></p>
-      <p>الشخص المسؤول: <span class="bind_contact_person">—</span></p>
-      <p>السجل التجاري: <span class="bind_cr_number">—</span></p>
-      <p>الرقم الضريبي: <span class="bind_tax_number">—</span></p>
-      <p>رقم الهوية: <span class="bind_id_number">—</span></p>
-      <p>رقم الهاتف: <span class="bind_customer_phone">—</span></p>
-      <p>البريد الإلكتروني: <span class="bind_customer_email">—</span></p>
-    </div>
+<div class="client-letter-box">
 
-    <div class="client-col">
-      <h4>عنوان العميل</h4>
-      <p>المدينة: <span class="bind_city">—</span></p>
-      <p>الحي: <span class="bind_district">—</span></p>
-      <p>الشارع: <span class="bind_street">—</span></p>
-      <p>رقم المبنى: <span class="bind_building_number">—</span></p>
-      <p>الرمز البريدي: <span class="bind_postal_code">—</span></p>
-      <p>العنوان الوطني: <span class="bind_national_address">—</span></p>
-    </div>
+  <div class="client-col">
+    <h4>بيانات العميل</h4>
+    <p>اسم العميل: <strong class="bind_customer_name">—</strong></p>
+    <p>نوع العميل: <span class="bind_customer_type">—</span></p>
+    <p>الشخص المسؤول: <span class="bind_contact_person">—</span></p>
+    <p>السجل التجاري: <span class="bind_cr_number">—</span></p>
+    <p>الرقم الضريبي: <span class="bind_tax_number">—</span></p>
+    <p>رقم الهاتف: <span class="bind_customer_phone">—</span></p>
+    <p>البريد الإلكتروني: <span class="bind_customer_email">—</span></p>
+  </div>
+
+  <div class="client-col">
+    <h4>عنوان العميل</h4>
+    <p>المدينة: <span class="bind_city">—</span></p>
+    <p>الحي: <span class="bind_district">—</span></p>
+    <p>الشارع: <span class="bind_street">—</span></p>
+    <p>رقم المبنى: <span class="bind_building_number">—</span></p>
+    <p>الرمز البريدي: <span class="bind_postal_code">—</span></p>
+    <p>العنوان الوطني: <span class="bind_national_address">—</span></p>
+  </div>
+
+</div>
+
 
 <!-- ================= بيانات المصاعد (نفس الصفحة) ================= -->
-<div class="section-title" style="margin-top:20px">
+<div class="section-title" style="margin-top:18px">
 ثالثاً: بيانات المصاعد الخاصة بالمشروع
-
+</div>
 
 <table class="spec-table">
   <tbody>
@@ -353,6 +377,7 @@ th {
     </tr>
   </tbody>
 </table>
+
 
 
 
@@ -1456,6 +1481,7 @@ window.addEventListener('load', () => {
 
 </body>
 </html>
+
 
 
 
