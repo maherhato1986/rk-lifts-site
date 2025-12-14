@@ -1508,32 +1508,46 @@ window.addEventListener('load', () => {
   const quoteNumber = q.quoteNumber || '—';
   const liftsCount  = Number(q.liftsCount || 1);
 
-  // السعر قبل الضريبة من عرض السعر
   const priceBeforeVat =
-    Number(q.totalWithVat || 0) / 1.15;
+    q.totalBeforeVat
+      ? Number(q.totalBeforeVat)
+      : (Number(q.totalWithVat || 0) / 1.15);
 
   const firstRow = document.querySelector('#items-table tbody tr:first-child');
-  if(!firstRow) return;
+  if (!firstRow) return;
 
   const desc = firstRow.querySelector('td[contenteditable]');
   const qty  = firstRow.querySelector('.qty');
   const unit = firstRow.querySelector('.unit');
 
-  if(desc){
+  if (desc) {
     desc.textContent =
-      `توريد وتركيب مصعد/مصاعد حسب عرض السعر رقم ${quoteNumber} حسب المواصفات الموضحة أعلاه`;
+`توريد وتركيب وتشغيل مصعد/مصاعد كهربائية
+
+اسم المشروع: ${q.projectName || '—'}
+موقع المشروع: ${q.projectLocation || '—'}
+رقم عرض السعر: ${quoteNumber}
+
+نوع المصعد: ${q.brandLabel || '—'}
+الحمولة الاسمية: ${q.capacity || '—'}
+عدد الأدوار / التوقفات: ${q.stops || q.floors || '—'}
+
+حسب المواصفات الفنية المعتمدة والواردة في هذا العرض.`;
   }
-  if(qty)  qty.value  = liftsCount;
-  if(unit) unit.value = priceBeforeVat.toFixed(2);
+
+  if (qty)  qty.value  = liftsCount;
+  if (unit) unit.value = priceBeforeVat.toFixed(2);
 
   recalcPricing();
 });
+
 </script>
 
 
 
 </body>
 </html>
+
 
 
 
