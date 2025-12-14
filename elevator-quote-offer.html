@@ -1466,52 +1466,73 @@ function printWithName() {
 </script>
 
 <script>
+/* ===============================
+   أدوات مساعدة
+===============================*/
 function formatSAR(v){
-  return 'SAR ' + (Number(v)||0).toLocaleString('en-US',{minimumFractionDigits:2});
+  return 'SAR ' + (Number(v)||0).toLocaleString('en-US',{
+    minimumFractionDigits:2,
+    maximumFractionDigits:2
+  });
 }
 
+/* ===============================
+   إعادة حساب البنود + الدفعات
+===============================*/
 function recalcPricing(){
   const rows = document.querySelectorAll('#items-table tbody tr');
   let subtotal = 0;
 
-  rows.forEach(r=>{
-    const q = r.querySelector('.qty');
-    const u = r.querySelector('.unit');
-    const t = r.querySelector('.row-total');
-    if(!q||!u||!t) return;
-    const val = (Number(q.value)||0)*(Number(u.value)||0);
-    t.textContent = val.toFixed(2);
-    subtotal += val;
+  rows.forEach(row=>{
+    const qty  = row.querySelector('.qty');
+    const unit = row.querySelector('.unit');
+    const totalCell = row.querySelector('.row-total');
+
+    if(!qty || !unit || !totalCell) return;
+
+    const rowTotal = (Number(qty.value)||0) * (Number(unit.value)||0);
+    totalCell.textContent = rowTotal.toFixed(2);
+    subtotal += rowTotal;
   });
 
+  // إجمالي جدول البنود
   document.getElementById('itemsSubtotal').textContent = formatSAR(subtotal);
 
-  const adjType = document.getElementById('adjustmentType').value;
-  const adjVal  = Number(document.getElementById('adjustmentValue').value||0);
-  let adjAmount = 0;
+  // التعديل قبل الضريبة
+  const adjTypeEl = document.getElementById('adjustmentType');
+  const adjValEl  = document.getElementById('adjustmentValue');
 
-  if(adjType==='discount') adjAmount = -adjVal;
-  if(adjType==='increase') adjAmount = adjVal;
+  let adjAmount = 0;
+  if(adjTypeEl && adjValEl){
+    const adjVal = Number(adjValEl.value||0);
+    if(adjTypeEl.value === 'discount') adjAmount = -adjVal;
+    if(adjTypeEl.value === 'increase') adjAmount =  adjVal;
+  }
 
   const afterAdj = subtotal + adjAmount;
-  const vat = afterAdj * 0.15;
-  const total = afterAdj + vat;
+  const vat      = afterAdj * 0.15;
+  const total    = afterAdj + vat;
 
+  // ربط جدول الدفعات
   document.querySelector('.subtotalBefore').textContent = formatSAR(subtotal);
   document.querySelector('.adjustmentAmount').textContent = formatSAR(adjAmount);
   document.querySelector('.subtotalAfter').textContent = formatSAR(afterAdj);
   document.querySelector('.vatAmount').textContent = formatSAR(vat);
   document.querySelector('.grandTotal').textContent = formatSAR(total);
 
-  document.querySelector('.pay50').textContent = formatSAR(total*0.50);
-  document.querySelector('.pay25').textContent = formatSAR(total*0.25);
-  document.querySelector('.pay20').textContent = formatSAR(total*0.20);
-  document.querySelector('.pay5').textContent  = formatSAR(total*0.05);
+  document.querySelector('.pay50').textContent = formatSAR(total * 0.50);
+  document.querySelector('.pay25').textContent = formatSAR(total * 0.25);
+  document.querySelector('.pay20').textContent = formatSAR(total * 0.20);
+  document.querySelector('.pay5').textContent  = formatSAR(total * 0.05);
 }
 
+/* ===============================
+   إضافة بند إضافي
+===============================*/
 function addExtraRow(){
   const tbody = document.querySelector('#items-table tbody');
   const tr = document.createElement('tr');
+
   tr.innerHTML = `
     <td contenteditable="true">بند إضافي</td>
     <td><input type="number" class="qty" value="1" min="1"></td>
@@ -1519,34 +1540,63 @@ function addExtraRow(){
     <td class="row-total">0.00</td>
     <td style="text-align:center">
       <button onclick="this.closest('tr').remove();recalcPricing()">✖</button>
-    </td>`;
+    </td>
+  `;
+
   tbody.appendChild(tr);
+  recalcPricing();
 }
 
+/* ===============================
+   مراقبة التغييرات
+===============================*/
 document.addEventListener('input',e=>{
-  if(e.target.closest('#items-table') ||
-     e.target.id==='adjustmentType' ||
-     e.target.id==='adjustmentValue'){
+  if(
+    e.target.closest('#items-table') ||
+    e.target.id === 'adjustmentType' ||
+    e.target.id === 'adjustmentValue'
+  ){
     recalcPricing();
   }
 });
 
-window.addEventListener('load',()=>{
-  // وصف البند الرئيسي تلقائي
-  const desc = document.querySelector('.item-desc');
-  if(desc && window.q){
+/* ===============================
+   تعبئة البند الرئيسي تلقائيًا
+===============================*/
+window.addEventListener('load', () => {
+
+  if (!window.q) return;
+
+  const quoteNumber = q.quoteNumber || '—';
+  const liftsCount  = Number(q.liftsCount || 1);
+
+  // السعر قبل الضريبة من عرض السعر
+  const priceBeforeVat =
+    Number(q.totalWithVat || 0) / 1.15;
+
+  const firstRow = document.querySelector('#items-table tbody tr:first-child');
+  if(!firstRow) return;
+
+  const desc = firstRow.querySelector('td[contenteditable]');
+  const qty  = firstRow.querySelector('.qty');
+  const unit = firstRow.querySelector('.unit');
+
+  if(desc){
     desc.textContent =
-      `توريد وتركيب وتشغيل مصعد حسب عرض السعر رقم ${q.quoteNumber} للمواصفات الموضحة أعلاه`;
-    document.querySelector('.unit').value =
-      Number(q.totalWithVat||0) / 1.15;
+      `توريد وتركيب مصعد/مصاعد حسب عرض السعر رقم ${quoteNumber} حسب المواصفات الموضحة أعلاه`;
   }
+  if(qty)  qty.value  = liftsCount;
+  if(unit) unit.value = priceBeforeVat.toFixed(2);
+
   recalcPricing();
 });
 </script>
 
 
+
 </body>
 </html>
+
 
 
 
