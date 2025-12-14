@@ -1060,48 +1060,15 @@ th {
   </div>
 </div>
 
-  <div class="section-title">سابعا ملخص القيمة المالية</div>
-<div class="before-vat-adjustment">
+<!-- ===============================
+  سابعا: ملخص القيمة المالية
+================================ -->
+<div class="section-title">سابعا: ملخص القيمة المالية</div>
 
-   <div class="section-title">٦-٢) ملخص عرض السعر والبنود</div>
-
-<table id="price-summary-table">
-  <thead>
-    <tr>
-      <th>✖</th>
-      <th>وصف البند</th>
-      <th>الكمية</th>
-      <th>سعر الوحدة (SAR)</th>
-      <th>الإجمالي (SAR)</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr class="price-row main-item">
-      <td></td>
-      <td>
-        <input type="text" id="mainItemDesc" readonly>
-      </td>
-      <td>
-        <input type="number" id="mainItemQty" readonly>
-      </td>
-      <td>
-        <input type="number" id="mainItemUnitPrice" readonly>
-      </td>
-      <td class="row-total" id="mainItemTotal">0.00</td>
-    </tr>
-  </tbody>
-</table>
-
-<div style="margin-top:8px">
-  <button onclick="addRow()">➕ إضافة بند</button>
-</div>
-
-
-  <div class="section-title">
-    ٦-١) تعديل السعر قبل الضريبة (اختياري)
-  </div>
-
- <div class="section-title">٦-٢) ملخص عرض السعر والبنود</div>
+<!-- ===============================
+  7-1) ملخص عرض السعر والبنود
+================================ -->
+<div class="section-title">7-1) ملخص عرض السعر والبنود</div>
 
 <table id="items-table">
   <thead>
@@ -1114,29 +1081,32 @@ th {
     </tr>
   </thead>
   <tbody>
-    <!-- بند افتراضي -->
-    <tr>
-      <td contenteditable="true">توريد وتركيب مصعد كهربائي حمولة 450 كجم</td>
-      <td><input type="number" value="1" min="1" class="qty"></td>
-      <td><input type="number" value="0" min="0" class="unit"></td>
-      <td class="row-total">0.00</td>
-      <td style="text-align:center">
-        <button onclick="removeRow(this)">✖</button>
-      </td>
-    </tr>
+    <!-- يتم التعبئة تلقائياً -->
   </tbody>
 </table>
 
 <div style="margin-top:8px">
-  <button onclick="addRow()">➕ إضافة بند</button>
+  <button type="button" onclick="addExtraRow()">➕ إضافة بند إضافي</button>
 </div>
 
+<!-- ===============================
+  7-2) تعديل السعر قبل الضريبة (اختياري)
+================================ -->
+<div class="section-title">7-2) تعديل السعر قبل الضريبة (اختياري)</div>
 
-</div>
+<select id="adjustmentType">
+  <option value="none">بدون تعديل</option>
+  <option value="discount">خصم</option>
+  <option value="increase">زيادة</option>
+</select>
 
+<input type="number" id="adjustmentValue" placeholder="أدخل المبلغ أو النسبة">
 
+<!-- ===============================
+  7-3) جدول الدفعات المقترح
+================================ -->
+<div class="section-title">7-3) جدول الدفعات المقترح</div>
 
-    <div class="section-title">٧) جدول الدفعات المقترح</div>
 <table>
   <thead>
     <tr>
@@ -1167,7 +1137,6 @@ th {
       <td class="bind_pay_5">—</td>
     </tr>
 
-    <!-- ✅ ملخص مالي تفصيلي -->
     <tr>
       <th>الإجمالي قبل التعديل (قبل الضريبة)</th>
       <th>—</th>
@@ -1201,7 +1170,6 @@ th {
     </tr>
   </tbody>
 </table>
-
 
     <div class="section-title">٨) بنود رئيسية للعقد (قابلة للتعديل)</div>
     <div class="terms editable" contenteditable="true">
@@ -1525,100 +1493,76 @@ function printWithName() {
 })();
 </script>
 
+
+<!-- ===============================
+  سكربت الربط والحساب
+================================ -->
 <script>
-function addRow() {
+(function initPriceSummary() {
+
+  const idx = localStorage.getItem('rkl_current_quote_index');
+  if (idx === null) return;
+
+  const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
+  const q = quotes[Number(idx)];
+  if (!q) return;
+
   const tbody = document.querySelector("#items-table tbody");
+  tbody.innerHTML = "";
+
+  const qty = Number(q.liftsCount || 1);
+  const totalWithVat = Number(q.totalWithVat || 0);
+  const vatRate = 0.15;
+  const subtotal = totalWithVat / (1 + vatRate);
+  const vat = totalWithVat - subtotal;
+  const unitPrice = subtotal / qty;
+
   const tr = document.createElement("tr");
   tr.innerHTML = `
-    <td contenteditable="true">بند جديد</td>
-    <td><input type="number" value="1" min="1" class="qty"></td>
-    <td><input type="number" value="0" min="0" class="unit"></td>
-    <td class="row-total">0.00</td>
-    <td style="text-align:center">
-      <button onclick="removeRow(this)">✖</button>
+    <td contenteditable="true">
+      توريد وتركيب وتشغيل مصعد كهربائي حسب عرض السعر رقم ${q.quoteNumber}
+      للمواصفات الموضحة أعلاه
     </td>
+    <td><input type="number" value="${qty}" readonly></td>
+    <td><input type="number" value="${unitPrice.toFixed(2)}" readonly></td>
+    <td class="row-total">${subtotal.toFixed(2)}</td>
+    <td></td>
   `;
   tbody.appendChild(tr);
-  recalcItems();
-}
 
-function removeRow(btn) {
-  btn.closest("tr").remove();
-  recalcItems();
-}
-
-function recalcItems() {
-  let subtotal = 0;
-
-  document.querySelectorAll("#items-table tbody tr").forEach(row => {
-    const qty  = Number(row.querySelector(".qty")?.value || 0);
-    const unit = Number(row.querySelector(".unit")?.value || 0);
-    const total = qty * unit;
-    row.querySelector(".row-total").textContent = total.toFixed(2);
-    subtotal += total;
-  });
-
-  const vatRate = 0.15;
-  const vat = subtotal * vatRate;
-  const finalTotal = subtotal + vat;
-
-  // ربط مع الملخص المالي الموجود عندك
+  // ربط القيم المالية
   bind('.bind_subtotal_before_vat', formatCurrency(subtotal));
   bind('.bind_adjustment_amount', formatCurrency(0));
   bind('.bind_subtotal_after_adjustment', formatCurrency(subtotal));
   bind('.bind_vat_amount', formatCurrency(vat));
-  bind('.bind_total_with_vat', formatCurrency(finalTotal));
+  bind('.bind_total_with_vat', formatCurrency(totalWithVat));
 
-  // جدول الدفعات
-  bind('.bind_pay_50', formatCurrency(finalTotal * 0.50));
-  bind('.bind_pay_25', formatCurrency(finalTotal * 0.25));
-  bind('.bind_pay_20', formatCurrency(finalTotal * 0.20));
-  bind('.bind_pay_5',  formatCurrency(finalTotal * 0.05));
+  bind('.bind_pay_50', formatCurrency(totalWithVat * 0.50));
+  bind('.bind_pay_25', formatCurrency(totalWithVat * 0.25));
+  bind('.bind_pay_20', formatCurrency(totalWithVat * 0.20));
+  bind('.bind_pay_5',  formatCurrency(totalWithVat * 0.05));
+
+})();
+
+function addExtraRow() {
+  const tbody = document.querySelector("#items-table tbody");
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td contenteditable="true">بند إضافي</td>
+    <td><input type="number" value="1" min="1"></td>
+    <td><input type="number" value="0" min="0"></td>
+    <td class="row-total">0.00</td>
+    <td style="text-align:center">
+      <button onclick="this.closest('tr').remove()">✖</button>
+    </td>
+  `;
+  tbody.appendChild(tr);
 }
-
-document.addEventListener("change", function (e) {
-  if (e.target.classList.contains("quote-check")) {
-    // إلغاء تحديد باقي العروض
-    document.querySelectorAll(".quote-check").forEach(c => {
-      if (c !== e.target) c.checked = false;
-    });
-
-    fillMainPriceItemFromSelectedQuote();
-  }
-});
-
-
-   function fillMainPriceItemFromSelectedQuote() {
-  const selected = document.querySelector(".quote-check:checked");
-  if (!selected) return;
-
-  const quotes = loadStoredQuotes();
-  const q = quotes[selected.dataset.index];
-  if (!q) return;
-
-  // 🔹 وصف البند
-  document.getElementById("mainItemDesc").value =
-    `توريد وتركيب وتشغيل مصعد كهربائي وفق عرض السعر رقم ${q.quoteNumber}`;
-
-  // 🔹 الكمية = عدد المصاعد
-  const qty = Number(q.liftsCount || 1);
-  document.getElementById("mainItemQty").value = qty;
-
-  // 🔹 سعر الوحدة (شامل الضريبة)
-  const unitPrice = Number(q.pricePerUnit || 0);
-  document.getElementById("mainItemUnitPrice").value = unitPrice.toFixed(2);
-
-  // 🔹 الإجمالي
-  const total = qty * unitPrice;
-  document.getElementById("mainItemTotal").innerText = total.toFixed(2);
-}
-
 </script>
-
-
 
 </body>
 </html>
+
 
 
 
