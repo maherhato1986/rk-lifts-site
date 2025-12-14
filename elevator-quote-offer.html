@@ -701,16 +701,15 @@ th {
 ================================================= -->
 <div class="section-title">ثالثاً: البيانات الفنية الرئيسية</div>
 
-<table class="data-table">
+<table class="info-table">
   <thead>
     <tr>
       <th style="width:40px">م</th>
-      <th style="width:35%">البند</th>
-      <th style="width:35%">القيمة</th>
+      <th>البند</th>
+      <th>القيمة</th>
       <th>ملاحظات</th>
     </tr>
   </thead>
-
   <tbody>
     <tr>
       <td>1</td>
@@ -721,79 +720,107 @@ th {
 
     <tr>
       <td>2</td>
+      <td>الاستخدام</td>
+      <td class="bind_usage">—</td>
+      <td>استنتاج تلقائي من اسم المشروع</td>
+    </tr>
+
+    <tr>
+      <td>3</td>
+      <td>بلد المنشأ</td>
+      <td class="bind_origin">—</td>
+      <td>حسب عرض المصنع</td>
+    </tr>
+
+    <tr>
+      <td>4</td>
       <td>الحمولة الاسمية (kg)</td>
       <td class="bind_capacity">—</td>
       <td>حسب عدد المستخدمين</td>
     </tr>
 
     <tr>
-      <td>3</td>
+      <td>5</td>
       <td>السرعة (m/s)</td>
       <td class="bind_speed">—</td>
       <td>تشغيل ناعم واقتصادي</td>
     </tr>
 
     <tr>
-      <td>4</td>
+      <td>6</td>
       <td>عدد التوقفات (Stops)</td>
       <td class="bind_floors">—</td>
       <td>حسب عدد الأدوار</td>
     </tr>
 
     <tr>
-      <td>5</td>
-      <td>عدد المصاعد</td>
+      <td>7</td>
+      <td>عدد المصاعد بهذه المواصفات</td>
       <td class="bind_lifts">—</td>
       <td>ضمن هذا العرض</td>
     </tr>
 
     <tr>
-      <td>6</td>
+      <td>8</td>
       <td>نوع الماكينة</td>
       <td class="bind_machine_type">—</td>
       <td>بدون غرفة ماكينة (MRL)</td>
     </tr>
 
     <tr>
-      <td>7</td>
+      <td>9</td>
       <td>تشطيب الكابينة الداخلي</td>
       <td class="bind_cabin_design">—</td>
       <td>قابل للتعديل حسب الطلب</td>
     </tr>
 
     <tr>
-      <td>8</td>
+      <td>10</td>
       <td>تشطيب أرضية الكابينة</td>
       <td class="bind_floor_finish">—</td>
       <td>جرانيت / رخام / PVC</td>
     </tr>
 
     <tr>
-      <td>9</td>
+      <td>11</td>
       <td>مقاس البئر (Shaft)</td>
       <td class="bind_dim_shaft">—</td>
       <td>حسب المخطط المعماري</td>
     </tr>
 
     <tr>
-      <td>10</td>
+      <td>12</td>
       <td>مقاس الكابينة (Cabin)</td>
       <td class="bind_dim_cabin">—</td>
       <td>مطابق لمعايير EN81</td>
     </tr>
 
     <tr>
-      <td>11</td>
+      <td>13</td>
       <td>عمق الحفرة (PIT)</td>
       <td class="bind_pit">—</td>
       <td>حسب المتطلبات الهندسية</td>
     </tr>
 
     <tr>
-      <td>12</td>
+      <td>14</td>
       <td>الارتفاع العلوي (OH)</td>
       <td class="bind_oh">—</td>
       <td>حسب التصميم المعتمد</td>
+    </tr>
+
+    <tr>
+      <td>15</td>
+      <td>ارتفاع الدور الواحد (FH)</td>
+      <td class="bind_floor_height">—</td>
+      <td>mm</td>
+    </tr>
+
+    <tr>
+      <td>16</td>
+      <td>ارتفاع الرحلة الكلي (TH)</td>
+      <td class="bind_travel_height">—</td>
+      <td>mm</td>
     </tr>
   </tbody>
 </table>
@@ -1217,13 +1244,25 @@ bind('.bind_capacity', q.capacity);
 bind('.bind_speed', q.speed);
 bind('.bind_floors', q.floors);
 bind('.bind_lifts', q.liftsCount);
+
 bind('.bind_machine_type', q.machineType);
 bind('.bind_cabin_design', q.cabinDesign);
 bind('.bind_floor_finish', q.floorFinish);
+
 bind('.bind_dim_shaft', q.shaftSize);
 bind('.bind_dim_cabin', q.cabinSize);
 bind('.bind_pit', q.pit);
 bind('.bind_oh', q.oh);
+
+bind('.bind_floor_height', q.floorHeight);
+bind('.bind_travel_height', q.travelHeight);
+
+/* استنتاج الاستخدام */
+bind('.bind_usage', inferUsage(q.projectName));
+
+/* استنتاج بلد المنشأ */
+bind('.bind_origin', inferOrigin(q.brandLabel));
+
 
 
 
@@ -1420,6 +1459,7 @@ function printWithName() {
 
 </body>
 </html>
+
 
 
 
