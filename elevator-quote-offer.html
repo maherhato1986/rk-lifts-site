@@ -367,27 +367,43 @@ th {
     break-inside: avoid;
   }
 
-  /* Watermark للطباعة فقط */
-  .page::before {
+  /* =========================================
+     Watermark من الصفحة 3 إلى آخر صفحة فقط
+  ========================================= */
+
+  /* الصفحات التي تبدأ من صفحة 3 */
+  .page.page-3,
+  .page.page-4,
+  .page.page-5,
+  .page.page-6 {
+    position: relative;
+  }
+
+  .page.page-3::before,
+  .page.page-4::before,
+  .page.page-5::before,
+  .page.page-6::before {
     content: "";
     position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 380px;
-    height: 380px;
-    background: url("/public/images/logo.png") no-repeat center;
+    inset: 0;
 
-    background-size: contain;
-    opacity: 0.04;
-    transform: translate(-50%, -50%);
+    background-image: url("/public/images/rkl_backgr1.png");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 70% auto;
+
+    opacity: 0.06;   /* شفافية احترافية للطباعة */
     z-index: 0;
   }
 
-  .page > * {
+  .page.page-3 > *,
+  .page.page-4 > *,
+  .page.page-5 > *,
+  .page.page-6 > * {
     position: relative;
     z-index: 1;
   }
-}
+
 </style>
 
 
@@ -501,7 +517,7 @@ th {
 
 
 
-    <div class="page-index">Page 1</div>
+    <div class="page page-3">
 </div>
 
     <!-- ================= Page 2: RKL Coverage ================= -->
@@ -674,7 +690,7 @@ th {
 
 </div>
 
-  <div class="page-index">Page 2</div>
+  <div class="page page-4">
 </div>
 
 
@@ -758,7 +774,7 @@ th {
 </table>
 
 
-    <div class="page-index">Page 3</div>
+    <div class="page page-5">
 </div>
 <!-- ================= صفحة 4: مخطط استرشادي هندسي ================= -->
 <div class="page">
@@ -913,7 +929,7 @@ th {
 
    
 
-  <div class="page-index">Page 4</div>
+  <div class="page page-6">
 </div>
 
 <!-- ================= صفحة 5: ميزات الأمان + مخطط المقاسات ================= -->
@@ -1039,7 +1055,7 @@ th {
 </p>
 
 
-<div class="page-index">Page 5</div>
+<div class="page page-7">
 </div>
 
 
@@ -1596,6 +1612,7 @@ window.addEventListener('load', () => {
 
 </body>
 </html>
+
 
 
 
