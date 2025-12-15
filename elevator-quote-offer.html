@@ -229,6 +229,75 @@ th {
 }
 
 
+@media print {
+
+  @page { size: A4; margin: 15mm; }
+
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* كل div.page = ورقة مستقلة */
+  .page{
+    width: 210mm !important;
+    height: 297mm !important;
+    box-sizing: border-box !important;
+
+    margin: 0 !important;
+    padding: 15mm !important;
+
+    page-break-before: always !important;
+    page-break-after: always !important;
+    break-before: page !important;
+    break-after: page !important;
+
+    overflow: hidden !important; /* يمنع تداخل المحتوى مع الصفحة التالية */
+    position: relative !important;
+
+    display: block !important;   /* ممنوع Flex في الطباعة */
+  }
+
+  .page:first-child{
+    page-break-before: auto !important;
+    break-before: auto !important;
+  }
+
+  /* الأغلفة */
+  .pdf-cover{ padding: 0 !important; }
+  .pdf-cover img, .fixed-pdf-img{
+    width: 210mm !important;
+    height: 297mm !important;
+    object-fit: cover !important;
+    display: block !important;
+  }
+
+  /* الجداول: اسمح بالانقسام الطبيعي (لمنع تمدد يكسّر الصفحة) */
+  table{ break-inside: auto !important; page-break-inside: auto !important; }
+  thead{ display: table-header-group !important; }
+  tfoot{ display: table-footer-group !important; }
+  tr{ break-inside: avoid !important; page-break-inside: avoid !important; }
+
+  /* علاج عناصر inline flex/grid التي تسبب تمدد وتداخل */
+  div[style*="display:flex"],
+  div[style*="display: flex"],
+  div[style*="display:grid"],
+  div[style*="display: grid"]{
+    display: block !important;
+    width: auto !important;
+  }
+
+  /* أي عنصر معمول له width:50% داخل الصفحة بالطباعة نخليه كامل */
+  [style*="width:50%"], [style*="width: 50%"]{
+    width: auto !important;
+  }
+
+  /* أخفي زر الطباعة */
+  .btn-print{ display: none !important; }
+}
 
 
 
@@ -1543,6 +1612,7 @@ window.addEventListener('load', () => {
 
 </body>
 </html>
+
 
 
 
