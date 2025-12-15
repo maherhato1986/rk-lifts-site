@@ -3,6 +3,14 @@
 <head>
    
 <style>
+
+   @media print {
+  * {
+    float: none !important;
+    position: static !important;
+  }
+}
+
 /* =================================================
    Editable
 ================================================= */
@@ -151,19 +159,13 @@ th {
   cursor: pointer;
 }
 
-.page-index {
-  position: absolute;
-  left: 35px;
-  bottom: 8px;
-  font-size: 11px;
-  color: #9ca3af;
-}
+
 
 @media print {
 
   @page {
     size: A4;
-    margin: 18mm 15mm;
+    margin: 15mm;
   }
 
   body {
@@ -174,67 +176,58 @@ th {
     print-color-adjust: exact;
   }
 
-  /* ===== الصفحة الأساسية ===== */
+  /* كل صفحة = ورقة */
   .page {
     width: 100%;
-    min-height: auto;          /* ❗ مهم */
-    page-break-after: always;  /* فقط هذا */
+    height: 297mm;
+    box-sizing: border-box;
+
+    page-break-after: always;
     break-after: page;
 
-    display: block;            /* ❗ لا Flex */
-    box-shadow: none !important;
-    margin: 0 !important;
-    padding: 20mm 15mm;
+    padding: 15mm;
+    margin: 0;
+
+    display: block;
   }
 
   .page:last-child {
     page-break-after: auto;
   }
 
-  /* ===== الأغلفة ===== */
+  /* الغلاف */
   .pdf-cover {
     padding: 0 !important;
   }
 
   .pdf-cover img {
     width: 100%;
-    height: 297mm;     /* ❗ A4 مضبوط */
+    height: 297mm;
     object-fit: cover;
     display: block;
   }
 
-  /* ===== منع الانقسام العشوائي ===== */
-  h1, h2, h3, h4,
-  .section-title,
-  .page-header {
-    page-break-after: avoid;
-    break-after: avoid;
-  }
-
+  /* الجداول */
   table {
-    page-break-inside: auto;   /* ❗ اسمح بالانقسام */
-    break-inside: auto;
+    width: 100%;
+    border-collapse: collapse;
+    page-break-inside: auto;
   }
 
   tr {
     page-break-inside: avoid;
-    break-inside: avoid;
   }
 
   thead {
     display: table-header-group;
   }
 
-  tfoot {
-    display: table-footer-group;
-  }
-
+  /* امنع أي تعويم */
   img, svg {
     max-width: 100%;
-    page-break-inside: avoid;
   }
-
 }
+
 
 
 
@@ -1550,6 +1543,7 @@ window.addEventListener('load', () => {
 
 </body>
 </html>
+
 
 
 
