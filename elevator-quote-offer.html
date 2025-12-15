@@ -3,30 +3,31 @@
 <head>
    
 <style>
-
-   /* ===============================
-   HEADER – موحد لكل الصفحات
+/* ===============================
+   HEADER (Final – Print Safe)
 =============================== */
 .page-header {
-  display: grid;
-  grid-template-columns: 60px 1fr 140px;
-  align-items: center;
-  column-gap: 10px;
+  position: relative;
+  min-height: 70px;
+  margin-bottom: 14px;
+  padding-top: 6px;
   border-bottom: 1.5px solid #e5e7eb;
-  padding-bottom: 6px;
-  margin-bottom: 12px;
   font-size: 11px;
 }
 
-/* الشعار */
-.header-logo img {
-  width: 48px;
+/* الشعار – ثابت لا يتحرك */
+.header-logo {
+  position: absolute;
+  top: 6px;
+  left: 0;
+  width: 42px;
   height: auto;
 }
 
-/* وسط الترويسة */
-.header-center {
+/* النص بالمنتصف */
+.header-text {
   text-align: center;
+  padding: 0 90px; /* مساحة للشعار + بيانات العرض */
   line-height: 1.4;
 }
 
@@ -40,86 +41,27 @@
   color: #6b7280;
 }
 
-/* بيانات العرض */
+/* رقم وتاريخ العرض */
 .header-meta {
-  text-align: left;
+  position: absolute;
+  top: 6px;
+  right: 0;
+  text-align: right;
   font-size: 11px;
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
-/* ===============================
-   الطباعة – منع التداخل نهائيًا
-=============================== */
 @media print {
-
-  @page {
-    size: A4;
-    margin: 0;
-  }
-
-  html, body {
-    margin: 0 !important;
-    padding: 0 !important;
-    background: #fff !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
   .page {
-    width: 210mm;
-    min-height: 297mm;
-    padding: 15mm;
-    box-sizing: border-box;
-    page-break-after: always;
-    break-after: page;
+    position: relative;
     overflow: hidden;
   }
 
-  .page:last-child {
-    page-break-after: auto;
-  }
-
-  /* الترويسة لا تنكسر */
   .page-header {
     break-inside: avoid;
-    page-break-inside: avoid;
-  }
-
-  table, tr, td, th {
-    break-inside: avoid;
-    page-break-inside: avoid;
-  }
-
-  thead {
-    display: table-header-group;
-  }
-
-  /* إخفاء زر الطباعة */
-  .btn-print {
-    display: none !important;
   }
 }
 
-/* =================================================
-   إعدادات عامة (عرض الشاشة فقط)
-================================================= */
-body {
-  font-family: "Cairo", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: #f3f4f6;
-  margin: 0;
-  padding: 20px;
-  color: #111827;
-}
-
-/* الصفحة في العرض */
-.page {
-  max-width: 900px;
-  margin: 0 auto;
-  background: #fff;
-  padding: 20px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
-  box-sizing: border-box;
-}
 
 /* =================================================
    Editable
@@ -355,14 +297,11 @@ th {
 <!-- ================= صفحة 1: تعريف RKL + ملف العميل ================= -->
 <!-- ===== Header ===== -->
 <div class="page-header">
-  
-  <!-- الشعار -->
-  <div class="header-logo">
-    <img src="/public/images/logo.png" alt="RKL Logo">
-  </div>
 
-  <!-- بيانات الشركة -->
-  <div class="header-center">
+  <!-- شعار ثابت -->
+  <img src="/public/images/logo.png" class="header-logo" alt="RKL Logo">
+
+  <div class="header-text">
     <div class="company-name">RKL للمصاعد والسلالم الكهربائية</div>
     <div class="company-sub">
       السجل التجاري: 1010709355 – الرقم الضريبي: 302250422600003<br>
@@ -370,13 +309,13 @@ th {
     </div>
   </div>
 
-  <!-- رقم وتاريخ العرض -->
   <div class="header-meta">
-    <div>رقم العرض:<br><strong class="bind_quote_number">—</strong></div>
-    <div>تاريخ العرض:<br><strong class="bind_offer_date">—</strong></div>
+    رقم العرض: <strong class="bind_quote_number">—</strong><br>
+    تاريخ العرض: <strong class="bind_offer_date">—</strong>
   </div>
 
 </div>
+
 
 
 
@@ -517,16 +456,12 @@ th {
 <!-- ================= End Page ================= -->
 
     <!-- ================= Page 2: RKL Coverage ================= -->
-<!-- ===== Header ===== -->
 <div class="page-header">
-  
-  <!-- الشعار -->
-  <div class="header-logo">
-    <img src="/public/images/logo.png" alt="RKL Logo">
-  </div>
 
-  <!-- بيانات الشركة -->
-  <div class="header-center">
+  <!-- شعار ثابت -->
+  <img src="/public/images/logo.png" class="header-logo" alt="RKL Logo">
+
+  <div class="header-text">
     <div class="company-name">RKL للمصاعد والسلالم الكهربائية</div>
     <div class="company-sub">
       السجل التجاري: 1010709355 – الرقم الضريبي: 302250422600003<br>
@@ -534,13 +469,13 @@ th {
     </div>
   </div>
 
-  <!-- رقم وتاريخ العرض -->
   <div class="header-meta">
-    <div>رقم العرض:<br><strong class="bind_quote_number">—</strong></div>
-    <div>تاريخ العرض:<br><strong class="bind_offer_date">—</strong></div>
+    رقم العرض: <strong class="bind_quote_number">—</strong><br>
+    تاريخ العرض: <strong class="bind_offer_date">—</strong>
   </div>
 
 </div>
+
 
 
 
@@ -704,14 +639,11 @@ th {
 <!-- ================= صفحة 3: المواصفات الفنية العامة ================= -->
 <!-- ===== Header ===== -->
 <div class="page-header">
-  
-  <!-- الشعار -->
-  <div class="header-logo">
-    <img src="/public/images/logo.png" alt="RKL Logo">
-  </div>
 
-  <!-- بيانات الشركة -->
-  <div class="header-center">
+  <!-- شعار ثابت -->
+  <img src="/public/images/logo.png" class="header-logo" alt="RKL Logo">
+
+  <div class="header-text">
     <div class="company-name">RKL للمصاعد والسلالم الكهربائية</div>
     <div class="company-sub">
       السجل التجاري: 1010709355 – الرقم الضريبي: 302250422600003<br>
@@ -719,13 +651,13 @@ th {
     </div>
   </div>
 
-  <!-- رقم وتاريخ العرض -->
   <div class="header-meta">
-    <div>رقم العرض:<br><strong class="bind_quote_number">—</strong></div>
-    <div>تاريخ العرض:<br><strong class="bind_offer_date">—</strong></div>
+    رقم العرض: <strong class="bind_quote_number">—</strong><br>
+    تاريخ العرض: <strong class="bind_offer_date">—</strong>
   </div>
 
 </div>
+
 
 
 
@@ -795,16 +727,12 @@ th {
   
 </div>
 <!-- ================= صفحة 4: مخطط استرشادي هندسي ================= -->
-<!-- ===== Header ===== -->
 <div class="page-header">
-  
-  <!-- الشعار -->
-  <div class="header-logo">
-    <img src="/public/images/logo.png" alt="RKL Logo">
-  </div>
 
-  <!-- بيانات الشركة -->
-  <div class="header-center">
+  <!-- شعار ثابت -->
+  <img src="/public/images/logo.png" class="header-logo" alt="RKL Logo">
+
+  <div class="header-text">
     <div class="company-name">RKL للمصاعد والسلالم الكهربائية</div>
     <div class="company-sub">
       السجل التجاري: 1010709355 – الرقم الضريبي: 302250422600003<br>
@@ -812,13 +740,13 @@ th {
     </div>
   </div>
 
-  <!-- رقم وتاريخ العرض -->
   <div class="header-meta">
-    <div>رقم العرض:<br><strong class="bind_quote_number">—</strong></div>
-    <div>تاريخ العرض:<br><strong class="bind_offer_date">—</strong></div>
+    رقم العرض: <strong class="bind_quote_number">—</strong><br>
+    تاريخ العرض: <strong class="bind_offer_date">—</strong>
   </div>
 
 </div>
+
 
 
 
@@ -961,16 +889,12 @@ th {
 </div>
 
 <!-- ================= صفحة 5: ميزات الأمان + مخطط المقاسات ================= -->
-<!-- ===== Header ===== -->
 <div class="page-header">
-  
-  <!-- الشعار -->
-  <div class="header-logo">
-    <img src="/public/images/logo.png" alt="RKL Logo">
-  </div>
 
-  <!-- بيانات الشركة -->
-  <div class="header-center">
+  <!-- شعار ثابت -->
+  <img src="/public/images/logo.png" class="header-logo" alt="RKL Logo">
+
+  <div class="header-text">
     <div class="company-name">RKL للمصاعد والسلالم الكهربائية</div>
     <div class="company-sub">
       السجل التجاري: 1010709355 – الرقم الضريبي: 302250422600003<br>
@@ -978,10 +902,9 @@ th {
     </div>
   </div>
 
-  <!-- رقم وتاريخ العرض -->
   <div class="header-meta">
-    <div>رقم العرض:<br><strong class="bind_quote_number">—</strong></div>
-    <div>تاريخ العرض:<br><strong class="bind_offer_date">—</strong></div>
+    رقم العرض: <strong class="bind_quote_number">—</strong><br>
+    تاريخ العرض: <strong class="bind_offer_date">—</strong>
   </div>
 
 </div>
@@ -1099,16 +1022,12 @@ th {
 
 
 <!-- ================= صفحة 6: القيمة المالية + الدفعات + البنود ================= -->
-<!-- ===== Header ===== -->
 <div class="page-header">
-  
-  <!-- الشعار -->
-  <div class="header-logo">
-    <img src="/public/images/logo.png" alt="RKL Logo">
-  </div>
 
-  <!-- بيانات الشركة -->
-  <div class="header-center">
+  <!-- شعار ثابت -->
+  <img src="/public/images/logo.png" class="header-logo" alt="RKL Logo">
+
+  <div class="header-text">
     <div class="company-name">RKL للمصاعد والسلالم الكهربائية</div>
     <div class="company-sub">
       السجل التجاري: 1010709355 – الرقم الضريبي: 302250422600003<br>
@@ -1116,13 +1035,13 @@ th {
     </div>
   </div>
 
-  <!-- رقم وتاريخ العرض -->
   <div class="header-meta">
-    <div>رقم العرض:<br><strong class="bind_quote_number">—</strong></div>
-    <div>تاريخ العرض:<br><strong class="bind_offer_date">—</strong></div>
+    رقم العرض: <strong class="bind_quote_number">—</strong><br>
+    تاريخ العرض: <strong class="bind_offer_date">—</strong>
   </div>
 
 </div>
+
 
 
 
@@ -1711,6 +1630,7 @@ window.addEventListener('load', () => {
 
 </body>
 </html>
+
 
 
 
