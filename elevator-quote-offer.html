@@ -4,6 +4,102 @@
    
 <style>
 
+   /* ===============================
+   HEADER – موحد لكل الصفحات
+=============================== */
+.page-header {
+  display: grid;
+  grid-template-columns: 60px 1fr 140px;
+  align-items: center;
+  column-gap: 10px;
+  border-bottom: 1.5px solid #e5e7eb;
+  padding-bottom: 6px;
+  margin-bottom: 12px;
+  font-size: 11px;
+}
+
+/* الشعار */
+.header-logo img {
+  width: 48px;
+  height: auto;
+}
+
+/* وسط الترويسة */
+.header-center {
+  text-align: center;
+  line-height: 1.4;
+}
+
+.company-name {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.company-sub {
+  font-size: 10px;
+  color: #6b7280;
+}
+
+/* بيانات العرض */
+.header-meta {
+  text-align: left;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+/* ===============================
+   الطباعة – منع التداخل نهائيًا
+=============================== */
+@media print {
+
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 15mm;
+    box-sizing: border-box;
+    page-break-after: always;
+    break-after: page;
+    overflow: hidden;
+  }
+
+  .page:last-child {
+    page-break-after: auto;
+  }
+
+  /* الترويسة لا تنكسر */
+  .page-header {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  table, tr, td, th {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  /* إخفاء زر الطباعة */
+  .btn-print {
+    display: none !important;
+  }
+}
+
 /* =================================================
    إعدادات عامة (عرض الشاشة فقط)
 ================================================= */
@@ -1615,6 +1711,7 @@ window.addEventListener('load', () => {
 
 </body>
 </html>
+
 
 
 
