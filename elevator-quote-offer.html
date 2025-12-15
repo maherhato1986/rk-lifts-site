@@ -1106,10 +1106,15 @@ th {
 /* =================================================
    Helper: bind text safely
 ================================================= */
-const bind = (selector, value) => {
-  const el = document.querySelector(selector);
-  if (el) el.textContent = (value !== undefined && value !== null && value !== '') ? value : '—';
+const bindAll = (selector, value) => {
+  document.querySelectorAll(selector).forEach(el => {
+    el.textContent =
+      (value !== undefined && value !== null && value !== '')
+        ? value
+        : '—';
+  });
 };
+
 
 /* =================================================
    تحميل عرض السعر من LocalStorage
@@ -1125,8 +1130,9 @@ if (!q) {
 /* =================================================
    (1) بيانات العرض العامة
 ================================================= */
-bind('.bind_quote_number', q.quoteNumber);
-bind('.bind_offer_date', q.timestamp?.slice(0, 10));
+bindAll('.bind_quote_number', q.quoteNumber);
+bindAll('.bind_offer_date', q.timestamp?.slice(0, 10));
+
 
 /* =================================================
    (2) بيانات العميل
@@ -1376,8 +1382,8 @@ function printWithName() {
   /* ===============================
      Page 1 + Headers
   =============================== */
-  bind('.bind_quote_number', q.quoteNumber);
-  bind('.bind_offer_date', q.timestamp?.slice(0,10));
+
+
   bind('.bind_customer_name', q.customerName);
   bind('.bind_project_name', q.projectName);
   bind('.bind_project_location', q.projectLocation);
@@ -1560,6 +1566,7 @@ window.addEventListener('load', () => {
 
 </body>
 </html>
+
 
 
 
