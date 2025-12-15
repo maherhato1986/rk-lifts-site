@@ -29,13 +29,7 @@ body[contenteditable="true"] { cursor: text; }
   display: block;
   margin: 0 auto;
 }
-   @media print {
-
-  .page:not(.page-3):not(.page-4):not(.page-5):not(.page-6) .watermark {
-    display: none;
-  }
-
-}
+   
 
 /* =================================================
    العرض على الشاشة
@@ -50,12 +44,9 @@ body {
 
 .page {
   max-width: 900px;
-  margin: 0 auto 30px;
-  background: #fff;
-  padding: 25px 35px;
-  position: relative;
-  box-shadow: 0 0 8px rgba(15,23,42,0.08);
+  margin: 0 auto;
 }
+
 
 /* =================================================
    Header
@@ -172,56 +163,79 @@ th {
 
   @page {
     size: A4;
-    margin: 20mm 15mm;
+    margin: 18mm 15mm;
   }
 
   body {
     margin: 0;
     padding: 0;
     background: #fff;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
-  /* كل صفحة مستقلة تمامًا */
+  /* ===== الصفحة الأساسية ===== */
   .page {
-    page-break-before: always;
-    page-break-after: always;
-    break-before: page;
+    width: 100%;
+    min-height: auto;          /* ❗ مهم */
+    page-break-after: always;  /* فقط هذا */
     break-after: page;
 
-    width: 100%;
-    min-height: 297mm;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-
+    display: block;            /* ❗ لا Flex */
     box-shadow: none !important;
     margin: 0 !important;
+    padding: 20mm 15mm;
   }
 
-  /* الصفحة الأولى لا تبدأ بكسر قبلها */
-  .page:first-child {
-    page-break-before: auto;
-    break-before: auto;
+  .page:last-child {
+    page-break-after: auto;
   }
 
-  /* منع أي عنصر من الانقسام بين صفحتين */
-  table,
-  thead,
-  tbody,
-  tr,
-  td,
-  th,
-  img,
-  svg,
-  .diagram-container {
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
+  /* ===== الأغلفة ===== */
+  .pdf-cover {
+    padding: 0 !important;
+  }
+
+  .pdf-cover img {
+    width: 100%;
+    height: 297mm;     /* ❗ A4 مضبوط */
+    object-fit: cover;
+    display: block;
+  }
+
+  /* ===== منع الانقسام العشوائي ===== */
+  h1, h2, h3, h4,
+  .section-title,
+  .page-header {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  table {
+    page-break-inside: auto;   /* ❗ اسمح بالانقسام */
+    break-inside: auto;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tfoot {
+    display: table-footer-group;
+  }
+
+  img, svg {
+    max-width: 100%;
+    page-break-inside: avoid;
   }
 
 }
+
 
 
 
@@ -1536,6 +1550,7 @@ window.addEventListener('load', () => {
 
 </body>
 </html>
+
 
 
 
