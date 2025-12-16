@@ -3,27 +3,19 @@
 <head>
    
 <style>
-
-/* =================================================
-   Editable (للتحرير داخل المتصفح)
-================================================= */
-body[contenteditable="true"] { cursor: text; }
-[contenteditable="true"]:focus { outline: none; }
-.editable-highlight:hover { background: rgba(59,130,246,0.06); }
-
-/* =================================================
-   PAGE HEADER (Final – موحد)
-================================================= */
+/* ===============================
+   HEADER (Final – Print Safe)
+=============================== */
 .page-header {
   position: relative;
-  min-height: 85px;
-  margin-bottom: 20px;
-  padding-top: 8px;
+  min-height: 70px;
+  margin-bottom: 14px;
+  padding-top: 6px;
   border-bottom: 1.5px solid #e5e7eb;
   font-size: 11px;
 }
 
-/* الشعار */
+/* الشعار – ثابت لا يتحرك */
 .header-logo {
   position: absolute;
   top: 6px;
@@ -32,10 +24,10 @@ body[contenteditable="true"] { cursor: text; }
   height: auto;
 }
 
-/* النص الأوسط */
+/* النص بالمنتصف */
 .header-text {
   text-align: center;
-  padding: 0 90px;
+  padding: 0 90px; /* مساحة للشعار + بيانات العرض */
   line-height: 1.4;
 }
 
@@ -59,14 +51,46 @@ body[contenteditable="true"] { cursor: text; }
   line-height: 1.5;
 }
 
+@media print {
+  .page {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .page-header {
+    break-inside: avoid;
+  }
+}
+
+
 /* =================================================
-   PAGE FOOTER
+   Editable
 ================================================= */
-.page-footer {
-  margin-top: 18px;
-  font-size: 10px;
-  color: #4b5563;
-  text-align: center;
+body[contenteditable="true"] { cursor: text; }
+[contenteditable="true"]:focus { outline: none; }
+.editable-highlight:hover { background: rgba(59,130,246,0.06); }
+
+/* =================================================
+   Header
+================================================= */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+  font-size: 12px;
+}
+
+.header-left { text-align: right; }
+.header-right { text-align: left; }
+
+.logo-title { font-weight: 700; font-size: 18px; }
+.logo-sub {
+  font-size: 11px;
+  color: #6b7280;
+  line-height: 1.5;
 }
 
 /* =================================================
@@ -81,13 +105,13 @@ h1.main-title {
 .section-title {
   font-weight: 700;
   font-size: 14px;
-  margin: 22px 0 10px;
+  margin: 18px 0 8px;
   border-right: 4px solid #2563eb;
   padding-right: 6px;
 }
 
 /* =================================================
-   الجداول
+   الجداول (عرض الشاشة)
 ================================================= */
 table {
   width: 100%;
@@ -106,7 +130,7 @@ th {
   font-weight: 600;
 }
 
-.spec-table th { width: 22%; }
+.spec-table th { width: 22%; background: #f8fafc; }
 .spec-table td { width: 28%; }
 
 /* =================================================
@@ -138,7 +162,6 @@ th {
 
 .fixed-pdf-img {
   width: 100%;
-  height: auto;
   display: block;
 }
 
@@ -151,13 +174,6 @@ th {
   object-fit: contain;
   display: block;
   margin: 0 auto;
-}
-
-/* =================================================
-   مخطط EN81
-================================================= */
-.diagram-container {
-  margin: 20px 0;
 }
 
 /* =================================================
@@ -176,14 +192,15 @@ th {
 }
 
 /* =================================================
-   ================== PRINT ==================
+   ================== الطباعة ==================
 ================================================= */
 @media print {
 
-  @page {
-    size: A4;
-    margin: 0;
-  }
+ @page {
+  size: A4;
+  margin: 0;
+}
+
 
   html, body {
     margin: 0 !important;
@@ -193,34 +210,45 @@ th {
     print-color-adjust: exact !important;
   }
 
-  /* كل صفحة = ورقة مستقلة */
+  /* كل صفحة = ورقة A4 مستقلة */
   .page {
     width: 210mm !important;
     min-height: 297mm !important;
+    margin: 0 !important;
     padding: 15mm !important;
     box-sizing: border-box !important;
 
     page-break-after: always !important;
     break-after: page !important;
 
+    display: block !important;
     position: relative !important;
     overflow: hidden !important;
+
+    box-shadow: none !important;
   }
 
   .page:last-child {
     page-break-after: auto !important;
   }
 
-  /* منع كسر الهيدر */
-  .page-header {
-    break-inside: avoid !important;
-    page-break-inside: avoid !important;
+  /* الغلاف */
+  .pdf-cover {
+    padding: 0 !important;
   }
 
-  /* الجداول */
-  table td, table th {
-    padding: 5px 6px;
-    font-size: 10.5px;
+  .pdf-cover img,
+  .fixed-pdf-img {
+    width: 210mm !important;
+    height: 297mm !important;
+    object-fit: cover !important;
+    display: block !important;
+  }
+
+  /* الجداول – السماح بالكسر الطبيعي */
+  table {
+    page-break-inside: auto !important;
+    break-inside: auto !important;
   }
 
   thead {
@@ -228,20 +256,13 @@ th {
   }
 
   tr {
-    break-inside: avoid !important;
     page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 
-  /* الغلاف */
-  .pdf-cover img,
-  .fixed-pdf-img {
-    width: 210mm !important;
-    height: 297mm !important;
-    object-fit: cover !important;
-  }
-
-  /* إلغاء grid/flex في الطباعة */
+  /* إلغاء grid / flex في الطباعة */
   .two-col,
+  .page-header,
   .partners-logos {
     display: block !important;
   }
@@ -253,7 +274,6 @@ th {
 }
 
 </style>
-
 
 
 </head>
@@ -1626,128 +1646,5 @@ window.addEventListener('load', () => {
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
