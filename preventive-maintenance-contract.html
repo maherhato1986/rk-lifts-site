@@ -448,38 +448,7 @@ function saveAndPrintContract(){
   openPrintView(contract);
 }
 
-function generateFullContractText(){
-  return `
-عقد صيانة وقائية للمصاعد
 
-بتوفيق من الله تم الاتفاق بتاريخ ${document.getElementById('contractDate').value} بين كل من:
-
-الطرف الأول:
-مؤسسة آر كي ال RKL للمصاعد والسلالم الكهربائية
-سجل تجاري رقم 1010709355
-
-الطرف الثاني:
-${customer.customer_name}
-رقم الجوال: ${customer.mobile}
-العنوان: ${customer.city}
-
-مقدمة العقد:
-بناءً على رغبة الطرف الثاني بصيانة عدد (${document.getElementById('lifts').value}) مصعد،
-فقد تم الاتفاق على ما يلي:
-
-1- يلتزم الطرف الأول بتقديم الصيانة الدورية مرة كل شهر.
-2- تشمل الصيانة الفحص والتشحيم والتنظيف وفحص أنظمة الأمان.
-3- لا تشمل الصيانة قطع الغيار.
-4- قيمة العقد حسب الجدول المتفق عليه.
-5- يخضع هذا العقد لأنظمة المملكة العربية السعودية.
-
-الطرف الأول: مؤسسة آر كي ال
-التوقيع: ___________
-
-الطرف الثاني: ${customer.customer_name}
-التوقيع: ___________
-`;
-}
 function openPrintView(contract){
   const w = window.open('', '_blank');
   w.document.write(`
