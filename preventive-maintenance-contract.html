@@ -178,7 +178,8 @@ button:disabled{background:#9ca3af;cursor:not-allowed}
 
 <label style="margin-top:15px">ملاحظات إضافية</label>
 <textarea id="notes"></textarea>
-<button onclick="saveAndPrintContract()">💾 حفظ وطباعة العقد</button>
+<button onclick="saveContract()">💾 حفظ العقد</button>
+
 
 </div>
 
@@ -383,15 +384,13 @@ function calculateTotal(){
     total: subtotal + vat
   };
 }
-function saveAndPrintContract(){
+function saveContract(){
 
-  // تحقق مبدئي
   if(!customer){
     alert('بيانات العميل غير موجودة');
     return;
   }
 
-  // تحقق من الحقول الإلزامية
   const required = ['lang','contractDate','lifts','capacity','floors'];
   for(const id of required){
     if(!document.getElementById(id).value){
@@ -400,10 +399,8 @@ function saveAndPrintContract(){
     }
   }
 
-  // حساب السعر
   const calc = calculateTotal();
 
-  // إنشاء العقد
   const contract = {
     id: 'PMC-' + Date.now(),
     customer: customer.customer_name,
@@ -414,7 +411,6 @@ function saveAndPrintContract(){
     content: generateFullContractText()
   };
 
-  // حفظ في LocalStorage
   const contracts = JSON.parse(
     localStorage.getItem('rkl_maintenance_contracts') || '[]'
   );
@@ -425,12 +421,11 @@ function saveAndPrintContract(){
     JSON.stringify(contracts)
   );
 
-  // تحديث الجدول
   renderContractsTable();
 
-  // فتح الطباعة
-  openPrintView(contract);
+  alert('✅ تم حفظ العقد بنجاح، يمكنك طباعته من الجدول بالأسفل');
 }
+
 
 function openPrintView(contract){
   const w = window.open('', '_blank');
