@@ -362,14 +362,40 @@
 
         customers.forEach((c, index) => {
             const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${index + 1}</td>
-                <td>${c.customer_name || ''}</td>
-                <td>${c.city || ''}</td>
-                <td>${c.mobile || ''}</td>
-                <td><span class="badge">${c.customer_type === 'company' ? 'شركة' : 'فرد'}</span></td>
-                <td><button class="btn btn-secondary btn-sm" data-index="${index}">تعديل</button></td>
-            `;
+           tr.innerHTML = `
+  <td>${index + 1}</td>
+  <td>${c.customer_name || ''}</td>
+  <td>${c.city || ''}</td>
+  <td>${c.mobile || ''}</td>
+  <td>
+    <span class="badge">
+      ${c.customer_type === 'company' ? 'شركة' : 'فرد'}
+    </span>
+  </td>
+
+  <td>
+    <button class="btn btn-secondary btn-sm"
+            data-index="${index}"
+            data-action="edit">
+      تعديل
+    </button>
+  </td>
+
+  <td style="display:flex;gap:6px;justify-content:center">
+    <button class="btn btn-primary btn-sm"
+            data-index="${index}"
+            data-action="maintenance">
+      عقد صيانة
+    </button>
+
+    <button class="btn btn-warning btn-sm"
+            data-index="${index}"
+            data-action="quote">
+      عرض سعر
+    </button>
+  </td>
+`;
+
             tbody.appendChild(tr);
         });
     }
@@ -441,14 +467,45 @@
     });
 
     // تعديل عميل من الجدول
-    document.querySelector('#customers-table').addEventListener('click', function (e) {
-        if (e.target.matches('button[data-index]')) {
-            const index = Number(e.target.getAttribute('data-index'));
-            const customers = loadCustomers();
-            fillFormFromCustomer(customers[index], index);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    });
+    document
+  .querySelector('#customers-table')
+  .addEventListener('click', function (e) {
+
+    const btn = e.target;
+    const index = btn.getAttribute('data-index');
+    const action = btn.getAttribute('data-action');
+
+    if(index === null || !action) return;
+
+    const customers = loadCustomers();
+    const customer = customers[Number(index)];
+
+    // تعديل العميل
+    if(action === 'edit'){
+      fillFormFromCustomer(customer, Number(index));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    // حفظ العميل المختار
+    localStorage.setItem(
+      'rkl_selected_customer',
+      JSON.stringify(customer)
+    );
+
+    // عقد صيانة وقائية
+    if(action === 'maintenance'){
+      window.location.href =
+        '/preventive-maintenance-contract.html';
+    }
+
+    // عرض سعر توريد مصاعد
+    if(action === 'quote'){
+      window.location.href =
+        '/elevator-quote.html';
+    }
+});
+
 
     // تصدير إلى CSV (يُفتح في Excel)
     document.getElementById('export-btn').addEventListener('click', function () {
@@ -529,3 +586,4 @@
     // عند تحميل الصفحة لأول مرة: عرض العملاء الموجودين (إن وجدوا)
     renderTable();
 </script>
+
