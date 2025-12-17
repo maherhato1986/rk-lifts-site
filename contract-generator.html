@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>عقد صيانة وقائية للمصاعد</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body{
+  font-family: "Cairo", Arial, sans-serif;
+  background:#f3f4f6;
+  margin:0;
+}
+.container{
+  max-width:1100px;
+  margin:20px auto;
+  background:#fff;
+  padding:30px;
+}
+h1,h2,h3{margin-top:0}
+label{font-weight:600;font-size:14px}
+select,input{
+  width:100%;
+  padding:8px;
+  margin:6px 0 15px;
+  border:1px solid #d1d5db;
+  border-radius:8px;
+}
+button{
+  background:#059669;
+  color:#fff;
+  border:none;
+  padding:10px 20px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:14px;
+}
+button:hover{opacity:.9}
+.preview{
+  margin-top:30px;
+  border:1px solid #e5e7eb;
+  padding:30px;
+}
+.cover{
+  text-align:center;
+  margin-bottom:40px;
+}
+.cover p{margin:6px 0}
+hr{margin:40px 0}
+.en{
+  direction:ltr;
+  font-family:Arial, sans-serif;
+}
+.print-bar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+@media print{
+  body{background:#fff}
+  .print-bar{display:none}
+  .container{box-shadow:none}
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<div class="print-bar">
+  <h1>عقد صيانة وقائية</h1>
+  <button onclick="window.print()">🖨️ طباعة / PDF</button>
+</div>
+
+<label>لغة العقد</label>
+<select id="lang">
+  <option value="ar">عربي</option>
+  <option value="en">English</option>
+  <option value="both">عربي + English</option>
+</select>
+
+<label>عدد المصاعد</label>
+<input id="lifts" type="number" placeholder="مثال: 2">
+
+<label>ماركة المصاعد</label>
+<input id="brand" placeholder="Otis / KONE / Mitsubishi / ...">
+
+<button onclick="generateContract()">إنشاء العقد</button>
+
+<div id="output" class="preview"></div>
+
+</div>
+
+<script>
+let customer = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('rkl_selected_customer');
+  if(!saved){
+    alert('لم يتم اختيار عميل من إدارة العملاء');
+    return;
+  }
+  customer = JSON.parse(saved);
+});
+
+function generateContract(){
+  if(!customer) return;
+
+  const lang = document.getElementById('lang').value;
+  const lifts = document.getElementById('lifts').value || '—';
+  const brand = document.getElementById('brand').value || '—';
+
+  let html = '';
+
+  /* ================= ARABIC ================= */
+  if(lang === 'ar' || lang === 'both'){
+    html += `
+    <div class="cover">
+      <h2>عقد صيانة وقائية للمصاعد</h2>
+      <p><b>الطرف الأول:</b> آر كي ال RKL للمصاعد والسلالم الكهربائية</p>
+      <p><b>الطرف الثاني:</b> ${customer.customer_name}</p>
+      <p><b>المخول بالتوقيع:</b> ${customer.contact_person || '—'}</p>
+      <p><b>العنوان:</b> ${customer.city} – ${customer.full_address || ''}</p>
+      <p><b>عدد المصاعد:</b> ${lifts}</p>
+      <p><b>ماركة المصاعد:</b> ${brand}</p>
+      <p><b>مدة العقد:</b> سنة ميلادية واحدة</p>
+    </div>
+
+    <p><b>البند (1):</b> يلتزم الطرف الأول بتقديم خدمات الصيانة الوقائية الدورية للمصاعد موضوع هذا العقد.</p>
+
+    <p><b>البند (2):</b> تشمل الصيانة الزيارات الشهرية، الفحص، التزييت، التنظيف، وفحص أنظمة الأمان.</p>
+
+    <p><b>البند (3):</b> لا يشمل هذا العقد قطع الغيار، وتكون على نفقة الطرف الثاني.</p>
+
+    <p><b>البند (4):</b> في حال كانت ماركة المصعد من الماركات العالمية
+    (Otis – KONE – Mitsubishi – Schindler)
+    يضاف مبلغ <b>2000 ريال سعودي سنويًا</b> لكل مصعد.</p>
+
+    <p><b>البند (5):</b> يحق للطرف الأول إيقاف الخدمة في حال عدم الالتزام بالسداد.</p>
+
+    <p><b>البند (6):</b> يخضع هذا العقد لأنظمة وقوانين المملكة العربية السعودية.</p>
+    `;
+  }
+
+  /* ================= ENGLISH ================= */
+  if(lang === 'en' || lang === 'both'){
+    html += `
+    <hr>
+    <div class="cover en">
+      <h2>Preventive Elevator Maintenance Contract</h2>
+      <p><b>First Party:</b> RKL Elevators & Escalators</p>
+      <p><b>Second Party:</b> ${customer.customer_name}</p>
+      <p><b>Authorized Person:</b> ${customer.contact_person || '-'}</p>
+      <p><b>Address:</b> ${customer.city}, ${customer.full_address || ''}</p>
+      <p><b>No. of Elevators:</b> ${lifts}</p>
+      <p><b>Elevator Brand:</b> ${brand}</p>
+      <p><b>Contract Duration:</b> One Calendar Year</p>
+    </div>
+
+    <div class="en">
+      <p><b>Clause 1:</b> The First Party shall provide preventive maintenance services.</p>
+
+      <p><b>Clause 2:</b> Services include monthly visits, inspection, lubrication and safety checks.</p>
+
+      <p><b>Clause 3:</b> Spare parts are excluded and shall be borne by the Second Party.</p>
+
+      <p><b>Clause 4:</b> For international elevator brands
+      (Otis – KONE – Mitsubishi – Schindler),
+      an additional amount of <b>SAR 2,000 per year per elevator</b> shall apply.</p>
+
+      <p><b>Clause 5:</b> The First Party may suspend services in case of non-payment.</p>
+
+      <p><b>Clause 6:</b> This contract is governed by the laws of the Kingdom of Saudi Arabia.</p>
+    </div>
+    `;
+  }
+
+  document.getElementById('output').innerHTML = html;
+}
+</script>
+
+</body>
+</html>
