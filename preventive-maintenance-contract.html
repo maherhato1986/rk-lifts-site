@@ -7,9 +7,9 @@
 
 <style>
 body{font-family:Cairo,Arial;background:#f3f4f6;margin:0}
-.container{max-width:1100px;margin:20px auto;background:#fff;padding:30px}
-h2{margin-top:0}
-.section{margin-bottom:30px;border-bottom:1px dashed #e5e7eb;padding-bottom:20px}
+.container{max-width:1200px;margin:20px auto;background:#fff;padding:30px}
+h2,h3{margin-top:0}
+.section{margin-bottom:35px;border-bottom:1px dashed #e5e7eb;padding-bottom:25px}
 label{font-weight:600;font-size:14px}
 input,select,textarea{
   width:100%;padding:8px;margin-top:6px;
@@ -19,11 +19,13 @@ textarea{min-height:70px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
 button{
   background:#059669;color:#fff;border:none;
-  padding:10px 20px;border-radius:8px;
+  padding:10px 22px;border-radius:8px;
   cursor:pointer;font-size:14px
 }
 button.secondary{background:#6b7280}
-.review-box{background:#f9fafb;padding:20px;border-radius:10px}
+button:disabled{background:#9ca3af;cursor:not-allowed}
+.review-box{background:#f9fafb;padding:25px;border-radius:10px}
+.en{direction:ltr;font-family:Arial}
 @media print{
   body{background:#fff}
   .no-print{display:none}
@@ -42,19 +44,71 @@ button.secondary{background:#6b7280}
 <div id="customerInfo"></div>
 </div>
 
-<!-- ================== إدخال عناصر العقد ================== -->
+<!-- ================== إعدادات عامة ================== -->
 <div class="section">
-<h3>ثانياً: عناصر عقد الصيانة</h3>
+<h3>ثانياً: إعدادات العقد</h3>
+
+<div class="grid">
+  <div>
+    <label>لغة العقد</label>
+    <select id="lang">
+      <option value="">-- اختر --</option>
+      <option value="ar">عربي</option>
+      <option value="en">English</option>
+      <option value="both">عربي + English</option>
+    </select>
+  </div>
+
+  <div>
+    <label>تاريخ العقد</label>
+    <input id="contractDate" type="date">
+  </div>
+
+  <div>
+    <label>مدة العقد</label>
+    <select id="duration">
+      <option value="1">سنة واحدة</option>
+    </select>
+  </div>
+
+  <div>
+    <label>تجديد تلقائي</label>
+    <select id="renewal">
+      <option value="yes">نعم</option>
+      <option value="no">لا</option>
+    </select>
+  </div>
+</div>
+</div>
+
+<!-- ================== بيانات المصاعد ================== -->
+<div class="section">
+<h3>ثالثاً: بيانات المصاعد</h3>
 
 <div class="grid">
   <div>
     <label>عدد المصاعد</label>
-    <input id="lifts" type="number">
+    <input id="lifts" type="number" min="1">
+  </div>
+
+  <div>
+    <label>نوع المصعد</label>
+    <select id="elevatorType">
+      <option value="passenger">ركاب</option>
+      <option value="service">خدمة</option>
+      <option value="panoramic">بانورامي</option>
+    </select>
+  </div>
+
+  <div>
+    <label>ماركة المصعد</label>
+    <input id="brandName" placeholder="Otis / KONE / Mitsubishi ...">
   </div>
 
   <div>
     <label>حمولة المصعد (كجم)</label>
     <select id="capacity">
+      <option value="">-- اختر --</option>
       <option value="3000">150 – 320</option>
       <option value="3500">350 – 550</option>
       <option value="4000">600 – 900</option>
@@ -66,7 +120,7 @@ button.secondary{background:#6b7280}
 
   <div>
     <label>عدد الطوابق</label>
-    <input id="floors" type="number">
+    <input id="floors" type="number" min="1">
   </div>
 
   <div>
@@ -76,42 +130,71 @@ button.secondary{background:#6b7280}
       <option value="government">حكومي</option>
     </select>
   </div>
+</div>
+</div>
+
+<!-- ================== نطاق الصيانة ================== -->
+<div class="section">
+<h3>رابعاً: نطاق الصيانة</h3>
+
+<div class="grid">
+  <div>
+    <label>عدد الزيارات الدورية</label>
+    <select id="visits">
+      <option value="monthly">زيارة شهرية</option>
+      <option value="bimonthly">زيارة كل شهرين</option>
+    </select>
+  </div>
 
   <div>
-    <label>نوع المصعد</label>
-    <select id="brandType">
-      <option value="normal">عادي</option>
-      <option value="global">عالمي (Otis / KONE / Mitsubishi / Schindler)</option>
+    <label>تدريب إنقاذ المحتجزين</label>
+    <select id="training">
+      <option value="yes">نعم</option>
+      <option value="no">لا</option>
+    </select>
+  </div>
+
+  <div>
+    <label>قطع الغيار</label>
+    <select id="spareParts">
+      <option value="excluded">غير مشمولة</option>
+      <option value="included">مشمولة (بعرض خاص)</option>
+    </select>
+  </div>
+
+  <div>
+    <label>خدمة الطوارئ</label>
+    <select id="emergency">
+      <option value="normal">أوقات الدوام</option>
+      <option value="extended">خارج الدوام (إضافي)</option>
     </select>
   </div>
 </div>
 
-<label style="margin-top:15px">ملاحظات</label>
+<label style="margin-top:15px">ملاحظات إضافية</label>
 <textarea id="notes"></textarea>
 
-<button class="no-print" onclick="reviewContract()">مراجعة العقد</button>
+<button id="reviewBtn" class="no-print" onclick="reviewContract()">مراجعة العقد</button>
 </div>
 
-<!-- ================== المراجعة ================== -->
+<!-- ================== مراجعة العقد ================== -->
 <div class="section" id="reviewSection" style="display:none">
-<h3>ثالثاً: مراجعة العقد</h3>
-
+<h3>خامساً: مراجعة العقد</h3>
 <div class="review-box" id="reviewBox"></div>
-
 <button onclick="window.print()">🖨️ طباعة / PDF</button>
 </div>
 
 </div>
 
 <script>
-let customer = null;
+let customer=null;
 
 document.addEventListener('DOMContentLoaded',()=>{
-  const saved = localStorage.getItem('rkl_selected_customer');
+  const saved=localStorage.getItem('rkl_selected_customer');
   if(!saved){alert('لم يتم اختيار عميل');return;}
-  customer = JSON.parse(saved);
+  customer=JSON.parse(saved);
 
-  document.getElementById('customerInfo').innerHTML = `
+  document.getElementById('customerInfo').innerHTML=`
     <p><b>اسم العميل:</b> ${customer.customer_name}</p>
     <p><b>الجوال:</b> ${customer.mobile}</p>
     <p><b>العنوان:</b> ${customer.city} – ${customer.full_address||''}</p>
@@ -119,23 +202,35 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 
 function reviewContract(){
-  let price = Number(document.getElementById('capacity').value);
-  const lifts = Number(document.getElementById('lifts').value || 1);
-  const floors = Number(document.getElementById('floors').value || 1);
-  const building = document.getElementById('building').value;
-  const brandType = document.getElementById('brandType').value;
+  const required=['lang','contractDate','lifts','capacity','floors'];
+  for(const id of required){
+    if(!document.getElementById(id).value){
+      alert('يرجى تعبئة جميع الحقول الإلزامية');
+      return;
+    }
+  }
 
-  if(floors > 2) price *= 1.10;
-  if(building === 'government') price *= 1.50;
-  if(brandType === 'global') price += 2000;
+  let price=Number(document.getElementById('capacity').value);
+  const lifts=Number(document.getElementById('lifts').value);
+  const floors=Number(document.getElementById('floors').value);
+  const building=document.getElementById('building').value;
+  const brand=document.getElementById('brandName').value.toLowerCase();
 
-  const total = price * lifts;
+  if(floors>2) price*=1.10;
+  if(building==='government') price*=1.50;
+  if(['otis','kone','mitsubishi','schindler'].some(b=>brand.includes(b))){
+    price+=2000;
+  }
 
-  document.getElementById('reviewBox').innerHTML = `
+  const vat=price*lifts*0.15;
+  const total=price*lifts+vat;
+
+  document.getElementById('reviewBox').innerHTML=`
     <p><b>عدد المصاعد:</b> ${lifts}</p>
     <p><b>السعر السنوي للمصعد:</b> ${price.toFixed(2)} ريال</p>
+    <p><b>ضريبة القيمة المضافة 15%:</b> ${vat.toFixed(2)} ريال</p>
     <p><b>إجمالي قيمة العقد:</b> <strong>${total.toFixed(2)} ريال</strong></p>
-    <p><b>ملاحظات:</b> ${document.getElementById('notes').value || '—'}</p>
+    <p><b>ملاحظات:</b> ${document.getElementById('notes').value||'—'}</p>
   `;
 
   document.getElementById('reviewSection').style.display='block';
