@@ -1,5 +1,10 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+const isEnglish = contract.lang === 'en';
+
+w.document.write(`
+<!DOCTYPE html>
+<html lang="${isEnglish ? 'en' : 'ar'}" dir="${isEnglish ? 'ltr' : 'rtl'}">
+
 <head>
 <meta charset="UTF-8">
 <title>عقد صيانة وقائية للمصاعد</title>
@@ -215,7 +220,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   customer=JSON.parse(saved);
 
   document.getElementById('customerInfo').innerHTML=`
-    <p><b>اسم العميل:</b> ${customer.customer_name}</p>
+    العميل: <span class="user-data">${customer.customer_name}</span>
+
     <p><b>الجوال:</b> ${customer.mobile}</p>
     <p><b>العنوان:</b> ${customer.city} – ${customer.full_address||''}</p>
   `;
@@ -462,8 +468,28 @@ body{
 .header h1{
   margin:0;
   font-size:22px;
+  text-align:center;   /* ⭐ */
 }
 
+.editor-toolbar{
+  border:1px solid #d1d5db;
+  padding:10px;
+  margin-bottom:15px;
+  background:#f9fafb;
+  text-align:center;
+}
+
+.editor-toolbar button,
+.editor-toolbar select{
+  margin:0 4px;
+  padding:4px 8px;
+  font-size:13px;
+}
+
+.user-data{
+  color:#2563eb;       /* أزرق واضح */
+  font-weight:600;
+}
 .header p{
   margin:4px 0;
   font-size:12px;
@@ -475,9 +501,10 @@ body{
 
 .section-title{
   font-weight:700;
-  margin-top:20px;
-  margin-bottom:8px;
+  margin-top:22px;
+  margin-bottom:10px;
   color:#0f766e;
+  text-align:center;   /* ⭐ توسيط */
 }
 
 .signature{
@@ -498,14 +525,35 @@ hr{
   border-top:1px dashed #9ca3af;
   margin:30px 0;
 }
-
 @media print{
-  button{display:none}
+  button,
+  .editor-toolbar{display:none}
 }
 </style>
 </head>
 
 <body>
+<div class="editor-toolbar">
+  <button onclick="format('bold')"><b>B</b></button>
+  <button onclick="format('italic')"><i>I</i></button>
+  <button onclick="format('underline')"><u>U</u></button>
+
+  <select onchange="format('foreColor', this.value)">
+    <option value="">لون النص</option>
+    <option value="#2563eb">أزرق</option>
+    <option value="#dc2626">أحمر</option>
+    <option value="#16a34a">أخضر</option>
+    <option value="#000000">أسود</option>
+  </select>
+
+  <select onchange="format('fontSize', this.value)">
+    <option value="">حجم الخط</option>
+    <option value="3">صغير</option>
+    <option value="4">عادي</option>
+    <option value="5">كبير</option>
+    <option value="6">كبير جدًا</option>
+  </select>
+</div>
 
 <div class="header">
   <h1>عقد صيانة وقائية للمصاعد</h1>
@@ -599,6 +647,12 @@ function reviewContract(){
   document.getElementById('reviewSection').style.display='block';
 }
 </script>
+  <script>
+function format(cmd, value = null){
+  document.execCommand(cmd, false, value);
+}
+</script>
+
 
 </body>
 </html>
