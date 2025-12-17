@@ -221,24 +221,76 @@ document.addEventListener('DOMContentLoaded',()=>{
   `;
 });
 
-  function saveAndPrintContract(){
+function calculateTotal(){
+  let price = Number(document.getElementById('capacity').value);
+  const lifts = Number(document.getElementById('lifts').value);
+  const floors = Number(document.getElementById('floors').value);
+  const building = document.getElementById('building').value;
+  const brand = document.getElementById('brandName').value.toLowerCase();
+
+  if(floors > 2) price *= 1.10;
+  if(building === 'government') price *= 1.50;
+  if(['otis','kone','mitsubishi','schindler'].some(b=>brand.includes(b))){
+    price += 2000;
+  }
+
+  const subtotal = price * lifts;
+  const vat = subtotal * 0.15;
+  return {
+    pricePerLift: price,
+    vat,
+    total: subtotal + vat
+  };
+}
+function saveAndPrintContract(){
+
+  // تحقق مبدئي
+  if(!customer){
+    alert('بيانات العميل غير موجودة');
+    return;
+  }
+
+  // تحقق من الحقول الإلزامية
+  const required = ['lang','contractDate','lifts','capacity','floors'];
+  for(const id of required){
+    if(!document.getElementById(id).value){
+      alert('يرجى تعبئة جميع الحقول الإلزامية');
+      return;
+    }
+  }
+
+  // حساب السعر
+  const calc = calculateTotal();
+
+  // إنشاء العقد
   const contract = {
     id: 'PMC-' + Date.now(),
     customer: customer.customer_name,
     lifts: document.getElementById('lifts').value,
-    total: document.querySelector('#reviewBox strong').innerText,
+    total: calc.total.toFixed(2) + ' ريال',
     lang: document.getElementById('lang').value,
     date: document.getElementById('contractDate').value,
-    content: generateFullContractText() // نص العقد الكامل
+    content: generateFullContractText()
   };
 
-  const contracts = JSON.parse(localStorage.getItem('rkl_maintenance_contracts') || '[]');
-  contracts.push(contract);
-  localStorage.setItem('rkl_maintenance_contracts', JSON.stringify(contracts));
+  // حفظ في LocalStorage
+  const contracts = JSON.parse(
+    localStorage.getItem('rkl_maintenance_contracts') || '[]'
+  );
 
+  contracts.push(contract);
+  localStorage.setItem(
+    'rkl_maintenance_contracts',
+    JSON.stringify(contracts)
+  );
+
+  // تحديث الجدول
   renderContractsTable();
+
+  // فتح الطباعة
   openPrintView(contract);
 }
+
 function generateFullContractText(){
   return `
 عقد صيانة وقائية للمصاعد
