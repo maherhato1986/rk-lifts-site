@@ -221,6 +221,163 @@ document.addEventListener('DOMContentLoaded',()=>{
   `;
 });
 
+  function generateFullContractText(){
+
+  const lang = document.getElementById('lang').value;
+  const date = document.getElementById('contractDate').value;
+  const lifts = document.getElementById('lifts').value;
+  const brand = document.getElementById('brandName').value;
+  const buildingType = document.getElementById('building').value === 'government'
+    ? 'حكومي'
+    : 'خاص';
+
+  const city = customer.city || '—';
+  const address = customer.full_address || city;
+  const mobile = customer.mobile || '—';
+
+  const calc = calculateTotal();
+
+  /* ================== النص العربي ================== */
+  const ar = `
+عقد صيانة مصاعد
+===========================
+
+بتوفيق من الله تم الاتفاق بتاريخ : ${date} ، بين كل من:
+
+(الطرف الأول)
+مؤسسة آر كي ال RKL للمصاعد والسلالم الكهربائية  
+سجل تجاري رقم (1010709355)  
+الرياض – هاتف 0114774021  
+العنوان: السليمانية – الرياض  
+رقم تعميد الدفاع المدني: 1-001335970-45  
+
+(الطرف الثاني)
+العميل: ${customer.customer_name}  
+رقم الجوال: ${mobile}  
+العنوان: ${address}  
+
+مقدمة العقد:
+بناءً على رغبة الطرف الثاني بصيانة عدد (${lifts}) مصعد
+نوع المصعد (${brand}) – مصاعد ركاب
+لمبنى (${buildingType}) في مدينة ${city}،
+فقد تم إسناد أعمال هذا العقد للطرف الأول وفق البنود التالية:
+
+بنود العقد:
+
+1- يقوم الطرف الأول بتقديم خدمات الصيانة الدورية مرة كل شهر بواسطة فنيين مؤهلين على مستوى عالٍ من الكفاءة، وذلك لفحص جميع المعدات وضبط نظافة جميع المحركات وأجهزة التحكم والأمان والتزييت والتشحيم لجميع حوامل المعدات وثوابتها.
+
+2- على الطرف الثاني إبلاغ الطرف الأول فورًا في حال حدوث تشغيل غير طبيعي أو توقف أي من المعدات، ليقوم الطرف الأول بتقديم خدمات الصيانة بواسطة فنيين متخصصين لتصحيح أوضاع التشغيل غير الطبيعية وإعادة المعدات إلى حالة التشغيل.
+
+3- يلتزم الطرف الأول بتدريب واحد أو اثنين من موظفي صيانة المبنى (يتم تعيينهم من قبل الطرف الثاني) على إجراءات إنقاذ الركاب المحتجزين داخل المصعد في حال حدوث عطل.
+
+4- يوافق الطرف الأول على توفير جميع زيوت التروس والشحوم ومواد التنظيف اللازمة لأعمال الصيانة.
+
+5- يوافق الطرف الثاني على تحمّل تكلفة استبدال قطع الغيار التالفة بأخرى أصلية على نفقته الخاصة.
+
+6- يقوم الطرف الأول بتنفيذ خدمات الصيانة المذكورة أعلاه مقابل أجور الصيانة السنوية المتفق عليها، والتي يلتزم الطرف الثاني بسدادها.
+
+القيمة الإجمالية للعقد:
+إجمالي قيمة العقد (${calc.total.toFixed(2)}) ريال سعودي شامل ضريبة القيمة المضافة 15%، وغير شامل قيمة قطع الغيار.
+
+يبدأ العقد من تاريخ تحويل كامل المبلغ ولمدة سنة ميلادية كاملة.
+
+بيانات التحويل البنكي:
+البنك: البنك الأهلي السعودي (SNB)  
+اسم الحساب: آر كي ال RKL  
+رقم الحساب: 01400005531406  
+الآيبان: SA1710000001400005531406  
+
+7- في حال إخفاق الطرف الثاني في سداد المستحقات في مواعيدها، يحق للطرف الأول إيقاف الأعمال فورًا دون أدنى مسؤولية عن أي أعطال أو حوادث خلال فترة الإيقاف، ويتحمل الطرف الثاني كامل المسؤولية.
+
+8- في حالات الطوارئ، يلتزم الطرف الثاني بالتواصل مع مكتب الصيانة هاتفيًا، والطرف الأول على استعداد لتلبية نداءات الطوارئ.
+
+9- يوافق الطرف الأول على توفير فنيين مؤهلين في حالات الطوارئ أو المناسبات الخاصة مقابل رسوم إضافية حسب الطلب.
+
+10- يسري هذا العقد لمدة سنة ميلادية ويتجدد تلقائيًا لمدة مماثلة ما لم يخطر أحد الطرفين الآخر خطيًا بعدم الرغبة في التجديد قبل 60 يومًا من تاريخ الانتهاء.
+
+التوقيعات:
+
+الطرف الأول: مؤسسة آر كي ال  
+التوقيع: _____________________  
+التاريخ: _____________________  
+
+الطرف الثاني: ${customer.customer_name}  
+التوقيع: _____________________  
+التاريخ: _____________________  
+`;
+
+  /* ================== النص الإنجليزي ================== */
+  const en = `
+Elevator Maintenance Contract
+===========================
+
+With the grace of God, this agreement was concluded on ${date} between:
+
+(First Party)
+RKL Elevators & Escalators  
+Commercial Registration No. 1010709355  
+Riyadh – Tel: 0114774021  
+
+(Second Party)
+Customer: ${customer.customer_name}  
+Mobile: ${mobile}  
+Address: ${address}  
+
+Introduction:
+Based on the second party’s request to maintain (${lifts}) passenger elevator(s),
+Brand (${brand}), located in a ${buildingType} building in ${city},
+the first party shall perform the maintenance services under the following terms:
+
+Contract Terms:
+
+1- The first party shall provide periodic preventive maintenance once per month by highly qualified technicians to inspect all equipment, motors, controllers, safety devices, lubrication and cleaning.
+
+2- The second party shall immediately notify the first party in case of abnormal operation or stoppage of any equipment to restore normal operation.
+
+3- The first party shall train one or two building maintenance personnel nominated by the second party on rescue procedures for trapped passengers.
+
+4- The first party shall provide all required gear oils, grease and cleaning materials.
+
+5- Spare parts replacement costs shall be borne by the second party.
+
+6- The first party shall perform the above services in consideration of the agreed annual maintenance fees.
+
+Contract Value:
+The total contract value is SAR ${calc.total.toFixed(2)}, inclusive of 15% VAT and excluding spare parts.
+
+The contract shall commence upon full payment and remain valid for one calendar year.
+
+Bank Details:
+Bank: Saudi National Bank (SNB)  
+Account Name: RKL  
+IBAN: SA1710000001400005531406  
+
+7- In case of non-payment, the first party may suspend services without liability.
+
+8- Emergency calls shall be handled upon immediate notification.
+
+9- Emergency or special services may be provided upon request with additional charges.
+
+10- This contract shall be valid for one year and automatically renewed unless either party provides written notice 60 days prior to expiry.
+
+Signatures:
+
+First Party: RKL  
+Signature: _____________________  
+Date: _____________________  
+
+Second Party: ${customer.customer_name}  
+Signature: _____________________  
+Date: _____________________  
+`;
+
+  /* ================== اختيار اللغة ================== */
+  if(lang === 'ar') return ar;
+  if(lang === 'en') return en;
+  return ar + '\n\n---------------------------------\n\n' + en;
+}
+
+  
 function calculateTotal(){
   let price = Number(document.getElementById('capacity').value);
   const lifts = Number(document.getElementById('lifts').value);
