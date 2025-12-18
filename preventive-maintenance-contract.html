@@ -72,6 +72,18 @@ button:disabled{background:#9ca3af;cursor:not-allowed}
       <option value="1">سنة واحدة</option>
     </select>
   </div>
+  <div>
+  <label>مدينة المشروع</label>
+  <select id="projectCity">
+    <option value="riyadh">الرياض</option>
+
+    <option value="near">مدن قريبة من الرياض</option>
+    <option value="medium">مدن متوسطة البعد</option>
+    <option value="far">مدن بعيدة</option>
+    <option value="remote">مدن نائية</option>
+  </select>
+</div>
+
 
   <div>
     <label>تجديد تلقائي</label>
@@ -379,29 +391,86 @@ IBAN: SA1710000001400005531406
   if(lang === 'en') return en;
   return ar + '\n\n---------------------------------\n\n' + en;
 }
+const cityZones = {
+  riyadh: {
+    label: 'الرياض',
+    increase: 0
+  },
+  near: {
+    label: 'قريبة من الرياض',
+    increase: 0.05
+  },
+  medium: {
+    label: 'متوسطة البعد',
+    increase: 0.10
+  },
+  far: {
+    label: 'بعيدة',
+    increase: 0.15
+  },
+  remote: {
+    label: 'نائية',
+    increase: 0.20
+  }
+};
 
   
 function calculateTotal(){
-  let price = Number(document.getElementById('capacity').value);
-  const lifts = Number(document.getElementById('lifts').value);
-  const floors = Number(document.getElementById('floors').value);
-  const building = document.getElementById('building').value;
-  const brand = document.getElementById('brandName').value.toLowerCase();
 
-  if(floors > 2) price *= 1.10;
-  if(building === 'government') price *= 1.50;
-  if(['otis','kone','mitsubishi','schindler'].some(b=>brand.includes(b))){
+  // السعر الأساسي حسب الحمولة
+  let price = Number(document.getElementById('capacity').value);
+
+  const lifts   = Number(document.getElementById('lifts').value);
+  const floors  = Number(document.getElementById('floors').value);
+  const building = document.getElementById('building').value;
+
+  // ===== الماركة =====
+  const brandSelect = document.getElementById('brandSelect').value;
+  const brandOther  = document.getElementById('brandOther')?.value || '';
+  const brand = (brandSelect === 'Other' || brandSelect === 'Local')
+    ? brandOther.toLowerCase()
+    : brandSelect.toLowerCase();
+
+  // ===== المدينة =====
+  const cityKey = document.getElementById('projectCity')?.value || 'riyadh';
+  const zone = cityZones[cityKey] || cityZones.riyadh;
+
+  /* =====================
+     معاملات الزيادة
+  ===================== */
+
+  // عدد الطوابق
+  if(floors > 2){
+    price *= 1.10;
+  }
+
+  // نوع المبنى
+  if(building === 'government'){
+    price *= 1.50;
+  }
+
+  // الماركات العالمية
+  if(['otis','kone','mitsubishi','schindler'].some(b => brand.includes(b))){
     price += 2000;
   }
 
+  // الموقع الجغرافي
+  price *= (1 + zone.increase);
+
+  /* =====================
+     الحساب النهائي
+  ===================== */
   const subtotal = price * lifts;
   const vat = subtotal * 0.15;
+
   return {
     pricePerLift: price,
+    zone: zone.label,
     vat,
     total: subtotal + vat
   };
 }
+
 function saveContract(){
 
   if(!customer){
@@ -647,6 +716,7 @@ function reviewContract(){
 
   document.getElementById('reviewBox').innerHTML=`
     <p><b>عدد المصاعد:</b> ${lifts}</p>
+    <p><b>موقع المشروع:</b> ${calc.zone}</p>
     <p><b>السعر السنوي للمصعد:</b> ${price.toFixed(2)} ريال</p>
     <p><b>ضريبة القيمة المضافة 15%:</b> ${vat.toFixed(2)} ريال</p>
     <p><b>إجمالي قيمة العقد:</b> <strong>${total.toFixed(2)} ريال</strong></p>
