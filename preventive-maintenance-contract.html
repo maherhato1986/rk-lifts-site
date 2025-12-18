@@ -794,6 +794,16 @@ body{
   padding-bottom:14px;
   margin-bottom:28px;
 }
+ .print-watermark{
+    position:fixed;
+    top:50%;
+    left:50%;
+    width:420px;
+    opacity:0.05;
+    transform:translate(-50%,-50%);
+    z-index:-1;
+    pointer-events:none;
+  }
 /* ===============================
    خلفية مائية (Watermark)
 =============================== */
@@ -969,7 +979,8 @@ hr{
 <div class="print-header">
   <div class="print-header-row">
 
-    <img src="/public/images/logo.png" class="print-logo" alt="RKL Logo">
+   <img src="/public/images/logo.png" class="print-watermark">
+
 
     <div class="header-center">
       <h1>عقد صيانة وقائية للمصاعد</h1>
