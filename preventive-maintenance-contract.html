@@ -49,7 +49,30 @@ button:disabled{background:#9ca3af;cursor:not-allowed}
 <!-- ================== إعدادات عامة ================== -->
 <div class="section">
 <h3>ثانياً: إعدادات العقد</h3>
+  <div class="editor-toolbar no-print">
+  <button type="button" onclick="formatText('bold')"><b>B</b></button>
+  <button type="button" onclick="formatText('italic')"><i>I</i></button>
+  <button type="button" onclick="formatText('underline')"><u>U</u></button>
+
+  <select onchange="formatText('foreColor', this.value)">
+    <option value="">لون النص</option>
+    <option value="#000000">أسود</option>
+    <option value="#2563eb">أزرق</option>
+    <option value="#dc2626">أحمر</option>
+    <option value="#16a34a">أخضر</option>
+  </select>
+
+  <select onchange="formatText('fontSize', this.value)">
+    <option value="">حجم الخط</option>
+    <option value="3">صغير</option>
+    <option value="4">عادي</option>
+    <option value="5">كبير</option>
+    <option value="6">كبير جدًا</option>
+  </select>
+</div>
+
 <div id="editableContract" class="contract" contenteditable="true">
+
 
 <div class="grid">
   <div>
@@ -640,7 +663,7 @@ hr{
   <p>السجل التجاري: 1010709355 | هاتف: 0114774021</p>
 </div>
 
-<div id="editableContract" class="contract" contenteditable="true">
+
 
 ${contract.content
   .replace(/\n/g,'<br>')
@@ -728,16 +751,7 @@ function reviewContract(){
   document.getElementById('reviewSection').style.display='block';
 }
 </script>
-  <script>
-function format(cmd, value = null){
-  const editor = document.getElementById('editableContract');
-  if(!editor) return;
 
-  editor.focus(); // ⭐ هذا السطر هو السر
-  document.execCommand(cmd, false, value);
-}
-
-</script>
   <script>
 function toggleOtherBrand(){
   const select = document.getElementById('brandSelect').value;
