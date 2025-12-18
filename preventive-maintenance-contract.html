@@ -453,6 +453,8 @@ const brand = (brandSelect === 'Other' || brandSelect === 'Local')
 9- يوافق الطرف الأول على توفير فنيين مؤهلين في حالات الطوارئ أو المناسبات الخاصة مقابل رسوم إضافية حسب الطلب.
 
 10- يسري هذا العقد لمدة سنة ميلادية ويتجدد تلقائيًا لمدة مماثلة ما لم يخطر أحد الطرفين الآخر خطيًا بعدم الرغبة في التجديد قبل 60 يومًا من تاريخ الانتهاء.
+11- لا يتحمل الطرف الأول أي مسؤولية عن الأعطال أو الأضرار الناتجة عن سوء الاستخدام، أو انقطاع التيار الكهربائي، أو الكوارث الطبيعية، أو أي تدخل من طرف ثالث غير معتمد.
+
 
 `;
 
@@ -507,6 +509,8 @@ IBAN: SA1710000001400005531406
 9- Emergency or special services may be provided upon request with additional charges.
 
 10- This contract shall be valid for one year and automatically renewed unless either party provides written notice 60 days prior to expiry.
+11- The first party shall not be liable for any damages or failures resulting from misuse, power outages, force majeure, or unauthorized third-party intervention.
+
 
 `;
 
@@ -647,25 +651,25 @@ function openPrintView(contract){
 <head>
 <meta charset="UTF-8">
 <title>عقد صيانة وقائية</title>
-
 <style>
 /* ===============================
-   إعداد الصفحة
+   إعداد صفحة A4
 =============================== */
 @page{
   size: A4;
-  margin: 25mm;
+  margin: 22mm 20mm;
 }
 
 body{
-  font-family: "Cairo", Arial, sans-serif;
+  font-family: "Cairo", "Tajawal", Arial, sans-serif;
   color:#111827;
-  line-height:1.9;
+  line-height:1.85;
   background:#fff;
+  font-size:14px;
 }
 
 /* ===============================
-   إخفاء عناصر الواجهة
+   إخفاء أي أدوات
 =============================== */
 @media print{
   button,
@@ -675,63 +679,52 @@ body{
 }
 
 /* ===============================
-   الترويسة (Header)
+   الترويسة الرسمية
 =============================== */
-.header{
+.print-header{
   border-bottom:2px solid #0f766e;
-  padding-bottom:10px;
-  margin-bottom:22px;
+  padding-bottom:14px;
+  margin-bottom:28px;
 }
 
-.header-row{
+.print-header-row{
   display:flex;
   align-items:center;
-  justify-content:flex-start; /* RTL */
-  gap:12px;
+  justify-content:space-between;
 }
 
 .print-logo{
-  width:38px;        /* حجم احترافي */
+  width:42px;     /* ✔ حجم أنيق */
   height:auto;
 }
 
-.header-text{
-  text-align:right;
+.header-center{
+  text-align:center;
+  flex:1;
 }
 
-.header-text h1{
+.header-center h1{
   margin:0;
-  font-size:20px;
+  font-size:21px;
   font-weight:700;
+  letter-spacing:0.3px;
 }
 
-.header-text p{
-  margin:2px 0;
-  font-size:11px;
+.header-center p{
+  margin:4px 0;
+  font-size:12px;
   color:#374151;
 }
 
-.header-text .small{
-  font-size:10px;
-  color:#6b7280;
+.header-meta{
+  text-align:left;
+  font-size:11px;
+  color:#374151;
+  min-width:140px;
 }
 
-/* ===============================
-   شريط أدوات التعديل (قبل الطباعة فقط)
-=============================== */
-.editor-toolbar{
-  border:1px solid #d1d5db;
-  padding:8px;
-  margin-bottom:15px;
-  background:#f9fafb;
-  text-align:center;
-}
-
-.editor-toolbar button,
-.editor-toolbar select{
-  margin:0 4px;
-  padding:4px 8px;
-  font-size:13px;
+.header-meta div{
+  margin-bottom:4px;
 }
 
 /* ===============================
@@ -741,52 +734,71 @@ body{
   font-size:14px;
 }
 
+.contract p{
+  margin:6px 0;
+}
+
 /* ===============================
    عناوين الأقسام
 =============================== */
 .section-title{
+  margin:26px 0 12px;
+  font-size:15px;
   font-weight:700;
-  margin-top:22px;
-  margin-bottom:10px;
   color:#0f766e;
   text-align:center;
+  border-bottom:1px solid #e5e7eb;
+  padding-bottom:6px;
 }
 
 /* ===============================
-   تمييز بيانات المستخدم
+   تمييز القيم المدخلة
 =============================== */
 .user-data{
-  color:#2563eb;
+  color:#1d4ed8;
   font-weight:600;
 }
 
 /* ===============================
-   الفواصل
+   فاصل
 =============================== */
 hr{
   border:none;
   border-top:1px dashed #9ca3af;
-  margin:28px 0;
+  margin:30px 0;
 }
 
 /* ===============================
    التوقيعات
 =============================== */
 .signature{
-  margin-top:40px;
+  margin-top:55px;
   display:flex;
   justify-content:space-between;
-  gap:20px;
+  gap:30px;
 }
 
 .signature div{
   width:45%;
   border-top:1px solid #000;
-  padding-top:8px;
+  padding-top:10px;
   text-align:center;
   font-size:13px;
 }
+
+/* ===============================
+   ترقيم الصفحات
+=============================== */
+@page{
+  @bottom-center{
+    content: "صفحة " counter(page) " من " counter(pages);
+    font-size:11px;
+    color:#6b7280;
+  }
+}
 </style>
+
+
 </head>
 
 <body>
@@ -812,19 +824,25 @@ hr{
   </select>
 </div>
 
-<div class="header">
-  <div class="header-row">
+<div class="print-header">
+  <div class="print-header-row">
+
     <img src="/public/images/logo.png" class="print-logo" alt="RKL Logo">
-    
-    <div class="header-text">
+
+    <div class="header-center">
       <h1>عقد صيانة وقائية للمصاعد</h1>
       <p>آر كي ال RKL للمصاعد والسلالم الكهربائية</p>
-      <p class="small">
-        السجل التجاري: 1010709355 | هاتف: 0114774021
-      </p>
+      <p class="small">السجل التجاري: 1010709355 | هاتف: 0114774021</p>
     </div>
+
+    <div class="header-meta">
+      <div><b>رقم العقد:</b><br>${contract.id}</div>
+      <div><b>تاريخ العقد:</b><br>${contract.date}</div>
+    </div>
+
   </div>
 </div>
+
 
 
 
