@@ -434,22 +434,9 @@ const brand = (brandSelect === 'Other' || brandSelect === 'Local')
 5- يوافق الطرف الثاني على تحمّل تكلفة استبدال قطع الغيار التالفة بأخرى أصلية على نفقته الخاصة.
 
 6- يقوم الطرف الأول بتنفيذ خدمات الصيانة المذكورة أعلاه مقابل أجور الصيانة السنوية المتفق عليها، والتي يلتزم الطرف الثاني بسدادها.
+
 القيمة الإجمالية للعقد:
-
-• قيمة العقد قبل الضريبة:
-(${(calc.total / 1.15).toFixed(2)}) ريال سعودي
-
-• ضريبة القيمة المضافة (15%):
-(${(calc.total - (calc.total / 1.15)).toFixed(2)}) ريال سعودي
-
-• إجمالي قيمة العقد شامل الضريبة:
-(${calc.total.toFixed(2)}) ريال سعودي
-
-كتابةً:
-${numberToArabicWords(Math.round(calc.total))}
-
-يبدأ العقد من تاريخ ${date} ولمدة سنة ميلادية كاملة تنتهي في نفس التاريخ من العام التالي.
-
+إجمالي قيمة العقد (${calc.total.toFixed(2)}) ريال سعودي شامل ضريبة القيمة المضافة 15%، وغير شامل قيمة قطع الغيار.
 
 يبدأ العقد من تاريخ تحويل كامل المبلغ ولمدة سنة ميلادية كاملة.
 
@@ -518,21 +505,7 @@ Contract Terms:
 6- The first party shall perform the above services in consideration of the agreed annual maintenance fees.
 
 Contract Value:
-
-• Contract value before VAT:
-SAR ${(calc.total / 1.15).toFixed(2)}
-
-• VAT (15%):
-SAR ${(calc.total - (calc.total / 1.15)).toFixed(2)}
-
-• Total contract value including VAT:
-SAR ${calc.total.toFixed(2)}
-
-In words:
-${numberToEnglishWords(Math.round(calc.total))}
-
-This contract shall commence on ${date} and remain valid for one calendar year.
-
+The total contract value is SAR ${calc.total.toFixed(2)}, inclusive of 15% VAT and excluding spare parts.
 
 The contract shall commence upon full payment and remain valid for one calendar year.
 
@@ -644,78 +617,6 @@ function calculateTotal(){
     total: subtotal + vat
   };
 }
-<script>
-/* ===============================
-   تحويل الرقم إلى حروف (عربي)
-=============================== */
-function numberToArabicWords(num) {
-  const ones = ["", "واحد", "اثنان", "ثلاثة", "أربعة", "خمسة", "ستة", "سبعة", "ثمانية", "تسعة"];
-  const tens = ["", "عشرة", "عشرون", "ثلاثون", "أربعون", "خمسون", "ستون", "سبعون", "ثمانون", "تسعون"];
-  const teens = ["عشرة", "أحد عشر", "اثنا عشر", "ثلاثة عشر", "أربعة عشر", "خمسة عشر", "ستة عشر", "سبعة عشر", "ثمانية عشر", "تسعة عشر"];
-  const hundreds = ["", "مائة", "مائتان", "ثلاثمائة", "أربعمائة", "خمسمائة", "ستمائة", "سبعمائة", "ثمانمائة", "تسعمائة"];
-
-  function convert(n) {
-    let result = "";
-    if (n >= 100) {
-      result += hundreds[Math.floor(n / 100)];
-      n %= 100;
-      if (n > 0) result += " و ";
-    }
-    if (n >= 20) {
-      result += tens[Math.floor(n / 10)];
-      n %= 10;
-      if (n > 0) result += " و " + ones[n];
-    } else if (n >= 10) {
-      result += teens[n - 10];
-    } else if (n > 0) {
-      result += ones[n];
-    }
-    return result;
-  }
-
-  if (num === 0) return "صفر ريال سعودي";
-  return convert(num) + " ريال سعودي فقط لا غير";
-}
-
-/* ===============================
-   تحويل الرقم إلى حروف (English)
-=============================== */
-function numberToEnglishWords(num) {
-  const ones = ["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine"];
-  const teens = ["Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
-  const tens = ["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
-  const thousands = ["","Thousand","Million"];
-
-  function convert(n) {
-    let word = "";
-    if (n >= 100) {
-      word += ones[Math.floor(n / 100)] + " Hundred ";
-      n %= 100;
-    }
-    if (n >= 20) {
-      word += tens[Math.floor(n / 10)] + " ";
-      n %= 10;
-    } else if (n >= 10) {
-      word += teens[n - 10] + " ";
-      n = 0;
-    }
-    if (n > 0) word += ones[n] + " ";
-    return word.trim();
-  }
-
-  if (num === 0) return "Zero Saudi Riyals Only";
-
-  let result = "";
-  let i = 0;
-  while (num > 0) {
-    const part = num % 1000;
-    if (part > 0) result = convert(part) + " " + thousands[i] + " " + result;
-    num = Math.floor(num / 1000);
-    i++;
-  }
-  return result.trim() + " Saudi Riyals Only";
-}
-</script>
 
 function saveContract(){
 
