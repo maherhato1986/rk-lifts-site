@@ -10,135 +10,182 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-  /* ===============================
-   إعداد الصفحة
+ /* ===============================
+   تحسين الواجهة العامة
 =============================== */
-@page {
-  size: A4;
-  margin: 25mm;
-}
-
 body{
-  font-family: "Cairo", Arial, sans-serif;
-  color:#111827;
-  line-height:1.9;
-  background:#fff;
+  background:#f3f4f6;
+}
+
+.container{
+  max-width:1100px;
+  margin:30px auto;
+  background:#ffffff;
+  padding:35px 40px;
+  border-radius:14px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
 }
 
 /* ===============================
-   إخفاء عناصر غير مطلوبة
+   العنوان الرئيسي
 =============================== */
-@media print{
-  button,
-  .editor-toolbar{
-    display:none !important;
-  }
-}
-
-/* ===============================
-   ترويسة الطباعة
-=============================== */
-.header{
-  border-bottom:2px solid #0f766e;
-  padding-bottom:12px;
-  margin-bottom:25px;
-}
-
-.header-row{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:15px;
-}
-
-.print-logo{
-  width:55px;
-  height:auto;
-}
-
-.header-text{
+.page-header{
   text-align:center;
+  margin-bottom:35px;
 }
 
-.header-text h1{
-  margin:0;
-  font-size:22px;
-  font-weight:700;
+.page-header h2{
+  font-size:26px;
+  font-weight:800;
+  color:#0f766e;
 }
 
-.header-text p{
-  margin:4px 0;
-  font-size:12px;
-  color:#374151;
-}
-
-.header-text .small{
-  font-size:11px;
+.page-header p{
+  font-size:13px;
   color:#6b7280;
 }
 
 /* ===============================
-   محتوى العقد
+   الأقسام (Cards)
 =============================== */
-.contract{
+.section{
+  background:#f9fafb;
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  padding:25px;
+  margin-bottom:25px;
+}
+
+.section h3{
+  margin:0 0 18px;
+  font-size:18px;
+  font-weight:700;
+  color:#0f766e;
+  border-bottom:1px solid #e5e7eb;
+  padding-bottom:8px;
+}
+
+/* ===============================
+   Grid احترافي
+=============================== */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:18px 22px;
+}
+
+/* ===============================
+   الحقول
+=============================== */
+label{
+  display:block;
+  font-size:13px;
+  font-weight:600;
+  color:#374151;
+  margin-bottom:6px;
+}
+
+input,
+select,
+textarea{
+  width:100%;
+  padding:10px 12px;
+  border-radius:8px;
+  border:1px solid #d1d5db;
+  font-family:"Cairo",sans-serif;
   font-size:14px;
 }
 
-.section-title{
-  font-weight:700;
-  margin-top:24px;
-  margin-bottom:12px;
-  color:#0f766e;
-  text-align:center;
+input:focus,
+select:focus,
+textarea:focus{
+  outline:none;
+  border-color:#0f766e;
+  box-shadow:0 0 0 2px rgba(15,118,110,0.15);
+}
+
+textarea{
+  min-height:90px;
+  resize:vertical;
 }
 
 /* ===============================
-   تمييز بيانات المستخدم
+   أزرار
 =============================== */
-.user-data{
-  color:#2563eb;
-  font-weight:600;
-}
-
-/* ===============================
-   فواصل
-=============================== */
-hr{
+button{
+  background:#0f766e;
+  color:#fff;
   border:none;
-  border-top:1px dashed #9ca3af;
-  margin:30px 0;
+  padding:10px 18px;
+  border-radius:10px;
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.25s;
+}
+
+button:hover{
+  background:#115e59;
 }
 
 /* ===============================
-   التوقيعات
+   بيانات العميل
 =============================== */
-.signature{
-  margin-top:50px;
-  display:flex;
-  justify-content:space-between;
-  gap:20px;
+#customerInfo{
+  background:#ecfeff;
+  border:1px dashed #0f766e;
+  padding:15px 18px;
+  border-radius:10px;
+  font-size:14px;
 }
 
-.signature div{
-  width:45%;
-  border-top:1px solid #000;
-  padding-top:10px;
-  text-align:center;
+#customerInfo .user-data{
+  color:#0f766e;
+  font-weight:700;
+}
+
+/* ===============================
+   جدول السجل
+=============================== */
+table{
+  border-radius:10px;
+  overflow:hidden;
   font-size:13px;
 }
 
-/* ===============================
-   ترقيم الصفحات (اختياري)
-=============================== */
-
-@page {
-  @bottom-center {
-    content: "صفحة " counter(page) " من " counter(pages);
-    font-size:11px;
-    color:#6b7280;
-  }
+thead{
+  background:#0f766e;
+  color:#fff;
 }
 
+thead th{
+  font-weight:600;
+}
+
+tbody tr:nth-child(even){
+  background:#f9fafb;
+}
+
+/* ===============================
+   تحسين الطباعة
+=============================== */
+@media print{
+  body{
+    background:#fff;
+  }
+
+  .container{
+    box-shadow:none;
+    border-radius:0;
+    padding:0;
+  }
+
+  .section{
+    border:none;
+    background:#fff;
+    padding:0;
+  }
+}
 
 
 </style>
