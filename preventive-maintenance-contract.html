@@ -171,7 +171,7 @@ hr{
 <h3>ثانياً: إعدادات العقد</h3>
 
 
-<div id="editableContract" class="contract" contenteditable="true">
+<div id="editableContract" class="contract">
 
 
 <div class="grid">
@@ -649,7 +649,10 @@ function openPrintView(contract){
 <title>عقد صيانة وقائية</title>
 
 <style>
-@page {
+/* ===============================
+   إعداد الصفحة
+=============================== */
+@page{
   size: A4;
   margin: 25mm;
 }
@@ -658,24 +661,67 @@ body{
   font-family: "Cairo", Arial, sans-serif;
   color:#111827;
   line-height:1.9;
+  background:#fff;
 }
 
+/* ===============================
+   إخفاء عناصر الواجهة
+=============================== */
+@media print{
+  button,
+  .editor-toolbar{
+    display:none !important;
+  }
+}
+
+/* ===============================
+   الترويسة (Header)
+=============================== */
 .header{
-  text-align:center;
   border-bottom:2px solid #0f766e;
   padding-bottom:10px;
-  margin-bottom:20px;
+  margin-bottom:22px;
 }
 
-.header h1{
+.header-row{
+  display:flex;
+  align-items:center;
+  justify-content:flex-start; /* RTL */
+  gap:12px;
+}
+
+.print-logo{
+  width:38px;        /* حجم احترافي */
+  height:auto;
+}
+
+.header-text{
+  text-align:right;
+}
+
+.header-text h1{
   margin:0;
-  font-size:22px;
-  text-align:center;   /* ⭐ */
+  font-size:20px;
+  font-weight:700;
 }
 
+.header-text p{
+  margin:2px 0;
+  font-size:11px;
+  color:#374151;
+}
+
+.header-text .small{
+  font-size:10px;
+  color:#6b7280;
+}
+
+/* ===============================
+   شريط أدوات التعديل (قبل الطباعة فقط)
+=============================== */
 .editor-toolbar{
   border:1px solid #d1d5db;
-  padding:10px;
+  padding:8px;
   margin-bottom:15px;
   background:#f9fafb;
   text-align:center;
@@ -688,31 +734,49 @@ body{
   font-size:13px;
 }
 
-.user-data{
-  color:#2563eb;       /* أزرق واضح */
-  font-weight:600;
-}
-.header p{
-  margin:4px 0;
-  font-size:12px;
-}
-
+/* ===============================
+   محتوى العقد
+=============================== */
 .contract{
   font-size:14px;
 }
 
+/* ===============================
+   عناوين الأقسام
+=============================== */
 .section-title{
   font-weight:700;
   margin-top:22px;
   margin-bottom:10px;
   color:#0f766e;
-  text-align:center;   /* ⭐ توسيط */
+  text-align:center;
 }
 
+/* ===============================
+   تمييز بيانات المستخدم
+=============================== */
+.user-data{
+  color:#2563eb;
+  font-weight:600;
+}
+
+/* ===============================
+   الفواصل
+=============================== */
+hr{
+  border:none;
+  border-top:1px dashed #9ca3af;
+  margin:28px 0;
+}
+
+/* ===============================
+   التوقيعات
+=============================== */
 .signature{
   margin-top:40px;
   display:flex;
   justify-content:space-between;
+  gap:20px;
 }
 
 .signature div{
@@ -720,46 +784,8 @@ body{
   border-top:1px solid #000;
   padding-top:8px;
   text-align:center;
-}
-
-hr{
-  border:none;
-  border-top:1px dashed #9ca3af;
-  margin:30px 0;
-}
-@media print{
-  button,
-  .editor-toolbar{display:none}
-}
-.page-header{
-  display:flex;
-  align-items:center;
-  gap:15px;
-  border-bottom:2px solid #0f766e;
-  padding-bottom:15px;
-  margin-bottom:25px;
-}
-
-.header-logo{
-  width:55px;
-  height:auto;
-}
-
-.header-text h2{
-  margin:0;
-}
-
-.header-text p{
-  margin:4px 0;
   font-size:13px;
-  color:#374151;
 }
-
-.header-text .small{
-  font-size:12px;
-  color:#6b7280;
-}
-
 </style>
 </head>
 
