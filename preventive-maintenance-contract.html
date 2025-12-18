@@ -773,7 +773,16 @@ function saveContract(){
 }
 
 
+ 
+
+
 function openPrintView(contract){
+
+  if(!contract || !contract.id){
+    alert('خطأ: رقم العقد غير موجود');
+    return;
+  }
+
   const w = window.open('', '_blank');
 
   w.document.write(`
@@ -962,6 +971,7 @@ hr{
 @page{
   @bottom-center{
     content:"RKL Elevators & Escalators | Page " counter(page) " of " counter(pages);
+    content:"Contract No: " attr(data-contract);
     font-size:10px;
     color:#9ca3af;
   }
@@ -989,7 +999,8 @@ hr{
 
 </head>
 
-<body>
+<body data-contract="${contract.id}">
+
 <div class="editor-toolbar">
   <button onclick="format('bold')"><b>B</b></button>
   <button onclick="format('italic')"><i>I</i></button>
