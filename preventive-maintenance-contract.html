@@ -820,6 +820,19 @@ body::before{
   transform:translate(-50%, -50%);
   z-index:-1;
 }
+/* ===============================
+   دعم الاتجاهين (AR / EN)
+=============================== */
+.ar{
+  direction: rtl;
+  text-align: right;
+}
+
+.en{
+  direction: ltr;
+  text-align: left;
+  font-family: Arial, "Segoe UI", sans-serif;
+}
 
 .print-header-row{
   display:flex;
@@ -997,16 +1010,22 @@ hr{
 </div>
 
 
-
-
-
-${contract.content
-  .replace(/\n/g,'<br>')
-  .replace(/بنود العقد:/g,'<div class="section-title">بنود العقد</div>')
-  .replace(/القيمة الإجمالية للعقد:/g,'<div class="section-title">القيمة الإجمالية للعقد</div>')
-  .replace(/بيانات التحويل البنكي:/g,'<div class="section-title">بيانات التحويل البنكي</div>')
-  .replace(/التوقيعات:/g,'<div class="section-title">التوقيعات</div>')
+${
+  contract.lang === 'en'
+    ? `<div class="en">${contract.content.replace(/\n/g,'<br>')}</div>`
+    : contract.lang === 'ar'
+      ? `<div class="ar">${contract.content.replace(/\n/g,'<br>')}</div>`
+      : `
+        <div class="ar">
+          ${contract.content.split('---------------------------------')[0].replace(/\n/g,'<br>')}
+        </div>
+        <hr>
+        <div class="en">
+          ${contract.content.split('---------------------------------')[1].replace(/\n/g,'<br>')}
+        </div>
+      `
 }
+
 </div>
 
 <div class="signature">
