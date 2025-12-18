@@ -993,6 +993,19 @@ hr{
 [contenteditable="true"] i{
   cursor:text;
 }
+.print-footer{
+  position: fixed;
+  bottom: 10mm;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 10px;
+  color: #6b7280;
+}
+
+.print-footer span{
+  margin: 0 6px;
+}
 
 </style>
 
@@ -1069,6 +1082,12 @@ ${
 </div>
 <br>
 <button onclick="window.print()">🖨️ طباعة العقد</button>
+<div class="print-footer">
+  <span>Contract No: <b>${contract.id}</b></span>
+  |
+  <span>Page <span class="pageNumber"></span></span>
+</div>
+
 
 </body>
 </html>
