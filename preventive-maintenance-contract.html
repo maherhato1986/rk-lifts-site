@@ -49,7 +49,8 @@ button:disabled{background:#9ca3af;cursor:not-allowed}
 <!-- ================== إعدادات عامة ================== -->
 <div class="section">
 <h3>ثانياً: إعدادات العقد</h3>
-<div class="contract" contenteditable="true">
+<div id="editableContract" class="contract" contenteditable="true">
+
 <div class="grid">
   <div>
     <label>لغة العقد</label>
@@ -728,8 +729,13 @@ function reviewContract(){
 </script>
   <script>
 function format(cmd, value = null){
+  const editor = document.getElementById('editableContract');
+  if(!editor) return;
+
+  editor.focus(); // ⭐ هذا السطر هو السر
   document.execCommand(cmd, false, value);
 }
+
 </script>
   <script>
 function toggleOtherBrand(){
