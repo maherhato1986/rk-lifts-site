@@ -705,6 +705,22 @@ body{
   padding-bottom:14px;
   margin-bottom:28px;
 }
+/* ===============================
+   خلفية مائية (Watermark)
+=============================== */
+body::before{
+  content:"";
+  position:fixed;
+  top:50%;
+  left:50%;
+  width:420px;
+  height:420px;
+  background:url('/public/images/logo.png') no-repeat center center;
+  background-size:contain;
+  opacity:0.05;              /* شفافية احترافية */
+  transform:translate(-50%, -50%);
+  z-index:-1;
+}
 
 .print-header-row{
   display:flex;
@@ -815,6 +831,24 @@ hr{
     color:#6b7280;
   }
 }
+
+/* ===============================
+   تحرير النص
+=============================== */
+[contenteditable="true"]{
+  cursor:text;
+}
+
+[contenteditable="true"]:focus{
+  outline:none;
+}
+
+[contenteditable="true"] span,
+[contenteditable="true"] b,
+[contenteditable="true"] i{
+  cursor:text;
+}
+
 </style>
 
 
@@ -842,7 +876,7 @@ hr{
     <option value="6">كبير جدًا</option>
   </select>
 </div>
-
+<div id="editableContent" contenteditable="true" class="contract">
 <div class="print-header">
   <div class="print-header-row">
 
@@ -879,7 +913,7 @@ ${contract.content
   <div>توقيع الطرف الأول</div>
   <div>توقيع الطرف الثاني</div>
 </div>
-
+</div>
 <br>
 <button onclick="window.print()">🖨️ طباعة العقد</button>
 
