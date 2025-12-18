@@ -640,7 +640,8 @@ hr{
   <p>السجل التجاري: 1010709355 | هاتف: 0114774021</p>
 </div>
 
-<div class="contract" contenteditable="true">
+<div id="editableContract" class="contract" contenteditable="true">
+
 ${contract.content
   .replace(/\n/g,'<br>')
   .replace(/بنود العقد:/g,'<div class="section-title">بنود العقد</div>')
