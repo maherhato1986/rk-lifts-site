@@ -3,6 +3,8 @@
 
 
 <head>
+  <link rel="icon" type="image/png" href="/public/images/logo.png">
+
 <meta charset="UTF-8">
 <title>عقد صيانة وقائية للمصاعد</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -29,16 +31,29 @@ button:disabled{background:#9ca3af;cursor:not-allowed}
 .review-box{background:#f9fafb;padding:25px;border-radius:10px}
 .en{direction:ltr;font-family:Arial}
 @media print{
-  body{background:#fff}
-  .no-print{display:none}
+  .page-header{
+    border-bottom:2px solid #000;
+  }
 }
+
 </style>
 </head>
 
 <body>
 <div class="container">
 
-<h2>عقد صيانة وقائية للمصاعد</h2>
+<div class="page-header">
+  <img src="rk-lifts-site/public/images/logo.png" class="header-logo" alt="RKL Logo">
+
+  <div class="header-text">
+    <h2>عقد صيانة وقائية للمصاعد</h2>
+    <p>آر كي ال RKL للمصاعد والسلالم الكهربائية</p>
+    <p class="small">
+      السجل التجاري: 1010709355 | هاتف: 0114774021
+    </p>
+  </div>
+</div>
+
 
 <!-- ================== بيانات العميل ================== -->
 <div class="section">
@@ -631,6 +646,35 @@ hr{
   button,
   .editor-toolbar{display:none}
 }
+.page-header{
+  display:flex;
+  align-items:center;
+  gap:15px;
+  border-bottom:2px solid #0f766e;
+  padding-bottom:15px;
+  margin-bottom:25px;
+}
+
+.header-logo{
+  width:55px;
+  height:auto;
+}
+
+.header-text h2{
+  margin:0;
+}
+
+.header-text p{
+  margin:4px 0;
+  font-size:13px;
+  color:#374151;
+}
+
+.header-text .small{
+  font-size:12px;
+  color:#6b7280;
+}
+
 </style>
 </head>
 
