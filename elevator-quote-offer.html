@@ -1244,24 +1244,35 @@ bind('.bind_project_name', q.projectName || '—');
 bind('.bind_project_location', q.projectLocation || '—');
 
 /* =================================================
-   (5) بيانات المصاعد
+   (5) بيانات المصاعد – FINAL
 ================================================= */
+
+// ماركة المصعد
 bind('.bind_brand', q.brandLabel || '—');
+
+// نوع الاستخدام (ثابت حالياً)
 bind('.bind_usage', 'Passenger Elevator');
+
+// عدد المصاعد
 bind('.bind_lifts', q.liftsCount || '—');
+
+// الحمولة الاسمية
 bind('.bind_capacity', q.capacity || '—');
+
+// السرعة
 bind('.bind_speed', q.speed || '—');
+
+// عدد التوقفات (حل نهائي للمشكلة)
 bind('.bind_stops', q.stops || q.floors || '—');
+
+// ارتفاع الدور الواحد FH
 bind('.bind_fh', q.floorHeight ? q.floorHeight + ' mm' : '—');
+
+// ارتفاع الرحلة الكلي TH
 bind('.bind_th', q.travelHeight ? q.travelHeight + ' mm' : '—');
+
+// نظام التركيب
 bind('.bind_machine_type', q.machineType || 'MRL – Machine Room Less');
-
-/* ارتفاع الرحلة */
-bind(
-  '.bind_travel_height',
-  q.travelHeight ? q.travelHeight + ' mm' : '—'
-);
-
 
 
 /* =================================================
@@ -1648,6 +1659,7 @@ window.addEventListener('load', () => {
 
 </body>
 </html>
+
 
 
 
