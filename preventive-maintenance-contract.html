@@ -1,8 +1,5 @@
 <!DOCTYPE html>
-
-
-
-<!DOCTYPE html>
+<html lang="ar" dir="rtl">
 
 
 <head>
@@ -104,11 +101,27 @@ button:disabled{background:#9ca3af;cursor:not-allowed}
       <option value="panoramic">بانورامي</option>
     </select>
   </div>
+  <div id="otherBrandBox" style="display:none">
+  <label>اسم الماركة / التوضيح</label>
+  <input id="brandOther"
+         placeholder="مثال: مصعد ركاب – مشروع برج السلام">
+</div>
+<div>
+  <label>ماركة المصعد</label>
+  <select id="brandSelect" onchange="toggleOtherBrand()">
+    <option value="">-- اختر --</option>
+    <option value="Otis">Otis</option>
+    <option value="KONE">KONE</option>
+    <option value="Mitsubishi">Mitsubishi</option>
+    <option value="Schindler">Schindler</option>
+    <option value="Fuji">Fuji</option>
+    <option value="Local">تجميع محلي</option>
+    <option value="Other">أخرى</option>
+  </select>
+</div>
 
-  <div>
-    <label>ماركة المصعد</label>
-    <input id="brandName" placeholder="Otis / KONE / Mitsubishi ...">
-  </div>
+
+
 
   <div>
     <label>حمولة المصعد (كجم)</label>
@@ -233,7 +246,12 @@ document.addEventListener('DOMContentLoaded',()=>{
   const lang = document.getElementById('lang').value;
   const date = document.getElementById('contractDate').value;
   const lifts = document.getElementById('lifts').value;
-  const brand = document.getElementById('brandName').value;
+  const brandSelect = document.getElementById('brandSelect').value;
+const brandOther  = document.getElementById('brandOther')?.value || '';
+const brand = (brandSelect === 'Other' || brandSelect === 'Local')
+  ? brandOther
+  : brandSelect;
+
   const buildingType = document.getElementById('building').value === 'government'
     ? 'حكومي'
     : 'خاص';
@@ -643,6 +661,14 @@ function format(cmd, value = null){
   document.execCommand(cmd, false, value);
 }
 </script>
+  <script>
+function toggleOtherBrand(){
+  const select = document.getElementById('brandSelect').value;
+  document.getElementById('otherBrandBox').style.display =
+    (select === 'Other' || select === 'Local') ? 'block' : 'none';
+}
+</script>
+
 
 
 </body>
