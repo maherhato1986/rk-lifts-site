@@ -297,10 +297,10 @@ th {
 }
 
 .en81-active .en81-count {
-  background: #dcfce7;
-  color: #166534;
-  font-weight: 700;
-  text-align: center;
+  background: #dcfce7 !important;
+  color: #166534 !important;
+  font-weight: 700 !important;
+  text-align: center !important;
 }
 
   /* منع زيادة ارتفاع الصفوف */
@@ -947,8 +947,8 @@ th {
 التنفيذية المعتمدة، دون الإخلال بمتطلبات السلامة أو الأداء.
 </p>
 
-   <div class="section-title">
-ملحق (ب): جدول المقاسات القياسية المعتمدة حسب EN81
+<div class="section-title">
+  ملحق (ب): جدول المقاسات القياسية المعتمدة حسب EN81
 </div>
 
 <table>
@@ -964,50 +964,78 @@ th {
     </tr>
   </thead>
 
+  <!-- ✅ مهم: ID للـ tbody حتى يشتغل السكربت -->
   <tbody id="en81-table">
 
-<tr data-capacity="450">
-  <td>450</td>
-  <td class="en81-count">0</td>
-  <td>1100 × 1000</td>
-  <td>1700 × 1500</td>
-  <td>700</td>
-  <td>1200</td>
-  <td>3500</td>
-</tr>
+    <tr data-capacity="450">
+      <td>450</td>
+      <td class="en81-count" style="font-weight:bold;text-align:center;background:#eef2ff">0</td>
+      <td>1100 × 1000</td>
+      <td>1700 × 1500</td>
+      <td>700</td>
+      <td>1200</td>
+      <td>3500</td>
+    </tr>
 
-<tr data-capacity="630">
-  <td>630</td>
-  <td class="en81-count">0</td>
-  <td>1400 × 1100</td>
-  <td>1800 × 1600</td>
-  <td>800</td>
-  <td>1200</td>
-  <td>3500</td>
-</tr>
+    <tr data-capacity="630">
+      <td>630</td>
+      <td class="en81-count" style="font-weight:bold;text-align:center;background:#eef2ff">0</td>
+      <td>1400 × 1100</td>
+      <td>1800 × 1600</td>
+      <td>800</td>
+      <td>1200</td>
+      <td>3500</td>
+    </tr>
 
-<tr data-capacity="800">
-  <td>800</td>
-  <td class="en81-count">0</td>
-  <td>1400 × 1350</td>
-  <td>2000 × 1600</td>
-  <td>900</td>
-  <td>1300</td>
-  <td>3600</td>
-</tr>
+    <tr data-capacity="800">
+      <td>800</td>
+      <td class="en81-count" style="font-weight:bold;text-align:center;background:#eef2ff">0</td>
+      <td>1400 × 1350</td>
+      <td>2000 × 1600</td>
+      <td>900</td>
+      <td>1300</td>
+      <td>3600</td>
+    </tr>
 
-<!-- أكمل باقي الصفوف -->
-</tbody>
+    <tr data-capacity="1000">
+      <td>1000</td>
+      <td class="en81-count" style="font-weight:bold;text-align:center;background:#eef2ff">0</td>
+      <td>1500 × 1600</td>
+      <td>2200 × 1800</td>
+      <td>900</td>
+      <td>1400</td>
+      <td>3700</td>
+    </tr>
 
+    <tr data-capacity="1275">
+      <td>1275</td>
+      <td class="en81-count" style="font-weight:bold;text-align:center;background:#eef2ff">0</td>
+      <td>1600 × 1800</td>
+      <td>2400 × 1900</td>
+      <td>1100</td>
+      <td>1400</td>
+      <td>3800</td>
+    </tr>
+
+    <tr data-capacity="1600">
+      <td>1600</td>
+      <td class="en81-count" style="font-weight:bold;text-align:center;background:#eef2ff">0</td>
+      <td>2000 × 1800</td>
+      <td>2600 × 2400</td>
+      <td>1100</td>
+      <td>1500</td>
+      <td>4000</td>
+    </tr>
+
+  </tbody>
 </table>
 
-
-
-   <p style="font-size:11px; color:#6b7280; margin-top:8px">
-جميع القيم الواردة في الجدول أعلاه هي قيم إرشادية وفق معيار EN81،
-وتخضع للتعديل بما يتوافق مع حالة الموقع والمخططات التنفيذية النهائية
-(Final Shop Drawings) المعتمدة من الاستشاري والجهات المختصة.
+<p style="font-size:11px; color:#6b7280; margin-top:8px">
+  جميع القيم الواردة في الجدول أعلاه هي قيم إرشادية وفق معيار EN81،
+  وتخضع للتعديل بما يتوافق مع حالة الموقع والمخططات التنفيذية النهائية
+  (Final Shop Drawings) المعتمدة من الاستشاري والجهات المختصة.
 </p>
+
 
 
 
@@ -1259,6 +1287,7 @@ bind('.bind_machine_type', q.machineType || 'MRL – Machine Room Less');
 function highlightEN81Row() {
   if (!window.q) return;
 
+  // استخراج رقم الحمولة من نص مثل: "kg 630" أو "630 kg"
   const capacity = String(q.capacity || '').replace(/[^\d]/g, '');
   const lifts    = Number(q.liftsCount || 1);
 
@@ -1278,8 +1307,8 @@ function highlightEN81Row() {
   });
 }
 
-// تشغيل تلقائي
 window.addEventListener('load', highlightEN81Row);
+
 
 /* =================================================
    (3) البيانات الفنية الرئيسية – ربط نهائي صحيح
@@ -1609,6 +1638,7 @@ window.addEventListener('load', () => {
 
 </body>
 </html>
+
 
 
 
