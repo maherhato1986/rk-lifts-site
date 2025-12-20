@@ -3,6 +3,52 @@
 <head>
    
 <style>
+
+   /* =================================================
+   PRINT FIX – EN81 DIAGRAM PAGE (PAGE 6)
+================================================= */
+@media print {
+
+  /* تأكيد أن الصفحة لا تنكسر */
+  .page.en81-page {
+    page-break-after: always !important;
+    break-inside: avoid !important;
+  }
+
+  /* تخطيط الصفحة */
+  .en81-layout {
+    display: grid !important;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 18px;
+    align-items: center;
+    margin-top: 10mm;
+  }
+
+  /* تكبير المخطط */
+  .diagram-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .diagram-container svg {
+    max-width: 100%;
+    height: auto;
+    transform: scale(1.08);
+  }
+
+  /* ضبط الجدول */
+  .en81-table table {
+    font-size: 11px;
+  }
+
+  .en81-table th,
+  .en81-table td {
+    padding: 6px 8px;
+  }
+
+}
+
 /* ===============================
    HEADER (Final – Print Safe)
 =============================== */
@@ -802,8 +848,7 @@ consultants, and regulatory authorities across the Kingdom.
 ================================================= -->      
 <div class="page">
 
-  <div class="page-header">
-
+  <div class="en81-layout">
 
   <!-- شعار ثابت -->
   <img src="/public/images/logo.png" class="header-logo" alt="RKL Logo">
@@ -874,7 +919,7 @@ consultants, and regulatory authorities across the Kingdom.
   </tbody>
 </table>
 
-
+</div>
    
 
   <!-- ✅ المخطط الهندسي -->
@@ -941,12 +986,6 @@ consultants, and regulatory authorities across the Kingdom.
 
 
 </div>
-
-
-
-
-</div>
-
 
 
 </div>
@@ -1678,6 +1717,7 @@ window.addEventListener('load', () => {
 
 </body>
 </html>
+
 
 
 
