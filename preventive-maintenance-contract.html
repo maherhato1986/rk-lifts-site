@@ -798,10 +798,6 @@ function openPrintView(contract){
 /* ===============================
    إعداد صفحة A4
 =============================== */
-@page{
-  size: A4;
-  margin: 22mm 20mm;
-}
 
 body{
   font-family: "Cairo", "Tajawal", Arial, sans-serif;
@@ -968,20 +964,7 @@ hr{
   font-size:13px;
 }
 
-/* ===============================
-   ترقيم الصفحات
-=============================== */
-@page {
-  size: A4;
-  margin: 22mm 20mm 28mm 20mm; /* مساحة للفوتر */
-}
 
-
-
-.print-footer::after {
-  content: "Contract No: " attr(data-contract)
-           " | Page " counter(page) " of " counter(pages);
-}
 
 
 /* ===============================
@@ -1000,15 +983,7 @@ hr{
 [contenteditable="true"] i{
   cursor:text;
 }
-.print-footer{
-  position: fixed;
-  bottom: 10mm;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: 10px;
-  color: #6b7280;
-}
+
 
 .print-footer span{
   margin: 0 6px;
@@ -1037,12 +1012,34 @@ body {
   }
 }
 
+@page {
+  size: A4;
+  margin: 22mm 20mm 30mm 20mm;
+}
+
+.print-footer {
+  position: fixed;
+  bottom: 10mm;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 10px;
+  color: #6b7280;
+}
+
+.print-footer::after {
+  content: "Contract No: " attr(data-contract)
+           " | Page " counter(page) " of " counter(pages);
+}
+
+
 </style>
 
 
 </head>
 
-<body data-contract="${contract.id}">
+<body>
+<div class="print-footer" data-contract="${contract.id}"></div>
 
 <div class="editor-toolbar">
   <button onclick="format('bold')"><b>B</b></button>
