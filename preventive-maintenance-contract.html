@@ -426,11 +426,9 @@ tbody tr:nth-child(even){
 
 <label style="margin-top:15px">ملاحظات إضافية</label>
 <textarea id="notes"></textarea>
-<button onclick="saveContract()">💾 حفظ العقد</button>
-
 
 </div>
-
+<button onclick="saveContract()">💾 حفظ العقد</button>
 <!-- ================== مراجعة العقد ================== -->
 <div class="section" id="reviewSection" style="display:none">
 <h3>خامساً: مراجعة العقد</h3>
@@ -732,10 +730,11 @@ function calculateTotal(){
 
 function saveContract(){
 
-  if(!customer){
-    alert('بيانات العميل غير موجودة');
-    return;
-  }
+ if(!customer){
+  alert('بيانات العميل غير موجودة');
+  return;
+}
+
 
   const required = ['lang','contractDate','lifts','capacity','floors'];
   for(const id of required){
@@ -1135,7 +1134,12 @@ function reviewContract(){
   const lifts=Number(document.getElementById('lifts').value);
   const floors=Number(document.getElementById('floors').value);
   const building=document.getElementById('building').value;
-  const brand=document.getElementById('brandName').value.toLowerCase();
+  const brandSelect = document.getElementById('brandSelect').value || '';
+const brandOther  = document.getElementById('brandOther')?.value || '';
+const brand = (brandSelect === 'Other' || brandSelect === 'Local')
+  ? brandOther.toLowerCase()
+  : brandSelect.toLowerCase();
+
 
   if(floors>2) price*=1.10;
   if(building==='government') price*=1.50;
@@ -1145,6 +1149,8 @@ function reviewContract(){
 
   const vat=price*lifts*0.15;
   const total=price*lifts+vat;
+  const calc = calculateTotal();
+
 
   document.getElementById('reviewBox').innerHTML=`
     <p><b>عدد المصاعد:</b> ${lifts}</p>
