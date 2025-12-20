@@ -1153,9 +1153,9 @@ body {
 
 ${
   contract.lang === 'en'
-    ? `<div class="en">${contract.content.replace(/\n/g,'<br>')}</div>`
+    ? `<div class="en">${contract.content}</div>`
     : contract.lang === 'ar'
-      ? `<div class="ar">${contract.content.replace(/\n/g,'<br>')}</div>`
+      ? `<div class="ar">${contract.content}</div>`
       : `
         <div class="ar">
           ${contract.content.split('---------------------------------')[0].replace(/\n/g,'<br>')}
