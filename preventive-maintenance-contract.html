@@ -236,6 +236,59 @@ tbody tr:nth-child(even){
   color:#0f766e;
 }
 
+  .contract-summary{
+  background:#f8fafc;
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  padding:18px 20px;
+  margin:22px 0;
+}
+
+.contract-summary h4{
+  margin:0 0 14px;
+  text-align:center;
+  font-size:16px;
+  font-weight:700;
+  color:#0f766e;
+  border-bottom:1px solid #e5e7eb;
+  padding-bottom:8px;
+}
+
+.contract-summary table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:14px;
+}
+
+.contract-summary td{
+  padding:8px 6px;
+}
+
+.contract-summary tr:not(:last-child){
+  border-bottom:1px dashed #e5e7eb;
+}
+
+.contract-summary .label{
+  color:#374151;
+}
+
+.contract-summary .value{
+  text-align:left;
+  font-weight:600;
+}
+
+.contract-summary .total{
+  font-size:15px;
+  font-weight:800;
+  color:#0f766e;
+}
+
+.contract-summary .words{
+  margin-top:10px;
+  font-size:13px;
+  color:#374151;
+}
+
 
 
 </style>
@@ -533,21 +586,34 @@ const brand = (brandSelect === 'Other' || brandSelect === 'Local')
 
 6- يقوم الطرف الأول بتنفيذ خدمات الصيانة المذكورة أعلاه مقابل أجور الصيانة السنوية المتفق عليها، والتي يلتزم الطرف الثاني بسدادها وفق التفاصيل التالية:
 
-القيمة الإجمالية للعقد:
+<div class="contract-summary">
+  <h4>ملخص القيمة الإجمالية للعقد</h4>
 
-• قيمة العقد قبل ضريبة القيمة المضافة:
-(${(calc.total / 1.15).toFixed(2)}) ريال سعودي
+  <table>
+    <tr>
+      <td class="label">قيمة العقد قبل ضريبة القيمة المضافة</td>
+      <td class="value">${(calc.total / 1.15).toFixed(2)} ريال سعودي</td>
+    </tr>
+    <tr>
+      <td class="label">ضريبة القيمة المضافة (15%)</td>
+      <td class="value">${(calc.total - (calc.total / 1.15)).toFixed(2)} ريال سعودي</td>
+    </tr>
+    <tr>
+      <td class="label total">إجمالي قيمة العقد شامل الضريبة</td>
+      <td class="value total">${calc.total.toFixed(2)} ريال سعودي</td>
+    </tr>
+  </table>
 
-• ضريبة القيمة المضافة (15%):
-(${(calc.total - (calc.total / 1.15)).toFixed(2)}) ريال سعودي
+  <div class="words">
+    <b>إجمالي قيمة العقد كتابةً:</b><br>
+    ${calc.total.toFixed(2)} ريال سعودي
+  </div>
+</div>
 
-• إجمالي قيمة العقد شامل ضريبة القيمة المضافة:
-(${calc.total.toFixed(2)}) ريال سعودي
-
-
-• إجمالي قيمة العقد كتابةً:
-${calc.total.toFixed(2)} ريال سعودي
-
+<p>
+يُعد هذا المبلغ ملزمًا للطرفين بعد اعتماد العقد، ولا يشمل أي أعمال أو قطع غيار إضافية
+ما لم يتم الاتفاق عليها بعرض سعر مستقل وخطي.
+</p>
 
 • تاريخ بداية العقد:
 ${date}
