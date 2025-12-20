@@ -791,7 +791,7 @@ function openPrintView(contract){
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>عقد صيانة وقائية</title>
+<title>${contract.id}</title>
 <style>
 /* ===============================
    إعداد صفحة A4
@@ -969,14 +969,26 @@ hr{
 /* ===============================
    ترقيم الصفحات
 =============================== */
-@page{
-  @bottom-center{
-    content:"RKL Elevators & Escalators | Page " counter(page) " of " counter(pages);
-    content:"Contract No: " attr(data-contract);
-    font-size:10px;
-    color:#9ca3af;
-  }
+@page {
+  size: A4;
+  margin: 22mm 20mm 28mm 20mm; /* مساحة للفوتر */
 }
+
+.print-footer {
+  position: fixed;
+  bottom: 10mm;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 10px;
+  color: #6b7280;
+}
+
+.print-footer::after {
+  content: "Contract No: " attr(data-contract)
+           " | Page " counter(page) " of " counter(pages);
+}
+
 
 /* ===============================
    تحرير النص
@@ -1007,6 +1019,29 @@ hr{
 .print-footer span{
   margin: 0 6px;
 }
+/* ===== خلفية الورق ===== */
+body {
+  background: #f8f6f1; /* لون ورق مروّس فاخر */
+}
+
+/* ===== إطار الصفحة ===== */
+.page-frame {
+  border: 1.5px solid #0f766e;
+  padding: 18px;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
+/* عند الطباعة */
+@media print {
+  body {
+    background: #f8f6f1;
+  }
+
+  .page-frame {
+    border: 1.5px solid #0f766e;
+  }
+}
 
 </style>
 
@@ -1036,7 +1071,9 @@ hr{
     <option value="6">كبير جدًا</option>
   </select>
 </div>
-<div id="editableContent" contenteditable="true" class="contract">
+<div class="page-frame">
+  <div id="editableContent" contenteditable="true" class="contract">
+
 <div class="print-header">
   <div class="print-header-row">
 
@@ -1088,6 +1125,7 @@ ${
   |
   <span>Page <span class="pageNumber"></span></span>
 </div>
+<div class="print-footer" data-contract="${contract.id}"></div>
 
 
 </body>
