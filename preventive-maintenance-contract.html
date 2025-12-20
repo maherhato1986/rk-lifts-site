@@ -542,8 +542,10 @@ const brand = (brandSelect === 'Other' || brandSelect === 'Local')
 • إجمالي قيمة العقد شامل ضريبة القيمة المضافة:
 (${calc.total.toFixed(2)}) ريال سعودي
 
+
 • إجمالي قيمة العقد كتابةً:
-${numberToArabicWords(Math.round(calc.total))}
+${calc.total.toFixed(2)} ريال سعودي
+
 
 • تاريخ بداية العقد:
 ${date}
@@ -1171,6 +1173,10 @@ function toggleOtherBrand(){
   document.getElementById('otherBrandBox').style.display =
     (select === 'Other' || select === 'Local') ? 'block' : 'none';
 }
+    function numberToArabicWords(num){
+  return num.toLocaleString('ar-SA');
+}
+
 </script>
 
 
