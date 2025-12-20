@@ -217,11 +217,17 @@ th {
    .coverage-table table {
   font-size: 11px;
 }
-
+  .diagram-container svg {
+    transform: scale(1.05);
+  }
+   .diagram-container {
+  align-items: center;
+}
 .coverage-table th,
 .coverage-table td {
   padding: 5px 6px;
 }
+   
 
   html, body {
     margin: 0 !important;
@@ -307,13 +313,13 @@ th {
     margin-bottom: 6px !important;
     line-height: 1.6 !important;
   }
-   .en81-layout {
+ .en81-layout {
   display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  gap: 16px;
-  align-items: start;
-  margin-top: 10px;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 20px;
+  align-items: center;
 }
+   
 /* ===== EN81 Auto Highlight ===== */
 .en81-active {
   background: #f0fdf4 !important;
@@ -548,8 +554,7 @@ th {
 
 </div>
 
-
-  <div style="display:flex;gap:30px;margin-top:20px;align-items:flex-start">
+<div class="page-coverage">
 
     <!-- صورة الخريطة -->
     <div style="width:50%">
@@ -1673,6 +1678,7 @@ window.addEventListener('load', () => {
 
 </body>
 </html>
+
 
 
 
