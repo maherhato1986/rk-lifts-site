@@ -1400,7 +1400,7 @@ window.addEventListener('load', highlightEN81Row);
 ================================================= */
 
 bind('.bind_brand', q.brandLabel);                 // ماركة المصعد / النظام
-bind('.bind_usage', inferUsage(q.projectName));   // الاستخدام
+
 bind('.bind_capacity', q.capacity);               // الحمولة
 bind('.bind_speed', q.speed);                     // السرعة
 bind('.bind_stops', q.stops);                     // عدد التوقفات
@@ -1455,15 +1455,9 @@ if (q.cabinSize) {
   bind('.bind_cabin_width', cw);
   bind('.bind_cabin_depth', cd);
 }
+if (!q.shaftSize) q.shaftSize = "1700 x 1500";
+if (!q.cabinSize) q.cabinSize = "1100 x 1000";
 
-// Shaft: "1700 x 1500"
-if (q.shaftSize) {
-  const [sw, sd] = q.shaftSize.split('x').map(v => v.trim());
- // لازم تكون القيمة: "1700 x 1500"
-q.shaftSize = "1700 x 1500";
-q.cabinSize = "1100 x 1000";
-
-}
 
 // Door: "700 x 2100" أو "700"
 if (q.doorSize) {
@@ -1745,6 +1739,7 @@ window.addEventListener('load', () => {
 
 </body>
 </html>
+
 
 
 
