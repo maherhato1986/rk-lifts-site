@@ -46,7 +46,7 @@ body{
 }
   .print-logo{ width:38px }
 .print-header{
-  border-bottom:1.5px solid #0f766e;
+  margin-bottom: 16px;
 }
 
 
@@ -219,8 +219,7 @@ tbody tr:nth-child(even){
   margin:14px auto 25px;
 }
 .contract p{
-  padding-right:10px;
-  border-right:3px solid #e5e7eb;
+  margin: 4px 0;
 }
 .contract p strong{
   color:#0f766e;
@@ -585,6 +584,7 @@ const brand = (brandSelect === 'Other' || brandSelect === 'Local')
 5- يوافق الطرف الثاني على تحمّل تكلفة استبدال قطع الغيار التالفة بأخرى أصلية على نفقته الخاصة.
 
 6- يقوم الطرف الأول بتنفيذ خدمات الصيانة المذكورة أعلاه مقابل أجور الصيانة السنوية المتفق عليها، والتي يلتزم الطرف الثاني بسدادها وفق التفاصيل التالية:
+<div class="page-break"></div>
 
 <div class="contract-summary">
   <h4>ملخص القيمة الإجمالية للعقد</h4>
@@ -887,9 +887,7 @@ body{
    الترويسة الرسمية
 =============================== */
 .print-header{
-  border-bottom:2px solid #0f766e;
-  padding-bottom:14px;
-  margin-bottom:28px;
+  margin-bottom: 16px;
 }
  .print-watermark{
     position:fixed;
@@ -985,14 +983,9 @@ body::before{
 /* ===============================
    عناوين الأقسام
 =============================== */
+
 .section-title{
-  margin:26px 0 12px;
-  font-size:15px;
-  font-weight:700;
-  color:#0f766e;
-  text-align:center;
-  border-bottom:1px solid #e5e7eb;
-  padding-bottom:6px;
+  margin: 18px 0 8px;
 }
 
 /* ===============================
@@ -1029,7 +1022,12 @@ hr{
   text-align:center;
   font-size:13px;
 }
-
+.signature{
+  page-break-inside: avoid;
+}
+.page-break{
+  page-break-before: always;
+}
 
 
 
@@ -1080,7 +1078,7 @@ body {
 
 @page {
   size: A4;
-  margin: 22mm 20mm 30mm 20mm;
+  margin: 18mm 18mm 22mm 18mm;
 }
 
 .print-footer {
@@ -1168,6 +1166,7 @@ ${
 }
 
 </div>
+<div class="page-break"></div>
 
 <div class="signature">
   <div>توقيع الطرف الأول</div>
