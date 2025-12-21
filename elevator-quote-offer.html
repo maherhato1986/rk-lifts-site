@@ -880,51 +880,53 @@ consultants, and regulatory authorities across the Kingdom.
   </div>
 
   <!-- ================= CONTENT GRID ================= -->
-  <div class="en81-grid">
+<div class="en81-grid">
 
-    <!-- ===== LEFT: TABLE ===== -->
-    <table class="tech-table compact">
-      <thead>
-        <tr>
-          <th>م</th>
-          <th>البند</th>
-          <th>القيمة (mm)</th>
-          <th>ملاحظات</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>1</td>
-          <td>مقاس بئر المصعد</td>
-          <td class="bind_dim_shaft">—</td>
-          <td>حسب EN81 / الموقع</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>مقاس الكابينة</td>
-          <td class="bind_dim_cabin">—</td>
-          <td>حسب EN81</td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td>عمق الحفرة (Pit)</td>
-          <td class="bind_pit">—</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td>الأبواب</td>
-          <td>طبقاً للتصميم المعتمد</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>5</td>
-          <td>ارتفاع أعلى البئر (OH)</td>
-          <td class="bind_oh">—</td>
-          <td></td>
-        </tr>
-      </tbody>
-    </table>
+  <table class="tech-table compact">
+    <thead>
+      <tr>
+        <th>م</th>
+        <th>البند</th>
+        <th>القيمة (mm)</th>
+        <th>ملاحظات</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>مقاس بئر المصعد</td>
+        <td data-bind="shaftSize">—</td>
+        <td>حسب EN81 / الموقع</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>مقاس الكابينة</td>
+        <td data-bind="cabinSize">—</td>
+        <td>حسب EN81</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>عمق الحفرة (Pit)</td>
+        <td data-bind="pit">—</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>الأبواب</td>
+        <td>طبقاً للتصميم المعتمد</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>ارتفاع أعلى البئر (OH)</td>
+        <td data-bind="oh">—</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+
 
     <!-- ===== RIGHT: DIAGRAMS ===== -->
     <div class="diagram-container compact">
@@ -1715,49 +1717,31 @@ window.addEventListener('load', () => {
 </script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
 
   const index = localStorage.getItem('rkl_current_quote_index');
-  if (index === null) {
-    console.warn('No current quote index');
-    return;
-  }
+  if (index === null) return;
 
   const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
   const q = quotes[index];
+  if (!q) return;
 
-  if (!q) {
-    console.warn('Quote not found in storage');
-    return;
-  }
-
-  /* ===== EN81 BINDING ===== */
-  if (q.shaftSize) {
-    const el = document.querySelector('.bind_dim_shaft');
-    if (el) el.textContent = q.shaftSize;
-  }
-
-  if (q.cabinSize) {
-    const el = document.querySelector('.bind_dim_cabin');
-    if (el) el.textContent = q.cabinSize;
-  }
-
-  if (q.pit) {
-    const el = document.querySelector('.bind_pit');
-    if (el) el.textContent = q.pit;
-  }
-
-  if (q.oh) {
-    const el = document.querySelector('.bind_oh');
-    if (el) el.textContent = q.oh;
-  }
+  // تعبئة جدول EN81
+  document.querySelectorAll('[data-bind]').forEach(el => {
+    const key = el.getAttribute('data-bind');
+    if (q[key] !== undefined && q[key] !== null && q[key] !== '') {
+      el.textContent = q[key];
+    }
+  });
 
 });
 </script>
 
 
+
 </body>
 </html>
+
 
 
 
