@@ -255,7 +255,9 @@ th {
   break-inside: avoid !important;
   page-break-inside: avoid !important;
 }
-   
+     .price-adjust-section {
+    display: none !important;
+  }
 .page-coverage img {
   max-height: 210mm; /* ضمان عدم تجاوز ارتفاع الصفحة */
   object-fit: contain;
@@ -1197,15 +1199,20 @@ consultants, and regulatory authorities across the Kingdom.
 <!-- ===============================
   7-2) تعديل السعر قبل الضريبة (اختياري)
 ================================ -->
-<div class="section-title">7-2) تعديل السعر قبل الضريبة (اختياري)</div>
+<div class="price-adjust-section">
 
-<select id="adjustmentType">
-  <option value="none">بدون تعديل</option>
-  <option value="discount">خصم</option>
-  <option value="increase">زيادة</option>
-</select>
+  <div class="section-title">7-2) تعديل السعر قبل الضريبة (اختياري)</div>
 
-<input type="number" id="adjustmentValue" placeholder="أدخل المبلغ">
+  <select id="adjustmentType">
+    <option value="none">بدون تعديل</option>
+    <option value="discount">خصم</option>
+    <option value="increase">زيادة</option>
+  </select>
+
+  <input type="number" id="adjustmentValue" placeholder="أدخل المبلغ">
+
+</div>
+
 
 <!-- ===============================
   7-3) جدول الدفعات المقترح
@@ -1720,6 +1727,7 @@ window.addEventListener('load', () => {
 
 </body>
 </html>
+
 
 
 
