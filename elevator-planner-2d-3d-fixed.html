@@ -116,44 +116,42 @@
   buildElevator();
   animate();
 
-  function init() {
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0b1220);
+function init() {
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x0b1220);
 
-    camera = new THREE.PerspectiveCamera(
-  60,
-  viewer.clientWidth / viewer.clientHeight,
-  1,
-  50000
-);
+  const viewer = document.getElementById('viewer'); // ✅ لازم أول شي
 
-    camera.position.set(4000, 6000, 9000);
-    camera.lookAt(0, 3000, 0);
+  camera = new THREE.PerspectiveCamera(
+    60,
+    viewer.clientWidth / viewer.clientHeight,
+    1,
+    50000
+  );
 
-    renderer = new THREE.WebGLRenderer({ antialias: true });
-    const viewer = document.getElementById('viewer');
+  camera.position.set(4000, 6000, 9000);
+  camera.lookAt(0, 3000, 0);
 
-renderer.setSize(
-  viewer.clientWidth,
-  viewer.clientHeight
-);
+  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(viewer.clientWidth, viewer.clientHeight);
 
-    document.getElementById('viewer').appendChild(renderer.domElement);
+  viewer.appendChild(renderer.domElement);
 
-    scene.add(new THREE.AmbientLight(0xffffff, 0.8));
-    const dir = new THREE.DirectionalLight(0xffffff, 0.6);
-    dir.position.set(3000, 8000, 5000);
-    scene.add(dir);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.8));
 
- window.addEventListener('resize', () => {
-  const w = viewer.clientWidth;
-  const h = viewer.clientHeight;
-  camera.aspect = w / h;
-  camera.updateProjectionMatrix();
-  renderer.setSize(w, h);
-});
+  const dir = new THREE.DirectionalLight(0xffffff, 0.6);
+  dir.position.set(3000, 8000, 5000);
+  scene.add(dir);
 
-  }
+  window.addEventListener('resize', () => {
+    const w = viewer.clientWidth;
+    const h = viewer.clientHeight;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+  });
+}
+
 
   function buildElevator() {
     // remove old
