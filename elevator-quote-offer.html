@@ -1534,6 +1534,28 @@ function renderPayments(q) {
   });
 }
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+  const index = localStorage.getItem('rkl_current_quote_index');
+  if (index === null) return;
+
+  const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
+  const q = quotes[index];
+  if (!q) return;
+
+  document.querySelector('.bind_brand')?.textContent     = q.brandLabel || '—';
+  document.querySelector('.bind_capacity')?.textContent  = q.capacity || '—';
+  document.querySelector('.bind_speed')?.textContent     = q.speed || '—';
+  document.querySelector('.bind_floors')?.textContent    = q.floors || '—';
+
+  document.querySelector('.bind_dim_cabin')?.textContent = q.cabinSize || '—';
+  document.querySelector('.bind_dim_shaft')?.textContent = q.shaftSize || '—';
+  document.querySelector('.bind_pit')?.textContent       = q.pit || '—';
+  document.querySelector('.bind_oh')?.textContent        = q.oh || '—';
+
+});
+</script>
 
 <script>
 function syncEditableFieldsToStorage() {
@@ -1723,6 +1745,7 @@ window.addEventListener('load', () => {
 
 </body>
 </html>
+
 
 
 
