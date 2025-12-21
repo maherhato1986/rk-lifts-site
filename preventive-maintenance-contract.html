@@ -288,6 +288,133 @@ tbody tr:nth-child(even){
   color:#374151;
 }
 
+/* =================================================
+   Mobile Responsive Support – RKL
+================================================= */
+
+/* منع تكبير iOS داخل الحقول */
+input,
+select,
+textarea,
+button {
+  font-size: 16px;
+  touch-action: manipulation;
+}
+
+/* لف الجداول للتمرير الأفقي */
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ===============================
+   Mobile Layout
+=============================== */
+@media (max-width: 768px) {
+
+  /* الحاوية الرئيسية */
+  .container {
+    margin: 10px auto;
+    padding: 16px 14px;
+    border-radius: 10px;
+  }
+
+  /* العنوان */
+  .page-header {
+    margin-bottom: 20px;
+  }
+
+  .page-header h2 {
+    font-size: 20px;
+    line-height: 1.4;
+  }
+
+  .page-header p {
+    font-size: 12px;
+  }
+
+  /* الكروت */
+  .section {
+    padding: 16px;
+    margin-bottom: 18px;
+  }
+
+  .section h3 {
+    font-size: 16px;
+    margin-bottom: 14px;
+  }
+
+  /* النماذج – عمود واحد */
+  .grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px;
+  }
+
+  /* الحقول */
+  label {
+    font-size: 12px;
+  }
+
+  input,
+  select,
+  textarea {
+    padding: 12px;
+    font-size: 16px;
+  }
+
+  textarea {
+    min-height: 110px;
+  }
+
+  /* الأزرار */
+  button {
+    width: 100%;
+    padding: 12px;
+    font-size: 15px;
+    border-radius: 10px;
+  }
+
+  /* أزرار متعددة */
+  .actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* الجداول */
+  table {
+    min-width: 780px;
+  }
+
+  /* مراجعة العقد */
+  #reviewBox p {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* ترويسة الطباعة داخل المعاينة */
+  .print-header h1 {
+    font-size: 18px;
+  }
+}
+
+/* ===============================
+   Small Phones
+=============================== */
+@media (max-width: 420px) {
+
+  .page-header h2 {
+    font-size: 18px;
+  }
+
+  .section h3 {
+    font-size: 15px;
+  }
+
+  button {
+    font-size: 14px;
+  }
+}
 
 
 </style>
@@ -1273,69 +1400,7 @@ function toggleOtherBrand(){
 
 </script>
 
-/* =================================================
-   Mobile Responsive Support
-================================================= */
 
-/* منع تكبير iOS داخل الحقول */
-input, select, textarea, button {
-  font-size: 16px;
-}
-
-/* تحسين الحاوية للجوال */
-@media (max-width: 768px) {
-
-  .container {
-    margin: 10px auto;
-    padding: 16px 14px;
-    border-radius: 10px;
-  }
-
-  .page-header h2 {
-    font-size: 20px;
-  }
-
-  .section {
-    padding: 16px;
-    margin-bottom: 18px;
-  }
-
-  .section h3 {
-    font-size: 16px;
-  }
-
-  /* كل النماذج عمود واحد */
-  .grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  textarea {
-    min-height: 110px;
-  }
-
-  button {
-    width: 100%;
-    padding: 12px;
-    font-size: 15px;
-  }
-
-  /* جدول السجل */
-  table {
-    min-width: 780px;
-  }
-
-  .print-header h1 {
-    font-size: 18px;
-  }
-}
-
-/* لف الجدول للتمرير الأفقي */
-.table-wrap {
-  width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
 
 
 </body>
