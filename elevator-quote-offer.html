@@ -1762,10 +1762,62 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+<style>
+/* ===============================
+   PRINT STYLE – OFFICIAL RKL
+=============================== */
+@media print {
+
+  /* لون الورقة */
+  body {
+    background: #f5f1e6 !important; /* بني فاتح رسمي */
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* خلفية الشعار */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 420px;
+    height: 420px;
+    background: url("/public/images/logo.png") no-repeat center center;
+    background-size: contain;
+    opacity: 0.06; /* شفافية راقية */
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* تأكيد أن المحتوى فوق الخلفية */
+  .page,
+  .print-page,
+  table,
+  div,
+  section {
+    position: relative;
+    z-index: 1;
+    background: transparent !important;
+  }
+
+  /* منع أي فواصل صفحات غير مرغوبة */
+  .en81-grid,
+  .tech-table,
+  .plan-view,
+  .section-view,
+  .print-footer {
+    page-break-inside: avoid;
+  }
+
+}
+</style>
 
 
 </body>
 </html>
+
 
 
 
