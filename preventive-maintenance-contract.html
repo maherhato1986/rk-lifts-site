@@ -421,7 +421,7 @@ button {
 </head>
 
 <body>
- 
+  <div class="print-footer" data-contract="${contract.id}"></div>
 
 <div class="container">
 
@@ -976,6 +976,8 @@ function saveContract(){
 
 
  
+
+
 function openPrintView(contract){
 
   if(!contract || !contract.id){
@@ -983,13 +985,14 @@ function openPrintView(contract){
     return;
   }
 
-  const printHTML = `
+  const w = window.open('', '_blank');
+
+  w.document.write(`
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <title>${contract.id}</title>
-
 <style>
 /* ===============================
    إعداد صفحة A4
@@ -999,12 +1002,12 @@ body{
   font-family: "Cairo", "Tajawal", Arial, sans-serif;
   color:#111827;
   line-height:1.85;
-  background:#f8f6f1;
+  background:#fff;
   font-size:14px;
 }
 
 /* ===============================
-   إخفاء الأدوات
+   إخفاء أي أدوات
 =============================== */
 @media print{
   button,
@@ -1014,22 +1017,24 @@ body{
 }
 
 /* ===============================
-   الترويسة
+   الترويسة الرسمية
 =============================== */
-.print-header{ margin-bottom:16px; }
-
-.print-watermark{
-  position:fixed;
-  top:50%;
-  left:50%;
-  width:420px;
-  opacity:0.05;
-  transform:translate(-50%,-50%);
-  z-index:-1;
-  pointer-events:none;
+.print-header{
+  margin-bottom: 16px;
 }
-
-/* خلفية مائية */
+ .print-watermark{
+    position:fixed;
+    top:50%;
+    left:50%;
+    width:420px;
+    opacity:0.05;
+    transform:translate(-50%,-50%);
+    z-index:-1;
+    pointer-events:none;
+  }
+/* ===============================
+   خلفية مائية (Watermark)
+=============================== */
 body::before{
   content:"";
   position:fixed;
@@ -1039,20 +1044,33 @@ body::before{
   height:420px;
   background:url('/public/images/logo.png') no-repeat center center;
   background-size:contain;
-  opacity:0.05;
-  transform:translate(-50%,-50%);
+  opacity:0.05;              /* شفافية احترافية */
+  transform:translate(-50%, -50%);
   z-index:-1;
 }
+/* ===============================
+   دعم الاتجاهين (AR / EN)
+=============================== */
+.ar{
+  direction: rtl;
+  text-align: right;
+}
 
-/* الاتجاهات */
-.ar{ direction:rtl; text-align:right; }
-.en{ direction:ltr; text-align:left; font-family:Arial,"Segoe UI",sans-serif; }
+.en{
+  direction: ltr;
+  text-align: left;
+  font-family: Arial, "Segoe UI", sans-serif;
+}
 
-/* الهيدر */
 .print-header-row{
   display:flex;
   align-items:center;
   justify-content:space-between;
+}
+
+.print-logo{
+  width:42px;     /* ✔ حجم أنيق */
+  height:auto;
 }
 
 .header-center{
@@ -1064,6 +1082,7 @@ body::before{
   margin:0;
   font-size:21px;
   font-weight:700;
+  letter-spacing:0.3px;
 }
 
 .header-center p{
@@ -1079,24 +1098,54 @@ body::before{
   min-width:140px;
 }
 
-/* محتوى العقد */
-.contract{ font-size:14px; }
-.contract p{ margin:6px 0; }
+.header-meta div{
+  margin-bottom:4px;
+}
 
-/* فواصل */
+/* ===============================
+   محتوى العقد
+=============================== */
+.contract{
+  font-size:14px;
+}
+
+.contract p{
+  margin:6px 0;
+}
+
+/* ===============================
+   عناوين الأقسام
+=============================== */
+
+.section-title{
+  margin: 18px 0 8px;
+}
+
+/* ===============================
+   تمييز القيم المدخلة
+=============================== */
+.user-data{
+  color:#1d4ed8;
+  font-weight:600;
+}
+
+/* ===============================
+   فاصل
+=============================== */
 hr{
   border:none;
   border-top:1px dashed #9ca3af;
   margin:30px 0;
 }
 
-/* التوقيعات */
+/* ===============================
+   التوقيعات
+=============================== */
 .signature{
   margin-top:55px;
   display:flex;
   justify-content:space-between;
   gap:30px;
-  page-break-inside:avoid;
 }
 
 .signature div{
@@ -1106,58 +1155,122 @@ hr{
   text-align:center;
   font-size:13px;
 }
-
-/* إطار الصفحة */
-.page-frame{
-  border:1.5px solid #0f766e;
-  padding:18px;
-  box-sizing:border-box;
+.signature{
+  page-break-inside: avoid;
+}
+.page-break{
+  page-break-before: always;
 }
 
-/* الفوتر */
-.print-footer{
-  position:fixed;
-  bottom:10mm;
-  left:0;
-  right:0;
-  text-align:center;
-  font-size:10px;
-  color:#6b7280;
+
+
+/* ===============================
+   تحرير النص
+=============================== */
+[contenteditable="true"]{
+  cursor:text;
 }
 
-.print-footer::after{
-  content:"Contract No: " attr(data-contract);
+[contenteditable="true"]:focus{
+  outline:none;
 }
 
-@page{
-  size:A4;
-  margin:18mm 18mm 22mm 18mm;
+[contenteditable="true"] span,
+[contenteditable="true"] b,
+[contenteditable="true"] i{
+  cursor:text;
 }
+
+
+.print-footer span{
+  margin: 0 6px;
+}
+/* ===== خلفية الورق ===== */
+body {
+  background: #f8f6f1; /* لون ورق مروّس فاخر */
+}
+
+/* ===== إطار الصفحة ===== */
+.page-frame {
+  border: 1.5px solid #0f766e;
+  padding: 18px;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
+/* عند الطباعة */
+@media print {
+  body {
+    background: #f8f6f1;
+  }
+
+  .page-frame {
+    border: 1.5px solid #0f766e;
+  }
+}
+
+@page {
+  size: A4;
+  margin: 18mm 18mm 22mm 18mm;
+}
+
+.print-footer {
+  position: fixed;
+  bottom: 10mm;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 10px;
+  color: #6b7280;
+}
+
+.print-footer::after {
+  content: "Contract No: " attr(data-contract);
+}
+
+
 </style>
+
+
 </head>
 
 <body>
-
 <div class="print-footer" data-contract="${contract.id}"></div>
 
 <div class="editor-toolbar">
-  <button onclick="document.execCommand('bold')"><b>B</b></button>
-  <button onclick="document.execCommand('italic')"><i>I</i></button>
-  <button onclick="document.execCommand('underline')"><u>U</u></button>
-</div>
+  <button onclick="format('bold')"><b>B</b></button>
+  <button onclick="format('italic')"><i>I</i></button>
+  <button onclick="format('underline')"><u>U</u></button>
 
+  <select onchange="format('foreColor', this.value)">
+    <option value="">لون النص</option>
+    <option value="#2563eb">أزرق</option>
+    <option value="#dc2626">أحمر</option>
+    <option value="#16a34a">أخضر</option>
+    <option value="#000000">أسود</option>
+  </select>
+
+  <select onchange="format('fontSize', this.value)">
+    <option value="">حجم الخط</option>
+    <option value="3">صغير</option>
+    <option value="4">عادي</option>
+    <option value="5">كبير</option>
+    <option value="6">كبير جدًا</option>
+  </select>
+</div>
 <div class="page-frame">
-<div id="editableContent" contenteditable="true" class="contract">
+  <div id="editableContent" contenteditable="true" class="contract">
 
 <div class="print-header">
   <div class="print-header-row">
 
-    <img src="/public/images/logo.png" class="print-watermark">
+   <img src="/public/images/logo.png" class="print-watermark">
+
 
     <div class="header-center">
       <h1>عقد صيانة وقائية للمصاعد</h1>
       <p>آر كي ال RKL للمصاعد والسلالم الكهربائية</p>
-      <p>السجل التجاري: 1010709355 | هاتف: 0114774021</p>
+      <p class="small">السجل التجاري: 1010709355 | هاتف: 0114774021</p>
     </div>
 
     <div class="header-meta">
@@ -1167,6 +1280,7 @@ hr{
 
   </div>
 </div>
+
 
 ${
   contract.lang === 'en'
@@ -1185,31 +1299,24 @@ ${
 }
 
 </div>
+<div class="page-break"></div>
 
 <div class="signature">
   <div>توقيع الطرف الأول</div>
   <div>توقيع الطرف الثاني</div>
 </div>
-
 </div>
+<br>
+<button onclick="window.print()">🖨️ طباعة العقد</button>
 
-<script>
-  window.onload = function(){
-    window.print();
-  }
-</script>
+
 
 </body>
 </html>
-  `;
+  `);
 
-  // 👈 هذا هو الفرق الوحيد: الطباعة في نفس التبويب (يدعم الجوال)
-  document.open();
-  document.write(printHTML);
-  document.close();
+  w.document.close();
 }
-
-
 
 function renderContractsTable(){
   const tbody = document.getElementById('contractsTable');
