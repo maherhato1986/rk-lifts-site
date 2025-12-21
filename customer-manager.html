@@ -177,6 +177,66 @@
             background: #eef2ff;
             color: #3730a3;
         }
+
+        /* =================================================
+   Responsive – Mobile Support
+================================================= */
+
+/* منع تكبير iOS داخل الحقول */
+input, select, textarea, button {
+    font-size: 16px;
+}
+
+/* تغليف الجدول للتمرير الأفقي */
+.table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 12px;
+}
+
+/* تحسين الأزرار داخل الجدول */
+.row-actions {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* الجوال */
+@media (max-width: 768px) {
+
+    .page-wrapper {
+        margin: 12px auto;
+        padding: 12px;
+    }
+
+    .card {
+        padding: 16px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .actions .btn {
+        width: 100%;
+    }
+
+    .customers-table {
+        min-width: 720px;
+    }
+
+    .card-header h1 {
+        font-size: 18px;
+    }
+}
+
     </style>
 </head>
 <body>
@@ -321,21 +381,26 @@
             <button class="btn btn-danger" id="clear-all-btn">حذف جميع العملاء من هذا الجهاز</button>
         </div>
 
-        <table class="customers-table" id="customers-table">
+       <div class="table-wrap">
+    <table class="customers-table" id="customers-table">
+
             <thead>
-            <tr>
-                <th>#</th>
-                <th>الاسم</th>
-                <th>المدينة</th>
-                <th>الجوال</th>
-                <th>نوع العميل</th>
-                <th>تعديل</th>
-            </tr>
+          <tr>
+    <th>#</th>
+    <th>الاسم</th>
+    <th>المدينة</th>
+    <th>الجوال</th>
+    <th>نوع العميل</th>
+    <th>تعديل</th>
+    <th>إجراءات</th>
+</tr>
+
             </thead>
             <tbody>
             <!-- تُملأ ديناميكياً -->
             </tbody>
         </table>
+           </div>
     </div>
 </div>
 
@@ -381,7 +446,8 @@
     </button>
   </td>
 
-  <td style="display:flex;gap:6px;justify-content:center">
+  <td class="row-actions">
+
     <button class="btn btn-primary btn-sm"
             data-index="${index}"
             data-action="maintenance">
@@ -586,6 +652,7 @@
     // عند تحميل الصفحة لأول مرة: عرض العملاء الموجودين (إن وجدوا)
     renderTable();
 </script>
+
 
 
 
