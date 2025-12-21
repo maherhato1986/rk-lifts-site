@@ -1,220 +1,96 @@
-<!doctype html>
-<html lang="ar" dir="rtl">
+<!DOCTYPE html>
+<html lang="ar">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>RKL | Elevator 3D Viewer (Diagnostic)</title>
+<meta charset="UTF-8">
+<title>RKL | Elevator 3D Viewer</title>
 <style>
-  :root{--bg:#0b1220;--panel:#071022;--txt:#e5e7eb;--muted:#94a3b8;--accent:#22c55e;--line:rgba(255,255,255,.10);}
-  *{box-sizing:border-box}
-  body{margin:0;font-family:Arial;background:var(--bg);color:var(--txt);}
-  header{padding:12px 16px;background:#020617;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);}
-  main{display:grid;grid-template-columns:320px 1fr;height:calc(100vh - 50px);}
-  @media(max-width:980px){main{grid-template-columns:1fr;grid-template-rows:auto 1fr;height:auto;min-height:100vh}}
-  .panel{background:#020617;padding:12px;border-left:1px solid var(--line)}
-  label{display:block;color:var(--muted);font-size:12px;margin:10px 0 6px;}
-  input{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:#0003;color:var(--txt);outline:none}
-  input:focus{border-color:rgba(34,197,94,.55);box-shadow:0 0 0 4px rgba(34,197,94,.12)}
-  button{width:100%;margin-top:10px;padding:10px;border-radius:10px;border:0;background:var(--accent);color:#05110a;font-weight:700;cursor:pointer}
-  #threebox{position:relative;width:100%;height:100%;min-height:520px;}
-  canvas{display:block}
-  .status{
-    position:absolute;inset:14px auto auto 14px;
-    max-width:520px;
-    background:rgba(2,6,23,.78);
-    border:1px solid rgba(255,255,255,.14);
-    padding:10px 12px;border-radius:12px;
-    font-size:13px;line-height:1.6;color:var(--txt)
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #0b1220;
+    overflow: hidden;
   }
-  .status .ok{color:#86efac}
-  .status .bad{color:#fca5a5}
-  .status code{background:#0006;padding:2px 6px;border-radius:8px}
-  .hint{color:var(--muted);font-size:12px;margin-top:10px;line-height:1.6}
+  #viewer {
+    width: 100%;
+    height: 100%;
+  }
 </style>
 </head>
 <body>
-<header>
-  <div>RKL | Elevator 3D Viewer</div>
-  <div>الوحدة: mm</div>
-</header>
 
-<main>
-  <div class="panel">
-    <label>Travel Height</label>
-    <input id="travel" type="number" value="15000" min="2000" step="10"/>
+<div id="viewer"></div>
 
-    <label>Cabin Height</label>
-    <input id="cabinH" type="number" value="2200" min="1800" step="10"/>
-
-    <label>Stops</label>
-    <input id="stops" type="number" value="6" min="2" step="1"/>
-
-    <button id="btnBuild">تحديث النموذج</button>
-
-    <div class="hint">
-      إذا بقيت الشاشة فارغة: هذا الملف سيخبرك مباشرة هل المشكلة من <b>تحميل three.js</b> أو من <b>WebGL</b>.
-    </div>
-  </div>
-
-  <div id="threebox">
-    <div class="status" id="status">جاري التحقق…</div>
-  </div>
-</main>
-
-<!-- Three.js (CDN) -->
-
-  <script src="/public/js/three/three.min.js"></script>
-<script src="/public/js/three/OrbitControls.js"></script>
-
+<!-- THREE LOCAL -->
+<script src="/public/js/three/three.min.js"></script>
 
 <script>
-  const statusEl = document.getElementById('status');
-  const box = document.getElementById('threebox');
+  // Scene
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x0b1220);
 
-  function webglAvailable(){
-    try{
-      const c = document.createElement('canvas');
-      return !!(window.WebGLRenderingContext && (c.getContext('webgl') || c.getContext('experimental-webgl')));
-    }catch(e){ return false; }
-  }
+  // Camera
+  const camera = new THREE.PerspectiveCamera(
+    60,
+    window.innerWidth / window.innerHeight,
+    1,
+    50000
+  );
+  camera.position.set(4000, 6000, 9000);
+  camera.lookAt(0, 3000, 0);
 
-  function setStatus(html){ statusEl.innerHTML = html; }
+  // Renderer
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.getElementById('viewer').appendChild(renderer.domElement);
 
-  // 1) Check Three.js loaded
-  if(!window.THREE){
-    setStatus(`
-      <div class="bad">❌ لم يتم تحميل مكتبة <b>Three.js</b>.</div>
-      <div>السبب غالبًا: حجب/فشل تحميل <code>cdn.jsdelivr.net</code> وأنت فاتح الملف من <code>File://</code>.</div>
-      <div style="margin-top:8px">
-        ✅ الحل السريع:
-        <ol style="margin:6px 0 0 18px">
-          <li>افتح DevTools بالمتصفح (F12) → Console وشوف رسالة الخطأ.</li>
-          <li>جرّب شبكة مختلفة أو VPN.</li>
-          <li>أو حمّل مكتبات three محليًا وضعها بجانب الملف (سأجهز لك نسخة محلية لو طلبت).</li>
-        </ol>
-      </div>
-    `);
-    throw new Error("THREE not loaded");
-  }
+  // Light
+  scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+  const dirLight = new THREE.DirectionalLight(0xffffff, 0.6);
+  dirLight.position.set(3000, 8000, 5000);
+  scene.add(dirLight);
 
-  // 2) Check WebGL
-  if(!webglAvailable()){
-    setStatus(`
-      <div class="bad">❌ WebGL غير متاح على هذا المتصفح/الجهاز.</div>
-      <div>✅ الحل:</div>
-      <ol style="margin:6px 0 0 18px">
-        <li>Chrome → Settings → System → فعّل <b>Use hardware acceleration</b> ثم أعد تشغيل المتصفح.</li>
-        <li>حدّث تعريف كرت الشاشة (GPU Driver).</li>
-        <li>اكتب في شريط العنوان: <code>chrome://gpu</code> وتأكد أن WebGL = Enabled.</li>
-      </ol>
-    `);
-    throw new Error("WebGL not available");
-  }
+  // Shaft
+  const shaft = new THREE.Mesh(
+    new THREE.BoxGeometry(3000, 12000, 3000),
+    new THREE.MeshBasicMaterial({
+      color: 0x00ff88,
+      wireframe: true
+    })
+  );
+  shaft.position.y = 6000;
+  scene.add(shaft);
 
-  // 3) Init Three scene
-  let scene, camera, renderer, controls;
-  let modelGroup = null;
+  // Cabin
+  const cabin = new THREE.Mesh(
+    new THREE.BoxGeometry(2000, 2200, 2000),
+    new THREE.MeshStandardMaterial({
+      color: 0xaaaaaa
+    })
+  );
+  cabin.position.y = 1100;
+  scene.add(cabin);
 
-  function onResize(){
-    if(!renderer || !camera) return;
-    const w = box.clientWidth;
-    const h = box.clientHeight;
-    renderer.setSize(w, h, false);
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-  }
+  // Animate
+  let direction = 1;
+  function animate() {
+    requestAnimationFrame(animate);
 
-  function init(){
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0b1220);
-
-    camera = new THREE.PerspectiveCamera(45, box.clientWidth/box.clientHeight, 10, 200000);
-    camera.position.set(6500, 6500, 6500);
-
-    renderer = new THREE.WebGLRenderer({antialias:true});
-    renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
-    renderer.setSize(box.clientWidth, box.clientHeight);
-    box.appendChild(renderer.domElement);
-
-    controls = new THREE.OrbitControls(camera, renderer.domElement);
-
-    controls.enableDamping = true;
-
-    // Helpers (حتى لو المجسم ما ظهر، تشوف Grid)
-    const grid = new THREE.GridHelper(20000, 40);
-    scene.add(grid);
-    const axes = new THREE.AxesHelper(2000);
-    scene.add(axes);
-
-    // Lights
-    scene.add(new THREE.AmbientLight(0xffffff, 0.7));
-    const dir = new THREE.DirectionalLight(0xffffff, 0.6);
-    dir.position.set(9000, 9000, 7000);
-    scene.add(dir);
-
-    window.addEventListener('resize', onResize);
-
-    setStatus(`<div class="ok">✅ Three.js + WebGL جاهزين. يجب أن ترى Grid الآن.</div>`);
-    animate();
-  }
-
-  function build(){
-    const travel = Math.max(2000, Number(document.getElementById('travel').value||0));
-    const cabinH = Math.max(1800, Number(document.getElementById('cabinH').value||0));
-
-    // remove old group safely
-    if(modelGroup){
-      scene.remove(modelGroup);
-      modelGroup.traverse(obj=>{
-        if(obj.isMesh){
-          obj.geometry?.dispose?.();
-          if(obj.material){
-            if(Array.isArray(obj.material)) obj.material.forEach(m=>m.dispose());
-            else obj.material.dispose();
-          }
-        }
-      });
-      modelGroup = null;
+    cabin.position.y += direction * 5;
+    if (cabin.position.y > 10000 || cabin.position.y < 1100) {
+      direction *= -1;
     }
 
-    modelGroup = new THREE.Group();
-    scene.add(modelGroup);
-
-    // Shaft (transparent)
-    const shaft = new THREE.Mesh(
-      new THREE.BoxGeometry(2200, 2200, travel),
-      new THREE.MeshStandardMaterial({color:0x22c55e, transparent:true, opacity:0.14})
-    );
-    shaft.position.z = travel/2;
-    modelGroup.add(shaft);
-
-    // Cabin
-    const cabin = new THREE.Mesh(
-      new THREE.BoxGeometry(1400, 1400, cabinH),
-      new THREE.MeshStandardMaterial({color:0xe5e7eb})
-    );
-    cabin.position.z = cabinH/2;
-    modelGroup.add(cabin);
-
-    // put camera target center
-    controls.target.set(0, 0, travel/2);
-    controls.update();
-
-    setStatus(`<div class="ok">✅ تم رسم النموذج. إذا ما ظهر، المشكلة من تعريف GPU غالبًا.</div>`);
-  }
-
-  function animate(){
-    requestAnimationFrame(animate);
-    controls?.update?.();
     renderer.render(scene, camera);
   }
+  animate();
 
-  document.getElementById('btnBuild').addEventListener('click', build);
-
-  // Start
-  init();
-  // تأخير بسيط لضمان قياسات box
-  setTimeout(()=>{ onResize(); build(); }, 60);
+  // Resize
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
 </script>
+
 </body>
 </html>
