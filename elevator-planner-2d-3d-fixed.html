@@ -9,87 +9,183 @@
     height: 100%;
     background: #0b1220;
     overflow: hidden;
+    font-family: Arial, sans-serif;
+    color: #e5e7eb;
+  }
+  #app {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    height: 100%;
   }
   #viewer {
     width: 100%;
     height: 100%;
   }
+  #panel {
+    padding: 16px;
+    background: #0e1627;
+    border-left: 1px solid #1f2937;
+  }
+  h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+  }
+  .field {
+    margin-bottom: 10px;
+  }
+  .field label {
+    display: block;
+    font-size: 12px;
+    margin-bottom: 4px;
+    color: #9ca3af;
+  }
+  .field input {
+    width: 100%;
+    padding: 6px 8px;
+    background: #020617;
+    border: 1px solid #1f2937;
+    color: #fff;
+    border-radius: 4px;
+  }
+  button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background: #22c55e;
+    border: none;
+    color: #052e16;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 6px;
+  }
 </style>
 </head>
+
 <body>
 
-<div id="viewer"></div>
+<div id="app">
+  <div id="viewer"></div>
+
+  <div id="panel">
+    <h3>بيانات المصعد (mm)</h3>
+
+    <div class="field">
+      <label>عرض البئر (Shaft W)</label>
+      <input id="shaftW" type="number" value="3000">
+    </div>
+
+    <div class="field">
+      <label>عمق البئر (Shaft D)</label>
+      <input id="shaftD" type="number" value="3000">
+    </div>
+
+    <div class="field">
+      <label>ارتفاع الرحلة (Travel Height)</label>
+      <input id="travelH" type="number" value="12000">
+    </div>
+
+    <div class="field">
+      <label>عرض الكابينة (Cabin W)</label>
+      <input id="cabinW" type="number" value="2000">
+    </div>
+
+    <div class="field">
+      <label>عمق الكابينة (Cabin D)</label>
+      <input id="cabinD" type="number" value="2000">
+    </div>
+
+    <div class="field">
+      <label>ارتفاع الكابينة (Cabin H)</label>
+      <input id="cabinH" type="number" value="2200">
+    </div>
+
+    <button onclick="buildElevator()">تحديث النموذج</button>
+  </div>
+</div>
 
 <!-- THREE LOCAL -->
 <script src="/public/js/three/three.min.js"></script>
 
 <script>
-  // Scene
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x0b1220);
+  let scene, camera, renderer;
+  let shaftMesh, cabinMesh;
 
-  // Camera
-  const camera = new THREE.PerspectiveCamera(
-    60,
-    window.innerWidth / window.innerHeight,
-    1,
-    50000
-  );
-  camera.position.set(4000, 6000, 9000);
-  camera.lookAt(0, 3000, 0);
-
-  // Renderer
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  document.getElementById('viewer').appendChild(renderer.domElement);
-
-  // Light
-  scene.add(new THREE.AmbientLight(0xffffff, 0.8));
-  const dirLight = new THREE.DirectionalLight(0xffffff, 0.6);
-  dirLight.position.set(3000, 8000, 5000);
-  scene.add(dirLight);
-
-  // Shaft
-  const shaft = new THREE.Mesh(
-    new THREE.BoxGeometry(3000, 12000, 3000),
-    new THREE.MeshBasicMaterial({
-      color: 0x00ff88,
-      wireframe: true
-    })
-  );
-  shaft.position.y = 6000;
-  scene.add(shaft);
-
-  // Cabin
-  const cabin = new THREE.Mesh(
-    new THREE.BoxGeometry(2000, 2200, 2000),
-    new THREE.MeshStandardMaterial({
-      color: 0xaaaaaa
-    })
-  );
-  cabin.position.y = 1100;
-  scene.add(cabin);
-
-  // Animate
-  let direction = 1;
-  function animate() {
-    requestAnimationFrame(animate);
-
-    cabin.position.y += direction * 5;
-    if (cabin.position.y > 10000 || cabin.position.y < 1100) {
-      direction *= -1;
-    }
-
-    renderer.render(scene, camera);
-  }
+  init();
+  buildElevator();
   animate();
 
-  // Resize
-  window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  });
+  function init() {
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0b1220);
+
+    camera = new THREE.PerspectiveCamera(60, (window.innerWidth-320)/window.innerHeight, 1, 50000);
+    camera.position.set(4000, 6000, 9000);
+    camera.lookAt(0, 3000, 0);
+
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth-320, window.innerHeight);
+    document.getElementById('viewer').appendChild(renderer.domElement);
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+    const dir = new THREE.DirectionalLight(0xffffff, 0.6);
+    dir.position.set(3000, 8000, 5000);
+    scene.add(dir);
+
+    window.addEventListener('resize', () => {
+      camera.aspect = (window.innerWidth-320) / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth-320, window.innerHeight);
+    });
+  }
+
+  function buildElevator() {
+    // remove old
+    if (shaftMesh) scene.remove(shaftMesh);
+    if (cabinMesh) scene.remove(cabinMesh);
+
+    const shaftW = +shaftWInput().value;
+    const shaftD = +shaftDInput().value;
+    const travelH = +travelHInput().value;
+
+    const cabinW = +cabinWInput().value;
+    const cabinD = +cabinDInput().value;
+    const cabinH = +cabinHInput().value;
+
+    // Shaft
+    shaftMesh = new THREE.Mesh(
+      new THREE.BoxGeometry(shaftW, travelH, shaftD),
+      new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: true })
+    );
+    shaftMesh.position.y = travelH / 2;
+    scene.add(shaftMesh);
+
+    // Cabin
+    cabinMesh = new THREE.Mesh(
+      new THREE.BoxGeometry(cabinW, cabinH, cabinD),
+      new THREE.MeshStandardMaterial({ color: 0xaaaaaa })
+    );
+    cabinMesh.position.y = cabinH / 2;
+    scene.add(cabinMesh);
+  }
+
+  function animate() {
+    requestAnimationFrame(animate);
+    if (cabinMesh && shaftMesh) {
+      cabinMesh.position.y += 4;
+      if (cabinMesh.position.y > shaftMesh.geometry.parameters.height - 1000) {
+        cabinMesh.position.y = cabinMesh.geometry.parameters.height / 2;
+      }
+    }
+    renderer.render(scene, camera);
+  }
+
+  // shortcuts
+  const shaftWInput = () => document.getElementById('shaftW');
+  const shaftDInput = () => document.getElementById('shaftD');
+  const travelHInput = () => document.getElementById('travelH');
+  const cabinWInput = () => document.getElementById('cabinW');
+  const cabinDInput = () => document.getElementById('cabinD');
+  const cabinHInput = () => document.getElementById('cabinH');
 </script>
 
 </body>
