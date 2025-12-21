@@ -482,7 +482,10 @@ tbody tr:nth-child(even){
 <textarea id="notes"></textarea>
 
 </div>
-<button onclick="saveContract()">💾 حفظ العقد</button>
+<button onclick="saveContract()" style="margin-top:10px">
+  💾 حفظ العقد
+</button>
+
 <!-- ================== مراجعة العقد ================== -->
 <div class="section" id="reviewSection" style="display:none">
 <h3>خامساً: مراجعة العقد</h3>
@@ -491,10 +494,12 @@ tbody tr:nth-child(even){
 </div>
 
 </div>
-  <div class="section">
+ <div class="section">
   <h3>سجل عقود الصيانة الوقائية</h3>
 
-  <table border="1" width="100%" cellpadding="8" style="border-collapse:collapse">
+  <div class="table-wrap">
+    <table border="1" width="100%" cellpadding="8" style="border-collapse:collapse">
+
     <thead style="background:#f3f4f6">
       <tr>
         <th>#</th>
@@ -509,6 +514,7 @@ tbody tr:nth-child(even){
     </thead>
     <tbody id="contractsTable"></tbody>
   </table>
+      </div>
 </div>
 
 
@@ -1267,6 +1273,69 @@ function toggleOtherBrand(){
 
 </script>
 
+/* =================================================
+   Mobile Responsive Support
+================================================= */
+
+/* منع تكبير iOS داخل الحقول */
+input, select, textarea, button {
+  font-size: 16px;
+}
+
+/* تحسين الحاوية للجوال */
+@media (max-width: 768px) {
+
+  .container {
+    margin: 10px auto;
+    padding: 16px 14px;
+    border-radius: 10px;
+  }
+
+  .page-header h2 {
+    font-size: 20px;
+  }
+
+  .section {
+    padding: 16px;
+    margin-bottom: 18px;
+  }
+
+  .section h3 {
+    font-size: 16px;
+  }
+
+  /* كل النماذج عمود واحد */
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  textarea {
+    min-height: 110px;
+  }
+
+  button {
+    width: 100%;
+    padding: 12px;
+    font-size: 15px;
+  }
+
+  /* جدول السجل */
+  table {
+    min-width: 780px;
+  }
+
+  .print-header h1 {
+    font-size: 18px;
+  }
+}
+
+/* لف الجدول للتمرير الأفقي */
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
 
 
 </body>
