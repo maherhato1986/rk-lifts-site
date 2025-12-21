@@ -1476,6 +1476,8 @@ const vatRate = Number(q.vatRate || 15);
    /* =================================================
    مخطط المقاسات – فك القيم بالأرقام
 ================================================= */
+if (!q.shaftSize) q.shaftSize = "1800 x 1600";
+
 
 // Cabin: "1100 x 1000"
 if (q.cabinSize) {
@@ -1483,15 +1485,12 @@ if (q.cabinSize) {
   bind('.bind_cabin_width', cw);
   bind('.bind_cabin_depth', cd);
 }
-if (!q.shaftSize) q.shaftSize = "1700 x 1500";
-if (!q.cabinSize) q.cabinSize = "1100 x 1000";
 
-
-// Door: "700 x 2100" أو "700"
-if (q.doorSize) {
-  const [dw, dh] = q.doorSize.split('x').map(v => v.trim());
-  bind('.bind_door_width', dw);
-  bind('.bind_door_height', dh || '—');
+// Shaft: "1800 x 1600"
+if (q.shaftSize) {
+  const [hw, hd] = q.shaftSize.split('x').map(v => v.trim());
+  bind('.bind_shaft_width', hw);
+  bind('.bind_shaft_depth', hd);
 }
 
 
@@ -1767,6 +1766,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
 
 
 
