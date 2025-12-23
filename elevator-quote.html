@@ -1043,6 +1043,13 @@ function fillSpeedOptions() {
                     ${both(result.installationCommissioningPerLift, result.installationCommissioningCost)}
                 </div>
             </div>
+            <div class="number-box">
+  <div class="label">تشطيب الكابينة</div>
+  <div class="value">
+    ${both(result.cabinExtraPerLift || 0, result.cabinExtraTotal || 0)}
+  </div>
+</div>
+
 
             <div class="number-box">
                 <div class="label">مصاريف تشغيل (${result.overheadPercent}%)</div>
@@ -1220,6 +1227,10 @@ function getRegionAdderSar(loc) {
         const projectLocation = document.getElementById('project_location')?.value || '';
 
      
+if (result.brandKey === 'LOCAL_MRL') {
+  lines.push(`- نوع النظام: تجميع محلي (Local Assembly).`);
+  lines.push(`- الماكينة والقطع الرئيسية: حسب المواصفات المعتمدة (أوروبية / يابانية).`);
+}
 
 
         if (!brandKey || !capacity || !speed || !floors || floors < 2 || liftsCount < 1) {
@@ -1301,6 +1312,19 @@ if (isLocalAssembly && window.lastFujiFactorySar) {
 }
 const factoryCostPerLift = finalFactorySar / divisor;
 
+// حفظ سعر FUJI للمقارنة
+if (brandKey === 'FUJI_MRL') {
+  window.lastFujiFactorySar = factorySar;
+}
+
+// ضبط سعر Local Assembly ضمن ±5%
+if (isLocalAssembly && window.lastFujiFactorySar) {
+  const maxDiff = window.lastFujiFactorySar * 0.05;
+  factorySar = Math.min(
+    Math.max(factorySar, window.lastFujiFactorySar - maxDiff),
+    window.lastFujiFactorySar + maxDiff
+  );
+}
 
         // 6) مصاريف التشغيل
         const overheadSar = directCostSarFinal * (COST_PARAMS.overheadPercent / 100);
@@ -1317,10 +1341,9 @@ const factoryCostPerLift = finalFactorySar / divisor;
         // 9) سعر البيع قبل الضريبة
         const totalBeforeVatSar = costBeforeProfitSar + profitSar;
 
-        // تحويل حسب العملة المختارة (للمصعد الواحد)
-        const divisor = (currency === 'USD') ? rate : 1;
+       
 
-        const factoryCostPerLift = factorySar / divisor;
+       
         const shippingInsurancePerLift = shippingInsuranceSar / divisor;
         const clearanceTransportPerLift = clearanceTransportSar / divisor;
         const installationCommissioningPerLift = installationCommissioningSar / divisor;
@@ -1958,6 +1981,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
