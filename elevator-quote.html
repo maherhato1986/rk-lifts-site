@@ -1185,6 +1185,28 @@ function fillSpeedOptions() {
 
         document.getElementById('quote_text').value = lines.join('\n');
     }
+function getRegionAdderSar(loc) {
+  const s = (loc || "").toLowerCase();
+
+  // الرياض = بدون زيادة
+  if (s.includes("الرياض") || s.includes("riyadh")) return 0;
+
+  // مدن قريبة
+  if (s.includes("الخرج") || s.includes("kharj")) return 800;
+  if (s.includes("القصيم") || s.includes("qassim") || s.includes("بريدة")) return 1800;
+
+  // مدن بعيدة
+  if (s.includes("جدة") || s.includes("jeddah") || s.includes("مكة") || s.includes("makkah")) return 3500;
+  if (s.includes("الدمام") || s.includes("dammam") || s.includes("الخبر") || s.includes("khobar")) return 3000;
+  if (s.includes("المدينة") || s.includes("madinah")) return 3200;
+  if (s.includes("أبها") || s.includes("abha") || s.includes("خميس")) return 3800;
+  if (s.includes("تبوك") || s.includes("tabuk")) return 4500;
+  if (s.includes("جازان") || s.includes("jazan")) return 4800;
+  if (s.includes("نجران") || s.includes("najran")) return 5200;
+
+  // افتراضي لو مدينة غير معروفة
+  return 2500;
+}
 
     async function calculateQuote() {
         const brandKey = document.getElementById('brand').value;
@@ -1919,6 +1941,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
