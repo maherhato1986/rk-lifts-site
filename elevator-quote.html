@@ -1263,7 +1263,8 @@ if (!currentBrandData) {
         const factoryUsd = model.basePriceUsd + (model.extraPerFloorUsd * extraFloors);
 
         // تحويل لسعودي
-        const factorySar = factoryUsd * rate;
+        let factorySar = factoryUsd * rate;
+
 
         // 2) الشحن + التأمين
        const shippingInsuranceSar = isLocalAssembly
@@ -1294,13 +1295,15 @@ const clearanceTransportSar = isLocalAssembly
             installationCommissioningSar;
         const cabinDesign = document.getElementById("cabin_design").value;
 const cabinExtraCost = CABIN_DESIGN_ADDITIONAL[cabinDesign] || 0;
+       
+
 
 const directCostSarFinal = directCostSar + cabinExtraCost;
 
      
 
+const factoryCostPerLift = factorySar / divisor;
 
-const factoryCostPerLift = finalFactorySar / divisor;
 
 // حفظ سعر FUJI للمقارنة
 const profitPercent =
@@ -1311,13 +1314,14 @@ const profitPercent =
 
 
 // بعد حساب factorySar
-if (isLocalAssembly && typeof window.lastFujiFactorySar === 'number') {
-  const diff = window.lastFujiFactorySar * 0.05;
+if (isLocalAssembly && window.lastFujiFactorySar) {
+  const maxDiff = window.lastFujiFactorySar * 0.05;
   factorySar = Math.min(
-    Math.max(factorySar, window.lastFujiFactorySar - diff),
-    window.lastFujiFactorySar + diff
+    Math.max(factorySar, window.lastFujiFactorySar - maxDiff),
+    window.lastFujiFactorySar + maxDiff
   );
 }
+
 
         // 6) مصاريف التشغيل
         const overheadSar = directCostSarFinal * (COST_PARAMS.overheadPercent / 100);
@@ -1392,7 +1396,9 @@ if (isLocalAssembly && typeof window.lastFujiFactorySar === 'number') {
             totalWithVat: totalWithVatTotal,
             includeVat,
             overheadPercent: COST_PARAMS.overheadPercent,
-            profitPercent: COST_PARAMS.profitPercent
+             cabinExtraPerLift: cabinExtraCost,
+cabinExtraTotal: cabinExtraCost * liftsCount,
+            profitPercent: profitPercent
         };
 
         generateNumbersView(result, model, currency);
@@ -1975,6 +1981,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
