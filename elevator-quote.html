@@ -1221,6 +1221,8 @@ if (!currentBrandData) {
         }
 
         const rate = currentBrandData.exchangeRateToSAR || 1;
+        const isLocalAssembly = (brandKey === 'LOCAL_MRL');
+
 
         // عدد الأدوار الإضافية عن سعر المصنع
         const extraFloors = Math.max(0, floors - model.baseFloors);
@@ -1232,12 +1234,19 @@ if (!currentBrandData) {
         const factorySar = factoryUsd * rate;
 
         // 2) الشحن + التأمين
-        const shippingSar = COST_PARAMS.shippingUsdPerLift * rate;
-        const insuranceSar = factoryUsd * (COST_PARAMS.insurancePercent / 100) * rate;
-        const shippingInsuranceSar = shippingSar + insuranceSar;
+       const shippingInsuranceSar = isLocalAssembly
+    ? 0
+    : (
+        (COST_PARAMS.shippingUsdPerLift * rate) +
+        (factoryUsd * (COST_PARAMS.insurancePercent / 100) * rate)
+      );
+
 
         // 3) التخليص + النقل الداخلي
-        const clearanceTransportSar = COST_PARAMS.clearanceSar + COST_PARAMS.inlandTransportSar;
+        const clearanceTransportSar = isLocalAssembly
+    ? COST_PARAMS.inlandTransportSar
+    : (COST_PARAMS.clearanceSar + COST_PARAMS.inlandTransportSar);
+
 
         // 4) التركيب + التشغيل
         const installationCommissioningSar = COST_PARAMS.installationSar + COST_PARAMS.commissioningSar;
@@ -1910,6 +1919,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
