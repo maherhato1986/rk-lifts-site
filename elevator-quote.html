@@ -1265,9 +1265,11 @@ if (!currentBrandData) {
 
 
         // 3) التخليص + النقل الداخلي
-        const clearanceTransportSar = isLocalAssembly
-    ? COST_PARAMS.inlandTransportSar
-    : (COST_PARAMS.clearanceSar + COST_PARAMS.inlandTransportSar);
+       const regionAdder = getRegionAdderSar(projectLocation);
+
+const clearanceTransportSar = isLocalAssembly
+  ? COST_PARAMS.inlandTransportSar + regionAdder
+  : (COST_PARAMS.clearanceSar + COST_PARAMS.inlandTransportSar + regionAdder);
 
 
         // 4) التركيب + التشغيل
@@ -1283,6 +1285,21 @@ if (!currentBrandData) {
 const cabinExtraCost = CABIN_DESIGN_ADDITIONAL[cabinDesign] || 0;
 
 const directCostSarFinal = directCostSar + cabinExtraCost;
+
+        let finalFactorySar = factorySar;
+
+if (isLocalAssembly && window.lastFujiFactorySar) {
+  const maxDiff = window.lastFujiFactorySar * 0.05;
+
+  const minAllowed = window.lastFujiFactorySar - maxDiff;
+  const maxAllowed = window.lastFujiFactorySar + maxDiff;
+
+  finalFactorySar = Math.min(
+    Math.max(factorySar, minAllowed),
+    maxAllowed
+  );
+}
+const factoryCostPerLift = finalFactorySar / divisor;
 
 
         // 6) مصاريف التشغيل
@@ -1941,6 +1958,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
