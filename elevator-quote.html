@@ -293,12 +293,14 @@
                             <label for="brand">
                                 الماركة / نوع النظام
                             </label>
-                            <select id="brand" required>
-                                <option value="">اختر الماركة...</option>
-                                <option value="FUJI_MRL">JAPAN FUJI – MRL</option>
-                                <option value="VERTILIFT_MRL">ITALY VERTILIFT – MRL</option>
-                                <!-- لاحقًا: نضيف خيارات أخرى مثل Local Assembly ... -->
-                            </select>
+                           <select id="brand" required>
+    <option value="">اختر الماركة...</option>
+    <option value="FUJI_MRL">JAPAN FUJI – MRL</option>
+    <option value="VERTILIFT_MRL">ITALY VERTILIFT – MRL</option>
+
+    <!-- ✅ أضف هذا السطر -->
+    <option value="LOCAL_MRL">LOCAL ASSEMBLY – MRL Passenger</option>
+</select>
                             <div class="hint">حاليًا المربوط فعليًا هو FUJI – MRL، والباقي نضيفه لاحقًا بنفس الفكرة.</div>
                         </div>
 
@@ -866,7 +868,7 @@ const cols = [
 
 
     // ========================== تعريف الماركات وملفات الأسعار ==========================
-  const BRAND_SOURCES = {
+const BRAND_SOURCES = {
     'FUJI_MRL': {
         label: 'JAPAN FUJI – MRL Passenger',
         jsonPath: '/fuji_mrl_prices.json'
@@ -874,6 +876,10 @@ const cols = [
     'VERTILIFT_MRL': {
         label: 'ITALY VERTILIFT – MRL Passenger',
         jsonPath: '/vertilift_mrl_prices.json'
+    },
+    'LOCAL_MRL': {
+        label: 'LOCAL ASSEMBLY – MRL Passenger',
+        jsonPath: '/scripts/LOCAL_ASSEMBLY.json'
     }
 };
 
@@ -1904,6 +1910,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
