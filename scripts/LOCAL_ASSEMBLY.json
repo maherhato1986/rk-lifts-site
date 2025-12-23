@@ -35,8 +35,9 @@
       "capacityKg": "630",
       "speedMps": 1.0,
       "baseFloors": 2,
-      "basePriceSar": 19629,
-      "extraPerFloorSar": 891,
+      "basePriceUsd": 5234,
+"extraPerFloorUsd": 238,
+
       "machineType": "MRL",
       "controller": "Monarch / STEP",
       "doorType": "Standard",
