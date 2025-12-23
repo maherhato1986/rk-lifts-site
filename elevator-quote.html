@@ -301,6 +301,68 @@
     <!-- ✅ أضف هذا السطر -->
     <option value="LOCAL_MRL">LOCAL ASSEMBLY – MRL Passenger</option>
 </select>
+                            <!-- ===============================
+  مقارنة عروض الأسعار
+=============================== -->
+<div class="card mt-3">
+  <label class="flex items-center gap-2">
+    <input type="checkbox" id="enable_compare" />
+    <strong>هل ترغب بالحصول على عروض أسعار مقارنة؟</strong>
+  </label>
+
+  <div id="compare_brands_box" style="display:none; margin-top:10px;">
+    <p class="muted">اختر الماركات للمقارنة (حد أقصى 3):</p>
+
+    <label><input type="checkbox" class="compare-brand" value="FUJI_MRL" /> FUJI – MRL</label><br>
+    <label><input type="checkbox" class="compare-brand" value="ITALY_MRL" /> ITALIAN – MRL</label><br>
+    <label><input type="checkbox" class="compare-brand" value="LOCAL_ASSEMBLY" /> LOCAL ASSEMBLY – MRL</label>
+  </div>
+</div>
+
+<!-- ===============================
+  جدول المقارنة
+=============================== -->
+<div id="compare_result" class="card mt-4" style="display:none;">
+  <h3>📊 مقارنة عروض الأسعار</h3>
+
+  <table class="tech-table">
+    <thead>
+      <tr>
+        <th>البند</th>
+        <th id="col_1"></th>
+        <th id="col_2"></th>
+        <th id="col_3"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>السعر قبل الضريبة</td>
+        <td id="c1_before"></td>
+        <td id="c2_before"></td>
+        <td id="c3_before"></td>
+      </tr>
+      <tr>
+        <td>الضريبة (15%)</td>
+        <td id="c1_vat"></td>
+        <td id="c2_vat"></td>
+        <td id="c3_vat"></td>
+      </tr>
+      <tr class="highlight">
+        <td>الإجمالي</td>
+        <td id="c1_total"></td>
+        <td id="c2_total"></td>
+        <td id="c3_total"></td>
+      </tr>
+      <tr>
+        <td>مدة التوريد</td>
+        <td id="c1_delivery"></td>
+        <td id="c2_delivery"></td>
+        <td id="c3_delivery"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
                             <div class="hint">حاليًا المربوط فعليًا هو FUJI – MRL، والباقي نضيفه لاحقًا بنفس الفكرة.</div>
                         </div>
 
@@ -1230,6 +1292,14 @@ function getRegionAdderSar(loc) {
         const projectLocation = document.getElementById('project_location')?.value || '';
 
      
+if (document.getElementById('enable_compare').checked) {
+  calculateComparison({
+    capacity,
+    speed,
+    floors,
+    liftsCount
+  });
+}
 
 
         if (!brandKey || !capacity || !speed || !floors || floors < 2 || liftsCount < 1) {
@@ -1968,6 +2038,76 @@ function calculateTravelHeight() {
     el.addEventListener('input', calculateTravelHeight);
     el.addEventListener('change', calculateTravelHeight);
 });
+// ===============================
+// تفعيل / إخفاء المقارنة
+// ===============================
+document.getElementById('enable_compare').addEventListener('change', e => {
+  document.getElementById('compare_brands_box').style.display =
+    e.target.checked ? 'block' : 'none';
+});
+
+// ===============================
+// حساب المقارنة
+// ===============================
+async function calculateComparison(baseInputs) {
+  const selectedBrands = [...document.querySelectorAll('.compare-brand:checked')]
+    .map(cb => cb.value)
+    .slice(0, 3);
+
+  if (selectedBrands.length < 2) return;
+
+  const results = [];
+
+  for (const brand of selectedBrands) {
+    await loadBrandData(brand);              // نفس دالتك الحالية
+    const model = findModel(baseInputs.capacity, baseInputs.speed);
+
+    if (!model) continue;
+
+    const quote = calculateInternalQuote(model, baseInputs);
+    results.push({ brand, ...quote });
+  }
+
+  renderComparison(results);
+}
+
+// ===============================
+// نفس منطق calculateQuote ولكن داخلي
+// ===============================
+function calculateInternalQuote(model, base) {
+  const extraFloors = Math.max(0, base.floors - model.baseFloors);
+  const factoryUsd = model.basePriceUsd + (model.extraPerFloorUsd * extraFloors);
+  const factorySar = factoryUsd * model.exchangeRateToSAR;
+
+  const overhead = factorySar * 0.12;
+  const profit = (factorySar + overhead) * 0.25;
+
+  const beforeVat = factorySar + overhead + profit;
+  const vat = beforeVat * 0.15;
+
+  return {
+    beforeVat,
+    vat,
+    total: beforeVat + vat,
+    delivery: model.delivery || '—'
+  };
+}
+
+// ===============================
+// عرض النتائج
+// ===============================
+function renderComparison(results) {
+  document.getElementById('compare_result').style.display = 'block';
+
+  results.forEach((r, i) => {
+    const idx = i + 1;
+    document.getElementById(`col_${idx}`).innerText = r.brand;
+    document.getElementById(`c${idx}_before`).innerText = formatSAR(r.beforeVat);
+    document.getElementById(`c${idx}_vat`).innerText = formatSAR(r.vat);
+    document.getElementById(`c${idx}_total`).innerText = formatSAR(r.total);
+    document.getElementById(`c${idx}_delivery`).innerText = r.delivery;
+  });
+}
 
 // حساب فوري عند التحميل
 calculateTravelHeight();
@@ -1981,6 +2121,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
