@@ -1214,6 +1214,7 @@ function getRegionAdderSar(loc) {
   // افتراضي لو مدينة غير معروفة
   return 2500;
 }
+const divisor = liftsCount || 1;
 
     async function calculateQuote() {
         const brandKey = document.getElementById('brand').value;
@@ -1299,17 +1300,7 @@ const directCostSarFinal = directCostSar + cabinExtraCost;
 
         let finalFactorySar = factorySar;
 
-if (isLocalAssembly && window.lastFujiFactorySar) {
-  const maxDiff = window.lastFujiFactorySar * 0.05;
 
-  const minAllowed = window.lastFujiFactorySar - maxDiff;
-  const maxAllowed = window.lastFujiFactorySar + maxDiff;
-
-  finalFactorySar = Math.min(
-    Math.max(factorySar, minAllowed),
-    maxAllowed
-  );
-}
 const factoryCostPerLift = finalFactorySar / divisor;
 
 // حفظ سعر FUJI للمقارنة
@@ -1317,12 +1308,13 @@ if (brandKey === 'FUJI_MRL') {
   window.lastFujiFactorySar = factorySar;
 }
 
-// ضبط سعر Local Assembly ضمن ±5%
+
+// بعد حساب factorySar
 if (isLocalAssembly && window.lastFujiFactorySar) {
-  const maxDiff = window.lastFujiFactorySar * 0.05;
+  const diff = window.lastFujiFactorySar * 0.05;
   factorySar = Math.min(
-    Math.max(factorySar, window.lastFujiFactorySar - maxDiff),
-    window.lastFujiFactorySar + maxDiff
+    Math.max(factorySar, window.lastFujiFactorySar - diff),
+    window.lastFujiFactorySar + diff
   );
 }
 
@@ -1981,6 +1973,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
