@@ -1214,6 +1214,8 @@ function getRegionAdderSar(loc) {
   // افتراضي لو مدينة غير معروفة
   return 2500;
 }
+    const divisor = 1; // لأنك أصلاً تحسب per lift
+
 const divisor = liftsCount || 1;
 
     async function calculateQuote() {
@@ -1277,11 +1279,12 @@ if (!currentBrandData) {
 
 
         // 3) التخليص + النقل الداخلي
-       const regionAdder = getRegionAdderSar(projectLocation);
+    const regionAdder = getRegionAdderSar(projectLocation);
 
 const clearanceTransportSar = isLocalAssembly
   ? COST_PARAMS.inlandTransportSar + regionAdder
   : (COST_PARAMS.clearanceSar + COST_PARAMS.inlandTransportSar + regionAdder);
+
 
 
         // 4) التركيب + التشغيل
@@ -1304,13 +1307,15 @@ const directCostSarFinal = directCostSar + cabinExtraCost;
 const factoryCostPerLift = finalFactorySar / divisor;
 
 // حفظ سعر FUJI للمقارنة
-if (brandKey === 'FUJI_MRL') {
-  window.lastFujiFactorySar = factorySar;
-}
+const profitPercent =
+  brandKey === 'VERTILIFT_MRL'
+    ? COST_PARAMS.profitPercent + 3
+    : COST_PARAMS.profitPercent;
+
 
 
 // بعد حساب factorySar
-if (isLocalAssembly && window.lastFujiFactorySar) {
+if (isLocalAssembly && typeof window.lastFujiFactorySar === 'number') {
   const diff = window.lastFujiFactorySar * 0.05;
   factorySar = Math.min(
     Math.max(factorySar, window.lastFujiFactorySar - diff),
@@ -1973,6 +1978,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
