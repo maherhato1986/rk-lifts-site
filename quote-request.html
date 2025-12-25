@@ -63,7 +63,12 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 <input id="m_count" type="number">
 
 <label>موقع المصعد</label>
-<input id="m_location">
+<input type="text" id="location" placeholder="اختر الموقع من الخريطة" readonly>
+
+<button type="button" onclick="getLocation()" style="margin-top:8px;">
+📍 تحديد الموقع من الخريطة
+</button>
+
 
 <label>نوع الخدمة</label>
 <select id="serviceType">
@@ -79,8 +84,12 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 </select>
 
 <label>رفع صورة (اختياري)</label>
-<input type="file">
-</div>
+<small style="color:#666;">
+يرجى رفع صورة للكابينة من الداخل أو لوحة الكنترول داخل غرفة المكينة (إن وجدت)،  
+وذلك لمساعدتنا على تقييم  بشكل أدق.
+</small>
+<input type="file" accept="image/*">
+
 
 <!-- توريد -->
 <div id="supply" class="section hidden">
@@ -117,6 +126,9 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 </div>
 
 <button onclick="submitForm()">📨 إرسال الطلب</button>
+<p style="font-size:13px;color:#777;margin-top:10px;text-align:center;">
+🔒 جميع البيانات محفوظة بسرية تامة ولن يتم استخدامها إلا لغرض الخدمة.
+</p>
 
 </div>
 
@@ -130,6 +142,26 @@ function toggleType(){
   if(type.value === "supply")
     supply.classList.remove("hidden");
 }
+ 
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+
+      const link = `https://www.google.com/maps?q=${lat},${lng}`;
+      document.getElementById("location").value = link;
+
+      alert("✅ تم تحديد الموقع بنجاح");
+    }, function() {
+      alert("❌ يرجى السماح بتحديد الموقع");
+    });
+  } else {
+    alert("المتصفح لا يدعم تحديد الموقع");
+  }
+}
+
+
 
 function showSummary(){
   const summary = `
