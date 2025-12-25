@@ -267,12 +267,12 @@ function initMap() {
   });
 }
 
-/* =========================
-   عرض ملخص الطلب
-========================= */
 function showSummary() {
 
-  const val = id => document.getElementById(id)?.value || "—";
+  const v = id => {
+    const el = document.getElementById(id);
+    return el && el.value ? el.value : "—";
+  };
 
   const summary = `
   <div style="line-height:2">
@@ -280,35 +280,37 @@ function showSummary() {
     <h4>📋 ملخص الطلب</h4>
     <hr>
 
-    <b>👤 الاسم:</b> ${val("name")}<br>
-    <b>📞 الجوال:</b> ${val("phone")}<br>
-    <b>🏙️ المدينة:</b> ${val("city")}<br>
+    <b>👤 الاسم:</b> ${v("name")}<br>
+    <b>📞 الجوال:</b> ${v("phone")}<br>
+    <b>🏙️ المدينة:</b> ${v("city")}<br>
 
     <hr>
 
-    <b>🛠️ نوع الطلب:</b> ${val("type")}<br>
-    <b>📄 عقد صيانة:</b> ${val("hasContract")}<br>
-    <b>🏢 اسم المشروع:</b> ${val("projectName")}<br>
+    <b>🛠️ نوع الطلب:</b> ${v("type")}<br>
+    <b>📄 عقد صيانة:</b> ${v("hasContract")}<br>
+    <b>🏢 اسم المشروع:</b> ${v("projectName")}<br>
 
     <hr>
 
-    <b>🚨 حالة المصعد:</b> ${val("elevatorStatus")}<br>
-    <b>⚡ أولوية الطلب:</b> ${val("priority")}<br>
+    <b>🚨 حالة المصعد:</b> ${v("elevatorStatus")}<br>
+    <b>⚡ أولوية الطلب:</b> ${v("priority")}<br>
 
     <hr>
 
     <b>📝 وصف العطل:</b><br>
-    ${val("problem")}
+    ${v("problem")}
 
     <hr>
 
     <b>📍 موقع المصعد:</b><br>
-    <a href="${val("location")}" target="_blank">${val("location")}</a>
+    <a href="${v("location")}" target="_blank">
+      ${v("location")}
+    </a>
 
     <hr>
 
     <b>📎 صورة مرفقة:</b>
-    ${document.getElementById("image")?.files.length ? "تم الرفع ✅" : "لا يوجد"}
+    ${document.getElementById("image")?.files.length ? "تم رفع صورة ✅" : "لا توجد صورة"}
 
   </div>
   `;
@@ -316,6 +318,8 @@ function showSummary() {
   document.getElementById("summaryBox").innerHTML = summary;
   document.getElementById("summaryBox").classList.remove("hidden");
 }
+
+
 
 /* =========================
    إرسال الطلب
