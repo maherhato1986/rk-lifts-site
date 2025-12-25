@@ -193,7 +193,7 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 let map, marker;
 
 /* =========================
-   التحكم في نوع الطلب
+   التحكم بنوع الطلب
 ========================= */
 function toggleType() {
   const type = document.getElementById("type").value;
@@ -216,7 +216,7 @@ function toggleType() {
 }
 
 /* =========================
-   هل يوجد عقد صيانة؟
+   هل يوجد عقد؟
 ========================= */
 function toggleContractFlow() {
   const val = document.getElementById("hasContract").value;
@@ -244,75 +244,71 @@ function hideAllSections() {
 }
 
 /* =========================
-   Google Maps
+   Google Map
 ========================= */
 function initMap() {
   const defaultLocation = { lat: 24.7136, lng: 46.6753 };
 
   map = new google.maps.Map(document.getElementById("map"), {
     center: defaultLocation,
-    zoom: 12,
+    zoom: 12
   });
 
   map.addListener("click", function (e) {
-    placeMarker(e.latLng);
+    if (marker) marker.setMap(null);
+
+    marker = new google.maps.Marker({
+      position: e.latLng,
+      map: map
+    });
+
+    document.getElementById("location").value =
+      `https://maps.google.com/?q=${e.latLng.lat()},${e.latLng.lng()}`;
   });
-}
-
-function placeMarker(location) {
-  if (marker) marker.setMap(null);
-
-  marker = new google.maps.Marker({
-    position: location,
-    map: map,
-  });
-
-  document.getElementById("location").value =
-    `https://maps.google.com/?q=${location.lat()},${location.lng()}`;
 }
 
 /* =========================
-   ملخص الطلب
+   عرض ملخص الطلب
 ========================= */
-<script>
 function showSummary() {
 
-  const getVal = id => document.getElementById(id)?.value || "—";
+  const val = id => document.getElementById(id)?.value || "—";
 
   const summary = `
   <div style="line-height:2">
 
-  <h4>📋 ملخص الطلب</h4>
-  <hr>
+    <h4>📋 ملخص الطلب</h4>
+    <hr>
 
-  <b>👤 اسم العميل:</b> ${getVal("name")}<br>
-  <b>📞 رقم الجوال:</b> ${getVal("phone")}<br>
-  <b>🏙️ المدينة:</b> ${getVal("city")}<br>
+    <b>👤 الاسم:</b> ${val("name")}<br>
+    <b>📞 الجوال:</b> ${val("phone")}<br>
+    <b>🏙️ المدينة:</b> ${val("city")}<br>
 
-  <hr>
+    <hr>
 
-  <b>🛠️ نوع الطلب:</b> ${getVal("type")}<br>
-  <b>📄 هل يوجد عقد صيانة؟:</b> ${getVal("hasContract")}<br>
-  <b>🏢 اسم المشروع:</b> ${getVal("projectName")}<br>
+    <b>🛠️ نوع الطلب:</b> ${val("type")}<br>
+    <b>📄 عقد صيانة:</b> ${val("hasContract")}<br>
+    <b>🏢 اسم المشروع:</b> ${val("projectName")}<br>
 
-  <hr>
+    <hr>
 
-  <b>🚨 حالة المصعد:</b> ${getVal("elevatorStatus")}<br>
-  <b>⚡ أولوية الطلب:</b> ${getVal("priority")}<br>
-  <b>📝 وصف العطل:</b><br>
-  ${getVal("problem")}
+    <b>🚨 حالة المصعد:</b> ${val("elevatorStatus")}<br>
+    <b>⚡ أولوية الطلب:</b> ${val("priority")}<br>
 
-  <hr>
+    <hr>
 
-  <b>📍 موقع المصعد:</b><br>
-  <a href="${getVal("location")}" target="_blank">
-    ${getVal("location")}
-  </a>
+    <b>📝 وصف العطل:</b><br>
+    ${val("problem")}
 
-  <hr>
+    <hr>
 
-  <b>📎 صورة مرفقة:</b> 
-  ${document.getElementById("image").files.length > 0 ? "تم الرفع ✅" : "لا يوجد"}
+    <b>📍 موقع المصعد:</b><br>
+    <a href="${val("location")}" target="_blank">${val("location")}</a>
+
+    <hr>
+
+    <b>📎 صورة مرفقة:</b>
+    ${document.getElementById("image")?.files.length ? "تم الرفع ✅" : "لا يوجد"}
 
   </div>
   `;
@@ -320,8 +316,6 @@ function showSummary() {
   document.getElementById("summaryBox").innerHTML = summary;
   document.getElementById("summaryBox").classList.remove("hidden");
 }
-</script>
-
 
 /* =========================
    إرسال الطلب
@@ -333,7 +327,8 @@ function submitForm() {
 
 <script
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCscTZats0zQdXyjweiRZuqjiSxw_Y1dlY&callback=initMap"
-  async defer>
+  async
+  defer>
 </script>
 
 
