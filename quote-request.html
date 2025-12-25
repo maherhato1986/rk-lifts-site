@@ -5,89 +5,115 @@
 <title>طلب خدمة - RKL</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-body{font-family:Cairo;background:#f4f6f9}
-.box{max-width:850px;margin:30px auto;background:#fff;padding:25px;border-radius:10px}
-label{font-weight:bold;margin-top:12px;display:block}
+body{font-family:Cairo;background:#f2f4f8}
+.box{max-width:850px;margin:30px auto;background:#fff;padding:30px;border-radius:12px}
+h2{text-align:center;margin-bottom:10px}
+label{font-weight:600;margin-top:12px;display:block}
 input,select,textarea{width:100%;padding:10px;margin-top:6px;border-radius:6px;border:1px solid #ccc}
-button{margin-top:20px;width:100%;background:#0a7cff;color:#fff;border:none;padding:14px;font-size:16px;border-radius:6px}
+button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padding:15px;font-size:16px;border-radius:8px}
 .hidden{display:none}
+.section{margin-top:20px;padding-top:10px;border-top:1px solid #eee}
 </style>
 </head>
 
 <body>
 
 <div class="box">
-<h2 style="text-align:center">📋 نموذج طلب خدمة</h2>
+<h2>📋 نموذج طلب خدمة</h2>
 
+<!-- بيانات العميل -->
+<div class="section">
+<label>اسم العميل</label>
+<input type="text">
+
+<label>رقم الجوال</label>
+<input type="tel">
+
+<label>البريد الإلكتروني</label>
+<input type="email">
+
+<label>المدينة</label>
+<input type="text">
+</div>
+
+<!-- نوع العلاقة -->
+<div class="section">
 <label>هل لديك عقد صيانة معنا؟</label>
-<select id="hasContract" onchange="handleContract()">
+<select id="contract" onchange="handleContract()">
   <option value="">اختر</option>
   <option value="yes">نعم</option>
   <option value="no">لا – طلب جديد</option>
 </select>
+</div>
 
-<!-- طلب جديد -->
-<div id="newRequest" class="hidden">
-
+<!-- نوع الطلب -->
+<div id="requestTypeBox" class="section hidden">
 <label>نوع الطلب</label>
 <select id="requestType" onchange="handleType()">
   <option value="">اختر</option>
-  <option value="maintenance">صيانة مصعد</option>
+  <option value="maintenance">صيانة مصاعد</option>
   <option value="supply">توريد مصاعد</option>
 </select>
+</div>
 
 <!-- صيانة -->
-<div id="maintenance" class="hidden">
-  <label>نوع المصعد</label>
-  <input type="text">
+<div id="maintenance" class="section hidden">
+<label>نوع المصعد</label>
+<select>
+  <option>ركاب</option>
+  <option>بضائع</option>
+  <option>مستشفى</option>
+</select>
 
-  <label>حالة المصعد</label>
-  <select>
-    <option>يعمل بشكل طبيعي</option>
-    <option>متوقف عن العمل</option>
-  </select>
+<label>حالة المصعد</label>
+<select>
+  <option>يعمل بشكل طبيعي</option>
+  <option>يعمل مع ملاحظات</option>
+  <option>متوقف عن العمل</option>
+</select>
 
-  <label>عدد المصاعد</label>
-  <input type="number">
+<label>عدد المصاعد</label>
+<input type="number">
 
-  <label>موقع المصعد</label>
-  <input type="text">
+<label>موقع المصعد</label>
+<input type="text">
 
-  <label>نوع الخدمة المطلوبة</label>
-  <select>
-    <option>زيارة واحدة</option>
-    <option>عقد صيانة</option>
-  </select>
+<label>نوع الخدمة المطلوبة</label>
+<select>
+  <option>زيارة واحدة</option>
+  <option>عقد صيانة</option>
+</select>
 
-  <label>صورة الكابينة (اختياري)</label>
-  <input type="file">
+<label>رفع صورة الكابينة أو العطل</label>
+<input type="file">
 </div>
 
 <!-- توريد -->
-<div id="supply" class="hidden">
-  <label>اسم المشروع</label>
-  <input type="text">
+<div id="supply" class="section hidden">
+<label>اسم المشروع</label>
+<input type="text">
 
-  <label>عدد المصاعد</label>
-  <input type="number">
+<label>موقع المشروع</label>
+<input type="text">
 
-  <label>عدد الأدوار</label>
-  <input type="number">
+<label>نوع المبنى</label>
+<select>
+  <option>سكني</option>
+  <option>تجاري</option>
+  <option>مستشفى</option>
+</select>
 
-  <label>نوع المبنى</label>
-  <select>
-    <option>سكني</option>
-    <option>تجاري</option>
-    <option>مستشفى</option>
-  </select>
+<label>عدد المصاعد</label>
+<input type="number">
 
-  <label>رفع مخطط المشروع</label>
-  <input type="file">
+<label>عدد الأدوار</label>
+<input type="number">
 
-  <label>ملاحظات</label>
-  <textarea></textarea>
-</div>
+<label>رفع المخطط</label>
+<input type="file">
 
+<label>ملاحظات إضافية</label>
+<textarea rows="3"></textarea>
 </div>
 
 <button onclick="submitForm()">📨 إرسال الطلب</button>
@@ -95,7 +121,7 @@ button{margin-top:20px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 
 <script>
 function handleContract(){
-  document.getElementById("newRequest").classList.remove("hidden");
+  document.getElementById("requestTypeBox").classList.remove("hidden");
 }
 
 function handleType(){
