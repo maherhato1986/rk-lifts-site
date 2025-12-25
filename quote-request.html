@@ -175,7 +175,10 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 
 <!-- ملخص -->
 <div class="section">
-<button onclick="showSummary()">📋 عرض ملخص الطلب</button>
+<button type="button" onclick="showSummary()">
+📋 عرض ملخص الطلب
+</button>
+
 <div id="summaryBox" class="summary hidden"></div>
 </div>
 
@@ -271,16 +274,54 @@ function placeMarker(location) {
 /* =========================
    ملخص الطلب
 ========================= */
+<script>
 function showSummary() {
+
+  const getVal = id => document.getElementById(id)?.value || "—";
+
   const summary = `
-  <b>الاسم:</b> ${document.getElementById("name").value}<br>
-  <b>الجوال:</b> ${document.getElementById("phone").value}<br>
-  <b>نوع الطلب:</b> ${document.getElementById("type").value}<br>
-  <b>الموقع:</b> ${document.getElementById("location").value}
+  <div style="line-height:2">
+
+  <h4>📋 ملخص الطلب</h4>
+  <hr>
+
+  <b>👤 اسم العميل:</b> ${getVal("name")}<br>
+  <b>📞 رقم الجوال:</b> ${getVal("phone")}<br>
+  <b>🏙️ المدينة:</b> ${getVal("city")}<br>
+
+  <hr>
+
+  <b>🛠️ نوع الطلب:</b> ${getVal("type")}<br>
+  <b>📄 هل يوجد عقد صيانة؟:</b> ${getVal("hasContract")}<br>
+  <b>🏢 اسم المشروع:</b> ${getVal("projectName")}<br>
+
+  <hr>
+
+  <b>🚨 حالة المصعد:</b> ${getVal("elevatorStatus")}<br>
+  <b>⚡ أولوية الطلب:</b> ${getVal("priority")}<br>
+  <b>📝 وصف العطل:</b><br>
+  ${getVal("problem")}
+
+  <hr>
+
+  <b>📍 موقع المصعد:</b><br>
+  <a href="${getVal("location")}" target="_blank">
+    ${getVal("location")}
+  </a>
+
+  <hr>
+
+  <b>📎 صورة مرفقة:</b> 
+  ${document.getElementById("image").files.length > 0 ? "تم الرفع ✅" : "لا يوجد"}
+
+  </div>
   `;
+
   document.getElementById("summaryBox").innerHTML = summary;
   document.getElementById("summaryBox").classList.remove("hidden");
 }
+</script>
+
 
 /* =========================
    إرسال الطلب
