@@ -1,114 +1,115 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>طلب عرض سعر - RKL</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body { font-family: Cairo, sans-serif; background:#f5f7fa; }
-    .box {
-      max-width: 800px;
-      margin: 30px auto;
-      background:#fff;
-      padding:25px;
-      border-radius:10px;
-      box-shadow:0 0 10px rgba(0,0,0,.08);
-    }
-    label { font-weight: bold; margin-top: 12px; display:block; }
-    input, select, textarea {
-      width:100%; padding:10px; margin-top:5px;
-      border:1px solid #ccc; border-radius:6px;
-    }
-    button {
-      margin-top:20px;
-      width:100%;
-      background:#0a7cff;
-      color:#fff;
-      border:none;
-      padding:14px;
-      font-size:16px;
-      border-radius:6px;
-      cursor:pointer;
-    }
-    .hidden { display:none; }
-  </style>
+<meta charset="UTF-8">
+<title>طلب خدمة - RKL</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{font-family:Cairo;background:#f4f6f9}
+.box{max-width:850px;margin:30px auto;background:#fff;padding:25px;border-radius:10px}
+label{font-weight:bold;margin-top:12px;display:block}
+input,select,textarea{width:100%;padding:10px;margin-top:6px;border-radius:6px;border:1px solid #ccc}
+button{margin-top:20px;width:100%;background:#0a7cff;color:#fff;border:none;padding:14px;font-size:16px;border-radius:6px}
+.hidden{display:none}
+</style>
 </head>
 
 <body>
 
 <div class="box">
-  <h2 style="text-align:center;">📋 نموذج طلب عرض سعر</h2>
+<h2 style="text-align:center">📋 نموذج طلب خدمة</h2>
 
-  <label>اسم العميل</label>
-  <input type="text" id="name">
+<label>هل لديك عقد صيانة معنا؟</label>
+<select id="hasContract" onchange="handleContract()">
+  <option value="">اختر</option>
+  <option value="yes">نعم</option>
+  <option value="no">لا – طلب جديد</option>
+</select>
 
-  <label>رقم الجوال</label>
-  <input type="tel" id="phone">
+<!-- طلب جديد -->
+<div id="newRequest" class="hidden">
 
-  <label>نوع الطلب</label>
-  <select id="requestType" onchange="toggleFields()">
-    <option value="">-- اختر --</option>
-    <option value="maintenance">صيانة</option>
-    <option value="installation">تركيب مصعد</option>
-    <option value="modernization">تحديث / تطوير</option>
+<label>نوع الطلب</label>
+<select id="requestType" onchange="handleType()">
+  <option value="">اختر</option>
+  <option value="maintenance">صيانة مصعد</option>
+  <option value="supply">توريد مصاعد</option>
+</select>
+
+<!-- صيانة -->
+<div id="maintenance" class="hidden">
+  <label>نوع المصعد</label>
+  <input type="text">
+
+  <label>حالة المصعد</label>
+  <select>
+    <option>يعمل بشكل طبيعي</option>
+    <option>متوقف عن العمل</option>
   </select>
 
-  <!-- صيانة -->
-  <div id="maintenanceFields" class="hidden">
-    <label>عدد المصاعد</label>
-    <input type="number">
+  <label>عدد المصاعد</label>
+  <input type="number">
 
-    <label>نوع العطل</label>
-    <textarea></textarea>
-  </div>
+  <label>موقع المصعد</label>
+  <input type="text">
 
-  <!-- تركيب -->
-  <div id="installFields" class="hidden">
-    <label>عدد المصاعد</label>
-    <input type="number">
+  <label>نوع الخدمة المطلوبة</label>
+  <select>
+    <option>زيارة واحدة</option>
+    <option>عقد صيانة</option>
+  </select>
 
-    <label>عدد الأدوار</label>
-    <input type="number">
+  <label>صورة الكابينة (اختياري)</label>
+  <input type="file">
+</div>
 
-    <label>نوع المبنى</label>
-    <select>
-      <option>سكني</option>
-      <option>تجاري</option>
-      <option>مستشفى</option>
-    </select>
-  </div>
+<!-- توريد -->
+<div id="supply" class="hidden">
+  <label>اسم المشروع</label>
+  <input type="text">
 
-  <!-- تحديث -->
-  <div id="upgradeFields" class="hidden">
-    <label>ماركة المصعد الحالية</label>
-    <input type="text">
+  <label>عدد المصاعد</label>
+  <input type="number">
 
-    <label>نوع التحديث المطلوب</label>
-    <textarea></textarea>
-  </div>
+  <label>عدد الأدوار</label>
+  <input type="number">
 
-  <button onclick="submitForm()">📨 إرسال الطلب</button>
+  <label>نوع المبنى</label>
+  <select>
+    <option>سكني</option>
+    <option>تجاري</option>
+    <option>مستشفى</option>
+  </select>
+
+  <label>رفع مخطط المشروع</label>
+  <input type="file">
+
+  <label>ملاحظات</label>
+  <textarea></textarea>
+</div>
+
+</div>
+
+<button onclick="submitForm()">📨 إرسال الطلب</button>
 </div>
 
 <script>
-  const params = new URLSearchParams(window.location.search);
-  document.getElementById("name").value = params.get("name") || "";
-  document.getElementById("phone").value = params.get("phone") || "";
+function handleContract(){
+  document.getElementById("newRequest").classList.remove("hidden");
+}
 
-  function toggleFields() {
-    document.getElementById("maintenanceFields").classList.add("hidden");
-    document.getElementById("installFields").classList.add("hidden");
-    document.getElementById("upgradeFields").classList.add("hidden");
+function handleType(){
+  document.getElementById("maintenance").classList.add("hidden");
+  document.getElementById("supply").classList.add("hidden");
 
-    const type = document.getElementById("requestType").value;
-    if (type === "maintenance") document.getElementById("maintenanceFields").classList.remove("hidden");
-    if (type === "installation") document.getElementById("installFields").classList.remove("hidden");
-    if (type === "modernization") document.getElementById("upgradeFields").classList.remove("hidden");
-  }
+  const type = document.getElementById("requestType").value;
+  if(type==="maintenance") document.getElementById("maintenance").classList.remove("hidden");
+  if(type==="supply") document.getElementById("supply").classList.remove("hidden");
+}
 
-  function submitForm(){
-    alert("✅ تم إرسال الطلب بنجاح، سيتم التواصل معكم قريبًا");
-  }
+function submitForm(){
+  alert("✅ تم إرسال الطلب بنجاح، سيتم التواصل معكم قريبًا");
+}
 </script>
 
 </body>
