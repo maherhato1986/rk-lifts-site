@@ -4,20 +4,20 @@
   <meta charset="UTF-8">
   <title>طلب عرض سعر - RKL</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <style>
     body {
       font-family: "Cairo", sans-serif;
-      background: #f6f7f9;
+      background: #f4f6f9;
       margin: 0;
-      padding: 0;
     }
     .container {
       max-width: 850px;
-      margin: auto;
+      margin: 30px auto;
       background: #fff;
       padding: 25px;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,.05);
+      box-shadow: 0 0 12px rgba(0,0,0,.08);
     }
     h2 {
       text-align: center;
@@ -32,29 +32,26 @@
       width: 100%;
       padding: 10px;
       margin-top: 6px;
-      border: 1px solid #ccc;
       border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
     }
     textarea { resize: vertical; }
-    .row {
-      display: flex;
-      gap: 15px;
-    }
-    .row > div {
-      flex: 1;
-    }
+
     button {
+      margin-top: 20px;
+      width: 100%;
       background: #0a7cff;
       color: white;
-      padding: 12px;
       border: none;
-      border-radius: 6px;
-      margin-top: 20px;
+      padding: 14px;
       font-size: 16px;
+      border-radius: 6px;
       cursor: pointer;
     }
+
     button:hover {
-      background: #055fd4;
+      background: #065ec2;
     }
   </style>
 </head>
@@ -64,63 +61,53 @@
 <div class="container">
   <h2>📋 نموذج طلب عرض سعر</h2>
 
-  <!-- بيانات العميل -->
-  <label>اسم العميل / الجهة</label>
-  <input type="text" placeholder="اكتب الاسم">
+  <label>اسم العميل</label>
+  <input type="text" id="name">
 
   <label>رقم الجوال</label>
-  <input type="tel" placeholder="05xxxxxxxx">
+  <input type="tel" id="phone">
 
   <label>البريد الإلكتروني</label>
-  <input type="email" placeholder="example@email.com">
+  <input type="email" id="email">
 
   <label>المدينة</label>
-  <select>
+  <select id="city">
     <option>الرياض</option>
     <option>جدة</option>
     <option>الدمام</option>
     <option>أخرى</option>
   </select>
 
-  <label>اسم المشروع / المبنى</label>
-  <input type="text">
-
-  <!-- نوع الطلب -->
   <label>نوع الطلب</label>
-  <select>
+  <select id="type">
     <option>تركيب مصعد جديد</option>
     <option>صيانة مصعد</option>
-    <option>تحديث / تطوير مصعد</option>
+    <option>تحديث / تطوير</option>
   </select>
 
-  <!-- بيانات المصعد -->
   <label>عدد المصاعد</label>
   <input type="number">
 
-  <label>نوع المصعد</label>
-  <select>
-    <option>ركاب</option>
-    <option>خدمة</option>
-    <option>بانوراما</option>
-  </select>
+  <label>ماركة المصعد (إن وجدت)</label>
+  <input type="text">
 
-  <label>الحمولة (كجم)</label>
-  <input type="number" placeholder="مثال: 630">
-
-  <label>عدد الأدوار</label>
-  <input type="number">
-
-  <label>ماركة المصعد (إن وجد)</label>
-  <input type="text" placeholder="Fuji / Otis / Kone ...">
-
-  <label>وصف العطل أو الطلب</label>
+  <label>وصف الطلب</label>
   <textarea rows="4"></textarea>
 
-  <label>إرفاق صور (اختياري)</label>
-  <input type="file" multiple>
-
-  <button>📨 إرسال الطلب</button>
+  <button onclick="submitForm()">📨 إرسال الطلب</button>
 </div>
+
+<script>
+  // تعبئة تلقائية من الرابط
+  const params = new URLSearchParams(window.location.search);
+
+  document.getElementById("name").value = params.get("name") || "";
+  document.getElementById("phone").value = params.get("phone") || "";
+
+  function submitForm() {
+    alert("✅ تم إرسال الطلب بنجاح، سيتم التواصل معكم قريبًا");
+  }
+</script>
 
 </body>
 </html>
