@@ -134,14 +134,20 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 
 <script>
 function toggleType(){
-  document.getElementById("maintenance").classList.add("hidden");
-  document.getElementById("supply").classList.add("hidden");
+  maintenance.classList.add("hidden");
+  supply.classList.add("hidden");
 
-  if(type.value === "maintenance")
+  if(type.value === "maintenance"){
     maintenance.classList.remove("hidden");
-  if(type.value === "supply")
+    document.getElementById("map").style.display = "block";
+  }
+
+  if(type.value === "supply"){
     supply.classList.remove("hidden");
+    document.getElementById("map").style.display = "block";
+  }
 }
+
  
 function getLocation() {
   if (navigator.geolocation) {
@@ -178,6 +184,40 @@ function submitForm(){
   alert("✅ تم إرسال الطلب بنجاح، سيتم التواصل معكم قريبًا");
 }
 </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDiGHtvP1vBJRA-XfIZLWzbn8A8RUpJtu0"></script>
+
+<script>
+let map, marker;
+
+function initMap() {
+  const defaultLocation = { lat: 24.7136, lng: 46.6753 }; // الرياض
+
+  map = new google.maps.Map(document.getElementById("map"), {
+    center: defaultLocation,
+    zoom: 12,
+  });
+
+  map.addListener("click", function (e) {
+    placeMarker(e.latLng);
+  });
+}
+
+function placeMarker(location) {
+  if (marker) marker.setMap(null);
+
+  marker = new google.maps.Marker({
+    position: location,
+    map: map,
+  });
+
+  document.getElementById("location").value =
+    `https://maps.google.com/?q=${location.lat()},${location.lng()}`;
+
+  document.getElementById("lat").value = location.lat();
+  document.getElementById("lng").value = location.lng();
+}
+</script>
+
 
 </body>
 </html>
