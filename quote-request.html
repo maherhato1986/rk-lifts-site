@@ -186,7 +186,114 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 
 </div>
 
-<script> function toggleType(){ maintenance.classList.add("hidden"); supply.classList.add("hidden"); if(type.value === "maintenance"){ maintenance.classList.remove("hidden"); document.getElementById("map").style.display = "block"; } if(type.value === "supply"){ supply.classList.remove("hidden"); document.getElementById("map").style.display = "block"; } } function getLocation() { if (navigator.geolocation) { navigator.geolocation.getCurrentPosition(function(position) { const lat = position.coords.latitude; const lng = position.coords.longitude; const link = https://www.google.com/maps?q=${lat},${lng}; document.getElementById("location").value = link; alert("✅ تم تحديد الموقع بنجاح"); }, function() { alert("❌ يرجى السماح بتحديد الموقع"); }); } else { alert("المتصفح لا يدعم تحديد الموقع"); } } function showSummary(){ const summary = <strong>الاسم:</strong> ${name.value}<br> <strong>الجوال:</strong> ${phone.value}<br> <strong>المدينة:</strong> ${city.value}<br> <strong>نوع الطلب:</strong> ${type.value}<br> ; document.getElementById("summaryBox").innerHTML = summary; document.getElementById("summaryBox").classList.remove("hidden"); } function submitForm(){ alert("✅ تم إرسال الطلب بنجاح، سيتم التواصل معكم قريبًا"); } </script> <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCscTZats0zQdXyjweiRZuqjiSxw_Y1dlY&callback=initMap" async defer> </script> <script> let map, marker; function initMap() { const defaultLocation = { lat: 24.7136, lng: 46.6753 }; // الرياض map = new google.maps.Map(document.getElementById("map"), { center: defaultLocation, zoom: 12, }); map.addListener("click", function (e) { placeMarker(e.latLng); }); } function placeMarker(location) { if (marker) marker.setMap(null); marker = new google.maps.Marker({ position: location, map: map, }); document.getElementById("location").value = https://maps.google.com/?q=${location.lat()},${location.lng()}; } </script> <script> function toggleContract() { const value = document.getElementById("contract").value; document.getElementById("withContract").classList.add("hidden"); document.getElementById("withoutContract").classList.add("hidden"); if (value === "yes") { document.getElementById("withContract").classList.remove("hidden"); } if (value === "no") { document.getElementById("withoutContract").classList.remove("hidden"); } } </script> <script> function toggleType() { document.getElementById("withContract").classList.add("hidden"); document.getElementById("withoutContract").classList.add("hidden"); document.getElementById("supply").classList.add("hidden"); const type = document.getElementById("type").value; if (type === "maintenance") { document.getElementById("contract").parentElement.style.display = "block"; } if (type === "supply") { document.getElementById("supply").classList.remove("hidden"); } if (type === "consult") { alert("سيتم التواصل معك لتقديم استشارة فنية مجانية"); } } function toggleContract() { const val = document.getElementById("contract").value; document.getElementById("withContract").classList.add("hidden"); document.getElementById("withoutContract").classList.add("hidden"); if (val === "yes") { document.getElementById("withContract").classList.remove("hidden"); } if (val === "no") { document.getElementById("withoutContract").classList.remove("hidden"); } } </script> <script> function toggleContractFlow() { const val = document.getElementById('hasContract').value; document.getElementById('withContract').style.display = val === 'yes' ? 'block' : 'none'; document.getElementById('withoutContract').style.display = val === 'no' ? 'block' : 'none'; } </script>
+<script>
+let map, marker;
+
+/* =========================
+   التحكم في نوع الطلب
+========================= */
+function toggleType() {
+  const type = document.getElementById("type").value;
+
+  hideAllSections();
+
+  if (type === "maintenance") {
+    document.getElementById("contractBlock").style.display = "block";
+    document.getElementById("mapSection").style.display = "block";
+  }
+
+  if (type === "supply") {
+    document.getElementById("supply").style.display = "block";
+    document.getElementById("mapSection").style.display = "block";
+  }
+
+  if (type === "consult") {
+    alert("📞 سيتم التواصل معك لتقديم استشارة فنية مجانية");
+  }
+}
+
+/* =========================
+   هل يوجد عقد صيانة؟
+========================= */
+function toggleContractFlow() {
+  const val = document.getElementById("hasContract").value;
+
+  document.getElementById("withContract").style.display = "none";
+  document.getElementById("withoutContract").style.display = "none";
+
+  if (val === "yes") {
+    document.getElementById("withContract").style.display = "block";
+  }
+
+  if (val === "no") {
+    document.getElementById("withoutContract").style.display = "block";
+  }
+}
+
+/* =========================
+   إخفاء كل الأقسام
+========================= */
+function hideAllSections() {
+  document.getElementById("contractBlock").style.display = "none";
+  document.getElementById("withContract").style.display = "none";
+  document.getElementById("withoutContract").style.display = "none";
+  document.getElementById("supply").style.display = "none";
+}
+
+/* =========================
+   Google Maps
+========================= */
+function initMap() {
+  const defaultLocation = { lat: 24.7136, lng: 46.6753 };
+
+  map = new google.maps.Map(document.getElementById("map"), {
+    center: defaultLocation,
+    zoom: 12,
+  });
+
+  map.addListener("click", function (e) {
+    placeMarker(e.latLng);
+  });
+}
+
+function placeMarker(location) {
+  if (marker) marker.setMap(null);
+
+  marker = new google.maps.Marker({
+    position: location,
+    map: map,
+  });
+
+  document.getElementById("location").value =
+    `https://maps.google.com/?q=${location.lat()},${location.lng()}`;
+}
+
+/* =========================
+   ملخص الطلب
+========================= */
+function showSummary() {
+  const summary = `
+  <b>الاسم:</b> ${document.getElementById("name").value}<br>
+  <b>الجوال:</b> ${document.getElementById("phone").value}<br>
+  <b>نوع الطلب:</b> ${document.getElementById("type").value}<br>
+  <b>الموقع:</b> ${document.getElementById("location").value}
+  `;
+  document.getElementById("summaryBox").innerHTML = summary;
+  document.getElementById("summaryBox").classList.remove("hidden");
+}
+
+/* =========================
+   إرسال الطلب
+========================= */
+function submitForm() {
+  alert("✅ تم إرسال الطلب بنجاح، سيتم التواصل معكم قريبًا");
+}
+</script>
+
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCscTZats0zQdXyjweiRZuqjiSxw_Y1dlY&callback=initMap"
+  async defer>
+</script>
 
 
 </body>
