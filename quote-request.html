@@ -65,9 +65,8 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 <label>موقع المصعد</label>
 <input type="text" id="location" placeholder="اختر الموقع من الخريطة" readonly>
 
-<button type="button" onclick="getLocation()" style="margin-top:8px;">
-📍 تحديد الموقع من الخريطة
-</button>
+<div id="map" style="height:300px;border-radius:8px;margin-top:10px;"></div>
+
 
 
 <label>نوع الخدمة</label>
@@ -184,7 +183,12 @@ function submitForm(){
   alert("✅ تم إرسال الطلب بنجاح، سيتم التواصل معكم قريبًا");
 }
 </script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCscTZats0zQdXyjweiRZuqjiSxw_Y1dlY"></script>
+ <script
+  src="https://maps.googleapis.com/maps/api/js?key=YOUR_NEW_KEY&callback=initMap"
+  async
+  defer>
+</script>
+
 
 
 <script>
