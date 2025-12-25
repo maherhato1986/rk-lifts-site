@@ -55,9 +55,6 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
   <label>اسم المشروع / الموقع</label>
   <input type="text" name="project_name">
 
-  <label>عدد المصاعد</label>
-  <input type="number" name="lifts_count">
-
   <label>نوع البلاغ</label>
   <select name="issue_type">
     <option>صيانة دورية</option>
@@ -82,7 +79,12 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 
   <label>وصف العطل</label>
   <textarea name="description"></textarea>
-
+<label>رفع صورة (اختياري)</label>
+<small style="color:#666;">
+يرجى رفع صورة للكابينة من الداخل أو لوحة الكنترول داخل غرفة المكينة (إن وجدت)،  
+وذلك لمساعدتنا على تقييم  بشكل أدق.
+</small>
+<input type="file" accept="image/*">
 </div>
 
 
@@ -119,8 +121,13 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
     <option>5 – 10 سنوات</option>
     <option>أكثر من 10 سنوات</option>
   </select>
-
-  <label>وصف المشكلة</label>
+<label>رفع صورة (اختياري)</label>
+<small style="color:#666;">
+يرجى رفع صورة للكابينة من الداخل أو لوحة الكنترول داخل غرفة المكينة (إن وجدت)،  
+وذلك لمساعدتنا على تقييم  بشكل أدق.
+</small>
+<input type="file" accept="image/*">
+  <label>ملاحظات عن المصاعد </label>
   <textarea name="description"></textarea>
 
 </div>
@@ -134,25 +141,8 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 
 
 
-<label>نوع الخدمة</label>
-<select id="serviceType">
-  <option>زيارة واحدة</option>
-  <option>عقد صيانة</option>
-</select>
 
-<label>أولوية الطلب</label>
-<select id="priority">
-  <option>عادي</option>
-  <option>عاجل</option>
-  <option>طارئ</option>
-</select>
 
-<label>رفع صورة (اختياري)</label>
-<small style="color:#666;">
-يرجى رفع صورة للكابينة من الداخل أو لوحة الكنترول داخل غرفة المكينة (إن وجدت)،  
-وذلك لمساعدتنا على تقييم  بشكل أدق.
-</small>
-<input type="file" accept="image/*">
 
 
 <!-- توريد -->
