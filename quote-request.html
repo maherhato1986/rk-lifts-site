@@ -5,96 +5,90 @@
 <title>طلب خدمة - RKL</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-body{font-family:Cairo;background:#f2f4f8}
-.box{max-width:850px;margin:30px auto;background:#fff;padding:30px;border-radius:12px}
+body{font-family:Cairo;background:#f4f6f9}
+.container{max-width:900px;margin:30px auto;background:#fff;padding:30px;border-radius:12px}
 h2{text-align:center;margin-bottom:10px}
 label{font-weight:600;margin-top:12px;display:block}
 input,select,textarea{width:100%;padding:10px;margin-top:6px;border-radius:6px;border:1px solid #ccc}
 button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padding:15px;font-size:16px;border-radius:8px}
 .hidden{display:none}
-.section{margin-top:20px;padding-top:10px;border-top:1px solid #eee}
+.section{margin-top:25px;border-top:1px solid #eee;padding-top:15px}
+.summary{background:#f9fafb;padding:15px;border-radius:8px;margin-top:20px}
 </style>
 </head>
 
 <body>
 
-<div class="box">
+<div class="container">
 <h2>📋 نموذج طلب خدمة</h2>
 
 <!-- بيانات العميل -->
 <div class="section">
 <label>اسم العميل</label>
-<input type="text">
+<input id="name">
 
 <label>رقم الجوال</label>
-<input type="tel">
-
-<label>البريد الإلكتروني</label>
-<input type="email">
+<input id="phone">
 
 <label>المدينة</label>
-<input type="text">
-</div>
-
-<!-- نوع العلاقة -->
-<div class="section">
-<label>هل لديك عقد صيانة معنا؟</label>
-<select id="contract" onchange="handleContract()">
-  <option value="">اختر</option>
-  <option value="yes">نعم</option>
-  <option value="no">لا – طلب جديد</option>
-</select>
+<input id="city">
 </div>
 
 <!-- نوع الطلب -->
-<div id="requestTypeBox" class="section hidden">
+<div class="section">
 <label>نوع الطلب</label>
-<select id="requestType" onchange="handleType()">
+<select id="type" onchange="toggleType()">
   <option value="">اختر</option>
   <option value="maintenance">صيانة مصاعد</option>
-  <option value="supply">توريد مصاعد</option>
+  <option value="supply">توريد وتركيب مصاعد</option>
 </select>
 </div>
 
 <!-- صيانة -->
 <div id="maintenance" class="section hidden">
-<label>نوع المصعد</label>
-<select>
-  <option>ركاب</option>
-  <option>بضائع</option>
-  <option>مستشفى</option>
+<label>هل لديك عقد صيانة معنا؟</label>
+<select id="contract">
+  <option>نعم</option>
+  <option>لا</option>
 </select>
 
 <label>حالة المصعد</label>
-<select>
+<select id="status">
   <option>يعمل بشكل طبيعي</option>
   <option>يعمل مع ملاحظات</option>
   <option>متوقف عن العمل</option>
 </select>
 
 <label>عدد المصاعد</label>
-<input type="number">
+<input id="m_count" type="number">
 
 <label>موقع المصعد</label>
-<input type="text">
+<input id="m_location">
 
-<label>نوع الخدمة المطلوبة</label>
-<select>
+<label>نوع الخدمة</label>
+<select id="serviceType">
   <option>زيارة واحدة</option>
   <option>عقد صيانة</option>
 </select>
 
-<label>رفع صورة الكابينة أو العطل</label>
+<label>أولوية الطلب</label>
+<select id="priority">
+  <option>عادي</option>
+  <option>عاجل</option>
+  <option>طارئ</option>
+</select>
+
+<label>رفع صورة (اختياري)</label>
 <input type="file">
 </div>
 
 <!-- توريد -->
 <div id="supply" class="section hidden">
 <label>اسم المشروع</label>
-<input type="text">
+<input id="project">
 
 <label>موقع المشروع</label>
-<input type="text">
+<input id="project_location">
 
 <label>نوع المبنى</label>
 <select>
@@ -112,25 +106,40 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 <label>رفع المخطط</label>
 <input type="file">
 
-<label>ملاحظات إضافية</label>
-<textarea rows="3"></textarea>
+<label>ملاحظات</label>
+<textarea></textarea>
+</div>
+
+<!-- ملخص -->
+<div class="section">
+<button onclick="showSummary()">📋 عرض ملخص الطلب</button>
+<div id="summaryBox" class="summary hidden"></div>
 </div>
 
 <button onclick="submitForm()">📨 إرسال الطلب</button>
+
 </div>
 
 <script>
-function handleContract(){
-  document.getElementById("requestTypeBox").classList.remove("hidden");
-}
-
-function handleType(){
+function toggleType(){
   document.getElementById("maintenance").classList.add("hidden");
   document.getElementById("supply").classList.add("hidden");
 
-  const type = document.getElementById("requestType").value;
-  if(type==="maintenance") document.getElementById("maintenance").classList.remove("hidden");
-  if(type==="supply") document.getElementById("supply").classList.remove("hidden");
+  if(type.value === "maintenance")
+    maintenance.classList.remove("hidden");
+  if(type.value === "supply")
+    supply.classList.remove("hidden");
+}
+
+function showSummary(){
+  const summary = `
+  <strong>الاسم:</strong> ${name.value}<br>
+  <strong>الجوال:</strong> ${phone.value}<br>
+  <strong>المدينة:</strong> ${city.value}<br>
+  <strong>نوع الطلب:</strong> ${type.value}<br>
+  `;
+  document.getElementById("summaryBox").innerHTML = summary;
+  document.getElementById("summaryBox").classList.remove("hidden");
 }
 
 function submitForm(){
