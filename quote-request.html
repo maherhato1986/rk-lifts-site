@@ -44,20 +44,59 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 </select>
 </div>
 
-<!-- صيانة -->
-<div id="maintenance" class="section hidden">
 <label>هل لديك عقد صيانة معنا؟</label>
-<select id="contract">
-  <option>نعم</option>
-  <option>لا</option>
+<select id="contract" onchange="toggleContract()">
+  <option value="">اختر</option>
+  <option value="yes">نعم</option>
+  <option value="no">لا</option>
 </select>
 
+  <div id="withContract" class="hidden">
+
 <label>حالة المصعد</label>
-<select id="status">
+<select>
   <option>يعمل بشكل طبيعي</option>
   <option>يعمل مع ملاحظات</option>
   <option>متوقف عن العمل</option>
 </select>
+
+<label>عدد المصاعد</label>
+<input type="number">
+
+<label>أولوية الطلب</label>
+<select>
+  <option>عادي</option>
+  <option>عاجل</option>
+  <option>طارئ</option>
+</select>
+
+</div>
+
+<div id="withoutContract" class="hidden">
+
+<label>نوع المصعد</label>
+<input placeholder="مثال: فوجي / ميتسوبيشي">
+
+<label>عدد المصاعد</label>
+<input type="number">
+
+<label>حالة المصعد</label>
+<select>
+  <option>يعمل</option>
+  <option>متوقف</option>
+</select>
+
+<label>هل ترغب بعقد صيانة؟</label>
+<select>
+  <option>نعم</option>
+  <option>لا</option>
+</select>
+
+<label>رفع صورة (اختياري)</label>
+<input type="file">
+
+</div>
+
 
 <label>عدد المصاعد</label>
 <input id="m_count" type="number">
@@ -221,6 +260,22 @@ function placeMarker(location) {
 
 </script>
 
+<script>
+function toggleContract() {
+  const value = document.getElementById("contract").value;
+
+  document.getElementById("withContract").classList.add("hidden");
+  document.getElementById("withoutContract").classList.add("hidden");
+
+  if (value === "yes") {
+    document.getElementById("withContract").classList.remove("hidden");
+  }
+
+  if (value === "no") {
+    document.getElementById("withoutContract").classList.remove("hidden");
+  }
+}
+</script>
 
 </body>
 </html>
