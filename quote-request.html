@@ -4,67 +4,40 @@
   <meta charset="UTF-8">
   <title>طلب عرض سعر - RKL</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <style>
-    body {
-      font-family: "Cairo", sans-serif;
-      background: #f4f6f9;
-      margin: 0;
-    }
-    .container {
-      max-width: 850px;
+    body { font-family: Cairo, sans-serif; background:#f5f7fa; }
+    .box {
+      max-width: 800px;
       margin: 30px auto;
-      background: #fff;
-      padding: 25px;
-      border-radius: 10px;
-      box-shadow: 0 0 12px rgba(0,0,0,.08);
+      background:#fff;
+      padding:25px;
+      border-radius:10px;
+      box-shadow:0 0 10px rgba(0,0,0,.08);
     }
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    label {
-      font-weight: bold;
-      margin-top: 12px;
-      display: block;
-    }
+    label { font-weight: bold; margin-top: 12px; display:block; }
     input, select, textarea {
-      width: 100%;
-      padding: 10px;
-      margin-top: 6px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 14px;
+      width:100%; padding:10px; margin-top:5px;
+      border:1px solid #ccc; border-radius:6px;
     }
-    textarea { resize: vertical; }
-
     button {
-      margin-top: 20px;
-      width: 100%;
-      background: #0a7cff;
-      color: white;
-      border: none;
-      padding: 14px;
-      font-size: 16px;
-      border-radius: 6px;
-      cursor: pointer;
+      margin-top:20px;
+      width:100%;
+      background:#0a7cff;
+      color:#fff;
+      border:none;
+      padding:14px;
+      font-size:16px;
+      border-radius:6px;
+      cursor:pointer;
     }
-
-    button:hover {
-      background: #065ec2;
-    }
+    .hidden { display:none; }
   </style>
 </head>
 
 <body>
-<div class="container">
 
-  <div style="text-align:center; font-size:14px; color:#555; margin-bottom:15px;">
-    النموذج الرسمي لمؤسسة <strong>RKL للمصاعد والسلالم الكهربائية</strong><br>
-    🔒 جميع البيانات محمية وتُستخدم فقط لإعداد عرض السعر
-  </div>
-
-  <h2>📋 نموذج طلب عرض سعر</h2>
+<div class="box">
+  <h2 style="text-align:center;">📋 نموذج طلب عرض سعر</h2>
 
   <label>اسم العميل</label>
   <input type="text" id="name">
@@ -72,58 +45,70 @@
   <label>رقم الجوال</label>
   <input type="tel" id="phone">
 
-  <label>البريد الإلكتروني</label>
-  <input type="email" id="email">
-
-  <label>المدينة</label>
-  <select id="city">
-    <option>الرياض</option>
-    <option>جدة</option>
-    <option>الدمام</option>
-    <option>أخرى</option>
-  </select>
-
   <label>نوع الطلب</label>
-  <select id="type">
-    <option>تركيب مصعد جديد</option>
-    <option>صيانة مصعد</option>
-    <option>تحديث / تطوير</option>
+  <select id="requestType" onchange="toggleFields()">
+    <option value="">-- اختر --</option>
+    <option value="maintenance">صيانة</option>
+    <option value="installation">تركيب مصعد</option>
+    <option value="modernization">تحديث / تطوير</option>
   </select>
 
-  <label>عدد المصاعد</label>
-  <input type="number">
+  <!-- صيانة -->
+  <div id="maintenanceFields" class="hidden">
+    <label>عدد المصاعد</label>
+    <input type="number">
 
-  <label>ماركة المصعد (إن وجدت)</label>
-  <input type="text">
+    <label>نوع العطل</label>
+    <textarea></textarea>
+  </div>
 
-  <label>وصف الطلب</label>
-  <textarea rows="4"></textarea>
+  <!-- تركيب -->
+  <div id="installFields" class="hidden">
+    <label>عدد المصاعد</label>
+    <input type="number">
+
+    <label>عدد الأدوار</label>
+    <input type="number">
+
+    <label>نوع المبنى</label>
+    <select>
+      <option>سكني</option>
+      <option>تجاري</option>
+      <option>مستشفى</option>
+    </select>
+  </div>
+
+  <!-- تحديث -->
+  <div id="upgradeFields" class="hidden">
+    <label>ماركة المصعد الحالية</label>
+    <input type="text">
+
+    <label>نوع التحديث المطلوب</label>
+    <textarea></textarea>
+  </div>
 
   <button onclick="submitForm()">📨 إرسال الطلب</button>
 </div>
 
 <script>
-  // تعبئة تلقائية من الرابط
   const params = new URLSearchParams(window.location.search);
-
   document.getElementById("name").value = params.get("name") || "";
   document.getElementById("phone").value = params.get("phone") || "";
-<script>
-  const params = new URLSearchParams(window.location.search);
 
-  // معرفة مصدر الدخول
-  const source = params.get("source");
-  if (source === "whatsapp") {
-    console.log("Client came from WhatsApp");
+  function toggleFields() {
+    document.getElementById("maintenanceFields").classList.add("hidden");
+    document.getElementById("installFields").classList.add("hidden");
+    document.getElementById("upgradeFields").classList.add("hidden");
+
+    const type = document.getElementById("requestType").value;
+    if (type === "maintenance") document.getElementById("maintenanceFields").classList.remove("hidden");
+    if (type === "installation") document.getElementById("installFields").classList.remove("hidden");
+    if (type === "modernization") document.getElementById("upgradeFields").classList.remove("hidden");
   }
 
-  document.getElementById("name").value = params.get("name") || "";
-  document.getElementById("phone").value = params.get("phone") || "";
-
-  function submitForm() {
+  function submitForm(){
     alert("✅ تم إرسال الطلب بنجاح، سيتم التواصل معكم قريبًا");
   }
-
 </script>
 
 </body>
