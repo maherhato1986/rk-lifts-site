@@ -57,8 +57,13 @@
 </head>
 
 <body>
-
 <div class="container">
+
+  <div style="text-align:center; font-size:14px; color:#555; margin-bottom:15px;">
+    النموذج الرسمي لمؤسسة <strong>RKL للمصاعد والسلالم الكهربائية</strong><br>
+    🔒 جميع البيانات محمية وتُستخدم فقط لإعداد عرض السعر
+  </div>
+
   <h2>📋 نموذج طلب عرض سعر</h2>
 
   <label>اسم العميل</label>
@@ -103,10 +108,22 @@
 
   document.getElementById("name").value = params.get("name") || "";
   document.getElementById("phone").value = params.get("phone") || "";
+<script>
+  const params = new URLSearchParams(window.location.search);
+
+  // معرفة مصدر الدخول
+  const source = params.get("source");
+  if (source === "whatsapp") {
+    console.log("Client came from WhatsApp");
+  }
+
+  document.getElementById("name").value = params.get("name") || "";
+  document.getElementById("phone").value = params.get("phone") || "";
 
   function submitForm() {
     alert("✅ تم إرسال الطلب بنجاح، سيتم التواصل معكم قريبًا");
   }
+
 </script>
 
 </body>
