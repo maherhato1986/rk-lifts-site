@@ -34,15 +34,13 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 <input id="city">
 </div>
 
-<!-- نوع الطلب -->
-<div class="section">
-<label>نوع الطلب</label>
 <select id="type" onchange="toggleType()">
-  <option value="">اختر</option>
+  <option value="">اختر نوع الطلب</option>
   <option value="maintenance">صيانة مصاعد</option>
   <option value="supply">توريد وتركيب مصاعد</option>
+  <option value="consult">استشارة فقط</option>
 </select>
-</div>
+
 
 <label>هل لديك عقد صيانة معنا؟</label>
 <select id="contract" onchange="toggleContract()">
@@ -272,6 +270,42 @@ function toggleContract() {
   }
 
   if (value === "no") {
+    document.getElementById("withoutContract").classList.remove("hidden");
+  }
+}
+</script>
+<script>
+function toggleType() {
+  document.getElementById("withContract").classList.add("hidden");
+  document.getElementById("withoutContract").classList.add("hidden");
+  document.getElementById("supply").classList.add("hidden");
+
+  const type = document.getElementById("type").value;
+
+  if (type === "maintenance") {
+    document.getElementById("contract").parentElement.style.display = "block";
+  }
+
+  if (type === "supply") {
+    document.getElementById("supply").classList.remove("hidden");
+  }
+
+  if (type === "consult") {
+    alert("سيتم التواصل معك لتقديم استشارة فنية مجانية");
+  }
+}
+
+function toggleContract() {
+  const val = document.getElementById("contract").value;
+
+  document.getElementById("withContract").classList.add("hidden");
+  document.getElementById("withoutContract").classList.add("hidden");
+
+  if (val === "yes") {
+    document.getElementById("withContract").classList.remove("hidden");
+  }
+
+  if (val === "no") {
     document.getElementById("withoutContract").classList.remove("hidden");
   }
 }
