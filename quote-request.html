@@ -343,7 +343,31 @@ function showSummary() {
    إرسال الطلب
 ========================= */
 function submitForm() {
-  alert("✅ تم إرسال الطلب بنجاح، سيتم التواصل معكم قريبًا");
+
+  const data = {
+    name: document.getElementById("name").value,
+    phone: document.getElementById("phone").value,
+    city: document.getElementById("city").value,
+    type: document.getElementById("type").value,
+    hasContract: document.getElementById("hasContract").value,
+    projectName: document.getElementById("projectName").value,
+    elevatorStatus: document.getElementById("elevatorStatus").value,
+    priority: document.getElementById("priority").value,
+    problem: document.getElementById("problem").value,
+    location: document.getElementById("location").value,
+    imageStatus: document.getElementById("image").files.length > 0 ? "مرفقة" : "لا يوجد"
+  };
+
+  emailjs.send(
+    "service_gckj26v",          // Service ID
+    "Service Request - RKL",    // Template Name
+    data
+  ).then(function() {
+      alert("✅ تم إرسال الطلب بنجاح، سيتم التواصل معكم قريبًا");
+  }, function(error) {
+      alert("❌ حدث خطأ أثناء الإرسال");
+      console.error(error);
+  });
 }
 </script>
 
@@ -411,6 +435,12 @@ ${val("location")}
 }
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+  (function(){
+    emailjs.init("ig-P9XH5OHW7FCe5D");
+  })();
+</script>
 
 </body>
 </html>
