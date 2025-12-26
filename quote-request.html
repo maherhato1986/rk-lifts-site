@@ -269,10 +269,41 @@ function initMap() {
 
 function showSummary() {
 
-  const v = id => {
+  const byId = id => {
     const el = document.getElementById(id);
     return el && el.value ? el.value : "—";
   };
+
+  const byName = name => {
+    const el = document.querySelector(`[name="${name}"]`);
+    return el && el.value ? el.value : "—";
+  };
+
+  const hasContract = byId("hasContract");
+
+  let serviceDetails = "";
+
+  if (hasContract === "yes") {
+    serviceDetails = `
+      <b>🏢 اسم المشروع:</b> ${byName("project_name")}<br>
+      <b>🔧 نوع البلاغ:</b> ${byName("issue_type")}<br>
+      <b>🚨 حالة المصعد:</b> ${byName("lift_status")}<br>
+      <b>⚡ أولوية الطلب:</b> ${byName("priority")}<br>
+      <b>📝 وصف العطل:</b><br>
+      ${byName("description")}
+    `;
+  }
+
+  if (hasContract === "no") {
+    serviceDetails = `
+      <b>🛠️ نوع الخدمة:</b> ${byName("service_type")}<br>
+      <b>🛗 عدد المصاعد:</b> ${byName("lifts_count")}<br>
+      <b>🏭 نوع المصاعد:</b> ${byName("lift_status")}<br>
+      <b>⏳ عمر المصعد:</b> ${byName("lift_age")}<br>
+      <b>📝 ملاحظات:</b><br>
+      ${byName("description")}
+    `;
+  }
 
   const summary = `
   <div style="line-height:2">
@@ -280,37 +311,26 @@ function showSummary() {
     <h4>📋 ملخص الطلب</h4>
     <hr>
 
-    <b>👤 الاسم:</b> ${v("name")}<br>
-    <b>📞 الجوال:</b> ${v("phone")}<br>
-    <b>🏙️ المدينة:</b> ${v("city")}<br>
+    <b>👤 الاسم:</b> ${byId("name")}<br>
+    <b>📞 الجوال:</b> ${byId("phone")}<br>
+    <b>🛠️ نوع الطلب:</b> ${byId("type")}<br>
+    <b>📄 عقد صيانة:</b> ${hasContract}<br>
 
     <hr>
 
-    <b>🛠️ نوع الطلب:</b> ${v("type")}<br>
-    <b>📄 عقد صيانة:</b> ${v("hasContract")}<br>
-    <b>🏢 اسم المشروع:</b> ${v("projectName")}<br>
-
-    <hr>
-
-    <b>🚨 حالة المصعد:</b> ${v("elevatorStatus")}<br>
-    <b>⚡ أولوية الطلب:</b> ${v("priority")}<br>
-
-    <hr>
-
-    <b>📝 وصف العطل:</b><br>
-    ${v("problem")}
+    ${serviceDetails}
 
     <hr>
 
     <b>📍 موقع المصعد:</b><br>
-    <a href="${v("location")}" target="_blank">
-      ${v("location")}
+    <a href="${byId("location")}" target="_blank">
+      ${byId("location")}
     </a>
 
     <hr>
 
     <b>📎 صورة مرفقة:</b>
-    ${document.getElementById("image")?.files.length ? "تم رفع صورة ✅" : "لا توجد صورة"}
+    ${document.querySelector('input[type="file"]')?.files.length ? "تم رفع صورة ✅" : "لا توجد صورة"}
 
   </div>
   `;
@@ -318,8 +338,6 @@ function showSummary() {
   document.getElementById("summaryBox").innerHTML = summary;
   document.getElementById("summaryBox").classList.remove("hidden");
 }
-
-
 
 /* =========================
    إرسال الطلب
