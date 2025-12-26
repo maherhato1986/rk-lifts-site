@@ -343,50 +343,53 @@ function showSummary() {
 }
 
 
+</script>
+  <script>
 function submitForm() {
 
-const params = {
-  name: document.getElementById("name").value || "—",
-  phone: document.getElementById("phone").value || "—",
-  type: document.getElementById("type").value || "—",
-  hasContract: document.getElementById("hasContract").value || "—",
-  projectName: document.querySelector('[name="project_name"]')?.value || "—",
-  elevatorStatus: document.querySelector('[name="lift_status"]')?.value || "—",
-  priority: document.querySelector('[name="priority"]')?.value || "—",
-  description: document.querySelector('[name="description"]')?.value || "—",
-  location: document.getElementById("location").value || "—",
-  imageStatus: document.querySelector('input[type="file"]')?.files.length
-    ? "تم إرفاق صورة"
-    : "لا توجد صورة"
-};
+  const params = {
+    name: document.getElementById("name").value || "—",
+    phone: document.getElementById("phone").value || "—",
+    type: document.getElementById("type").value || "—",
+    hasContract: document.getElementById("hasContract").value || "—",
+    projectName: document.querySelector('[name="project_name"]')?.value || "—",
+    elevatorStatus: document.querySelector('[name="lift_status"]')?.value || "—",
+    priority: document.querySelector('[name="priority"]')?.value || "—",
+    description: document.querySelector('[name="description"]')?.value || "—",
+    location: document.getElementById("location").value || "—",
+    imageStatus: document.querySelector('input[type="file"]')?.files.length
+      ? "تم إرفاق صورة"
+      : "لا توجد صورة"
+  };
 
-
-  emailjs.send(
-    "service_gckj26v",      // ✅ Service ID الصحيح
-    "template_r4uskqj",    // ✅ Template ID الحقيقي (من الرابط عندك)
-    params
-  ).then(
-    function() {
-      alert("✅ تم إرسال الطلب بنجاح إلى admin@rkl.sa");
+  fetch("send-request.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
     },
-    function(error) {
-      alert("❌ فشل إرسال الطلب");
-      console.error("EmailJS Error:", error);
+    body: JSON.stringify(params)
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.status === "success") {
+      alert("✅ تم إرسال الطلب بنجاح، سيتم التواصل معك قريبًا");
+    } else {
+      alert("❌ لم يتم إرسال الطلب");
     }
-  );
+  })
+  .catch(err => {
+    console.error(err);
+    alert("❌ خطأ في الاتصال بالسيرفر");
+  });
 }
 </script>
+
 
 
   <script
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCscTZats0zQdXyjweiRZuqjiSxw_Y1dlY&callback=initMap"
   async
   defer>
-</script>
-<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-
-<script>
-  emailjs.init("ig-P9XH5OHW7FCe5D");
 </script>
 
 </body>
