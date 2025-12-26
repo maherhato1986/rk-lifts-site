@@ -182,7 +182,8 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 <div id="summaryBox" class="summary hidden"></div>
 </div>
 
-<button onclick="submitForm()">📨 إرسال الطلب</button>
+<button type="button" onclick="submitForm()">📨 إرسال الطلب</button>
+
 <p style="font-size:13px;color:#777;margin-top:10px;text-align:center;">
 🔒 جميع البيانات محفوظة بسرية تامة ولن يتم استخدامها إلا لغرض الخدمة.
 </p>
@@ -440,6 +441,44 @@ ${val("location")}
   (function(){
     emailjs.init("ig-P9XH5OHW7FCe5D");
   })();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+(function(){
+  emailjs.init("ig-P9XH5OHW7FCe5D"); // Public Key
+})();
+</script>
+
+<script>
+function submitForm() {
+
+  const params = {
+    name: document.getElementById("name").value,
+    phone: document.getElementById("phone").value,
+    type: document.getElementById("type").value,
+    hasContract: document.getElementById("hasContract").value,
+    project: document.querySelector('[name="project_name"]')?.value || "—",
+    issue: document.querySelector('[name="issue_type"]')?.value || "—",
+    status: document.querySelector('[name="lift_status"]')?.value || "—",
+    priority: document.querySelector('[name="priority"]')?.value || "—",
+    description: document.querySelector('[name="description"]')?.value || "—",
+    location: document.getElementById("location").value
+  };
+
+  emailjs.send(
+    "service_gckj26v",      // Service ID
+    "template_rkl123",      // 🔴 غيّرها إلى Template ID الحقيقي
+    params
+  ).then(
+    function() {
+      alert("✅ تم إرسال الطلب بنجاح إلى إدارة RKL");
+    },
+    function(error) {
+      alert("❌ فشل إرسال الطلب");
+      console.error("EmailJS Error:", error);
+    }
+  );
+}
 </script>
 
 </body>
