@@ -352,6 +352,64 @@ function submitForm() {
   async
   defer>
 </script>
+<script>
+function submitForm() {
+
+  const val = id => document.getElementById(id)?.value || "—";
+  const txt = name => document.querySelector(`[name="${name}"]`)?.value || "—";
+
+  const message = `
+طلب خدمة جديد – RKL
+-----------------------
+الاسم: ${val("name")}
+الجوال: ${val("phone")}
+نوع الطلب: ${val("type")}
+عقد صيانة: ${val("hasContract")}
+
+اسم المشروع: ${txt("project_name")}
+نوع البلاغ: ${txt("issue_type")}
+حالة المصعد: ${txt("lift_status")}
+أولوية الطلب: ${txt("priority")}
+
+وصف العطل:
+${txt("description")}
+
+موقع المصعد:
+${val("location")}
+-----------------------
+تم الإرسال عبر موقع RKL
+`;
+
+  /* =========================
+     WhatsApp
+  ========================= */
+  const clientPhone = val("phone").replace(/\D/g, "");
+  const companyPhone = "966114774021";
+
+  const waClient = `https://wa.me/${clientPhone}?text=${encodeURIComponent(message)}`;
+  const waCompany = `https://wa.me/${companyPhone}?text=${encodeURIComponent(message)}`;
+
+  window.open(waClient, "_blank");
+  window.open(waCompany, "_blank");
+
+  /* =========================
+     Email
+  ========================= */
+  const emailLink =
+    `mailto:admin@rkl.sa?subject=طلب خدمة جديد – RKL&body=${encodeURIComponent(message)}`;
+  window.open(emailLink, "_blank");
+
+  /* =========================
+     تحديث حالة الطلب
+  ========================= */
+  document.getElementById("requestStatus").innerHTML =
+    "🟢 حالة الطلب: تحت الإجراء – تم الإرسال بنجاح";
+
+  document.getElementById("requestStatus").style.color = "#16a34a";
+
+  alert("✅ تم إرسال الطلب بنجاح عبر الواتساب والإيميل");
+}
+</script>
 
 
 </body>
