@@ -345,17 +345,21 @@ function showSummary() {
 
 function submitForm() {
 
-  const params = {
-    name: document.getElementById("name").value,
-    phone: document.getElementById("phone").value,
-    type: document.getElementById("type").value,
-    hasContract: document.getElementById("hasContract").value,
-    projectName: document.querySelector('[name="project_name"]')?.value || "—",
-    elevatorStatus: document.querySelector('[name="lift_status"]')?.value || "—",
-    priority: document.querySelector('[name="priority"]')?.value || "—",
-    description: document.querySelector('[name="description"]')?.value || "—",
-    location: document.getElementById("location").value
-  };
+const params = {
+  name: document.getElementById("name").value || "—",
+  phone: document.getElementById("phone").value || "—",
+  type: document.getElementById("type").value || "—",
+  hasContract: document.getElementById("hasContract").value || "—",
+  projectName: document.querySelector('[name="project_name"]')?.value || "—",
+  elevatorStatus: document.querySelector('[name="lift_status"]')?.value || "—",
+  priority: document.querySelector('[name="priority"]')?.value || "—",
+  description: document.querySelector('[name="description"]')?.value || "—",
+  location: document.getElementById("location").value || "—",
+  imageStatus: document.querySelector('input[type="file"]')?.files.length
+    ? "تم إرفاق صورة"
+    : "لا توجد صورة"
+};
+
 
   emailjs.send(
     "service_gckj26v",      // ✅ Service ID الصحيح
@@ -374,17 +378,15 @@ function submitForm() {
 </script>
 
 
-<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-
-<script>
-  // 🔐 ضع الـ Public Key من EmailJS (Account > API Keys)
-  emailjs.init("ig-P9XH5OHW7FCe5D");
-</script>
-
   <script
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCscTZats0zQdXyjweiRZuqjiSxw_Y1dlY&callback=initMap"
   async
   defer>
+</script>
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+<script>
+  emailjs.init("ig-P9XH5OHW7FCe5D");
 </script>
 
 </body>
