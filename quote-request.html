@@ -341,7 +341,6 @@ function showSummary() {
 }
 
 
-
 <script>
 function submitForm() {
 
@@ -350,21 +349,20 @@ function submitForm() {
     phone: document.getElementById("phone").value,
     type: document.getElementById("type").value,
     hasContract: document.getElementById("hasContract").value,
-    project: document.querySelector('[name="project_name"]')?.value || "—",
-    issue: document.querySelector('[name="issue_type"]')?.value || "—",
-    status: document.querySelector('[name="lift_status"]')?.value || "—",
+    projectName: document.querySelector('[name="project_name"]')?.value || "—",
+    elevatorStatus: document.querySelector('[name="lift_status"]')?.value || "—",
     priority: document.querySelector('[name="priority"]')?.value || "—",
     description: document.querySelector('[name="description"]')?.value || "—",
     location: document.getElementById("location").value
   };
 
   emailjs.send(
-    "service_gckj26v",      // Service ID
-    "template_rkl123",      // 🔴 غيّرها إلى Template ID الحقيقي
+    "service_gckj26v",      // ✅ Service ID الصحيح
+    "template_r4uskqj",    // ✅ Template ID الحقيقي (من الرابط عندك)
     params
   ).then(
     function() {
-      alert("✅ تم إرسال الطلب بنجاح إلى إدارة RKL");
+      alert("✅ تم إرسال الطلب بنجاح إلى admin@rkl.sa");
     },
     function(error) {
       alert("❌ فشل إرسال الطلب");
@@ -374,5 +372,14 @@ function submitForm() {
 }
 </script>
 
+
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+<script>
+  // 🔐 ضع الـ Public Key من EmailJS (Account > API Keys)
+  emailjs.init("ig-P9XH5OHW7FCe5D");
+</script>
+
+  
 </body>
 </html>
