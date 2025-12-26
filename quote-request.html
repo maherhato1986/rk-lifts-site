@@ -134,10 +134,12 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 
 
 
-<label>موقع المصعد</label>
-<input type="text" id="location" placeholder="اختر الموقع من الخريطة" readonly>
+<div id="mapSection">
+  <label>موقع المصعد</label>
+  <input type="text" id="location" readonly>
+  <div id="map" style="height:300px;border-radius:8px;margin-top:10px;"></div>
+</div>
 
-<div id="map" style="height:300px;border-radius:8px;margin-top:10px;"></div>
 
 
 
@@ -202,7 +204,6 @@ function toggleType() {
   hideAllSections();
 
   if (type === "maintenance") {
-    document.getElementById("contractBlock").style.display = "block";
     document.getElementById("mapSection").style.display = "block";
   }
 
@@ -238,11 +239,12 @@ function toggleContractFlow() {
    إخفاء كل الأقسام
 ========================= */
 function hideAllSections() {
-  document.getElementById("contractBlock").style.display = "none";
   document.getElementById("withContract").style.display = "none";
   document.getElementById("withoutContract").style.display = "none";
   document.getElementById("supply").style.display = "none";
+  document.getElementById("mapSection").style.display = "none";
 }
+
 
 /* =========================
    Google Map
@@ -341,7 +343,6 @@ function showSummary() {
 }
 
 
-<script>
 function submitForm() {
 
   const params = {
