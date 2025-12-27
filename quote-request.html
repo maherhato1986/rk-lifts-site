@@ -225,7 +225,8 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 
 <form action="https://formsubmit.co/admin@rkl.sa"
       method="POST"
-      onsubmit="sendWhatsAppToClient()">
+      onsubmit="prepareBeforeSubmit();">
+
 
   <!-- إعدادات FormSubmit -->
   <input type="hidden" name="_subject" value="📩 طلب خدمة جديد من موقع RKL">
@@ -425,6 +426,22 @@ document.getElementById("full_summary").value =
 
 </script>
  
+<script>
+function prepareBeforeSubmit() {
+  // توليد ملخص الطلب أولاً
+  showSummary();
+
+  // تجهيز نص الواتساب من نفس الملخص
+  const summaryText = document.getElementById("full_summary").value;
+
+  // إرسال واتساب (إن وجد)
+  if (typeof sendWhatsAppToClient === "function") {
+    sendWhatsAppToClient(summaryText);
+  }
+
+  return true; // السماح بالإرسال
+}
+</script>
 
 
   <script
