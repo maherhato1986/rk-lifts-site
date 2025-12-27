@@ -412,8 +412,14 @@ function showSummary() {
   </div>
   `;
 
-  document.getElementById("summaryBox").innerHTML = summary;
-  document.getElementById("summaryBox").classList.remove("hidden");
+document.getElementById("summaryBox").innerHTML = summary;
+document.getElementById("summaryBox").classList.remove("hidden");
+
+// ⬇️ هذا السطر الجديد (مهم)
+document.getElementById("full_summary").value =
+  summary
+    .replace(/<br>/g, "\n")
+    .replace(/<[^>]*>/g, "");
 }
 
 
