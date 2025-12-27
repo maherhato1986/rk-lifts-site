@@ -175,7 +175,7 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 
 
 <div id="mapSection">
-  <label>موقع المصعد</label>
+  <label>موقع المشروع</label>
   <input type="text" id="location" readonly>
   <div id="map" style="height:300px;border-radius:8px;margin-top:10px;"></div>
 </div>
@@ -192,8 +192,7 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 <label>اسم المشروع</label>
 <input id="project">
 
-<label>موقع المشروع</label>
-<input id="project_location">
+
 
 <label>نوع المبنى</label>
 <select>
@@ -403,7 +402,7 @@ if (hasContract === "no") {
 
     <hr>
 
-    <b>📍 موقع المصعد:</b><br>
+    <b>📍 موقع المشروع :</b><br>
     <a href="${byId("location")}" target="_blank">
       ${byId("location")}
     </a>
@@ -496,7 +495,7 @@ function sendWhatsAppToClient() {
 
 ${details}
 
-موقع المصعد:
+موقع المشروع:
 ${location}
   `;
 
