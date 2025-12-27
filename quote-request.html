@@ -184,7 +184,17 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 <div id="summaryBox" class="summary hidden"></div>
 </div>
 
-<button type="button" onclick="submitForm()">📨 إرسال الطلب</button>
+<form action="https://formsubmit.co/admin@rkl.sa"
+      method="POST"
+      onsubmit="window.open('https://wa.me/966114774021','_blank')">
+
+  <input type="hidden" name="_subject" value="📩 طلب خدمة جديد من موقع RKL">
+<input type="hidden" name="_captcha" value="false">
+<input type="hidden" name="_template" value="table">
+
+<button type="submit">📨 إرسال الطلب</button>
+</form>
+
 
 <p style="font-size:13px;color:#777;margin-top:10px;text-align:center;">
 🔒 جميع البيانات محفوظة بسرية تامة ولن يتم استخدامها إلا لغرض الخدمة.
