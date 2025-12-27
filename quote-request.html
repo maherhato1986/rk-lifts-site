@@ -135,20 +135,22 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 </select>
 
 
-  <label>نوع المصاعد</label>
-  <select name="lift_status">
-    <option>فوجي</option>
-    <option>شندلر</option>
-    <option> اوتيس</option>
-    <option>تجميع محلي  </option>
-    <option>لا اعرف </option>
-  </select>
-  <label>حالة المصعد</label>
-  <select name="lift_status">
-    <option>يعمل</option>
-    <option>متوقف</option>
-    <option>به مشاكل</option>
-  </select>
+<label>نوع المصاعد</label>
+<select name="lift_brand">
+  <option>فوجي</option>
+  <option>شندلر</option>
+  <option>اوتيس</option>
+  <option>تجميع محلي</option>
+  <option>لا اعرف</option>
+</select>
+
+<label>حالة المصعد</label>
+<select name="lift_condition">
+  <option>يعمل</option>
+  <option>متوقف</option>
+  <option>به مشاكل</option>
+</select>
+
 
   <label>العمر التقريبي للمصعد</label>
   <select name="lift_age">
@@ -362,12 +364,14 @@ if (hasContract === "no") {
     <b>🏢 نوع المبنى:</b> ${byName("building_type")}<br>
     <b>📊 عدد الوقفات:</b> ${byName("stops_count")}<br>
     <b>⚖️ حمولة المصعد:</b> ${byName("capacity")} كجم<br>
-    <b>🏭 نوع المصاعد:</b> ${byName("lift_status")}<br>
+    <b>🏭 نوع المصاعد:</b> ${byName("lift_brand")}<br>
+    <b>🚨 حالة المصعد:</b> ${byName("lift_condition")}<br>
     <b>⏳ عمر المصعد:</b> ${byName("lift_age")}<br>
     <b>📝 ملاحظات:</b><br>
     ${byName("description")}
   `;
 }
+
 
 
   const summary = `
@@ -453,18 +457,20 @@ function sendWhatsAppToClient() {
 `;
   }
 
-if (hasContract === "no") {
+  if (hasContract === "no") {
   details = `
 نوع الخدمة: ${document.querySelector('[name="service_type"]')?.value || "—"}
 عدد المصاعد: ${document.querySelector('[name="lifts_count"]')?.value || "—"}
 نوع المبنى: ${document.querySelector('[name="building_type"]')?.value || "—"}
 عدد الوقفات: ${document.querySelector('[name="stops_count"]')?.value || "—"}
 حمولة المصعد: ${document.querySelector('[name="capacity"]')?.value || "—"} كجم
-نوع المصاعد: ${document.querySelector('[name="lift_status"]')?.value || "—"}
+نوع المصاعد: ${document.querySelector('[name="lift_brand"]')?.value || "—"}
+حالة المصعد: ${document.querySelector('[name="lift_condition"]')?.value || "—"}
 عمر المصعد: ${document.querySelector('[name="lift_age"]')?.value || "—"}
 ملاحظات: ${document.querySelector('[name="description"]')?.value || "—"}
 `;
 }
+
 
 
   /* ===== ملخص نصي كامل ===== */
