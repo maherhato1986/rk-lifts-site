@@ -103,6 +103,26 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 
   <label>عدد المصاعد</label>
   <input type="number" name="lifts_count">
+  <label>عدد الوقفات (الأدوار)</label>
+<input type="number" name="stops_count" placeholder="مثال: 10">
+
+<label>حمولة المصعد (كجم)</label>
+<select name="capacity">
+  <option value="">اختر الحمولة</option>
+  <option>450</option>
+  <option>630</option>
+  <option>800</option>
+  <option>1000</option>
+  <option>1600</option>
+</select>
+
+<label>نوع المبنى</label>
+<select name="building_type">
+  <option value="">اختر</option>
+  <option>سكني</option>
+  <option>حكومي</option>
+</select>
+
 
   <label>نوع المصاعد</label>
   <select name="lift_status">
@@ -324,16 +344,20 @@ function showSummary() {
     `;
   }
 
-  if (hasContract === "no") {
-    serviceDetails = `
-      <b>🛠️ نوع الخدمة:</b> ${byName("service_type")}<br>
-      <b>🛗 عدد المصاعد:</b> ${byName("lifts_count")}<br>
-      <b>🏭 نوع المصاعد:</b> ${byName("lift_status")}<br>
-      <b>⏳ عمر المصعد:</b> ${byName("lift_age")}<br>
-      <b>📝 ملاحظات:</b><br>
-      ${byName("description")}
-    `;
-  }
+if (hasContract === "no") {
+  serviceDetails = `
+    <b>🛠️ نوع الخدمة:</b> ${byName("service_type")}<br>
+    <b>🛗 عدد المصاعد:</b> ${byName("lifts_count")}<br>
+    <b>🏢 نوع المبنى:</b> ${byName("building_type")}<br>
+    <b>📊 عدد الوقفات:</b> ${byName("stops_count")}<br>
+    <b>⚖️ حمولة المصعد:</b> ${byName("capacity")} كجم<br>
+    <b>🏭 نوع المصاعد:</b> ${byName("lift_status")}<br>
+    <b>⏳ عمر المصعد:</b> ${byName("lift_age")}<br>
+    <b>📝 ملاحظات:</b><br>
+    ${byName("description")}
+  `;
+}
+
 
   const summary = `
   <div style="line-height:2">
@@ -418,15 +442,19 @@ function sendWhatsAppToClient() {
 `;
   }
 
-  if (hasContract === "no") {
-    details = `
+if (hasContract === "no") {
+  details = `
 نوع الخدمة: ${document.querySelector('[name="service_type"]')?.value || "—"}
 عدد المصاعد: ${document.querySelector('[name="lifts_count"]')?.value || "—"}
+نوع المبنى: ${document.querySelector('[name="building_type"]')?.value || "—"}
+عدد الوقفات: ${document.querySelector('[name="stops_count"]')?.value || "—"}
+حمولة المصعد: ${document.querySelector('[name="capacity"]')?.value || "—"} كجم
 نوع المصاعد: ${document.querySelector('[name="lift_status"]')?.value || "—"}
 عمر المصعد: ${document.querySelector('[name="lift_age"]')?.value || "—"}
 ملاحظات: ${document.querySelector('[name="description"]')?.value || "—"}
 `;
-  }
+}
+
 
   /* ===== ملخص نصي كامل ===== */
   const fullSummary = `
