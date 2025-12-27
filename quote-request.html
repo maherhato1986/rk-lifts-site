@@ -28,7 +28,8 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 <input id="name">
 
 <label>رقم الجوال</label>
-<input id="phone">
+<input id="phone" name="رقم الجوال" placeholder="05XXXXXXXX" required>
+
 
 
 <select id="type" onchange="toggleType()">
@@ -186,14 +187,20 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 
 <form action="https://formsubmit.co/admin@rkl.sa"
       method="POST"
-      onsubmit="window.open('https://wa.me/966114774021','_blank')">
+      onsubmit="sendWhatsAppToClient()">
 
   <input type="hidden" name="_subject" value="📩 طلب خدمة جديد من موقع RKL">
-<input type="hidden" name="_captcha" value="false">
-<input type="hidden" name="_template" value="table">
+  <input type="hidden" name="_captcha" value="false">
+  <input type="hidden" name="_template" value="table">
 
-<button type="submit">📨 إرسال الطلب</button>
+  <input type="hidden" name="اسم العميل" id="f_name">
+  <input type="hidden" name="رقم الجوال" id="f_phone">
+  <input type="hidden" name="نوع الطلب" id="f_type">
+  <input type="hidden" name="موقع المصعد" id="f_location">
+
+  <button type="submit">📨 إرسال الطلب</button>
 </form>
+
 
 
 <p style="font-size:13px;color:#777;margin-top:10px;text-align:center;">
@@ -354,46 +361,7 @@ function showSummary() {
 
 
 </script>
-  <script>
-function submitForm() {
-
-  const params = {
-    name: document.getElementById("name").value || "—",
-    phone: document.getElementById("phone").value || "—",
-    type: document.getElementById("type").value || "—",
-    hasContract: document.getElementById("hasContract").value || "—",
-    projectName: document.querySelector('[name="project_name"]')?.value || "—",
-    elevatorStatus: document.querySelector('[name="lift_status"]')?.value || "—",
-    priority: document.querySelector('[name="priority"]')?.value || "—",
-    description: document.querySelector('[name="description"]')?.value || "—",
-    location: document.getElementById("location").value || "—",
-    imageStatus: document.querySelector('input[type="file"]')?.files.length
-      ? "تم إرفاق صورة"
-      : "لا توجد صورة"
-  };
-
-  fetch("send-request.php", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(params)
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.status === "success") {
-      alert("✅ تم إرسال الطلب بنجاح، سيتم التواصل معك قريبًا");
-    } else {
-      alert("❌ لم يتم إرسال الطلب");
-    }
-  })
-  .catch(err => {
-    console.error(err);
-    alert("❌ خطأ في الاتصال بالسيرفر");
-  });
-}
-</script>
-
+ 
 
 
   <script
@@ -402,5 +370,56 @@ function submitForm() {
   defer>
 </script>
 
+
+  <script>
+function normalizeSaudiPhone(phone) {
+  phone = phone.replace(/\D/g, '');
+  if (phone.startsWith('05')) return '966' + phone.substring(1);
+  if (phone.startsWith('5')) return '966' + phone;
+  if (phone.startsWith('966')) return phone;
+  return '';
+}
+
+function sendWhatsAppToClient() {
+  const name = document.getElementById("name").value || "عميلنا الكريم";
+  const rawPhone = document.getElementById("phone").value;
+  const phone = normalizeSaudiPhone(rawPhone);
+
+  if (!phone) {
+    alert("❌ رقم الجوال غير صحيح. الرجاء إدخال رقم سعودي صحيح.");
+    return false;
+  }
+
+  const type = document.getElementById("type").value || "طلب خدمة";
+  const location = document.getElementById("location").value || "—";
+
+  /* تعبئة القيم للإيميل */
+  document.getElementById("f_name").value = name;
+  document.getElementById("f_phone").value = phone;
+  document.getElementById("f_type").value = type;
+  document.getElementById("f_location").value = location;
+
+  /* رسالة واتساب للعميل */
+  const msg = `
+مرحبًا ${name} 👋
+تم استلام طلبك لدى *RKL للمصاعد* ✅
+
+🛠️ نوع الطلب: ${type}
+📍 الموقع: ${location}
+
+سيتم التواصل معك قريبًا.
+شكراً لثقتك بنا 🌷
+  `;
+
+  window.open(
+    "https://wa.me/" + phone + "?text=" + encodeURIComponent(msg),
+    "_blank"
+  );
+
+  return true;
+}
+</script>
+
+  
 </body>
 </html>
