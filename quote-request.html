@@ -29,6 +29,9 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 
 <label>رقم الجوال</label>
 <input id="phone" name="رقم الجوال" placeholder="05XXXXXXXX" required>
+  <label>البريد الإلكتروني</label>
+<input type="email" id="email" name="البريد_الإلكتروني" placeholder="example@email.com" required>
+
 
 
 
@@ -189,18 +192,27 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
       method="POST"
       onsubmit="sendWhatsAppToClient()">
 
+  <!-- إعدادات FormSubmit -->
   <input type="hidden" name="_subject" value="📩 طلب خدمة جديد من موقع RKL">
   <input type="hidden" name="_captcha" value="false">
   <input type="hidden" name="_template" value="table">
 
-  <input type="hidden" name="اسم العميل" id="f_name">
-  <input type="hidden" name="رقم الجوال" id="f_phone">
-  <input type="hidden" name="نوع الطلب" id="f_type">
-  <input type="hidden" name="موقع المصعد" id="f_location">
-<input type="hidden" name="ملخص الطلب الكامل" id="full_summary">
+  <!-- الحقول التي ستظهر في جدول الإيميل -->
+  <input type="hidden" name="اسم_العميل" id="f_name">
+  <input type="hidden" name="رقم_الجوال" id="f_phone">
+  <input type="hidden" name="نوع_الطلب" id="f_type">
+  <input type="hidden" name="موقع_المصعد" id="f_location">
 
+  <!-- الملخص التفصيلي (يظهر كنص خارج الجدول) -->
+  <input type="hidden" name="ملخص_الطلب_الكامل" id="full_summary">
+
+  <!-- إرسال نسخة من الإيميل للعميل -->
+  <input type="hidden" name="_cc" id="cc_email">
+
+  <!-- زر الإرسال -->
   <button type="submit">📨 إرسال الطلب</button>
 </form>
+
 
 
 
@@ -453,6 +465,8 @@ ${location}
     "https://wa.me/" + phone + "?text=" + encodeURIComponent(whatsappMsg),
     "_blank"
   );
+document.getElementById("cc_email").value =
+  document.getElementById("email").value;
 
   return true; // مهم جدًا للسماح بإرسال الفورم
 }
