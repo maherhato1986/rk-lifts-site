@@ -343,75 +343,72 @@ function initMap() {
 
 function showSummary() {
 
-  const byId = id => {
-    const el = document.getElementById(id);
-    return el && el.value ? el.value : "—";
-  };
+  const byId = id => document.getElementById(id)?.value || "—";
+  const byName = name => document.querySelector(`[name="${name}"]`)?.value || "—";
 
-  const byName = name => {
-    const el = document.querySelector(`[name="${name}"]`);
-    return el && el.value ? el.value : "—";
-  };
-
+  const type = byId("type");
   const hasContract = byId("hasContract");
 
   let serviceDetails = "";
 
-  if (hasContract === "yes") {
-    serviceDetails = `
+  /* =========================
+     صيانة مصاعد
+  ========================= */
+  if (type === "maintenance") {
+
+    if (hasContract === "yes") {
+      serviceDetails = `
       <b>🏢 اسم المشروع:</b> ${byName("project_name")}<br>
       <b>🔧 نوع البلاغ:</b> ${byName("issue_type")}<br>
       <b>🚨 حالة المصعد:</b> ${byName("lift_status")}<br>
       <b>⚡ أولوية الطلب:</b> ${byName("priority")}<br>
-      <b>📝 وصف العطل:</b><br>
-      ${byName("description")}
+      <b>📝 وصف العطل:</b><br>${byName("description")}
+      `;
+    }
+
+    if (hasContract === "no") {
+      serviceDetails = `
+      <b>🛠️ نوع الخدمة:</b> ${byName("service_type")}<br>
+      <b>🛗 عدد المصاعد:</b> ${byName("lifts_count")}<br>
+      <b>🏢 نوع المبنى:</b> ${byName("building_type")}<br>
+      <b>📊 عدد الوقفات:</b> ${byName("stops_count")}<br>
+      <b>⚖️ الحمولة:</b> ${byName("capacity")} كجم<br>
+      <b>🏭 نوع المصاعد:</b> ${byName("lift_brand")}<br>
+      <b>🚨 حالة المصعد:</b> ${byName("lift_condition")}<br>
+      <b>⏳ عمر المصعد:</b> ${byName("lift_age")}<br>
+      <b>📝 ملاحظات:</b><br>${byName("description")}
+      `;
+    }
+  }
+
+  /* =========================
+     توريد وتركيب مصاعد
+  ========================= */
+  if (type === "supply") {
+    serviceDetails = `
+    <b>🏗️ اسم المشروع:</b> ${byId("project")}<br>
+    <b>🏢 نوع المبنى:</b> ${document.querySelector('#supply select')?.value || "—"}<br>
+    <b>🛗 عدد المصاعد:</b> ${document.querySelector('#supply input[type="number"]')?.value || "—"}<br>
+    <b>🏢 عدد الأدوار:</b> ${document.querySelectorAll('#supply input[type="number"]')[1]?.value || "—"}<br>
+    <b>📎 مخطط مرفق:</b> ${document.querySelector('#supply input[type="file"]')?.files.length ? "نعم ✅" : "لا"}<br>
+    <b>📝 ملاحظات:</b><br>${document.querySelector('#supply textarea')?.value || "—"}
     `;
   }
 
-if (hasContract === "no") {
-  serviceDetails = `
-    <b>🛠️ نوع الخدمة:</b> ${byName("service_type")}<br>
-    <b>🛗 عدد المصاعد:</b> ${byName("lifts_count")}<br>
-    <b>🏢 نوع المبنى:</b> ${byName("building_type")}<br>
-    <b>📊 عدد الوقفات:</b> ${byName("stops_count")}<br>
-    <b>⚖️ حمولة المصعد:</b> ${byName("capacity")} كجم<br>
-    <b>🏭 نوع المصاعد:</b> ${byName("lift_brand")}<br>
-    <b>🚨 حالة المصعد:</b> ${byName("lift_condition")}<br>
-    <b>⏳ عمر المصعد:</b> ${byName("lift_age")}<br>
-    <b>📝 ملاحظات:</b><br>
-    ${byName("description")}
-  `;
-}
-
-
-
   const summary = `
   <div style="line-height:2">
-
     <h4>📋 ملخص الطلب</h4>
     <hr>
-
     <b>👤 الاسم:</b> ${byId("name")}<br>
     <b>📞 الجوال:</b> ${byId("phone")}<br>
-    <b>🛠️ نوع الطلب:</b> ${byId("type")}<br>
-    <b>📄 عقد صيانة:</b> ${hasContract}<br>
+    <b>🛠️ نوع الطلب:</b> ${type}<br>
 
     <hr>
-
     ${serviceDetails}
-
     <hr>
 
-    <b>📍 موقع المشروع :</b><br>
-    <a href="${byId("location")}" target="_blank">
-      ${byId("location")}
-    </a>
-
-    <hr>
-
-    <b>📎 صورة مرفقة:</b>
-    ${document.querySelector('input[type="file"]')?.files.length ? "تم رفع صورة ✅" : "لا توجد صورة"}
-
+    <b>📍 موقع المشروع:</b><br>
+    <a href="${byId("location")}" target="_blank">${byId("location")}</a>
   </div>
   `;
 
