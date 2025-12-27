@@ -197,6 +197,7 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
   <input type="hidden" name="رقم الجوال" id="f_phone">
   <input type="hidden" name="نوع الطلب" id="f_type">
   <input type="hidden" name="موقع المصعد" id="f_location">
+<input type="hidden" name="ملخص الطلب الكامل" id="full_summary">
 
   <button type="submit">📨 إرسال الطلب</button>
 </form>
@@ -370,8 +371,7 @@ function showSummary() {
   defer>
 </script>
 
-
-  <script>
+<script>
 function normalizeSaudiPhone(phone) {
   phone = phone.replace(/\D/g, '');
   if (phone.startsWith('05')) return '966' + phone.substring(1);
@@ -381,26 +381,64 @@ function normalizeSaudiPhone(phone) {
 }
 
 function sendWhatsAppToClient() {
-  const name = document.getElementById("name").value || "عميلنا الكريم";
+
+  /* ===== البيانات الأساسية ===== */
+  const name = document.getElementById("name").value || "—";
   const rawPhone = document.getElementById("phone").value;
   const phone = normalizeSaudiPhone(rawPhone);
 
   if (!phone) {
-    alert("❌ رقم الجوال غير صحيح. الرجاء إدخال رقم سعودي صحيح.");
+    alert("❌ رقم الجوال غير صحيح");
     return false;
   }
 
-  const type = document.getElementById("type").value || "طلب خدمة";
+  const type = document.getElementById("type").value || "—";
+  const hasContract = document.getElementById("hasContract").value || "—";
   const location = document.getElementById("location").value || "—";
 
-  /* تعبئة القيم للإيميل */
-  document.getElementById("f_name").value = name;
-  document.getElementById("f_phone").value = phone;
-  document.getElementById("f_type").value = type;
-  document.getElementById("f_location").value = location;
+  /* ===== تفاصيل حسب الحالة ===== */
+  let details = "";
 
-  /* رسالة واتساب للعميل */
-  const msg = `
+  if (hasContract === "yes") {
+    details = `
+اسم المشروع: ${document.querySelector('[name="project_name"]')?.value || "—"}
+نوع البلاغ: ${document.querySelector('[name="issue_type"]')?.value || "—"}
+حالة المصعد: ${document.querySelector('[name="lift_status"]')?.value || "—"}
+أولوية الطلب: ${document.querySelector('[name="priority"]')?.value || "—"}
+وصف العطل: ${document.querySelector('[name="description"]')?.value || "—"}
+`;
+  }
+
+  if (hasContract === "no") {
+    details = `
+نوع الخدمة: ${document.querySelector('[name="service_type"]')?.value || "—"}
+عدد المصاعد: ${document.querySelector('[name="lifts_count"]')?.value || "—"}
+نوع المصاعد: ${document.querySelector('[name="lift_status"]')?.value || "—"}
+عمر المصعد: ${document.querySelector('[name="lift_age"]')?.value || "—"}
+ملاحظات: ${document.querySelector('[name="description"]')?.value || "—"}
+`;
+  }
+
+  /* ===== ملخص نصي كامل ===== */
+  const fullSummary = `
+طلب خدمة جديد – RKL
+-------------------
+الاسم: ${name}
+الجوال: ${phone}
+نوع الطلب: ${type}
+هل يوجد عقد صيانة: ${hasContract}
+
+${details}
+
+موقع المصعد:
+${location}
+  `;
+
+  /* ===== حفظ الملخص في الحقل المخفي (للإيميل) ===== */
+  document.getElementById("full_summary").value = fullSummary;
+
+  /* ===== رسالة واتساب للعميل ===== */
+  const whatsappMsg = `
 مرحبًا ${name} 👋
 تم استلام طلبك لدى *RKL للمصاعد* ✅
 
@@ -412,11 +450,11 @@ function sendWhatsAppToClient() {
   `;
 
   window.open(
-    "https://wa.me/" + phone + "?text=" + encodeURIComponent(msg),
+    "https://wa.me/" + phone + "?text=" + encodeURIComponent(whatsappMsg),
     "_blank"
   );
 
-  return true;
+  return true; // مهم جدًا للسماح بإرسال الفورم
 }
 </script>
 
