@@ -24,11 +24,13 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
       onsubmit="prepareBeforeSubmit();">
 <div class="container">
 <h2>📋 نموذج طلب خدمة</h2>
+<input type="hidden" name="_template" value="table">
 
 <!-- بيانات العميل -->
 <div class="section">
 <label>اسم العميل</label>
-<input id="name" name="اسم_العميل" required>
+<input id="name">
+
 
 <label>رقم الجوال</label>
 <input id="phone" name="رقم الجوال" placeholder="05XXXXXXXX" required>
@@ -233,8 +235,9 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 
 
   <!-- إعدادات FormSubmit -->
-  <input type="hidden" name="_subject"
-       value="📩 طلب خدمة جديد – RKL | {{request_type}}">
+<input type="hidden" name="_subject"
+value="📩 طلب خدمة جديد – RKL | {{رقم_الطلب}}">
+
 
   <input type="hidden" name="_captcha" value="false">
 
