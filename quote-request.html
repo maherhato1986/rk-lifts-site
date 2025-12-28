@@ -1,10 +1,61 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <title>طلب خدمة - RKL</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Open Graph for WhatsApp (مهم جدًا) -->
+<meta property="og:title" content="RKL للمصاعد | نموذج طلب خدمة رسمي">
+<meta property="og:description" content="نموذج رسمي لاستقبال طلبات صيانة وتوريد المصاعد لدى مؤسسة آر كي ال RKL. طلبك موثق ويصل مباشرة للإدارة الفنية.">
+<meta property="og:image" content="https://rkl.sa/public/images/logo.png">
+<meta property="og:url" content="https://rkl.sa/quote-request.html">
+<meta property="og:type" content="website">
+
+<!-- Twitter (احتياطي) -->
+<meta name="twitter:card" content="summary_large_image">
+
 <style>
+
+      .intro-box{
+  background:#f8fafc;
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  padding:20px;
+  margin-bottom:25px;
+}
+
+.intro-header{
+  display:flex;
+  align-items:center;
+  gap:15px;
+  margin-bottom:10px;
+}
+
+.intro-logo{
+  width:70px;
+  height:auto;
+}
+
+.intro-header h1{
+  font-size:18px;
+  margin:0;
+  color:#0f172a;
+}
+
+.intro-text{
+  color:#334155;
+  line-height:1.8;
+  margin-bottom:10px;
+}
+
+.intro-features{
+  padding-right:18px;
+  color:#0f172a;
+}
+
+.intro-features li{
+  margin-bottom:6px;
+}
+
 body{font-family:Cairo;background:#f4f6f9}
 .container{max-width:900px;margin:30px auto;background:#fff;padding:30px;border-radius:12px}
 h2{text-align:center;margin-bottom:10px}
@@ -23,7 +74,32 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
       enctype="multipart/form-data"
       onsubmit="prepareBeforeSubmit();">
 <div class="container">
-<h2>📋 نموذج طلب خدمة</h2>
+      <!-- ===== نبذة عن المؤسسة ===== -->
+<div class="intro-box">
+  <div class="intro-header">
+    <img src="https://rkl.sa/public/images/logo.png" alt="RKL Logo" class="intro-logo">
+    <h1>آر كي ال RKL للمصاعد والسلالم الكهربائية</h1>
+  </div>
+
+  <p class="intro-text">
+    هذا النموذج مخصص لتسهيل استقبال طلبات <strong>الصيانة، التوريد، والتركيب</strong>  
+    بطريقة منظمة وآمنة، تضمن سرعة الاستجابة ودقة التقييم الفني.
+  </p>
+
+  <ul class="intro-features">
+    <li>✔️ توثيق الطلب برقم مرجعي رسمي</li>
+    <li>✔️ إرسال الطلب مباشرة للإدارة الفنية</li>
+   
+    <li>✔️ التواصل الفوري عبر واتساب والبريد الإلكتروني</li>
+    <li>✔️ جميع البيانات محفوظة بسرية تامة</li>
+  </ul>
+</div>
+
+<h2 style="display:flex;align-items:center;justify-content:center;gap:10px;">
+  <img src="https://rkl.sa/public/images/logo.png" alt="RKL" style="width:40px">
+  نموذج طلب خدمة
+</h2>
+
 <input type="hidden" name="_template" value="box">
 
 <input type="hidden" name="_blacklist" value="*">
