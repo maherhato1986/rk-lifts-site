@@ -99,13 +99,7 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 • يمكنك رفع ملف PDF (مخطط)
 </small>
 
-<input
-  type="file"
-  name="attachments[]"
-  multiple
-  accept="image/*,.pdf"
-  capture="environment"
->
+
 
 
 </div>
@@ -171,12 +165,7 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 يرجى رفع صورة للكابينة من الداخل أو لوحة الكنترول داخل غرفة المكينة (إن وجدت)،  
 وذلك لمساعدتنا على تقييم  بشكل أدق.
 </small>
-<input
-  type="file"
-  name="attachments[]"
-  multiple
-  accept="image/*"
-  capture="environment">
+
 
   <label>ملاحظات عن المصاعد </label>
   <textarea name="description_no_contract"></textarea>
@@ -217,11 +206,8 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 <label>عدد الأدوار</label>
 <input type="number" name="floors_count_supply">
 
-<label>رفع المخطط</label>
-<input
-  type="file"
-  name="attachments[]"
-  accept=".pdf">
+<b>📎 مخطط مرفق:</b> نعم (يتم الإرسال عبر واتساب)
+
 
 
 <label>ملاحظات</label>
@@ -408,7 +394,7 @@ function showSummary() {
     <b>🏢 نوع المبنى:</b> ${document.querySelector('#supply select')?.value || "—"}<br>
     <b>🛗 عدد المصاعد:</b> ${document.querySelector('#supply input[type="number"]')?.value || "—"}<br>
     <b>🏢 عدد الأدوار:</b> ${document.querySelectorAll('#supply input[type="number"]')[1]?.value || "—"}<br>
-    <b>📎 مخطط مرفق:</b> ${document.querySelector('#supply input[type="file"]')?.files.length ? "نعم ✅" : "لا"}<br>
+   
     <b>📝 ملاحظات:</b><br>${document.querySelector('#supply textarea')?.value || "—"}
     `;
   }
@@ -469,9 +455,12 @@ document.getElementById("request_id").value = reqId;
     document.getElementById("email").value || "";
 
   // 3) واتساب (اختياري) بدون تعديل full_summary
+setTimeout(() => {
   if (typeof sendWhatsAppToClient === "function") {
-    sendWhatsAppToClient(); 
+    sendWhatsAppToClient();
   }
+}, 1200);
+}
 
   return true;
 }
