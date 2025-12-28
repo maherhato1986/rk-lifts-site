@@ -111,11 +111,19 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 <div id="withoutContract" style="display:none">
 
   <label>نوع الخدمة المطلوبة</label>
-  <select name="service_type">
+  <select name="service_type" id="serviceType" onchange="toggleVisits()">
+
     
     <option>عرض سعر زيارة لمره واحدة</option>
     <option>عرض سعر عقد صيانة وقائية سنوي</option>
   </select>
+      <label id="visitsLabel" style="display:none">عدد زيارات الصيانة السنوية</label>
+<select name="maintenance_visits" id="maintenanceVisits" style="display:none">
+  <option value="">اختر عدد الزيارات</option>
+  <option value="12">12 زيارة سنوية</option>
+  <option value="6">6 زيارات سنوية</option>
+</select>
+
 
   <label>عدد المصاعد</label>
   <input type="number" name="lifts_count">
@@ -380,6 +388,7 @@ function showSummary() {
     if (hasContract === "no") {
       serviceDetails = `
       <b>🛠️ نوع الخدمة:</b> ${byName("service_type")}<br>
+      <b>🔁 عدد زيارات الصيانة:</b> ${byName("maintenance_visits")} زيارة<br>
       <b>🛗 عدد المصاعد:</b> ${byName("lifts_count")}<br>
       <b>🏢 نوع المبنى:</b> ${byName("building_type")}<br>
       <b>📊 عدد الوقفات:</b> ${byName("stops_count")}<br>
@@ -555,9 +564,7 @@ document.getElementById("cc_email").value =
 
   return true; // مهم جدًا للسماح بإرسال الفورم
 }
-</script>
 
-  <script>
 function generateRequestId() {
   const now = new Date();
   const y = now.getFullYear().toString().slice(2);
@@ -566,6 +573,21 @@ function generateRequestId() {
   const r = Math.floor(Math.random() * 900 + 100); // 3 digits
   return `RKL-${y}${m}${d}-${r}`;
 }
+
+function toggleVisits() {
+  const service = document.getElementById("serviceType").value;
+  const visitsSelect = document.getElementById("maintenanceVisits");
+  const visitsLabel = document.getElementById("visitsLabel");
+
+  if (service.includes("عقد صيانة")) {
+    visitsSelect.style.display = "block";
+    visitsLabel.style.display = "block";
+  } else {
+    visitsSelect.style.display = "none";
+    visitsLabel.style.display = "none";
+    visitsSelect.value = "";
+  }
+}        
 </script>
 
 
