@@ -14,6 +14,18 @@
 <meta name="twitter:card" content="summary_large_image">
 
 <style>
+  html, body {
+  direction: rtl;
+  text-align: right;
+}
+label {
+  text-align: right;
+}
+
+input, select, textarea {
+  text-align: right;
+}
+
 .form-title{
   display:flex;
   align-items:center;
@@ -23,7 +35,9 @@
   font-weight:700;
   color:#0f172a;
   margin:25px 0;
+  direction: rtl;
 }
+
 
 .form-title img{
   width:42px;
@@ -46,13 +60,25 @@
   padding-right:20px;
 }
 
-.intro-features li::before{
-  content:"✔";
-  position:absolute;
-  right:0;
+.intro-features{
+  list-style:none;
+  padding:0;
+  margin:0;
+}
+
+.intro-features li{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:8px;
+  color:#0f172a;
+}
+
+.intro-features li span{
   color:#4f46e5;
   font-weight:bold;
 }
+
 
       .intro-box{
   background:#f8fafc;
@@ -153,9 +179,7 @@ button:hover{
   border-top:1px dashed #e5e7eb;
 }
 
-button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padding:15px;font-size:16px;border-radius:8px}
-.hidden{display:none}
-.section{margin-top:25px;border-top:1px solid #eee;padding-top:15px}
+
 .summary{background:#f9fafb;padding:15px;border-radius:8px;margin-top:20px}
 </style>
 </head>
@@ -173,24 +197,22 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
     <h1>آر كي ال RKL للمصاعد والسلالم الكهربائية</h1>
   </div>
 
-  <p class="intro-text">
-    هذا النموذج مخصص لتسهيل استقبال طلبات <strong>الصيانة، التوريد، والتركيب</strong>  
-    بطريقة منظمة وآمنة، تضمن سرعة الاستجابة ودقة التقييم الفني.
-  </p>
+<p class="intro-text">
+هذا النموذج مخصص لتسهيل استقبال طلبات
+<strong>الصيانة، التوريد، والتركيب</strong>
+بأسلوب احترافي ومنظم، بما يضمن سرعة الاستجابة ودقة التقييم الفني.
+</p>
 
-  <ul class="intro-features">
-    <li>✔️ توثيق الطلب برقم مرجعي رسمي</li>
-    <li>✔️ إرسال الطلب مباشرة للإدارة الفنية</li>
-   
-    <li>✔️ التواصل الفوري عبر واتساب والبريد الإلكتروني</li>
-    <li>✔️ جميع البيانات محفوظة بسرية تامة</li>
-  </ul>
+
+<ul class="intro-features">
+  <li><span>✔</span> توثيق الطلب برقم مرجعي رسمي</li>
+  <li><span>✔</span> إرسال الطلب مباشرة للإدارة الفنية</li>
+  <li><span>✔</span> التواصل الفوري عبر واتساب والبريد الإلكتروني</li>
+  <li><span>✔</span> جميع البيانات محفوظة بسرية تامة</li>
+</ul>
+
 </div>
 
-<h2 class="form-title">
-  <img src="https://rkl.sa/public/images/logo.png" alt="RKL">
-  نموذج طلب خدمة
-</h2>
 
   <img src="https://rkl.sa/public/images/logo.png" alt="RKL" style="width:40px">
   نموذج طلب خدمة
