@@ -18,7 +18,10 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 </head>
 
 <body>
-
+<form action="https://formsubmit.co/admin@rkl.sa"
+      method="POST"
+      enctype="multipart/form-data"
+      onsubmit="prepareBeforeSubmit();">
 <div class="container">
 <h2>📋 نموذج طلب خدمة</h2>
 
@@ -233,10 +236,7 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 <div id="summaryBox" class="summary hidden"></div>
 </div>
 
-<form action="https://formsubmit.co/admin@rkl.sa"
-      method="POST"
-      enctype="multipart/form-data"
-      onsubmit="prepareBeforeSubmit();">
+
 
 <input type="hidden" name="رقم_الطلب" id="request_id">
 
@@ -583,6 +583,11 @@ function generateRequestId() {
 }
 </script>
 
-  
+  </div> <!-- نهاية container -->
+
+<button type="submit">📨 إرسال الطلب</button>
+
+</form>
+
 </body>
 </html>
