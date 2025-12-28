@@ -418,9 +418,21 @@ document.getElementById("summaryBox").classList.remove("hidden");
 
 // ⬇️ هذا السطر الجديد (مهم)
 document.getElementById("full_summary").value =
-  summary
-    .replace(/<br>/g, "\n")
-    .replace(/<[^>]*>/g, "");
+`📋 طلب خدمة جديد – RKL
+--------------------------------
+👤 الاسم: ${byId("name")}
+📞 الجوال: ${byId("phone")}
+🛠️ نوع الطلب: ${type}
+
+${serviceDetails
+  .replace(/<br>/g, "\n")
+  .replace(/<[^>]*>/g, "")
+}
+
+📍 موقع المشروع:
+${byId("location")}
+`;
+
 }
 
 
