@@ -255,8 +255,7 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
   <!-- إرسال نسخة من الإيميل للعميل -->
   <input type="hidden" name="_cc" id="cc_email">
 
-  <!-- زر الإرسال -->
-  <button type="submit">📨 إرسال الطلب</button>
+
 </form>
 
 
@@ -546,20 +545,6 @@ const whatsappMsg = `
 }
 
 
-
-
-
-  /* ===== رسالة واتساب للعميل ===== */
-  const whatsappMsg = `
-مرحبًا ${name} 👋
-تم استلام طلبك لدى *RKL للمصاعد* ✅
-
-🛠️ نوع الطلب: ${type}
-📍 الموقع: ${location}
-
-سيتم التواصل معك قريبًا.
-شكراً لثقتك بنا 🌷
-  `;
 
   window.open(
     "https://wa.me/" + phone + "?text=" + encodeURIComponent(whatsappMsg),
