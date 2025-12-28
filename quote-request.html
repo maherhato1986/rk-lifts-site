@@ -672,11 +672,15 @@ function prepareBeforeSubmit() {
     document.getElementById("email").value || "";
 
   // واتساب
-  setTimeout(() => {
-    if (typeof sendWhatsAppToClient === "function") {
-      sendWhatsAppToClient();
-    }
-  }, 800);
+setTimeout(() => {
+  if (typeof sendWhatsAppToClient === "function") {
+    sendWhatsAppToClient();   // واتساب العميل
+  }
+  if (typeof sendWhatsAppToRep === "function") {
+    sendWhatsAppToRep();      // واتساب المندوبة نهاد
+  }
+}, 800);
+
 }
 
 
@@ -700,6 +704,11 @@ function normalizeSaudiPhone(phone) {
   return '';
 }
 
+  <script>
+const WHATSAPP_REP_PHONE = "966570272874"; // م. نهاد
+</script>
+
+  
 function sendWhatsAppToClient() {
 
   /* ===== البيانات الأساسية ===== */
@@ -767,6 +776,29 @@ document.getElementById("cc_email").value =
   return true; // مهم جدًا للسماح بإرسال الفورم
 }
 
+  function sendWhatsAppToRep() {
+
+  const reqId = document.getElementById("request_id").value;
+  const summary = document.getElementById("full_summary").value;
+
+  const repMsg = `
+📩 *طلب خدمة جديد – RKL*
+
+🆔 رقم الطلب:
+${reqId}
+
+-------------------------
+${summary}
+
+🔔 يرجى متابعة العميل والتواصل معه في أقرب وقت.
+`;
+
+  window.open(
+    "https://wa.me/" + WHATSAPP_REP_PHONE + "?text=" + encodeURIComponent(repMsg),
+    "_blank"
+  );
+}
+  
 function generateRequestId() {
   const now = new Date();
   const y = now.getFullYear().toString().slice(2);
