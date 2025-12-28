@@ -230,25 +230,18 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 </button>
 
 
-<input type="hidden" id="رقم_الطلب" id="request_id">
+<input type="hidden" name="رقم_الطلب" id="request_id">
 
+<input type="hidden" name="_subject"
+value="📩 طلب خدمة جديد – RKL">
 
-  <!-- إعدادات FormSubmit -->
-<input type="hidden" id="_subject"
-value="📩 طلب خدمة جديد – RKL | {{رقم_الطلب}}">
+<input type="hidden" name="ملخص_الطلب_الكامل" id="full_summary">
 
+<input type="hidden" name="_cc" id="cc_email">
 
-  <input type="hidden" id="_captcha" value="false">
+<!-- مهم: إخفاء جدول FormSubmit -->
+<input type="hidden" name="_template" value="table">
 
-
-  <!-- الحقول التي ستظهر في جدول الإيميل -->
-
-
-  <!-- الملخص التفصيلي (يظهر كنص خارج الجدول) -->
-  <input type="hidden" id="ملخص_الطلب_الكامل" id="full_summary">
-
-  <!-- إرسال نسخة من الإيميل للعميل -->
-  <input type="hidden" id="_cc" id="cc_email">
 
 
 </form>
@@ -450,21 +443,22 @@ ${byId("location")}
  
 <script>
 function prepareBeforeSubmit() {
-  // 1) توليد ملخص الإيميل من نفس ملخص الصفحة
-  showSummary();
-const reqId = generateRequestId();
-document.getElementById("request_id").value = reqId;
 
-  // 2) إرسال نسخة للعميل
+  // 1️⃣ توليد رقم الطلب
+  const reqId = generateRequestId();
+  document.getElementById("request_id").value = reqId;
+
+  // 2️⃣ توليد الملخص بعد رقم الطلب
+  showSummary();
+
+  // 3️⃣ إرسال نسخة للعميل
   document.getElementById("cc_email").value =
     document.getElementById("email").value || "";
 
-  // 3) واتساب (اختياري) بدون تعديل full_summary
-setTimeout(() => {
-  if (typeof sendWhatsAppToClient === "function") {
+  // 4️⃣ واتساب
+  setTimeout(() => {
     sendWhatsAppToClient();
-  }
-}, 1200);
+  }, 1200);
 }
 
 
