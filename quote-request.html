@@ -233,9 +233,11 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 
 
   <!-- إعدادات FormSubmit -->
-  <input type="hidden" name="_subject" value="📩 طلب خدمة جديد من موقع RKL">
+  <input type="hidden" name="_subject"
+       value="📩 طلب خدمة جديد – RKL | {{request_type}}">
+
   <input type="hidden" name="_captcha" value="false">
-  <input type="hidden" name="_template" value="table">
+
 
   <!-- الحقول التي ستظهر في جدول الإيميل -->
 
