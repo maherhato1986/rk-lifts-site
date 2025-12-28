@@ -203,6 +203,8 @@ button:hover{
 بأسلوب احترافي ومنظم، بما يضمن سرعة الاستجابة ودقة التقييم الفني.
 </p>
 
+<input type="hidden" name="_template" value="table">
+<input type="hidden" name="_autoresponse" value="تم استلام طلبك بنجاح – RKL">
 
 <ul class="intro-features">
   <li><span>✔</span> توثيق الطلب برقم مرجعي رسمي</li>
@@ -664,8 +666,7 @@ function prepareBeforeSubmit() {
   const reqId = generateRequestId();
   document.getElementById("request_id").value = reqId;
 
-  // إزالة جميع name ما عدا الملخص ورقم الطلب
-  stripAllNamesExceptSummary();
+
 
   // نسخة للعميل
   document.getElementById("cc_email").value =
@@ -679,8 +680,9 @@ setTimeout(() => {
   if (typeof sendWhatsAppToRep === "function") {
     sendWhatsAppToRep();      // واتساب المندوبة نهاد
   }
-}, 800);
+  }, 800);
 
+  return true; // مهم
 }
 
 
