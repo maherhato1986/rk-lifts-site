@@ -830,7 +830,7 @@ function stripAllNamesExceptSummary() {
 
 <script>
 /* =========================
-   إعدادات واتساب
+   إعدادات عامة
 ========================= */
 const WHATSAPP_REP_PHONE = "966570272874"; // م. نهاد
 
@@ -877,8 +877,8 @@ ${location}
    واتساب المندوبة نهاد
 ========================= */
 function sendWhatsAppToRep() {
-  const summary = document.getElementById("full_summary").value;
   const reqId = document.getElementById("request_id").value;
+  const summary = document.getElementById("full_summary").value;
 
   const msg = `
 📩 طلب خدمة جديد – RKL
@@ -886,7 +886,7 @@ function sendWhatsAppToRep() {
 🆔 رقم الطلب:
 ${reqId}
 
----------------------
+-----------------------
 ${summary}
 
 يرجى متابعة العميل.
@@ -898,6 +898,7 @@ ${summary}
   );
 }
 </script>
+
 
 
 </body>
