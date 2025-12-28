@@ -226,6 +226,7 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 <form action="https://formsubmit.co/admin@rkl.sa"
       method="POST"
       onsubmit="prepareBeforeSubmit();">
+<input type="hidden" name="رقم_الطلب" id="request_id">
 
 
   <!-- إعدادات FormSubmit -->
@@ -419,7 +420,9 @@ document.getElementById("summaryBox").classList.remove("hidden");
 // ⬇️ هذا السطر الجديد (مهم)
 document.getElementById("full_summary").value =
 `📋 طلب خدمة جديد – RKL
+رقم الطلب: ${document.getElementById("request_id").value}
 --------------------------------
+
 👤 الاسم: ${byId("name")}
 📞 الجوال: ${byId("phone")}
 🛠️ نوع الطلب: ${type}
@@ -442,6 +445,8 @@ ${byId("location")}
 function prepareBeforeSubmit() {
   // 1) توليد ملخص الإيميل من نفس ملخص الصفحة
   showSummary();
+const reqId = generateRequestId();
+document.getElementById("request_id").value = reqId;
 
   // 2) إرسال نسخة للعميل
   document.getElementById("cc_email").value =
@@ -488,6 +493,18 @@ function sendWhatsAppToClient() {
   const type = document.getElementById("type").value || "—";
   const hasContract = document.getElementById("hasContract").value || "—";
   const location = document.getElementById("location").value || "—";
+const reqId = document.getElementById("request_id").value;
+
+const whatsappMsg = `
+مرحبًا ${name} 👋
+تم استلام طلبك لدى *RKL للمصاعد* ✅
+
+🆔 رقم الطلب: ${reqId}
+🛠️ نوع الطلب: ${type}
+📍 الموقع: ${location}
+
+📎 يرجى إرسال الصور / المخطط مع ذكر رقم الطلب أعلاه.
+`;
 
   /* ===== تفاصيل حسب الحالة ===== */
   let details = "";
@@ -540,6 +557,17 @@ document.getElementById("cc_email").value =
   document.getElementById("email").value;
 
   return true; // مهم جدًا للسماح بإرسال الفورم
+}
+</script>
+
+  <script>
+function generateRequestId() {
+  const now = new Date();
+  const y = now.getFullYear().toString().slice(2);
+  const m = String(now.getMonth() + 1).padStart(2, '0');
+  const d = String(now.getDate()).padStart(2, '0');
+  const r = Math.floor(Math.random() * 900 + 100); // 3 digits
+  return `RKL-${y}${m}${d}-${r}`;
 }
 </script>
 
