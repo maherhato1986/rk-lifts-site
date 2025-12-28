@@ -48,8 +48,7 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 </select>
 
 
-<!-- نوع الطلب (ثابت الآن) -->
-<input type="hidden" name="request_type" id="request_type">
+
 
 
 <div id="contractQuestion">
@@ -66,10 +65,10 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 <div id="withContract" style="display:none">
 
   <label>اسم المشروع / الموقع</label>
-  <input type="text" name="project_name">
+  <input type="text" id="project_name">
 
   <label>  نوع البللاغ المطلوب</label>
-  <select name="issue_type">
+  <select id="issue_type">
     <option>صيانة دورية</option>
     <option>عطل مفاجئ</option>
     <option>احتجاز</option>
@@ -77,21 +76,21 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
   </select>
 
   <label>حالة المصعد</label>
-  <select name="lift_status">
+  <select id="lift_status">
     
     <option>يعمل مع ملاحظات</option>
     <option>متوقف</option>
   </select>
 
   <label>أولوية الطلب</label>
-  <select name="priority">
+  <select id="priority">
     <option>عادي</option>
     <option>عاجل</option>
     <option>طارئ</option>
   </select>
 
   <label>وصف العطل</label>
-  <textarea name="description_contract"></textarea>
+  <textarea id="description_contract"></textarea>
 
 
   <label>إرفاق صور / مخطط (اختياري)</label>
@@ -110,19 +109,19 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 <div id="withoutContract" style="display:none">
 
   <label>نوع الخدمة المطلوبة</label>
-  <select name="service_type">
+  <select id="service_type">
     
     <option>عرض سعر زيارة لمره واحدة</option>
     <option>عرض سعر عقد صيانة وقائية سنوي</option>
   </select>
 
   <label>عدد المصاعد</label>
-  <input type="number" name="lifts_count">
+  <input type="number" id="lifts_count">
   <label>عدد الوقفات (الأدوار)</label>
-<input type="number" name="stops_count" placeholder="مثال: 10">
+<input type="number" id="stops_count" placeholder="مثال: 10">
 
 <label>حمولة المصعد (كجم)</label>
-<select name="capacity">
+<select id="capacity">
   <option value="">اختر الحمولة</option>
   <option>450</option>
   <option>630</option>
@@ -132,7 +131,7 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 </select>
 
 <label>نوع المبنى</label>
-<select name="building_type">
+<select id="building_type">
   <option value="">اختر</option>
   <option>سكني</option>
   <option>حكومي</option>
@@ -140,7 +139,7 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 
 
 <label>نوع المصاعد</label>
-<select name="lift_brand">
+<select id="lift_brand">
   <option>فوجي</option>
   <option>شندلر</option>
   <option>اوتيس</option>
@@ -149,7 +148,7 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 </select>
 
 <label>حالة المصعد</label>
-<select name="lift_condition">
+<select id="lift_condition">
   <option>يعمل</option>
   <option>متوقف</option>
   <option>به مشاكل</option>
@@ -157,7 +156,7 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 
 
   <label>العمر التقريبي للمصعد</label>
-  <select name="lift_age">
+  <select id="lift_age">
     <option>أقل من 5 سنوات</option>
     <option>5 – 10 سنوات</option>
     <option>أكثر من 10 سنوات</option>
@@ -170,7 +169,7 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 
 
   <label>ملاحظات عن المصاعد </label>
-  <textarea name="description_no_contract"></textarea>
+  <textarea id="description_no_contract"></textarea>
 
 </div>
 
@@ -192,28 +191,28 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 <!-- توريد -->
 <div id="supply" class="section hidden">
 <label>اسم المشروع</label>
-<input id="project" name="project_name">
+<input id="project" id="project_name">
 
 
 <label>نوع المبنى</label>
-<select name="building_type_supply">
+<select id="building_type_supply">
   <option>سكني</option>
   <option>تجاري</option>
   <option>مستشفى</option>
 </select>
 
 <label>عدد المصاعد</label>
-<input type="number" name="lifts_count_supply">
+<input type="number" id="lifts_count_supply">
 
 <label>عدد الأدوار</label>
-<input type="number" name="floors_count_supply">
+<input type="number" id="floors_count_supply">
 
 <b>📎 مخطط مرفق:</b> نعم (يتم الإرسال عبر واتساب)
 
 
 
 <label>ملاحظات</label>
-<textarea name="supply_notes"></textarea>
+<textarea id="supply_notes"></textarea>
 
 </div>
 
@@ -231,25 +230,25 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 </button>
 
 
-<input type="hidden" name="رقم_الطلب" id="request_id">
+<input type="hidden" id="رقم_الطلب" id="request_id">
 
 
   <!-- إعدادات FormSubmit -->
-<input type="hidden" name="_subject"
+<input type="hidden" id="_subject"
 value="📩 طلب خدمة جديد – RKL | {{رقم_الطلب}}">
 
 
-  <input type="hidden" name="_captcha" value="false">
+  <input type="hidden" id="_captcha" value="false">
 
 
   <!-- الحقول التي ستظهر في جدول الإيميل -->
 
 
   <!-- الملخص التفصيلي (يظهر كنص خارج الجدول) -->
-  <input type="hidden" name="ملخص_الطلب_الكامل" id="full_summary">
+  <input type="hidden" id="ملخص_الطلب_الكامل" id="full_summary">
 
   <!-- إرسال نسخة من الإيميل للعميل -->
-  <input type="hidden" name="_cc" id="cc_email">
+  <input type="hidden" id="_cc" id="cc_email">
 
 
 </form>
