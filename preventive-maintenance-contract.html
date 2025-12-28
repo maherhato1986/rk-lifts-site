@@ -884,26 +884,49 @@ const cityZones = {
 
   
 
-
 function calculateTotal(){
+
+  /* =====================
+     حماية من القيم الفارغة
+  ===================== */
+  const capacityValue = document.getElementById('capacity')?.value || '';
+  const floorsValue   = document.getElementById('floors')?.value || '';
+  const liftsValue    = document.getElementById('lifts')?.value || '';
+
+  if (!capacityValue || !floorsValue || !liftsValue) {
+    return {
+      pricePerLift: '0.00',
+      lifts: 0,
+      zone: '—',
+      subtotal: '0.00',
+      vat: '0.00',
+      total: '0.00'
+    };
+  }
 
   /* =====================
      السعر الأساسي حسب الحمولة
   ===================== */
-  let pricePerLift = Number(document.getElementById('capacity').value);
+  let pricePerLift = Number(capacityValue);
 
-  const lifts    = Number(document.getElementById('lifts').value);
-  const floors   = Number(document.getElementById('floors').value);
-  const building = document.getElementById('building').value;
+  const lifts    = Number(liftsValue);
+  const floors   = Number(floorsValue);
+  const building = document.getElementById('building')?.value || 'private';
 
   /* =====================
-     الماركة
+     الماركة (منطق آمن)
   ===================== */
-  const brandSelect = document.getElementById('brandSelect').value;
+  const brandSelect = document.getElementById('brandSelect')?.value || '';
   const brandOther  = document.getElementById('brandOther')?.value || '';
-  const brand = (brandSelect === 'Other' || brandSelect === 'Local')
-    ? brandOther.toLowerCase()
-    : brandSelect.toLowerCase();
+
+  let brand = '';
+  if (brandSelect === 'Local') {
+    brand = 'local';
+  } else if (brandSelect === 'Other') {
+    brand = brandOther.trim().toLowerCase() || 'other';
+  } else {
+    brand = brandSelect.toLowerCase();
+  }
 
   /* =====================
      المدينة / الموقع
@@ -925,10 +948,10 @@ function calculateTotal(){
     pricePerLift *= 1.50;
   }
 
-  // ماركات عالمية
-if (['otis','kone','mitsubishi','schindler'].includes(brand)) {
-  pricePerLift += 2000;
-}
+  // ماركات عالمية فقط
+  if (['otis','kone','mitsubishi','schindler'].includes(brand)) {
+    pricePerLift += 2000;
+  }
 
   // موقع جغرافي
   pricePerLift *= (1 + zone.increase);
@@ -940,7 +963,7 @@ if (['otis','kone','mitsubishi','schindler'].includes(brand)) {
 
   // خصم الكمية (3 مصاعد أو أكثر)
   if (lifts >= 3) {
-    subtotal *= 0.90; // خصم 10%
+    subtotal *= 0.90;
   }
 
   const vat   = subtotal * 0.15;
@@ -955,6 +978,8 @@ if (['otis','kone','mitsubishi','schindler'].includes(brand)) {
     total: total.toFixed(2)
   };
 }
+
+
 
 
   
@@ -1344,6 +1369,15 @@ ${
 
   w.document.close();
 }
+function getBrandValue(){
+  const brandSelect = document.getElementById('brandSelect').value;
+  const brandOther  = document.getElementById('brandOther')?.value || '';
+
+  if (brandSelect === 'Local') return 'local';
+  if (brandSelect === 'Other') return brandOther.trim().toLowerCase() || 'other';
+
+  return brandSelect.toLowerCase();
+}
 
 function renderContractsTable(){
   const tbody = document.getElementById('contractsTable');
@@ -1419,8 +1453,9 @@ const brand = (brandSelect === 'Other' || brandSelect === 'Local')
 function toggleOtherBrand(){
   const select = document.getElementById('brandSelect').value;
   document.getElementById('otherBrandBox').style.display =
-    (select === 'Other' || select === 'Local') ? 'block' : 'none';
+    (select === 'Other') ? 'block' : 'none';
 }
+
     function numberToArabicWords(num){
   return num.toLocaleString('ar-SA');
 }
