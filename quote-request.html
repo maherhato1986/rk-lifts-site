@@ -28,7 +28,7 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 <!-- بيانات العميل -->
 <div class="section">
 <label>اسم العميل</label>
-<input id="name">
+<input id="name" name="اسم_العميل" required>
 
 <label>رقم الجوال</label>
 <input id="phone" name="رقم الجوال" placeholder="05XXXXXXXX" required>
@@ -47,7 +47,8 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 
 
 <!-- نوع الطلب (ثابت الآن) -->
-<input type="hidden" name="request_type" value="maintenance">
+<input type="hidden" name="request_type" id="request_type">
+
 
 <div id="contractQuestion">
   <label>هل لديك عقد معنا؟</label>
@@ -88,7 +89,8 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
   </select>
 
   <label>وصف العطل</label>
-  <textarea name="description"></textarea>
+  <textarea name="description_contract"></textarea>
+
 
   <label>إرفاق صور / مخطط (اختياري)</label>
 <small style="color:#666;">
@@ -177,7 +179,7 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
   capture="environment">
 
   <label>ملاحظات عن المصاعد </label>
-  <textarea name="description"></textarea>
+  <textarea name="description_no_contract"></textarea>
 
 </div>
 
@@ -199,22 +201,21 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 <!-- توريد -->
 <div id="supply" class="section hidden">
 <label>اسم المشروع</label>
-<input id="project">
-
+<input id="project" name="project_name">
 
 
 <label>نوع المبنى</label>
-<select>
+<select name="building_type_supply">
   <option>سكني</option>
   <option>تجاري</option>
   <option>مستشفى</option>
 </select>
 
 <label>عدد المصاعد</label>
-<input type="number">
+<input type="number" name="lifts_count_supply">
 
 <label>عدد الأدوار</label>
-<input type="number">
+<input type="number" name="floors_count_supply">
 
 <label>رفع المخطط</label>
 <input
@@ -278,6 +279,7 @@ let map, marker;
 ========================= */
 function toggleType() {
   const type = document.getElementById("type").value;
+document.getElementById("request_type").value = type;
 
   // إخفاء كل الأقسام أولاً
   hideAllSections();
