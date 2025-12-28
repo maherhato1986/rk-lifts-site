@@ -166,7 +166,13 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 يرجى رفع صورة للكابينة من الداخل أو لوحة الكنترول داخل غرفة المكينة (إن وجدت)،  
 وذلك لمساعدتنا على تقييم  بشكل أدق.
 </small>
-<input type="file" accept="image/*">
+<input
+  type="file"
+  name="attachments[]"
+  multiple
+  accept="image/*"
+  capture="environment">
+
   <label>ملاحظات عن المصاعد </label>
   <textarea name="description"></textarea>
 
@@ -208,7 +214,11 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 <input type="number">
 
 <label>رفع المخطط</label>
-<input type="file">
+<input
+  type="file"
+  name="attachments[]"
+  accept=".pdf">
+
 
 <label>ملاحظات</label>
 <textarea></textarea>
@@ -225,7 +235,9 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 
 <form action="https://formsubmit.co/admin@rkl.sa"
       method="POST"
+      enctype="multipart/form-data"
       onsubmit="prepareBeforeSubmit();">
+
 <input type="hidden" name="رقم_الطلب" id="request_id">
 
 
