@@ -875,23 +875,31 @@ const cityZones = {
 };
 
   
+
+
 function calculateTotal(){
 
-  // السعر الأساسي حسب الحمولة
-  let price = Number(document.getElementById('capacity').value);
+  /* =====================
+     السعر الأساسي حسب الحمولة
+  ===================== */
+  let pricePerLift = Number(document.getElementById('capacity').value);
 
-  const lifts   = Number(document.getElementById('lifts').value);
-  const floors  = Number(document.getElementById('floors').value);
+  const lifts    = Number(document.getElementById('lifts').value);
+  const floors   = Number(document.getElementById('floors').value);
   const building = document.getElementById('building').value;
 
-  // ===== الماركة =====
+  /* =====================
+     الماركة
+  ===================== */
   const brandSelect = document.getElementById('brandSelect').value;
   const brandOther  = document.getElementById('brandOther')?.value || '';
   const brand = (brandSelect === 'Other' || brandSelect === 'Local')
     ? brandOther.toLowerCase()
     : brandSelect.toLowerCase();
 
-  // ===== المدينة =====
+  /* =====================
+     المدينة / الموقع
+  ===================== */
   const cityKey = document.getElementById('projectCity')?.value || 'riyadh';
   const zone = cityZones[cityKey] || cityZones.riyadh;
 
@@ -899,38 +907,49 @@ function calculateTotal(){
      معاملات الزيادة
   ===================== */
 
-  // عدد الطوابق
-  if(floors > 2){
-    price *= 1.10;
+  // عدد الطوابق (أكثر من 2)
+  if (floors > 2) {
+    pricePerLift *= 1.10;
   }
 
-  // نوع المبنى
-  if(building === 'government'){
-    price *= 1.50;
+  // مبنى حكومي
+  if (building === 'government') {
+    pricePerLift *= 1.50;
   }
 
-  // الماركات العالمية
-  if(['otis','kone','mitsubishi','schindler'].some(b => brand.includes(b))){
-    price += 2000;
+  // ماركات عالمية
+  if (['otis','kone','mitsubishi','schindler'].some(b => brand.includes(b))) {
+    pricePerLift += 2000;
   }
 
-  // الموقع الجغرافي
-  price *= (1 + zone.increase);
+  // موقع جغرافي
+  pricePerLift *= (1 + zone.increase);
 
   /* =====================
-     الحساب النهائي
+     حساب الإجمالي
   ===================== */
-  const subtotal = price * lifts;
-  const vat = subtotal * 0.15;
+  let subtotal = pricePerLift * lifts;
+
+  // خصم الكمية (3 مصاعد أو أكثر)
+  if (lifts >= 3) {
+    subtotal *= 0.90; // خصم 10%
+  }
+
+  const vat   = subtotal * 0.15;
+  const total = subtotal + vat;
 
   return {
-    pricePerLift: price,
+    pricePerLift: pricePerLift.toFixed(2),
+    lifts,
     zone: zone.label,
-    vat,
-    total: subtotal + vat
+    subtotal: subtotal.toFixed(2),
+    vat: vat.toFixed(2),
+    total: total.toFixed(2)
   };
 }
 
+
+  
 function saveContract(){
 
  if(!customer){
