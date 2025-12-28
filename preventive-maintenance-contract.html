@@ -666,11 +666,19 @@ document.addEventListener('DOMContentLoaded',()=>{
   const lang = document.getElementById('lang').value;
   const date = document.getElementById('contractDate').value;
   const lifts = document.getElementById('lifts').value;
-  const brandSelect = document.getElementById('brandSelect').value;
+const brandSelect = document.getElementById('brandSelect').value;
 const brandOther  = document.getElementById('brandOther')?.value || '';
-const brand = (brandSelect === 'Other' || brandSelect === 'Local')
-  ? brandOther
-  : brandSelect;
+
+let brand = '';
+
+if (brandSelect === 'Local') {
+  brand = 'local';
+} else if (brandSelect === 'Other') {
+  brand = brandOther.trim().toLowerCase() || 'other';
+} else {
+  brand = brandSelect.toLowerCase();
+}
+
 
   const buildingType = document.getElementById('building').value === 'government'
     ? 'حكومي'
@@ -918,9 +926,9 @@ function calculateTotal(){
   }
 
   // ماركات عالمية
-  if (['otis','kone','mitsubishi','schindler'].some(b => brand.includes(b))) {
-    pricePerLift += 2000;
-  }
+if (['otis','kone','mitsubishi','schindler'].includes(brand)) {
+  pricePerLift += 2000;
+}
 
   // موقع جغرافي
   pricePerLift *= (1 + zone.increase);
