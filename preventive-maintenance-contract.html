@@ -733,7 +733,7 @@ if (brandSelect === 'Local') {
   <table>
     <tr>
       <td class="label">قيمة العقد قبل ضريبة القيمة المضافة</td>
-      <td class="value">${(calc.total / 1.15).toFixed(2)} ريال سعودي</td>
+      <td class="value">$(Number(calc.total) / 1.15).toFixed(2)} ريال سعودي</td>
     </tr>
     <tr>
       <td class="label">ضريبة القيمة المضافة (15%)</td>
@@ -741,7 +741,7 @@ if (brandSelect === 'Local') {
     </tr>
     <tr>
       <td class="label total">إجمالي قيمة العقد شامل الضريبة</td>
-      <td class="value total">${calc.total.toFixed(2)} ريال سعودي</td>
+      <td class="value total">${calc.total} ريال سعودي </td>
     </tr>
   </table>
 
@@ -1424,7 +1424,8 @@ function reviewContract(){
   const building=document.getElementById('building').value;
   const brandSelect = document.getElementById('brandSelect').value || '';
 const brandOther  = document.getElementById('brandOther')?.value || '';
-const brand = (brandSelect === 'Other' || brandSelect === 'Local')
+const brand = getBrandValue();
+
   ? brandOther.toLowerCase()
   : brandSelect.toLowerCase();
 
