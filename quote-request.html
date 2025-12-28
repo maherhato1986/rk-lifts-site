@@ -440,20 +440,22 @@ ${byId("location")}
  
 <script>
 function prepareBeforeSubmit() {
-  // توليد ملخص الطلب أولاً
+  // 1) توليد ملخص الإيميل من نفس ملخص الصفحة
   showSummary();
 
-  // تجهيز نص الواتساب من نفس الملخص
-  const summaryText = document.getElementById("full_summary").value;
+  // 2) إرسال نسخة للعميل
+  document.getElementById("cc_email").value =
+    document.getElementById("email").value || "";
 
-  // إرسال واتساب (إن وجد)
+  // 3) واتساب (اختياري) بدون تعديل full_summary
   if (typeof sendWhatsAppToClient === "function") {
-    sendWhatsAppToClient(summaryText);
+    sendWhatsAppToClient(); 
   }
 
-  return true; // السماح بالإرسال
+  return true;
 }
 </script>
+
 
 
   <script
@@ -516,23 +518,7 @@ function sendWhatsAppToClient() {
 
 
 
-  /* ===== ملخص نصي كامل ===== */
-  const fullSummary = `
-طلب خدمة جديد – RKL
--------------------
-الاسم: ${name}
-الجوال: ${phone}
-نوع الطلب: ${type}
-هل يوجد عقد صيانة: ${hasContract}
 
-${details}
-
-موقع المشروع:
-${location}
-  `;
-
-  /* ===== حفظ الملخص في الحقل المخفي (للإيميل) ===== */
-  document.getElementById("full_summary").value = fullSummary;
 
   /* ===== رسالة واتساب للعميل ===== */
   const whatsappMsg = `
