@@ -26,6 +26,7 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 <h2>📋 نموذج طلب خدمة</h2>
 <input type="hidden" name="_template" value="box">
 
+<input type="hidden" name="_blacklist" value="*">
 
 <!-- بيانات العميل -->
 <div class="section">
@@ -461,22 +462,29 @@ ${byId("location")}
  
 <script>
 function prepareBeforeSubmit() {
-  // 1) توليد ملخص الإيميل من نفس ملخص الصفحة
-  showSummary();
-const reqId = generateRequestId();
-document.getElementById("request_id").value = reqId;
 
-  // 2) إرسال نسخة للعميل
+  // توليد الملخص
+  showSummary();
+
+  // توليد رقم الطلب
+  const reqId = generateRequestId();
+  document.getElementById("request_id").value = reqId;
+
+  // إزالة جميع name ما عدا الملخص ورقم الطلب
+  stripAllNamesExceptSummary();
+
+  // نسخة للعميل
   document.getElementById("cc_email").value =
     document.getElementById("email").value || "";
 
-  // 3) واتساب (اختياري) بدون تعديل full_summary
-setTimeout(() => {
-  if (typeof sendWhatsAppToClient === "function") {
-    sendWhatsAppToClient();
-  }
-}, 1200);
+  // واتساب
+  setTimeout(() => {
+    if (typeof sendWhatsAppToClient === "function") {
+      sendWhatsAppToClient();
+    }
+  }, 800);
 }
+
 
 
 </script>
@@ -588,6 +596,19 @@ function toggleVisits() {
     visitsSelect.value = "";
   }
 }        
+</script>
+<script>
+function stripAllNamesExceptSummary() {
+  const allowed = ['رقم_الطلب', 'ملخص_الطلب_الكامل'];
+
+  document
+    .querySelectorAll('input[name], select[name], textarea[name]')
+    .forEach(el => {
+      if (!allowed.includes(el.name)) {
+        el.removeAttribute('name');
+      }
+    });
+}
 </script>
 
 
