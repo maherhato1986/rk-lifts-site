@@ -697,18 +697,7 @@ setTimeout(() => {
   defer>
 </script>
 
-<script>
-function normalizeSaudiPhone(phone) {
-  phone = phone.replace(/\D/g, '');
-  if (phone.startsWith('05')) return '966' + phone.substring(1);
-  if (phone.startsWith('5')) return '966' + phone;
-  if (phone.startsWith('966')) return phone;
-  return '';
-}
 
-  <script>
-const WHATSAPP_REP_PHONE = "966570272874"; // م. نهاد
-</script>
 
   
 function sendWhatsAppToClient() {
@@ -839,6 +828,76 @@ function stripAllNamesExceptSummary() {
 }
 </script>
 
+<script>
+/* =========================
+   إعدادات واتساب
+========================= */
+const WHATSAPP_REP_PHONE = "966570272874"; // م. نهاد
+
+function normalizeSaudiPhone(phone) {
+  phone = phone.replace(/\D/g, '');
+  if (phone.startsWith('05')) return '966' + phone.substring(1);
+  if (phone.startsWith('5')) return '966' + phone;
+  if (phone.startsWith('966')) return phone;
+  return '';
+}
+
+/* =========================
+   واتساب العميل
+========================= */
+function sendWhatsAppToClient() {
+  const name = document.getElementById("name").value || "—";
+  const rawPhone = document.getElementById("phone").value;
+  const phone = normalizeSaudiPhone(rawPhone);
+  const reqId = document.getElementById("request_id").value;
+  const type = document.getElementById("type").value || "—";
+  const location = document.getElementById("location").value || "—";
+
+  if (!phone) return;
+
+  const msg = `
+مرحبًا ${name} 👋
+تم استلام طلبك لدى *RKL للمصاعد* ✅
+
+🆔 رقم الطلب: ${reqId}
+🛠️ نوع الطلب: ${type}
+📍 الموقع:
+${location}
+
+سيتم التواصل معك قريبًا.
+`;
+
+  window.open(
+    "https://wa.me/" + phone + "?text=" + encodeURIComponent(msg),
+    "_blank"
+  );
+}
+
+/* =========================
+   واتساب المندوبة نهاد
+========================= */
+function sendWhatsAppToRep() {
+  const summary = document.getElementById("full_summary").value;
+  const reqId = document.getElementById("request_id").value;
+
+  const msg = `
+📩 طلب خدمة جديد – RKL
+
+🆔 رقم الطلب:
+${reqId}
+
+---------------------
+${summary}
+
+يرجى متابعة العميل.
+`;
+
+  window.open(
+    "https://wa.me/" + WHATSAPP_REP_PHONE + "?text=" + encodeURIComponent(msg),
+    "_blank"
+  );
+}
+</script>
 
 
 </body>
