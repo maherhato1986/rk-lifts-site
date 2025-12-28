@@ -211,7 +211,8 @@ button{margin-top:25px;width:100%;background:#0a7cff;color:#fff;border:none;padd
 
 
 <label>ملاحظات</label>
-<textarea></textarea>
+<textarea name="supply_notes"></textarea>
+
 </div>
 
 <!-- ملخص -->
@@ -366,7 +367,7 @@ function showSummary() {
       <b>🔧 نوع البلاغ:</b> ${byName("issue_type")}<br>
       <b>🚨 حالة المصعد:</b> ${byName("lift_status")}<br>
       <b>⚡ أولوية الطلب:</b> ${byName("priority")}<br>
-      <b>📝 وصف العطل:</b><br>${byName("description")}
+      <b>📝 وصف العطل:</b><br>${byName("description_contract")}
       `;
     }
 
@@ -380,7 +381,7 @@ function showSummary() {
       <b>🏭 نوع المصاعد:</b> ${byName("lift_brand")}<br>
       <b>🚨 حالة المصعد:</b> ${byName("lift_condition")}<br>
       <b>⏳ عمر المصعد:</b> ${byName("lift_age")}<br>
-      <b>📝 ملاحظات:</b><br>${byName("description")}
+      <b>📝 ملاحظات:</b><br>${byName("description_no_contract")}
       `;
     }
   }
@@ -462,8 +463,7 @@ setTimeout(() => {
 }, 1200);
 }
 
-  return true;
-}
+
 </script>
 
 
