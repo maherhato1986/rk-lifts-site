@@ -78,6 +78,40 @@
   justify-content: center !important;
 }
 
+/* ===== RKL Social Media ===== */
+.rkl-social{
+  display:flex;
+  gap:16px;
+  margin-top:18px;
+  align-items:center;
+}
+
+.rkl-social a{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:#f4f6f8;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:all .25s ease;
+}
+
+.rkl-social a:hover{
+  background:#0fb67a;
+  transform:translateY(-3px);
+}
+
+.rkl-social img{
+  width:22px;
+  height:22px;
+  filter:grayscale(100%);
+  transition:.25s;
+}
+
+.rkl-social a:hover img{
+  filter:brightness(0) invert(1);
+}
 
 
 .hero h1 {
@@ -1226,6 +1260,20 @@ nav a:hover{ background:#eff3f6; }
             <p class="footer-pill">فواتير متوافقة مع ZATCA</p>
           </div>
         </div>
+<!-- Social Media Links -->
+<div class="rkl-social">
+  <a href="https://www.instagram.com/reel/DS2NhhGiB30/" target="_blank" aria-label="Instagram">
+    <img src="public/images/social-instagram.svg" alt="Instagram">
+  </a>
+
+  <a href="https://vt.tiktok.com/ZS5LWh2Y1/" target="_blank" aria-label="TikTok">
+    <img src="public/images/social-tiktok.svg" alt="TikTok">
+  </a>
+
+  <a href="https://www.linkedin.com/in/rkl-elevators-235417214" target="_blank" aria-label="LinkedIn">
+    <img src="public/images/social-linkedin.svg" alt="LinkedIn">
+  </a>
+</div>
 
         <div class="copy">
           © <span id="y"></span> RKL. جميع الحقوق محفوظة.
