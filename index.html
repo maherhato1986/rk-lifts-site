@@ -113,6 +113,46 @@
   filter:brightness(0) invert(1);
 }
 
+/* ===== Top Social Media ===== */
+.rkl-social-top{
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+
+.rkl-social-top a{
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  background:#f1f5f9;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:.25s ease;
+}
+
+.rkl-social-top a:hover{
+  background:#0fb67a;
+  transform:translateY(-2px);
+}
+
+.rkl-social-top img{
+  width:18px;
+  height:18px;
+  filter:grayscale(100%);
+  transition:.25s;
+}
+
+.rkl-social-top a:hover img{
+  filter:brightness(0) invert(1);
+}
+
+/* إخفاء الأيقونات العلوية في الجوال (اختياري) */
+@media (max-width: 768px){
+  .rkl-social-top{
+    display:none;
+  }
+}
 
 .hero h1 {
   font-size: 2.4rem;
@@ -831,6 +871,21 @@ nav a:hover{ background:#eff3f6; }
         <img src="public/images/logo.png" alt="RKL Logo" loading="eager">
         <strong>RKL</strong>
       </a>
+      <!-- Social Media (Top Header) -->
+<div class="rkl-social-top">
+  <a href="https://www.instagram.com/reel/DS2NhhGiB30/" target="_blank" aria-label="Instagram">
+    <img src="public/images/social-instagram.svg" alt="Instagram">
+  </a>
+
+  <a href="https://vt.tiktok.com/ZS5LWh2Y1/" target="_blank" aria-label="TikTok">
+    <img src="public/images/social-tiktok.svg" alt="TikTok">
+  </a>
+
+  <a href="https://www.linkedin.com/in/rkl-elevators-235417214" target="_blank" aria-label="LinkedIn">
+    <img src="public/images/social-linkedin.svg" alt="LinkedIn">
+  </a>
+</div>
+
       <nav aria-label="التنقل">
         <a href="#about">عنّا</a>
         <a href="#projects">المشاريع</a>
