@@ -964,169 +964,200 @@ nav a:hover{ background:#eff3f6; }
   </header>
 
   <!-- Hero -->
-  <section class="hero">
-    <!-- خلفية الفيديو لقسم البطل -->
-<div class="video-bg">
-  <video autoplay muted loop playsinline>
-    <source src="public/background.mp4" type="video/mp4">
-  </video>
-</div>
+<section class="hero">
+  <div class="video-bg">
+    <div class="video-overlay"></div>
+    <video autoplay muted loop playsinline>
+      <source src="public/background.mp4" type="video/mp4">
+    </video>
+  </div>
 
-    <div class="container hero-inner">
-      <div>
-        <h1> حلول متكاملة للمصاعد والسلالم الكهربائية</h1>
-        <h1>تصميم، توريد، تركيب، وتحديث مصاعد المباني السكنية، التجارية، الصحية، والتعليمية مع دعم فني داخل المملكة.</h1>
-        <h1>Elevators & Escalators · Supply, Installation, Modernization & Maintenance</h1>
+  <div class="container hero-inner">
+    <div class="hero-text-content">
+      <h1 class="main-headline">حلول متكاملة للمصاعد والسلالم الكهربائية</h1>
+      <p class="sub-headline">تصميم، توريد، تركيب، وتحديث مصاعد المباني السكنية، التجارية، الصحية، والتعليمية مع دعم فني متواصل داخل المملكة.</p>
+      <p class="eng-headline">Elevators & Escalators · Supply, Installation, Modernization & Maintenance</p>
 
-        <ul style="list-style:none;padding:0;margin:10px 0 20px;display:flex;gap:16px;flex-wrap:wrap;justify-content:center;font-size:0.9rem;color:#355056;">
-  <li>✅ توريد وتركيب مصاعد جديدة</li>
-  <li>✅ تحديث ورفع كفاءة المصاعد القائمة</li>
-  <li>✅ عقود صيانة وقائية وطوارئ</li>
-</ul>
+      <ul class="features-list">
+        <li><i class="icon-check"></i> توريد وتركيب مصاعد جديدة</li>
+        <li><i class="icon-check"></i> تحديث ورفع كفاءة المصاعد القائمة</li>
+        <li><i class="icon-check"></i> عقود صيانة وقائية وطوارئ</li>
+      </ul>
 
-        <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
-          
+      <div class="cta-group">
+        <a class="btn btn-primary btn-lg shine-effect" href="https://rkl.sa/quote-request.html">
+          <span class="icon">📝</span> اطلب عرض سعر الآن
+        </a>
+        <a class="btn btn-outline-white" href="#products">تعرّف على منتجاتنا</a>
+      </div>
 
-  <a class="btn btn-primary" 
-   href="https://rkl.sa/quote-request.html">
-   📝 اطلب عرض سعر الآن
-</a>
-
-  <a class="btn btn-outline wa-cta" href="#products">تعرّف على منتجاتنا</a>
-  <a class="btn btn-primary wa-cta" href="public/catalogo_FUJI_RKL.pdf" target="_blank" rel="noopener">
-   Cataloge FUJI </a>
- <a class="btn btn-primary wa-cta" href="public/fuji-approval.pdf" target="_blank" rel="noopener">
-   Agent FUJI
-  </a>
-  <a class="btn btn-primary wa-cta" href="public/Agency Certificate VERTILIFT ITLY-signed.pdf" target="_blank" rel="noopener">
-    Agent VERTILIFT ITLY
-  </a>
-     <a class="btn btn-primary wa-cta" href="public/catalogo_VERTILIFT_RKL.pdf" target="_blank" rel="noopener">
-   Cataloge  VERTILIFT ITLY </a>
-</div>
-
-
-   <div class="hero-illustration">
-  <!-- صورة متحركة لمبنى المصاعد -->
-  <img src="public/images/elevators-(01).gif" alt="RKL Lifts Animation" loading="eager">
-</div>
-  <style>
-  /* تنسيق قسم الخريطة بالكامل */
-  #map-projects{
-    background: linear-gradient(180deg, #f7faf9 0%, #ffffff 100%);
-    padding: 64px 0 56px;
-  }
-
-  /* نوسّع الـ container في هذا القسم فقط ليصبح أعرض من باقي الصفحة */
-  #map-projects .container{
-    max-width: 1400px;   /* أكبر من القيمة الافتراضية 1200 */
-  }
-
-  /* الحاوية التي تضم الخريطة + كرت المشاريع */
-  #map-projects .map-wrapper {
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.25fr); /* تكبير الكرت والخرطة معًا */
-    gap: 40px;
-    align-items: stretch;   /* يجعل الكرت بنفس ارتفاع الخريطة تقريبًا */
-  }
-
-  /* الخريطة */
-  #leafletMap{
-    height: 600px;              /* تكبير ارتفاع الخريطة */
-    border-radius: 20px;
-    border: 1px solid #e7ecef;
-    box-shadow: 0 14px 40px rgba(15, 182, 122, .10);
-    overflow: hidden;
-  }
-
-  /* كرت قائمة المشاريع */
-  #mapSidebar {
-    background: #fff;
-    border-radius: 22px;
-    padding: 32px 28px;
-    border: 1px solid #dde3e8;
-    box-shadow: 0 14px 40px rgba(15, 182, 122, 0.12);
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    min-height: 600px;         /* نفس ارتفاع الخريطة تقريبًا */
-  }
-
-  #mapSidebar h3{
-    font-size: 1.1rem;
-    margin-bottom: 6px;
-  }
-
-  #mapSidebar p,
-  #mapSidebar li{
-    font-size: .9rem;
-  }
-
-  /* حركة خفيفة عند المرور بالفأرة */
-  #mapSidebar:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 18px 48px rgba(15, 182, 122, 0.16);
-  }
-
-  /* تكديس عمودي على الجوال والتابلت */
-  @media (max-width: 960px){
-    #map-projects .map-wrapper{
-      grid-template-columns: 1fr;
-    }
-    #leafletMap{
-      height: 360px;
-    }
-    #mapSidebar{
-      min-height: auto;
-      margin-top: 20px;
-      transform: none;
-    }
-  }
-
-  @media (max-width: 600px){
-    #map-projects{
-      padding: 40px 0 36px;
-    }
-    #leafletMap{
-      height: 280px;
-    }
-  }
-</style>
-     
-
-<section id="map-projects">
-  <div class="container">
-    <div class="map-wrapper">
-
-      <div id="leafletMap"></div>
-
-      <aside id="mapSidebar">
-        <h3 id="cityTitle" style="margin:0 0 8px;font-weight:800">اختر مدينة من الخريطة</h3>
-        <p id="citySummary" style="color:#4b5563;margin:0 0 12px;font-size:0.95rem;">
-          عند الضغط على أي نقطة ستظهر معلومات المشاريع هنا.
-        </p>
-
-        <div style="display:flex;gap:10px;margin-bottom:12px;">
-          <div style="flex:1;background:#f6f9f7;border-radius:10px;padding:10px;text-align:center">
-            <div style="font-size:0.78rem;color:#6b7280">عدد المشاريع</div>
-            <div id="cityProjectsCount" style="font-weight:800;font-size:1.1rem">—</div>
-          </div>
-          <div style="flex:1;background:#f6f9f7;border-radius:10px;padding:10px;text-align:center">
-            <div style="font-size:0.78rem;color:#6b7280">إجمالي المصاعد</div>
-            <div id="cityLiftsCount" style="font-weight:800;font-size:1.1rem">—</div>
+      <div class="agencies-grid">
+        <div class="agency-card">
+          <span class="agency-label">FUJI Japan</span>
+          <div class="agency-links">
+            <a href="public/catalogo_FUJI_RKL.pdf" target="_blank">الكتالوج</a>
+            <a href="public/fuji-approval.pdf" target="_blank">شهادة الوكيل</a>
           </div>
         </div>
+        <div class="agency-card">
+          <span class="agency-label">VERTILIFT Italy</span>
+          <div class="agency-links">
+            <a href="public/catalogo_VERTILIFT_RKL.pdf" target="_blank">الكتالوج</a>
+            <a href="public/Agency Certificate VERTILIFT ITLY-signed.pdf" target="_blank">شهادة الوكيل</a>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        <h4 style="margin:0 0 8px;font-size:1rem;font-weight:700">قائمة المشاريع</h4>
-        <ul id="cityProjectsList" style="padding:0;margin:0;list-style:none;max-height:320px;overflow:auto">
-          <li style="color:#6b7280">اضغط على أي مدينة لعرض مشاريعها.</li>
-        </ul>
-      </aside>
-
+    <div class="hero-illustration">
+      <img src="public/images/elevators-(01).gif" alt="RKL Lifts Animation" loading="eager">
     </div>
   </div>
 </section>
+
+<style>
+  /* تحسينات الـ Hero الجديدة */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    color: #fff;
+    padding: 80px 0;
+    overflow: hidden;
+  }
+
+  .video-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(45deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%);
+    z-index: 1;
+  }
+
+  .hero-inner {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .main-headline {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 900;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    color: #f7faf9;
+  }
+
+  .sub-headline {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-bottom: 10px;
+    max-width: 700px;
+  }
+
+  .eng-headline {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    color: #0fb67a; /* لون أخضر براند */
+    margin-bottom: 30px;
+  }
+
+  .features-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+
+  .features-list li {
+    background: rgba(255,255,255,0.1);
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+
+  /* تنسيق كروت الوكالات */
+  .agencies-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 40px;
+    max-width: 600px;
+  }
+
+  .agency-card {
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 15px;
+    border-right: 4px solid #0fb67a;
+  }
+
+  .agency-label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    color: #d4af37; /* ذهبي */
+  }
+
+  .agency-links {
+    display: flex;
+    gap: 10px;
+  }
+
+  .agency-links a {
+    font-size: 0.8rem;
+    color: #fff;
+    text-decoration: underline;
+    opacity: 0.7;
+    transition: 0.3s;
+  }
+
+  .agency-links a:hover { opacity: 1; color: #0fb67a; }
+
+  /* تأثير اللمعان للزر الرئيسي */
+  .shine-effect {
+    position: relative;
+    overflow: hidden;
+  }
+  .shine-effect::after {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%; width: 200%; height: 200%;
+    background: rgba(255,255,255,0.2);
+    transform: rotate(45deg);
+    transition: 0.5s;
+    left: -100%;
+  }
+  .shine-effect:hover::after { left: 100%; }
+
+  /* ريفراكت لمساحة الخريطة */
+  #mapSidebar {
+    border: none;
+    background: #ffffff;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+  }
+
+  .hero-illustration img {
+    width: 100%;
+    max-width: 450px;
+    filter: drop-shadow(0 0 20px rgba(15, 182, 122, 0.3));
+  }
+
+  @media (max-width: 992px) {
+    .hero-inner { grid-template-columns: 1fr; text-align: center; }
+    .features-list, .cta-group, .agencies-grid { justify-content: center; margin-inline: auto; }
+    .hero-illustration { order: -1; }
+  }
+</style>
 
 
 
