@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>RKL | Riyadh Key Lifts - آر كي ال للمصاعد</title>
   
   <link rel="icon" type="image/png" href="public/images/favicon-32x32.png">
@@ -10,7 +10,6 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 
   <style>
@@ -27,89 +26,100 @@
       background: #000; color: #fff; overflow-x: hidden;
     }
 
-    /* ===== Social Sidebar ===== */
+    /* ===== تحسين السوشال ميديا للجوال ===== */
     .social-side-bar {
       position: fixed; left: 20px; top: 50%; transform: translateY(-50%);
       display: flex; flex-direction: column; gap: 12px; z-index: 9999;
     }
     .social-side-bar a {
-      width: 40px; height: 40px; background: rgba(255,255,255,0.1); 
+      width: 45px; height: 45px; background: rgba(255,255,255,0.1); 
       backdrop-filter: blur(10px); display: flex; align-items: center; 
       justify-content: center; border-radius: 50%; color: white;
-      transition: 0.3s; font-size: 1.1rem; text-decoration: none; border: 1px solid rgba(255,255,255,0.2);
+      transition: 0.3s; font-size: 1.2rem; text-decoration: none; border: 1px solid rgba(255,255,255,0.2);
     }
-    .social-side-bar a:hover { background: var(--primary); transform: scale(1.1); border-color: var(--primary); }
 
-    /* ===== Header & Brand ===== */
+    /* ===== Header ===== */
     header {
       position: absolute; top: 0; width: 100%; z-index: 1000;
-      padding: 30px 0; background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);
+      padding: 20px 0; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
     }
     .header-row { display: flex; justify-content: space-between; align-items: center; max-width: 1280px; margin: 0 auto; padding: 0 20px; }
     
-    .brand-container { display: flex; align-items: center; gap: 15px; text-decoration: none; }
-    .brand-logo-img { height: 65px; filter: drop-shadow(0 0 10px rgba(15, 182, 122, 0.5)); }
-    .brand-text { display: flex; flex-direction: column; line-height: 1; }
-    .brand-name { font-size: 2.2rem; font-weight: 900; color: #fff; letter-spacing: 2px; }
-    .brand-slogan { font-size: 0.7rem; color: var(--accent-gold); font-weight: 700; text-transform: uppercase; letter-spacing: 2.5px; margin-top: 4px; }
+    .brand-container { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .brand-logo-img { height: 50px; filter: drop-shadow(0 0 8px var(--primary)); }
+    .brand-text { display: flex; flex-direction: column; line-height: 1.1; }
+    .brand-name { font-size: 1.8rem; font-weight: 900; color: #fff; letter-spacing: 1px; }
+    .brand-slogan { font-size: 0.6rem; color: var(--accent-gold); font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; }
 
-    nav a { text-decoration: none; color: white; font-weight: 600; margin-right: 25px; font-size: 0.95rem; opacity: 0.8; transition: 0.3s; }
-    nav a:hover { opacity: 1; color: var(--primary); }
+    nav a { text-decoration: none; color: white; font-weight: 600; margin-right: 20px; font-size: 0.9rem; transition: 0.3s; }
 
     /* ===== Hero Section ===== */
     .hero-premium {
       position: relative; height: 100vh; display: flex; align-items: center;
-      justify-content: center; overflow: hidden; text-align: center;
+      justify-content: center; overflow: hidden; text-align: center; padding: 0 15px;
     }
     .video-container { position: absolute; inset: 0; z-index: -1; }
     #mainHeroVideo { width: 100%; height: 100%; object-fit: cover; }
     .video-overlay {
       position: absolute; inset: 0;
-      background: radial-gradient(circle, rgba(12, 46, 40, 0.4) 0%, rgba(0, 0, 0, 0.8) 100%);
+      background: radial-gradient(circle, rgba(12, 46, 40, 0.4) 0%, rgba(0, 0, 0, 0.85) 100%);
       z-index: 1;
     }
 
     .glass-card {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      padding: 60px 40px; border-radius: 40px;
+      background: rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+      padding: 40px 25px; border-radius: 30px;
       border: 1px solid rgba(255, 255, 255, 0.1);
-      max-width: 850px; width: 90%; z-index: 10;
-      box-shadow: 0 40px 100px rgba(0,0,0,0.5);
-      animation: zoomIn 1.2s ease;
+      max-width: 800px; width: 100%; z-index: 10;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.5);
     }
 
-    @keyframes zoomIn {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    .glass-card h1 { font-size: 3.2rem; font-weight: 900; margin-bottom: 20px; line-height: 1.1; }
-    .glass-card p { font-size: 1.3rem; opacity: 0.9; margin-bottom: 40px; max-width: 700px; margin-left: auto; margin-right: auto; }
+    .glass-card h1 { font-size: 2.5rem; font-weight: 900; margin-bottom: 15px; line-height: 1.2; }
+    .glass-card p { font-size: 1.1rem; opacity: 0.9; margin-bottom: 30px; }
 
     .btn-main {
       background: linear-gradient(135deg, var(--accent-gold), #b8860b);
-      color: #000 !important; padding: 18px 45px; border-radius: 50px;
-      font-weight: 900; text-decoration: none; display: inline-flex; align-items: center; gap: 12px;
-      font-size: 1.1rem; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4); transition: 0.3s;
+      color: #000 !important; padding: 15px 35px; border-radius: 50px;
+      font-weight: 900; text-decoration: none; display: inline-flex; align-items: center; gap: 10px;
+      font-size: 1rem; box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
     }
-    .btn-main:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(212, 175, 55, 0.6); }
 
     /* ===== Map Section ===== */
-    #map-projects { padding: 100px 0; background: #fff; color: #1e293b; }
+    #map-projects { padding: 60px 0; background: #fff; color: #1e293b; }
     .map-box { 
-      display: grid; grid-template-columns: 1fr 380px; gap: 30px; 
-      background: #f8fafc; padding: 25px; border-radius: 30px; border: 1px solid #e2e8f0;
+      display: grid; grid-template-columns: 1fr 380px; gap: 20px; 
+      background: #f8fafc; padding: 15px; border-radius: 25px; border: 1px solid #e2e8f0;
     }
-    #leafletMap { height: 600px; border-radius: 20px; }
+    #leafletMap { height: 500px; border-radius: 18px; z-index: 1; }
 
-    @media (max-width: 992px) {
-      .header-row { flex-direction: column; gap: 20px; }
-      .brand-name { font-size: 1.8rem; }
-      .glass-card { padding: 40px 20px; }
-      .glass-card h1 { font-size: 2.2rem; }
+    /* ===== Responsive Settings (للجوال) ===== */
+    @media (max-width: 768px) {
+      .header-row { flex-direction: column; text-align: center; gap: 15px; }
+      nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+      nav a { margin: 0; font-size: 0.8rem; }
+      
+      .brand-container { justify-content: center; width: 100%; }
+      .brand-name { font-size: 1.6rem; }
+      
+      .glass-card { padding: 30px 15px; }
+      .glass-card h1 { font-size: 1.8rem; }
+      .glass-card p { font-size: 0.95rem; }
+
       .map-box { grid-template-columns: 1fr; }
-      .social-side-bar { bottom: 20px; top: auto; left: 50%; transform: translateX(-50%); flex-direction: row; }
+      #leafletMap { height: 350px; }
+      
+      /* شريط تواصل سفلي للجوال */
+      .social-side-bar { 
+        left: 0; top: auto; bottom: 0; width: 100%; 
+        transform: none; flex-direction: row; 
+        justify-content: space-around; background: rgba(12, 46, 40, 0.95);
+        padding: 10px; border-radius: 20px 20px 0 0; border: none;
+        backdrop-filter: blur(10px);
+      }
+      .social-side-bar a { width: 50px; height: 50px; background: none; box-shadow: none; }
+      
+      footer { padding-bottom: 80px; } /* مساحة للشريط السفلي */
     }
   </style>
 </head>
@@ -119,6 +129,7 @@
     <a href="https://www.instagram.com/rklifts" target="_blank"><i class="fab fa-instagram"></i></a>
     <a href="https://www.tiktok.com/@rklifts" target="_blank"><i class="fab fa-tiktok"></i></a>
     <a href="https://wa.me/966114774021" target="_blank" style="color: #25d366;"><i class="fab fa-whatsapp"></i></a>
+    <a href="tel:966114774021" style="color: #fff;"><i class="fas fa-phone"></i></a>
   </div>
 
   <header>
@@ -131,9 +142,9 @@
         </div>
       </a>
       <nav>
-        <a href="#map-projects">خارطة الأعمال</a>
+        <a href="#map-projects">المشاريع</a>
         <a href="#about">من نحن</a>
-        <a href="https://rkl.sa/quote-request.html" style="background: var(--primary); color: white; padding: 10px 20px; border-radius: 10px; opacity: 1;">اطلب عرض سعر</a>
+        <a href="https://rkl.sa/quote-request.html" style="color: var(--primary);">طلب تسعيرة</a>
       </nav>
     </div>
   </header>
@@ -147,69 +158,61 @@
     </div>
 
     <div class="glass-card">
-      <div style="background: rgba(15, 182, 122, 0.2); color: var(--primary); display: inline-block; padding: 6px 20px; border-radius: 50px; font-weight: 700; font-size: 0.9rem; margin-bottom: 25px; border: 1px solid var(--primary);">
+      <div style="background: rgba(15, 182, 122, 0.15); color: var(--primary); display: inline-block; padding: 5px 15px; border-radius: 50px; font-weight: 700; font-size: 0.8rem; margin-bottom: 20px; border: 1px solid var(--primary);">
         وكلاء Fuji & Vertilift المعتمدون
       </div>
-      <h1><span style="color: var(--accent-gold);">Riyadh Key Lifts</span></h1>
-      <p>نحن المفتاح الحقيقي لحلول المصاعد الذكية في المملكة. جودة يابانية، لمسات إيطالية، وبأيدي خبراء في الرياض.</p>
+      <h1>مستقبل الانسيابية في <br><span style="color: var(--accent-gold);">Riyadh Key Lifts</span></h1>
+      <p>المفتاح الحقيقي لحلول المصاعد الذكية. جودة عالمية وخبرة محلية في قلب الرياض.</p>
       
-      <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+      <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
         <a href="https://rkl.sa/quote-request.html" class="btn-main">
-          <i class="fas fa-key"></i> ابدأ مشروعك الآن
+          <i class="fas fa-key"></i> ابدأ مشروعك
         </a>
-        <a href="#map-projects" style="color: white; text-decoration: none; font-weight: 700; align-self: center; border-bottom: 2px solid var(--primary); padding-bottom: 5px;">تصفح خارطة الإنجازات</a>
+        <a href="#map-projects" style="color: white; text-decoration: none; font-weight: 700; align-self: center; border-bottom: 2px solid var(--primary); font-size: 0.9rem;">خارطة الإنجازات</a>
       </div>
     </div>
   </section>
 
   <section id="map-projects">
     <div class="container">
-      <div style="text-align: center; margin-bottom: 60px;">
-        <h2 style="font-size: 2.5rem; font-weight: 900; margin-bottom: 10px;">إنجازاتنا حول المملكة</h2>
-        <p style="color: #64748b; font-size: 1.1rem;">أكثر من 450 مشروعاً تم تنفيذها بدقة واحترافية عالية</p>
+      <div style="text-align: center; margin-bottom: 40px;">
+        <h2 style="font-size: 2rem; font-weight: 900; margin-bottom: 10px;">إنجازاتنا في المملكة</h2>
+        <p style="color: #64748b; font-size: 1rem;">نغطي أكثر من 450 موقعاً بدقة واحترافية</p>
       </div>
       
       <div class="map-box">
         <div id="leafletMap"></div>
-        <aside style="padding: 10px;">
-          <h3 id="cityTitle" style="font-weight: 900; color: var(--secondary);">حدد مدينة من الخريطة</h3>
-          <div style="margin: 30px 0;">
-            <div style="background: #fff; border: 1px solid #e2e8f0; padding: 20px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.02);">
-              <span style="font-size: 0.8rem; color: #64748b; font-weight: 700;">المشاريع المنفذة</span>
-              <b id="cityProjectsCount" style="display: block; font-size: 2rem; color: var(--primary);">—</b>
+        <aside>
+          <h3 id="cityTitle" style="font-weight: 900; color: var(--secondary); margin-top: 15px;">اختر مدينة</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0;">
+            <div style="background: #fff; border: 1px solid #e2e8f0; padding: 15px; border-radius: 12px; text-align: center;">
+              <span style="font-size: 0.7rem; color: #64748b; font-weight: 700;">المشاريع</span>
+              <b id="cityProjectsCount" style="display: block; font-size: 1.5rem; color: var(--primary);">—</b>
             </div>
-            <div style="background: #fff; border: 1px solid #e2e8f0; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.02);">
-              <span style="font-size: 0.8rem; color: #64748b; font-weight: 700;">إجمالي المصاعد</span>
-              <b id="cityLiftsCount" style="display: block; font-size: 2rem; color: var(--secondary);">—</b>
+            <div style="background: #fff; border: 1px solid #e2e8f0; padding: 15px; border-radius: 12px; text-align: center;">
+              <span style="font-size: 0.7rem; color: #64748b; font-weight: 700;">المصاعد</span>
+              <b id="cityLiftsCount" style="display: block; font-size: 1.5rem; color: var(--secondary);">—</b>
             </div>
           </div>
-          <h4 style="font-size: 1rem; border-bottom: 2px solid #eee; padding-bottom: 10px;">قائمة المواقع:</h4>
-          <ul id="cityProjectsList" style="list-style: none; padding: 0; max-height: 200px; overflow-y: auto; color: #475569; font-size: 0.9rem;">
-            <li>بانتظار اختيارك للمدينة...</li>
+          <ul id="cityProjectsList" style="list-style: none; padding: 0; max-height: 150px; overflow-y: auto; color: #475569; font-size: 0.85rem; border-top: 1px solid #eee; padding-top: 10px;">
+            <li>انقر على الخريطة...</li>
           </ul>
         </aside>
       </div>
     </div>
   </section>
 
-  <footer style="background: #000; padding: 60px 0 30px; border-top: 1px solid rgba(255,255,255,0.1);">
-    <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 30px;">
-      <div>
-        <h3 style="color: var(--primary); margin-bottom: 10px;">RKL | Riyadh Key Lifts</h3>
-        <p style="opacity: 0.6; font-size: 0.9rem;">المقر الرئيسي: الرياض، حي السليمانية.</p>
+  <footer style="background: #000; padding: 40px 0; border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
+    <div class="container">
+      <h3 style="color: var(--primary); margin-bottom: 10px;">RKL | Riyadh Key Lifts</h3>
+      <p style="opacity: 0.5; font-size: 0.8rem;">الرياض، حي السليمانية - المملكة العربية السعودية</p>
+      <div style="margin-top: 20px; font-size: 0.7rem; opacity: 0.4;">
+        &copy; 2026 جميع الحقوق محفوظة لآر كي ال للمصاعد.
       </div>
-      <div style="display: flex; gap: 30px;">
-        <a href="public/catalogo_FUJI_RKL.pdf" style="color: white; text-decoration: none; font-size: 0.8rem;">كتالوج Fuji</a>
-        <a href="public/catalogo_VERTILIFT_RKL.pdf" style="color: white; text-decoration: none; font-size: 0.8rem;">كتالوج Vertilift</a>
-      </div>
-    </div>
-    <div style="text-align: center; margin-top: 40px; font-size: 0.75rem; opacity: 0.4;">
-      &copy; 2026 جميع الحقوق محفوظة لمؤسسة آر كي ال للمصاعد.
     </div>
   </footer>
 
   <script>
-    // إبطاء الفيديو ليعطي فخامة
     const vid = document.getElementById('heroVideo');
     if(vid) vid.playbackRate = 0.6;
   </script>
