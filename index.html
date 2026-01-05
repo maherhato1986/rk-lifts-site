@@ -3,10 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>RKL | Riyadh Key Lifts - مصمم الكبائن</title>
+  <title>RKL | Riyadh Key Lifts - الحلول المتكاملة للمصاعد</title>
+  
   <link rel="icon" type="image/png" href="https://rkl.sa/public/images/logo.png">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 
@@ -15,12 +16,16 @@
     * { box-sizing: border-box; scroll-behavior: smooth; }
     body { margin: 0; font-family: 'Cairo', sans-serif; background: #000; color: #fff; overflow-x: hidden; }
 
-    /* تنسيقات عامة للموقع */
+    /* الهيدر والقائمة الجانبية */
     header { position: absolute; top: 0; width: 100%; z-index: 1000; padding: 20px 0; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); }
     .header-row { display: flex; justify-content: space-between; align-items: center; max-width: 1280px; margin: 0 auto; padding: 0 20px; }
-    .brand-container { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .brand-container { display: flex; align-items: center; gap: 12px; text-decoration: none; color: #fff; }
     .brand-logo-img { height: 55px; filter: drop-shadow(0 0 8px var(--primary)); }
-    nav a { text-decoration: none; color: white; font-weight: 600; margin-right: 20px; font-size: 0.9rem; }
+    nav a { text-decoration: none; color: white; font-weight: 600; margin-right: 20px; font-size: 0.9rem; transition: 0.3s; }
+    nav a:hover { color: var(--primary); }
+
+    .social-side-bar { position: fixed; left: 20px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 12px; z-index: 9999; }
+    .social-side-bar a { width: 45px; height: 45px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; border-radius: 50%; color: white; text-decoration: none; border: 1px solid rgba(255,255,255,0.2); transition: 0.3s; }
 
     /* Hero Section */
     .hero-premium { position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; text-align: center; }
@@ -28,37 +33,53 @@
     #heroVideo { width: 100%; height: 100%; object-fit: cover; }
     .video-overlay { position: absolute; inset: 0; background: radial-gradient(circle, rgba(12, 46, 40, 0.4) 0%, rgba(0, 0, 0, 0.85) 100%); z-index: 1; }
     .glass-card { background: rgba(255, 255, 255, 0.07); backdrop-filter: blur(15px); padding: 40px 25px; border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.1); max-width: 800px; z-index: 10; }
+    .btn-main { background: linear-gradient(135deg, var(--accent-gold), #b8860b); color: #000 !important; padding: 15px 35px; border-radius: 50px; font-weight: 900; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3); }
 
-    /* Map Section */
+    /* قسم الخريطة */
     #map-projects { padding: 80px 0; background: #fff; color: #1e293b; }
     .map-box { display: grid; grid-template-columns: 1fr 380px; gap: 20px; background: #f8fafc; padding: 15px; border-radius: 25px; border: 1px solid #e2e8f0; }
-    #leafletMap { height: 500px; border-radius: 18px; }
+    #leafletMap { height: 500px; border-radius: 18px; z-index: 1; }
 
-    /* Designer Section */
-    .designer-grid { display: grid; grid-template-columns: 1fr 350px; gap: 30px; background: #111; padding: 30px; border-radius: 25px; border: 1px solid #333; }
-    .preview-box { position: relative; height: 500px; background: #000; border-radius: 15px; overflow: hidden; }
-    .preview-box img { position: absolute; width: 100%; height: 100%; object-fit: contain; transition: opacity 0.5s; }
-    
-    .option-btn { background: #222; border: 1px solid #444; color: #fff; padding: 12px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; transition: 0.3s; }
-    .option-btn:hover { border-color: var(--primary); background: #2a2a2a; }
+    /* قسم مصمم الكبائن الجديد */
+    #cabin-designer { padding: 80px 0; background: #050505; border-top: 1px solid rgba(255,255,255,0.1); }
+    .designer-container { display: grid; grid-template-columns: 1fr 350px; gap: 30px; background: #111; padding: 25px; border-radius: 25px; border: 1px solid #222; }
+    .preview-box { position: relative; height: 500px; background: #000; border-radius: 20px; overflow: hidden; box-shadow: inset 0 0 50px #000; }
+    .preview-box img { position: absolute; width: 100%; height: 100%; object-fit: contain; transition: opacity 0.5s ease; }
+    .option-group { margin-bottom: 25px; }
+    .option-title { color: var(--accent-gold); font-size: 0.9rem; font-weight: 700; margin-bottom: 12px; display: block; }
+    .option-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .option-btn { background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; transition: 0.3s; font-size: 0.8rem; }
+    .option-btn:hover { border-color: var(--primary); background: #222; }
 
-    /* Services Section */
+    /* قسم الخدمات */
     #services-grid { padding: 80px 0; }
     .services-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-    .service-card { background: rgba(255,255,255,0.05); border-radius: 20px; overflow: hidden; }
+    .service-card { background: rgba(255, 255, 255, 0.05); border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); transition: 0.4s; }
+    .service-card:hover { transform: translateY(-10px); border-color: var(--primary); }
+    .service-img { width: 100%; height: 200px; object-fit: cover; }
 
-    @media (max-width: 992px) { .designer-grid, .map-box, .services-container { grid-template-columns: 1fr; } }
+    @media (max-width: 992px) { .map-box, .designer-container, .services-container { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
+
+  <div class="social-side-bar">
+    <a href="https://wa.me/966114774021" target="_blank" style="color: #25d366;"><i class="fab fa-whatsapp"></i></a>
+    <a href="tel:966114774021"><i class="fas fa-phone"></i></a>
+    <a href="https://www.instagram.com/rklifts" target="_blank"><i class="fab fa-instagram"></i></a>
+  </div>
 
   <header>
     <div class="header-row">
       <a href="/" class="brand-container">
         <img src="public/images/logo.png" alt="RKL Logo" class="brand-logo-img">
-        <div class="brand-text"><span style="font-size: 1.5rem; font-weight: 900;">RKL</span></div>
+        <div class="brand-text"><span style="font-size: 1.6rem; font-weight: 900;">RKL</span></div>
       </a>
-      <nav><a href="#map-projects">المشاريع</a><a href="#cabin-designer">المصمم</a></nav>
+      <nav>
+        <a href="#map-projects">المشاريع</a>
+        <a href="#cabin-designer">المصمم</a>
+        <a href="#services-grid">حلولنا</a>
+      </nav>
     </div>
   </header>
 
@@ -68,33 +89,44 @@
       <video autoplay muted loop playsinline id="heroVideo"><source src="855191-hd_1920_1080_25fps.mp4" type="video/mp4"></video>
     </div>
     <div class="glass-card">
+      <div style="color: var(--primary); margin-bottom: 15px; font-weight: 700;">وكلاء Fuji & Vertilift المعتمدون</div>
       <h1><span style="color: var(--accent-gold);">Riyadh Key Lifts</span></h1>
-      <p>المفتاح الحقيقي لحلول المصاعد الذكية في قلب الرياض.</p>
+      <p>نبتكر حلول التنقل الرأسي بأعلى معايير الأمان والجودة العالمية.</p>
+      <a href="https://rkl.sa/quote-request.html" class="btn-main">ابدأ مشروعك الآن</a>
     </div>
   </section>
 
   <section id="map-projects">
     <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
-      <h2 style="text-align: center; margin-bottom: 30px;">إنجازاتنا في المملكة</h2>
+      <div style="text-align: center; margin-bottom: 40px;">
+        <h2 style="font-size: 2.2rem; font-weight: 900;">إنجازاتنا في المملكة</h2>
+        <p style="color: #64748b;">نغطي أكثر من 450 موقعاً بدقة واحترافية</p>
+      </div>
       <div class="map-box">
         <div id="leafletMap"></div>
-        <aside>
-            <h3 id="cityTitle">اختر مدينة</h3>
-            <div id="cityProjectsCount" style="font-size: 2rem; color: var(--primary);">0</div>
-            <p>مشاريع منجزة</p>
+        <aside style="padding: 20px;">
+          <h3 id="cityTitle" style="font-weight: 900;">اختر مدينة</h3>
+          <div style="display: flex; gap: 15px; margin: 20px 0;">
+            <div style="flex: 1; background: #fff; padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #eee;">
+              <small>المشاريع</small><b id="cityProjectsCount" style="display: block; font-size: 1.5rem; color: var(--primary);">0</b>
+            </div>
+          </div>
+          <ul id="cityProjectsList" style="list-style: none; padding: 0; font-size: 0.85rem; color: #666;">
+            <li>انقر على الخريطة لاستكشاف مشاريعنا...</li>
+          </ul>
         </aside>
       </div>
     </div>
   </section>
 
-  <section id="cabin-designer" style="padding: 80px 0; background: #050505;">
+  <section id="cabin-designer">
     <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
       <div style="text-align: center; margin-bottom: 40px;">
-        <h2 style="color: var(--accent-gold); font-size: 2.2rem;">صمم كبينتك الخاصة</h2>
-        <p style="opacity: 0.7;">اختر المواصفات التي تناسب مشروعك</p>
+        <h2 style="font-size: 2.2rem; font-weight: 900; color: var(--accent-gold);">صمم كبينتك الخاصة</h2>
+        <p style="opacity: 0.6;">اختر الخامات واللمسات النهائية وشاهد النتيجة فوراً</p>
       </div>
-      
-      <div class="designer-grid">
+
+      <div class="designer-container">
         <div class="preview-box">
           <img id="layer-base" src="public/images/base.jpg" style="z-index: 1;">
           <img id="layer-walls" src="public/images/wall-steel.png" style="z-index: 2;">
@@ -102,24 +134,26 @@
           <img id="layer-ceiling" src="public/images/ceiling-standard.png" style="z-index: 4;">
         </div>
 
-        <aside style="display: flex; flex-direction: column; gap: 20px;">
-          <div>
-            <label style="color: var(--accent-gold); display: block; margin-bottom: 10px;">خامة الجدران</label>
-            <div style="display: grid; gap: 10px;">
-              <button class="option-btn" onclick="changeL('walls', 'public/images/wall-steel.png')">إستانلس فضي</button>
-              <button class="option-btn" onclick="changeL('walls', 'public/images/wall-gold.png')">إستانلس ذهبي</button>
+        <aside>
+          <div class="option-group">
+            <span class="option-title">خامة الجدران (Walls)</span>
+            <div class="option-grid">
+              <button class="option-btn" onclick="updateL('walls', 'public/images/wall-steel.png')">إستانلس فضي</button>
+              <button class="option-btn" onclick="updateL('walls', 'public/images/wall-gold.png')">إستانلس ذهبي</button>
             </div>
           </div>
 
-          <div>
-            <label style="color: var(--accent-gold); display: block; margin-bottom: 10px;">الأرضية</label>
-            <div style="display: grid; gap: 10px;">
-              <button class="option-btn" onclick="changeL('floor', 'public/images/floor-marble.png')">رخام ملكي</button>
-              <button class="option-btn" onclick="changeL('floor', 'public/images/floor-pvc.png')">جرانيت PVC</button>
+          <div class="option-group">
+            <span class="option-title">نوع الأرضية (Floor)</span>
+            <div class="option-grid">
+              <button class="option-btn" onclick="updateL('floor', 'public/images/floor-marble.png')">رخام طبيعي</button>
+              <button class="option-btn" onclick="updateL('floor', 'public/images/floor-pvc.png')">جرانيت PVC</button>
             </div>
           </div>
 
-          <a href="https://wa.me/966114774021" style="background: var(--primary); color: #000; text-align: center; padding: 15px; border-radius: 10px; text-decoration: none; font-weight: 900; margin-top: 20px;">طلب هذا التصميم</a>
+          <div style="margin-top: 40px;">
+            <a href="https://wa.me/966114774021" class="btn-main" style="width: 100%; justify-content: center;">إرسال التصميم للواتساب</a>
+          </div>
         </aside>
       </div>
     </div>
@@ -127,22 +161,43 @@
 
   <section id="services-grid">
     <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
-      <h2 style="text-align: center; margin-bottom: 40px; color: var(--accent-gold);">خدماتنا</h2>
+      <h2 style="text-align: center; margin-bottom: 50px; font-weight: 900; color: var(--accent-gold);">حلول الرياض للمصاعد الذكية</h2>
       <div class="services-container">
-        <div class="service-card"><img src="public/images/service-1.jpg" style="width:100%"><div style="padding:15px"><h3>السلالم</h3></div></div>
-        <div class="service-card"><img src="public/images/service-2.jpg" style="width:100%"><div style="padding:15px"><h3>بانوراما</h3></div></div>
-        <div class="service-card"><img src="public/images/service-3.jpg" style="width:100%"><div style="padding:15px"><h3>المشايات</h3></div></div>
-        <div class="service-card"><img src="public/images/service-4.jpg" style="width:100%"><div style="padding:15px"><h3>صيانة</h3></div></div>
+        <div class="service-card">
+          <img src="public/images/service-1.jpg" class="service-img">
+          <div style="padding: 20px;"><h3>السلالم الكهربائية</h3><p style="font-size: 0.8rem; opacity: 0.7;">أنظمة Fuji المتطورة للمراكز التجارية.</p></div>
+        </div>
+        <div class="service-card">
+          <img src="public/images/service-2.jpg" class="service-img">
+          <div style="padding: 20px;"><h3>المصاعد البانورامية</h3><p style="font-size: 0.8rem; opacity: 0.7;">إطلالة زجاجية فريدة للقصور والفلل.</p></div>
+        </div>
+        <div class="service-card">
+          <img src="public/images/service-3.jpg" class="service-img">
+          <div style="padding: 20px;"><h3>حلول الشحن</h3><p style="font-size: 0.8rem; opacity: 0.7;">مصاعد مخصصة للأوزان الثقيلة والمصانع.</p></div>
+        </div>
+        <div class="service-card">
+          <img src="public/images/service-4.jpg" class="service-img">
+          <div style="padding: 20px;"><h3>الصيانة الوقائية</h3><p style="font-size: 0.8rem; opacity: 0.7;">فريق فني متخصص لخدمتكم على مدار الساعة.</p></div>
+        </div>
       </div>
     </div>
   </section>
 
+  <footer style="padding: 40px 0; border-top: 1px solid #222; text-align: center; opacity: 0.6; font-size: 0.8rem;">
+    <p>&copy; 2026 RKL | Riyadh Key Lifts. جميع الحقوق محفوظة.</p>
+  </footer>
+
   <script>
-    function changeL(type, src) {
-      const img = document.getElementById('layer-' + type);
-      img.style.opacity = '0';
-      setTimeout(() => { img.src = src; img.style.opacity = '1'; }, 200);
+    // وظيفة تبديل طبقات الكبينة
+    function updateL(layerId, src) {
+      const el = document.getElementById('layer-' + layerId);
+      el.style.opacity = '0';
+      setTimeout(() => { el.src = src; el.style.opacity = '1'; }, 250);
     }
+
+    // تهيئة فيديو الواجهة
+    const v = document.getElementById('heroVideo');
+    if(v) v.playbackRate = 0.7;
   </script>
   <script src="public/rkl-map.js"></script>
 </body>
