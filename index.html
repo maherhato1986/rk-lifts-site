@@ -361,45 +361,58 @@
   </div>
 </section>
 
-  <section id="cabin-designer">
-    <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
-      <div style="text-align: center; margin-bottom: 40px;">
-        <h2 style="font-size: 2.2rem; font-weight: 900; color: var(--accent-gold);">صمم كبينتك الخاصة</h2>
-        <p style="opacity: 0.6;">اختر الخامات واللمسات النهائية وشاهد النتيجة فوراً</p>
-      </div>
+<section id="service-request" style="padding: 100px 0; background: #050505; border-top: 1px solid rgba(255,255,255,0.1);">
+  <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+    
+    <div style="text-align: center; margin-bottom: 60px;">
+      <h2 style="font-size: 2.5rem; font-weight: 900; color: var(--accent-gold); margin-bottom: 15px;">اطلب خدمتك الآن</h2>
+      <p style="opacity: 0.8; font-size: 1.1rem; max-width: 700px; margin: 0 auto;">نحن لا نبيع مصاعد فقط، بل نبني علاقة شراكة استراتيجية تبدأ من الاستشارة الفنية وتنتهي بخدمات ما بعد البيع المتميزة.</p>
+    </div>
 
-      <div class="designer-container">
-        <div class="preview-box">
-          <img id="layer-base" src="public/images/base.jpg" style="z-index: 1;">
-          <img id="layer-walls" src="public/images/wall-steel.png" style="z-index: 2;">
-          <img id="layer-floor" src="public/images/floor-marble.png" style="z-index: 3;">
-          <img id="layer-ceiling" src="public/images/ceiling-standard.png" style="z-index: 4;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: start;">
+      
+      <div class="relation-benefits" style="background: rgba(15, 182, 122, 0.03); padding: 40px; border-radius: 30px; border: 1px solid rgba(15, 182, 122, 0.1);">
+        <h3 style="color: var(--primary); margin-bottom: 25px; font-weight: 800;">لماذا تختار RKL لمشروعك؟</h3>
+        
+        <div style="margin-bottom: 25px;">
+          <h4 style="color: var(--accent-gold); font-size: 1.2rem; margin-bottom: 8px;"><i class="fas fa-handshake"></i> شراكة ممتدة</h4>
+          <p style="font-size: 0.95rem; opacity: 0.7; line-height: 1.6;">تبدأ علاقتنا معك بدراسة دقيقة لاحتياجات مبناك، ونستمر معك كشريك تقني يضمن استدامة عمل المصعد بأعلى كفاءة لسنوات طويلة.</p>
         </div>
 
-        <aside>
-          <div class="option-group">
-            <span class="option-title">خامة الجدران (Walls)</span>
-            <div class="option-grid">
-              <button class="option-btn" onclick="updateL('walls', 'public/images/wall-steel.png')">إستانلس فضي</button>
-              <button class="option-btn" onclick="updateL('walls', 'public/images/wall-gold.png')">إستانلس ذهبي</button>
-            </div>
-          </div>
+        <div style="margin-bottom: 25px;">
+          <h4 style="color: var(--accent-gold); font-size: 1.2rem; margin-bottom: 8px;"><i class="fas fa-chart-line"></i> تطور رقمي وتواصل ذكي</h4>
+          <p style="font-size: 0.95rem; opacity: 0.7; line-height: 1.6;">نستخدم أحدث أنظمة المتابعة الرقمية لنحيطك علماً بكل مراحل التركيب والصيانة، مما يخلق شفافية تامة وثقة متبادلة.</p>
+        </div>
 
-          <div class="option-group">
-            <span class="option-title">نوع الأرضية (Floor)</span>
-            <div class="option-grid">
-              <button class="option-btn" onclick="updateL('floor', 'public/images/floor-marble.png')">رخام طبيعي</button>
-              <button class="option-btn" onclick="updateL('floor', 'public/images/floor-pvc.png')">جرانيت PVC</button>
-            </div>
-          </div>
-
-          <div style="margin-top: 40px;">
-            <a href="https://wa.me/966114774021" class="btn-main" style="width: 100%; justify-content: center;">إرسال التصميم للواتساب</a>
-          </div>
-        </aside>
+        <div>
+          <h4 style="color: var(--accent-gold); font-size: 1.2rem; margin-bottom: 8px;"><i class="fas fa-user-shield"></i> التزام بالمعايير</h4>
+          <p style="font-size: 0.95rem; opacity: 0.7; line-height: 1.6;">نحن نلتزم بالكود السعودي للمصاعد ومعايير الأمان العالمية، لنضمن لك ولعائلتك أو لعملائك رحلة آمنة في كل مرة.</p>
+        </div>
       </div>
+
+      <div style="background: #111; padding: 40px; border-radius: 30px; border: 1px solid #222;">
+        <h3 style="text-align: center; margin-bottom: 30px;">بيانات طلب الخدمة</h3>
+        <form action="#" style="display: grid; gap: 20px;">
+          <input type="text" placeholder="الاسم الكامل" style="width: 100%; padding: 15px; border-radius: 12px; background: #1a1a1a; border: 1px solid #333; color: #fff; font-family: 'Cairo';">
+          <input type="tel" placeholder="رقم الجوال" style="width: 100%; padding: 15px; border-radius: 12px; background: #1a1a1a; border: 1px solid #333; color: #fff; font-family: 'Cairo';">
+          <select style="width: 100%; padding: 15px; border-radius: 12px; background: #1a1a1a; border: 1px solid #333; color: #fff; font-family: 'Cairo';">
+            <option>نوع الخدمة المطلوبة</option>
+            <option>تركيب مصعد جديد</option>
+            <option>صيانة دورية</option>
+            <option>تحديث وتطوير مصعد</option>
+            <option>طلب قطع غيار</option>
+          </select>
+          <textarea placeholder="تفاصيل إضافية عن مشروعك" rows="4" style="width: 100%; padding: 15px; border-radius: 12px; background: #1a1a1a; border: 1px solid #333; color: #fff; font-family: 'Cairo';"></textarea>
+          
+          <button type="submit" class="btn-main" style="width: 100%; justify-content: center; border: none; cursor: pointer;">
+            إرسال الطلب الآن
+          </button>
+        </form>
+      </div>
+
     </div>
-  </section>
+  </div>
+</section>
 
 <section id="services-grid">
   <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
@@ -530,18 +543,7 @@
     <p>&copy; 2026 RKL | Riyadh Key Lifts. جميع الحقوق محفوظة.</p>
   </footer>
 
-  <script>
-    // وظيفة تبديل طبقات الكبينة
-    function updateL(layerId, src) {
-      const el = document.getElementById('layer-' + layerId);
-      el.style.opacity = '0';
-      setTimeout(() => { el.src = src; el.style.opacity = '1'; }, 250);
-    }
-
-    // تهيئة فيديو الواجهة
-    const v = document.getElementById('heroVideo');
-    if(v) v.playbackRate = 0.7;
-  </script>
+ 
   <script src="public/rkl-map.js"></script>
 </body>
 </html>
