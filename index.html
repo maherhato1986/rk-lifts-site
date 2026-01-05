@@ -163,6 +163,77 @@
     .option-btn { background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 14px; border-radius: 12px; cursor: pointer; font-family: 'Cairo'; transition: 0.3s; font-size: 0.85rem; }
     .option-btn:hover { border-color: var(--primary); background: #222; color: var(--primary); }
 
+  /* تنسيق قسم الكتالوجات */
+.catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+.catalog-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(212, 175, 55, 0.1);
+    padding: 40px 30px;
+    border-radius: 25px;
+    text-align: center;
+    transition: 0.4s;
+    position: relative;
+    overflow: hidden;
+}
+
+.catalog-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--primary);
+    background: rgba(15, 182, 122, 0.05);
+}
+
+.catalog-card.highlight {
+    border: 1px solid var(--accent-gold);
+    background: rgba(212, 175, 55, 0.03);
+}
+
+.catalog-icon {
+    font-size: 3rem;
+    color: var(--accent-gold);
+    margin-bottom: 20px;
+}
+
+.catalog-card h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.catalog-card p {
+    font-size: 0.9rem;
+    opacity: 0.7;
+    margin-bottom: 25px;
+    min-height: 60px;
+}
+
+.catalog-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--primary);
+    color: #fff !important;
+    padding: 12px 25px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 700;
+    transition: 0.3s;
+}
+
+.catalog-btn.email {
+    background: var(--secondary);
+}
+
+.catalog-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(15, 182, 122, 0.2);
+}
+
     /* 6. قسم الخدمات */
     #services-grid { padding: 100px 0; background: var(--dark-bg); }
     .services-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
@@ -417,7 +488,44 @@
     </div>
   </div>
 </section>
+<section id="rkl-catalogs" style="padding: 100px 0; background: #000;">
+  <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+    <div style="text-align: center; margin-bottom: 60px;">
+        <h2 style="color: var(--accent-gold); font-weight: 900; font-size: 2.5rem;">المكتبة الفنية والوثائق الرسمية</h2>
+        <p style="opacity: 0.7;">تصفح كتالوجاتنا المتخصصة وشهادات الاعتماد والجودة الخاصة بـ RKL</p>
+    </div>
 
+    <div class="catalog-grid">
+      <div class="catalog-card">
+        <div class="catalog-icon"><i class="fas fa-door-open"></i></div>
+        <h3>كتالوج الكبائن 2026</h3>
+        <p>تشكيلة واسعة من التصاميم العصرية والكلاسيكية بلمسات ذهبية وفضية.</p>
+        <a href="https://wa.me/966114774021?text=أرغب+في+الحصول+على+كتالوج+الكبائن" class="catalog-btn">طلب الكتالوج <i class="fab fa-whatsapp"></i></a>
+      </div>
+
+      <div class="catalog-card">
+        <div class="catalog-icon"><i class="fas fa-microchip"></i></div>
+        <h3>أنظمة التحكم والكنترول</h3>
+        <p>المواصفات الفنية للوحات التحكم الذكية Fuji و Vertilift المعتمدة.</p>
+        <a href="https://wa.me/966114774021?text=أرغب+في+الحصول+على+كتالوج+الكنترولات" class="catalog-btn">طلب المواصفات <i class="fab fa-whatsapp"></i></a>
+      </div>
+
+      <div class="catalog-card highlight">
+        <div class="catalog-icon"><i class="fas fa-file-signature"></i></div>
+        <h3>شهادات التصنيف والاعتماد</h3>
+        <p>شهادات تصنيف المقاولين، اعتماد الدفاع المدني، وشهادات الجودة العالمية.</p>
+        <a href="mailto:admin@rkl.sa?subject=طلب وثائق الاعتماد" class="catalog-btn email">طلب الملف عبر الإيميل <i class="fas fa-envelope"></i></a>
+      </div>
+
+      <div class="catalog-card">
+        <div class="catalog-icon"><i class="fas fa-images"></i></div>
+        <h3>سابقة الأعمال (Portfolio)</h3>
+        <p>استعرض صور وفيديوهات لأكثر من 450 مشروعاً تم إنجازها حول المملكة.</p>
+        <a href="https://wa.me/966114774021?text=أرغب+في+رؤية+سابقة+أعمال+المؤسسة" class="catalog-btn">مشاهدة الأعمال <i class="fab fa-whatsapp"></i></a>
+      </div>
+    </div>
+  </div>
+</section>
   <footer style="padding: 40px 0; border-top: 1px solid #222; text-align: center; opacity: 0.6; font-size: 0.8rem;">
     <p>&copy; 2026 RKL | Riyadh Key Lifts. جميع الحقوق محفوظة.</p>
   </footer>
