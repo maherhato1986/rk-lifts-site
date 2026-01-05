@@ -361,97 +361,152 @@
   </div>
 </section>
 
-<section id="service-request" style="padding: 80px 0; background: #0a0a0a; border-top: 1px solid #1a1a1a;">
+<section id="service-request" style="padding: 60px 0; background: #050505; border-top: 1px solid #1a1a1a;">
   <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
     
-    <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; align-items: start;">
+    <div class="service-container">
       
-      <div style="color: #fff; padding-top: 20px;">
-        <h2 style="font-size: 2.2rem; font-weight: 800; color: var(--accent-gold); margin-bottom: 20px;">لماذا تختار RKL لمشروعك؟</h2>
+      <div class="relation-text">
+        <h2 style="font-size: clamp(1.8rem, 5vw, 2.5rem); font-weight: 800; color: var(--accent-gold); margin-bottom: 20px;">لماذا تختار RKL لمشروعك؟</h2>
         <p style="font-size: 1.1rem; opacity: 0.8; line-height: 1.8; margin-bottom: 30px;">
-          نحن لا نبيع مصاعد فقط، بل نبني علاقة شراكة استراتيجية تبدأ من الاستشارة الفنية وتنتهي بخدمات ما بعد البيع المتميزة.
+          نحن لا نبيع مصاعد فقط، بل نبني علاقة شراكة استراتيجية تبدأ من الاستشارة الفنية وتنتهي بخدمات ما بعد البيع.
         </p>
 
-        <div style="display: grid; gap: 25px;">
-          <div style="display: flex; gap: 15px;">
-            <div style="font-size: 1.5rem; color: var(--primary);"><i class="fas fa-handshake"></i></div>
-            <div>
-              <h4 style="margin-bottom: 5px; color: #eee;">شراكة ممتدة</h4>
-              <p style="font-size: 0.9rem; opacity: 0.6;">تبدأ علاقتنا معك بدراسة دقيقة لاحتياجات مبناك، ونستمر كشريك تقني يضمن استدامة عمل المصعد.</p>
+        <div class="benefits-grid">
+          <div class="benefit-item">
+            <div class="benefit-icon"><i class="fas fa-handshake"></i></div>
+            <div class="benefit-content">
+              <h4>شراكة ممتدة</h4>
+              <p>نستمر كشريك تقني يضمن استدامة عمل المصعد بأعلى كفاءة.</p>
             </div>
           </div>
-          <div style="display: flex; gap: 15px;">
-            <div style="font-size: 1.5rem; color: var(--primary);"><i class="fas fa-microchip"></i></div>
-            <div>
-              <h4 style="margin-bottom: 5px; color: #eee;">تطور رقمي وتواصل ذكي</h4>
-              <p style="font-size: 0.9rem; opacity: 0.6;">نستخدم أحدث أنظمة المتابعة الرقمية لنحيطك علماً بكل مراحل التركيب والصيانة بشفافية تامة.</p>
+          <div class="benefit-item">
+            <div class="benefit-icon"><i class="fas fa-microchip"></i></div>
+            <div class="benefit-content">
+              <h4>تواصل ذكي</h4>
+              <p>نظام متابعة رقمي يحيطك علماً بكل مراحل العمل بشفافية.</p>
             </div>
           </div>
         </div>
       </div>
 
-      <div style="background: #f8fafc; padding: 40px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.3);">
-        <div style="text-align: center; margin-bottom: 25px;">
-           <img src="https://rkl.sa/public/images/logo.png" style="width: 50px; margin-bottom: 10px;">
-           <h3 style="color: #0f172a; font-weight: 700; font-size: 1.4rem;">نموذج طلب خدمة رسمي</h3>
-           <p style="color: #64748b; font-size: 0.85rem;">سيصل طلبك مباشرة للإدارة الفنية وسيتم الرد خلال دقائق</p>
+      <div class="form-wrapper">
+        <div class="form-header">
+           <img src="https://rkl.sa/public/images/logo.png" alt="RKL Logo">
+           <h3>نموذج طلب خدمة رسمي</h3>
+           <p>سيصل طلبك مباشرة للإدارة الفنية</p>
         </div>
 
-        <form action="https://formsubmit.co/admin@rkl.sa" method="POST" onsubmit="return handleServiceRequest(event)" id="requestForm" style="display: grid; gap: 15px;">
+        <form action="https://formsubmit.co/admin@rkl.sa" method="POST" onsubmit="return handleServiceRequest(event)" id="requestForm">
           
-          <div>
-            <label style="display:block; margin-bottom: 5px; color: #334155; font-size: 0.9rem; font-weight: 600;">الاسم الكامل</label>
-            <input type="text" name="name" id="c_name" required placeholder="أدخل اسمك الكريم" style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-family: 'Cairo';">
+          <div class="input-group">
+            <label>الاسم الكامل</label>
+            <input type="text" name="name" id="c_name" required placeholder="أدخل اسمك الكريم">
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-            <div>
-              <label style="display:block; margin-bottom: 5px; color: #334155; font-size: 0.9rem; font-weight: 600;">رقم الجوال</label>
-              <input type="tel" name="phone" id="c_phone" required placeholder="05xxxxxxxx" style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-family: 'Cairo';">
+          <div class="input-row">
+            <div class="input-group">
+              <label>رقم الجوال</label>
+              <input type="tel" name="phone" id="c_phone" required placeholder="05xxxxxxxx">
             </div>
-            <div>
-              <label style="display:block; margin-bottom: 5px; color: #334155; font-size: 0.9rem; font-weight: 600;">البريد الإلكتروني</label>
-              <input type="email" name="email" id="c_email" required placeholder="example@mail.com" style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-family: 'Cairo';">
+            <div class="input-group">
+              <label>البريد الإلكتروني</label>
+              <input type="email" name="email" id="c_email" required placeholder="mail@example.com">
             </div>
           </div>
 
-          <div>
-            <label style="display:block; margin-bottom: 5px; color: #334155; font-size: 0.9rem; font-weight: 600;">نوع الخدمة المطلوبة</label>
-            <select name="service_type" id="c_service" onchange="toggleVisitsFields()" style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-family: 'Cairo'; background: white;">
+          <div class="input-group">
+            <label>نوع الخدمة</label>
+            <select name="service_type" id="c_service" onchange="toggleVisitsFields()">
               <option value="">اختر الخدمة...</option>
               <option value="عقد صيانة دورية">عقد صيانة دورية</option>
               <option value="توريد وتركيب جديد">توريد وتركيب جديد</option>
               <option value="إصلاح عطل طارئ">إصلاح عطل طارئ</option>
-              <option value="تحديث وتطوير">تحديث وتطوير مصعد قديم</option>
+              <option value="تحديث وتطوير">تحديث وتطوير مصعد</option>
             </select>
           </div>
 
-          <div id="visits_box" style="display: none;">
-            <label style="display:block; margin-bottom: 5px; color: #334155; font-size: 0.9rem; font-weight: 600;">عدد الزيارات المطلوبة</label>
-            <select name="visits" id="c_visits" style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-family: 'Cairo';">
+          <div id="visits_box" class="input-group" style="display: none;">
+            <label>عدد الزيارات</label>
+            <select name="visits" id="c_visits">
               <option value="6 زيارات (نصف سنوي)">6 زيارات (نصف سنوي)</option>
               <option value="12 زيارة (سنوي)">12 زيارة (سنوي)</option>
             </select>
           </div>
 
-          <div>
-            <label style="display:block; margin-bottom: 5px; color: #334155; font-size: 0.9rem; font-weight: 600;">وصف الطلب / ملاحظات</label>
-            <textarea name="message" id="c_desc" rows="3" placeholder="اكتب أي تفاصيل إضافية هنا..." style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-family: 'Cairo';"></textarea>
+          <div class="input-group">
+            <label>التفاصيل</label>
+            <textarea name="message" id="c_desc" rows="3" placeholder="اكتب ملاحظاتك هنا..."></textarea>
           </div>
 
           <input type="hidden" name="_captcha" value="false">
           <input type="hidden" name="request_id" id="c_id">
 
-          <button type="submit" style="width: 100%; background: #0fb67a; color: white; padding: 15px; border: none; border-radius: 12px; font-weight: 700; font-size: 1.1rem; cursor: pointer; transition: 0.3s; font-family: 'Cairo';">
+          <button type="submit" class="submit-btn">
             إرسال الطلب (واتساب + إيميل)
           </button>
           
-          <p style="text-align: center; color: #94a3b8; font-size: 0.75rem;">بضغطك على إرسال، سيتم توليد رقم مرجعي لطلبك وحفظه في سجلاتنا.</p>
+          <p class="form-footer-note">بضغطك على إرسال، سيتم إصدار رقم مرجعي لطلبك.</p>
         </form>
       </div>
 
     </div>
   </div>
+
+  <style>
+    /* تنسيقات التجاوب */
+    .service-container {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    .benefits-grid { display: grid; gap: 20px; }
+    .benefit-item { display: flex; gap: 15px; }
+    .benefit-icon { font-size: 1.5rem; color: var(--primary); min-width: 30px; }
+    .benefit-content h4 { color: #eee; margin-bottom: 5px; font-size: 1rem; }
+    .benefit-content p { font-size: 0.85rem; opacity: 0.6; line-height: 1.5; }
+
+    .form-wrapper {
+      background: #f8fafc;
+      padding: clamp(20px, 5vw, 40px);
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+
+    .form-header { text-align: center; margin-bottom: 25px; }
+    .form-header img { width: 45px; margin-bottom: 10px; }
+    .form-header h3 { color: #0f172a; font-size: 1.3rem; margin-bottom: 5px; }
+    .form-header p { color: #64748b; font-size: 0.8rem; }
+
+    .input-group { margin-bottom: 15px; }
+    .input-group label { display: block; margin-bottom: 6px; color: #334155; font-size: 0.85rem; font-weight: 700; }
+    .input-group input, .input-group select, .input-group textarea {
+      width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 10px; font-family: 'Cairo'; font-size: 0.95rem; box-sizing: border-box;
+    }
+
+    .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+    .submit-btn {
+      width: 100%; background: #0fb67a; color: white; padding: 16px; border: none; border-radius: 12px;
+      font-weight: 700; font-size: 1rem; cursor: pointer; transition: 0.3s; font-family: 'Cairo';
+    }
+    .submit-btn:hover { background: #0ca36d; transform: translateY(-2px); }
+    .form-footer-note { text-align: center; color: #94a3b8; font-size: 0.7rem; margin-top: 10px; }
+
+    /* تحسينات الجوال */
+    @media (max-width: 992px) {
+      .service-container { grid-template-columns: 1fr; gap: 50px; }
+      .relation-text { text-align: center; }
+      .benefit-item { justify-content: center; text-align: right; }
+    }
+
+    @media (max-width: 600px) {
+      .input-row { grid-template-columns: 1fr; }
+      #service-request { padding: 40px 0; }
+    }
+  </style>
 </section>
 
 <section id="services-grid">
