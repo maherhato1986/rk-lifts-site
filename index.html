@@ -184,6 +184,65 @@
         <a href="#map-projects" style="color: white; text-decoration: none; font-weight: 700; align-self: center; border-bottom: 2px solid var(--primary); font-size: 0.9rem;">خارطة الإنجازات</a>
       </div>
     </div>
+    <section id="cabin-designer" style="padding: 80px 0; background: #111; color: #fff; border-top: 1px solid rgba(255,255,255,0.1);">
+  <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+    
+    <div style="text-align: center; margin-bottom: 40px;">
+      <h2 style="font-size: 2.2rem; font-weight: 900; color: var(--accent-gold); margin-bottom: 10px;">صمم كبينتك الخاصة</h2>
+      <p style="color: rgba(255,255,255,0.6); font-size: 1.1rem;">اختر الخامات التي تناسب ذوقك وشاهد النتيجة فوراً</p>
+    </div>
+
+    <div class="map-box" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff;">
+      
+      <div style="position: relative; height: 500px; background: #000; border-radius: 18px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+        <img id="layer-base" src="images/cabin/base.jpg" style="position: absolute; width: 100%; height: 100%; object-fit: contain; z-index: 1;">
+        <img id="layer-walls" src="images/cabin/wall-steel.png" style="position: absolute; width: 100%; height: 100%; object-fit: contain; z-index: 2;">
+        <img id="layer-floor" src="images/cabin/floor-marble.png" style="position: absolute; width: 100%; height: 100%; object-fit: contain; z-index: 3;">
+        <img id="layer-ceiling" src="images/cabin/ceiling-standard.png" style="position: absolute; width: 100%; height: 100%; object-fit: contain; z-index: 4;">
+      </div>
+
+      <aside style="padding: 20px;">
+        <h3 style="color: var(--primary); font-weight: 900; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">خيارات التخصيص</h3>
+        
+        <div style="margin-top: 20px;">
+          <h4 style="font-size: 0.9rem; color: var(--accent-gold);">جدران الكبينة</h4>
+          <div style="display: flex; gap: 10px; margin-top: 10px;">
+            <button onclick="updateCabin('walls', 'images/cabin/wall-steel.png')" style="cursor:pointer; flex:1; background: #222; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 8px; font-size: 0.8rem;">إستانلس ستيل</button>
+            <button onclick="updateCabin('walls', 'images/cabin/wall-gold.png')" style="cursor:pointer; flex:1; background: #222; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 8px; font-size: 0.8rem;">ذهبي</button>
+          </div>
+        </div>
+
+        <div style="margin-top: 25px;">
+          <h4 style="font-size: 0.9rem; color: var(--accent-gold);">الأرضية</h4>
+          <div style="display: flex; gap: 10px; margin-top: 10px;">
+            <button onclick="updateCabin('floor', 'images/cabin/floor-marble.png')" style="cursor:pointer; flex:1; background: #222; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 8px; font-size: 0.8rem;">رخام طبيعي</button>
+            <button onclick="updateCabin('floor', 'images/cabin/floor-pvc.png')" style="cursor:pointer; flex:1; background: #222; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 8px; font-size: 0.8rem;">جرانيت</button>
+          </div>
+        </div>
+
+        <div style="margin-top: 40px;">
+          <a href="https://wa.me/966114774021" class="btn-main" style="width: 100%; justify-content: center; font-size: 0.9rem;">
+            طلب هذا التصميم <i class="fab fa-whatsapp"></i>
+          </a>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+</section>
+
+<script>
+  function updateCabin(layerType, imageSource) {
+    const layer = document.getElementById('layer-' + layerType);
+    if(layer) {
+      layer.style.opacity = '0';
+      setTimeout(() => {
+        layer.src = imageSource;
+        layer.style.opacity = '1';
+      }, 200);
+    }
+  }
+</script>
   </section>
 
   <section id="map-projects">
