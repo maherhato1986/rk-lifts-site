@@ -673,9 +673,39 @@ function loadCustomerData() {
     }
 }
 
-// تشغيل الدالة عند تحميل الصفحة
-window.addEventListener('load', loadCustomerData);
-// وأيضاً عند جاهزية الـ DOM لضمان السرعة
+window.addEventListener('load', function() {
+    console.log("جاري محاولة تحميل بيانات العميل...");
+    
+    // 1. جلب البيانات من الذاكرة المحلية
+    const saved = localStorage.getItem('rkl_selected_customer');
+    const displayArea = document.getElementById('customerInfo');
+
+    if (!saved) {
+        console.error("لم يتم العثور على مفتاح rkl_selected_customer");
+        if (displayArea) {
+            displayArea.innerHTML = '<b style="color:red; font-size:18px;">⚠️ تنبيه: لم يتم اختيار عميل. يرجى العودة لصفحة "إدارة العملاء" والضغط على زر العقد.</b>';
+        }
+        return;
+    }
+
+    try {
+        const customer = JSON.parse(saved);
+        console.log("تم جلب البيانات بنجاح:", customer);
+
+        // 2. تحديث واجهة المستخدم بالبيانات
+        if (displayArea) {
+            displayArea.innerHTML = `
+                <div style="background: #f0fdfa; padding: 15px; border: 1px solid #14b8a6; border-radius: 8px;">
+                    <p style="margin: 5px 0;"><b>اسم العميل:</b> <span style="color:#0f766e; font-weight:bold;">${customer.customer_name || 'غير مسجل'}</span></p>
+                    <p style="margin: 5px 0;"><b>رقم الجوال:</b> ${customer.mobile || 'غير مسجل'}</p>
+                    <p style="margin: 5px 0;"><b>العنوان:</b> ${customer.city || ''} ${customer.full_address || ''}</p>
+                </div>
+            `;
+        }
+    } catch (e) {
+        console.error("خطأ في قراءة بيانات JSON:", e);
+    }
+});
 
 
   
