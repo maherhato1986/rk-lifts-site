@@ -684,10 +684,10 @@
                         </div>
                     </div>
 
-                    <div class="actions">
-                        <button type="button" class="btn btn-primary" id="calc-btn">حساب عرض السعر</button>
-                        <button type="reset" class="btn btn-secondary" id="reset-btn">إعادة تعيين</button>
-                    </div>
+                    <div class="actions" style="display: flex; gap: 10px; margin-top: 20px;">
+    <button onclick="generateQuote()" class="btn-primary">حساب عرض السعر</button>
+    <button onclick="compareAllBrands()" class="btn-secondary" style="background-color: #059669; color: white;">مقارنة الماركات</button>
+</div>
                 </form>
             </div>
 
@@ -885,6 +885,58 @@ const CABIN_DESIGN_ADDITIONAL = {
 
 
     // ========================== ربط واجهة عرض السعر ببيانات العملاء ==========================
+
+function compareAllBrands() {
+    const capacity = document.getElementById('capacity').value;
+    const speed = parseFloat(document.getElementById('speed').value);
+    const floors = parseInt(document.getElementById('floors').value);
+
+    // تصفية الموديلات بناءً على اختيار المستخدم
+    const fujiModel = fujiData.models.find(m => m.capacityKg === capacity && m.speedMps === speed);
+    const vertiModel = vertiData.models.find(m => m.capacityKg === capacity && m.speedMps === speed);
+
+    const results = [];
+    if (fujiModel) results.push({ brand: 'FUJI (الصين)', ...calculateInternalQuote(fujiModel, { floors }) });
+    if (vertiModel) results.push({ brand: 'VERTILIFT (إيطالي)', ...calculateInternalQuote(vertiModel, { floors }) });
+
+    renderComparisonTable(results, capacity, speed);
+}
+
+function renderComparisonTable(results, cap, spd) {
+    let html = `
+    <div style="margin-top:30px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <h3>جدول مقارنة المواصفات (حمولة ${cap} كجم - سرعة ${spd} م/ث)</h3>
+        <table style="width:100%; border-collapse: collapse; text-align: center;">
+            <thead>
+                <tr style="background: #f8fafc;">
+                    <th style="padding:10px; border:1px solid #ddd;">الميزة</th>
+                    ${results.map(r => `<th style="padding:10px; border:1px solid #ddd;">${r.brand}</th>`).join('')}
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding:10px; border:1px solid #ddd; font-weight:bold;">السعر قبل الضريبة</td>
+                    ${results.map(r => `<td style="padding:10px; border:1px solid #ddd;">${formatSAR(r.beforeVat)}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td style="padding:10px; border:1px solid #ddd; font-weight:bold;">الضريبة (15%)</td>
+                    ${results.map(r => `<td style="padding:10px; border:1px solid #ddd;">${formatSAR(r.vat)}</td>`).join('')}
+                </tr>
+                <tr style="background: #f0fdf4; font-weight: bold; color: #166534;">
+                    <td style="padding:10px; border:1px solid #ddd;">الإجمالي النهائي</td>
+                    ${results.map(r => `<td style="padding:10px; border:1px solid #ddd;">${formatSAR(r.total)}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td style="padding:10px; border:1px solid #ddd; font-weight:bold;">مدة التوريد</td>
+                    ${results.map(r => `<td style="padding:10px; border:1px solid #ddd;">${r.delivery}</td>`).join('')}
+                </tr>
+            </tbody>
+        </table>
+    </div>`;
+    
+    document.getElementById('compare_result_container').innerHTML = html;
+}
+        
     function renderCustomerDetails(customer) {
     const card = document.getElementById('customer-details-card');
     const container = document.getElementById('customer-details');
@@ -2314,6 +2366,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
