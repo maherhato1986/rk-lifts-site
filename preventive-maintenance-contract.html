@@ -646,19 +646,39 @@ button {
 
 
 <script>
-let customer=null;
+let customer = null;
 
-document.addEventListener('DOMContentLoaded',()=>{
-  const saved=localStorage.getItem('rkl_selected_customer');
-  if(!saved){alert('لم يتم اختيار عميل');return;}
-  customer=JSON.parse(saved);
+function loadCustomerData() {
+    const saved = localStorage.getItem('rkl_selected_customer');
+    const displayDiv = document.getElementById('customerInfo');
+    
+    if (!saved) {
+        if (displayDiv) displayDiv.innerHTML = '<b style="color:red">⚠️ تنبيه: لم يتم اختيار عميل من النظام.</b>';
+        return;
+    }
 
-  document.getElementById('customerInfo').innerHTML=`
-    العميل: <span class="user-data">${customer.customer_name}</span>
-    <p><b>الجوال:</b> ${customer.mobile}</p>
-    <p><b>العنوان:</b> ${customer.city} – ${customer.full_address||''}</p>
-  `;
-});
+    try {
+        customer = JSON.parse(saved);
+        if (displayDiv) {
+            displayDiv.innerHTML = `
+                <div style="line-height:1.8">
+                    <b>اسم العميل:</b> <span class="user-data">${customer.customer_name || 'غير متوفر'}</span><br>
+                    <b>رقم الجوال:</b> ${customer.mobile || 'غير متوفر'}<br>
+                    <b>العنوان:</b> ${customer.city || ''} ${customer.full_address || ''}
+                </div>
+            `;
+        }
+    } catch (e) {
+        console.error("خطأ في قراءة بيانات العميل:", e);
+    }
+}
+
+// تشغيل الدالة عند تحميل الصفحة
+window.addEventListener('load', loadCustomerData);
+// وأيضاً عند جاهزية الـ DOM لضمان السرعة
+document.addEventListener('DOMContentLoaded', loadCustomerData);
+
+  
   function generateFullContractText(){
 
   const lang = document.getElementById('lang').value;
