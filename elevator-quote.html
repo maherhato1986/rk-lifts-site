@@ -2250,22 +2250,39 @@ async function calculateComparison(baseInputs) {
 // ===============================
 // نفس منطق calculateQuote ولكن داخلي
 // ===============================
+// ===============================
+// الحسبة المعدلة (الأكثر دقة)
+// ===============================
 function calculateInternalQuote(model, base) {
+  // 1. حساب سعر المصنع بالدولار وتحويله للريال
   const extraFloors = Math.max(0, base.floors - model.baseFloors);
   const factoryUsd = model.basePriceUsd + (model.extraPerFloorUsd * extraFloors);
   const factorySar = factoryUsd * model.exchangeRateToSAR;
 
-  const overhead = factorySar * 0.12;
-  const profit = (factorySar + overhead) * 0.25;
+  // 2. حساب المصاريف الثابتة والمتغيرة من COST_PARAMS
+  // ملاحظة: تأكد أن COST_PARAMS معرفة في كودك العلوي
+  const shipping = COST_PARAMS.shippingUsd * model.exchangeRateToSAR; // تحويل الشحن لريال
+  const insurance = factorySar * COST_PARAMS.insuranceRate; // 1% تأمين
+  const clearance = COST_PARAMS.clearanceSar; // 1200 ريال
+  const inland = COST_PARAMS.inlandTransportSar; // 1500 ريال
+  const installation = COST_PARAMS.installationBaseSar; // 9000 ريال
 
-  const beforeVat = factorySar + overhead + profit;
+  // إجمالي التكاليف التشغيلية (بدلاً من نسبة 12% العشوائية)
+  const totalOverhead = shipping + insurance + clearance + inland + installation;
+
+  // 3. حساب الربح (25% من إجمالي التكلفة)
+  const totalCost = factorySar + totalOverhead;
+  const profit = totalCost * 0.25;
+
+  // 4. الحسبة النهائية والضريبة
+  const beforeVat = totalCost + profit;
   const vat = beforeVat * 0.15;
 
   return {
-    beforeVat,
-    vat,
+    beforeVat: beforeVat,
+    vat: vat,
     total: beforeVat + vat,
-    delivery: model.delivery || '—'
+    delivery: model.delivery || '45-60 يوم'
   };
 }
 
@@ -2297,6 +2314,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
