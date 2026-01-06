@@ -655,12 +655,10 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   document.getElementById('customerInfo').innerHTML=`
     العميل: <span class="user-data">${customer.customer_name}</span>
-
     <p><b>الجوال:</b> ${customer.mobile}</p>
     <p><b>العنوان:</b> ${customer.city} – ${customer.full_address||''}</p>
   `;
 });
-
   function generateFullContractText(){
 
   const lang = document.getElementById('lang').value;
