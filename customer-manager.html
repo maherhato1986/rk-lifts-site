@@ -553,7 +553,9 @@ input, select, textarea, button {
       return;
     }
 
-    // حفظ العميل المختار
+   
+    
+// حفظ العميل المختار في الذاكرة المحلية لمتصفحك
     localStorage.setItem(
       'rkl_selected_customer',
       JSON.stringify(customer)
@@ -561,14 +563,14 @@ input, select, textarea, button {
 
     // عقد صيانة وقائية
     if(action === 'maintenance'){
-      window.location.href =
-        '/preventive-maintenance-contract.html';
+      // تم حذف / من بداية الرابط ليعمل الملف من المجلد مباشرة
+      window.location.href = 'preventive-maintenance-contract.html';
     }
 
     // عرض سعر توريد مصاعد
     if(action === 'quote'){
-      window.location.href =
-        '/elevator-quote.html';
+      // تم حذف / من بداية الرابط ليعمل الملف من المجلد مباشرة
+      window.location.href = 'elevator-quote.html';
     }
 });
 
@@ -652,6 +654,7 @@ input, select, textarea, button {
     // عند تحميل الصفحة لأول مرة: عرض العملاء الموجودين (إن وجدوا)
     renderTable();
 </script>
+
 
 
 
