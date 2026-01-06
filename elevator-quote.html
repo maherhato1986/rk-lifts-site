@@ -2243,6 +2243,20 @@ row.querySelector(".oh-cell").innerText    = opt.oh;
 </script>
 
 <script>
+// ==========================================
+// 1. الإعدادات والثوابت (Cost Parameters)
+// ==========================================
+const COST_PARAMS = {
+    shippingUsd: 500,           // شحن الحاوية تقريبي للمصعد
+    insuranceRate: 0.01,        // 1% تأمين
+    clearanceSar: 1200,         // تخليص جمركي
+    inlandTransportSar: 1500,   // نقل داخلي
+    installationBaseSar: 9000   // تركيب أساسي
+};
+
+// ==========================================
+// 2. حساب ارتفاع المشوار تلقائياً
+// ==========================================
 function calculateTravelHeight() {
     const floors = Number(document.getElementById('floors')?.value);
     const floorHeightMM = Number(document.getElementById('floorHeight')?.value);
@@ -2258,103 +2272,127 @@ function calculateTravelHeight() {
     }
 }
 
-// ربط الأحداث
+// ربط أحداث الارتفاع
 ['floors', 'floorHeight'].forEach(id => {
     const el = document.getElementById(id);
-    if (!el) return;
-
-    el.addEventListener('input', calculateTravelHeight);
-    el.addEventListener('change', calculateTravelHeight);
-});
-// ===============================
-// تفعيل / إخفاء المقارنة
-// ===============================
-document.getElementById('enable_compare').addEventListener('change', e => {
-  document.getElementById('compare_brands_box').style.display =
-    e.target.checked ? 'block' : 'none';
+    if (el) {
+        el.addEventListener('input', calculateTravelHeight);
+        el.addEventListener('change', calculateTravelHeight);
+    }
 });
 
-// ===============================
-// حساب المقارنة
-// ===============================
-async function calculateComparison(baseInputs) {
-  const selectedBrands = [...document.querySelectorAll('.compare-brand:checked')]
-    .map(cb => cb.value)
-    .slice(0, 3);
-
-  if (selectedBrands.length < 2) return;
-
-  const results = [];
-
-  for (const brand of selectedBrands) {
-    await loadBrandData(brand);              // نفس دالتك الحالية
-    const model = findModel(baseInputs.capacity, baseInputs.speed);
-
-    if (!model) continue;
-
-    const quote = calculateInternalQuote(model, baseInputs);
-    results.push({ brand, ...quote });
-  }
-
-  renderComparison(results);
-}
-
-// ===============================
-// نفس منطق calculateQuote ولكن داخلي
-// ===============================
-// ===============================
-// الحسبة المعدلة (الأكثر دقة)
-// ===============================
+// ==========================================
+// 3. منطق الحساب الأساسي (معدل لعدد المصاعد)
+// ==========================================
 function calculateInternalQuote(model, base) {
-  // 1. حساب سعر المصنع بالدولار وتحويله للريال
-  const extraFloors = Math.max(0, base.floors - model.baseFloors);
-  const factoryUsd = model.basePriceUsd + (model.extraPerFloorUsd * extraFloors);
-  const factorySar = factoryUsd * model.exchangeRateToSAR;
+    // جلب عدد المصاعد من الحقل 2.1
+    const numElevators = parseInt(document.getElementById('num_elevators').value) || 1;
+    const extraFloors = Math.max(0, base.floors - model.baseFloors);
+    
+    // أ- حساب تكلفة المصنع (للمصعد الواحد)
+    const factoryUsdPerUnit = model.basePriceUsd + (model.extraPerFloorUsd * extraFloors);
+    const factorySarPerUnit = factoryUsdPerUnit * model.exchangeRateToSAR;
 
-  // 2. حساب المصاريف الثابتة والمتغيرة من COST_PARAMS
-  // ملاحظة: تأكد أن COST_PARAMS معرفة في كودك العلوي
-  const shipping = COST_PARAMS.shippingUsd * model.exchangeRateToSAR; // تحويل الشحن لريال
-  const insurance = factorySar * COST_PARAMS.insuranceRate; // 1% تأمين
-  const clearance = COST_PARAMS.clearanceSar; // 1200 ريال
-  const inland = COST_PARAMS.inlandTransportSar; // 1500 ريال
-  const installation = COST_PARAMS.installationBaseSar; // 9000 ريال
+    // ب- حساب المصاريف التشغيلية (للمصعد الواحد)
+    const shipping = (COST_PARAMS.shippingUsd * model.exchangeRateToSAR);
+    const insurance = factorySarPerUnit * COST_PARAMS.insuranceRate;
+    const installation = COST_PARAMS.installationBaseSar;
+    const totalOverheadPerUnit = shipping + insurance + COST_PARAMS.clearanceSar + COST_PARAMS.inlandTransportSar + installation;
 
-  // إجمالي التكاليف التشغيلية (بدلاً من نسبة 12% العشوائية)
-  const totalOverhead = shipping + insurance + clearance + inland + installation;
+    // ج- حساب السعر قبل الضريبة (للمصعد الواحد)
+    const costPerUnit = factorySarPerUnit + totalOverheadPerUnit;
+    const profitPerUnit = costPerUnit * 0.25; // هامش ربح 25%
+    const priceBeforeVatPerUnit = costPerUnit + profitPerUnit;
 
-  // 3. حساب الربح (25% من إجمالي التكلفة)
-  const totalCost = factorySar + totalOverhead;
-  const profit = totalCost * 0.25;
+    // د- الحسبة الإجمالية بناءً على عدد المصاعد
+    const totalBeforeVat = priceBeforeVatPerUnit * numElevators;
+    const vat = totalBeforeVat * 0.15;
 
-  // 4. الحسبة النهائية والضريبة
-  const beforeVat = totalCost + profit;
-  const vat = beforeVat * 0.15;
-
-  return {
-    beforeVat: beforeVat,
-    vat: vat,
-    total: beforeVat + vat,
-    delivery: model.delivery || '45-60 يوم'
-  };
+    return {
+        unitPrice: priceBeforeVatPerUnit,
+        beforeVat: totalBeforeVat,
+        vat: vat,
+        total: totalBeforeVat + vat,
+        brand: model.brand || (model.code.includes('FJ') ? 'FUJI' : 'VERTILIFT'),
+        origin: model.code.includes('FJ') ? 'الصين' : 'إيطاليا / تجميع الصين',
+        machine: model.machineType || 'Gearless MRL',
+        delivery: model.code.includes('FJ') ? '45-60 يوم' : '60-70 يوم'
+    };
 }
 
-// ===============================
-// عرض النتائج
-// ===============================
-function renderComparison(results) {
-  document.getElementById('compare_result').style.display = 'block';
+// ==========================================
+// 4. وظيفة زر المقارنة وعرض الجدول
+// ==========================================
+async function runComparison() {
+    const capacity = document.getElementById('capacity').value;
+    const speed = parseFloat(document.getElementById('speed').value);
+    const floors = parseInt(document.getElementById('floors').value);
+    const num = document.getElementById('num_elevators').value || 1;
 
-  results.forEach((r, i) => {
-    const idx = i + 1;
-    document.getElementById(`col_${idx}`).innerText = r.brand;
-    document.getElementById(`c${idx}_before`).innerText = formatSAR(r.beforeVat);
-    document.getElementById(`c${idx}_vat`).innerText = formatSAR(r.vat);
-    document.getElementById(`c${idx}_total`).innerText = formatSAR(r.total);
-    document.getElementById(`c${idx}_delivery`).innerText = r.delivery;
-  });
+    // مصفوفة النتائج للمقارنة
+    const results = [];
+
+    // البحث في بيانات FUJI (بفرض أن fujiData محملة في الصفحة)
+    if (typeof fujiData !== 'undefined') {
+        const fM = fujiData.models.find(m => m.capacityKg === capacity && m.speedMps === speed);
+        if (fM) results.push(calculateInternalQuote(fM, { floors }));
+    }
+
+    // البحث في بيانات VERTILIFT
+    if (typeof vertiData !== 'undefined') {
+        const vM = vertiData.models.find(m => m.capacityKg === capacity && m.speedMps === speed);
+        if (vM) results.push(calculateInternalQuote(vM, { floors }));
+    }
+
+    if (results.length === 0) {
+        alert("يرجى التأكد من اختيار السعة والسرعة بشكل صحيح.");
+        return;
+    }
+
+    renderComparisonTable(results, num);
 }
 
-// حساب فوري عند التحميل
+function renderComparisonTable(results, num) {
+    let html = `
+    <div style="overflow-x:auto; margin-top:20px;">
+        <h3 style="text-align:center;">جدول مقارنة الأسعار لعدد (${num}) مصاعد</h3>
+        <table style="width:100%; border-collapse: collapse; background: white; border: 1px solid #ddd;">
+            <thead>
+                <tr style="background:#f4f4f4;">
+                    <th style="padding:12px; border:1px solid #ddd;">المواصفات</th>
+                    ${results.map(r => `<th style="padding:12px; border:1px solid #ddd;">${r.brand}</th>`).join('')}
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td style="padding:10px; border:1px solid #ddd;">المنشأ</td>
+                    ${results.map(r => `<td style="padding:10px; border:1px solid #ddd;">${r.origin}</td>`).join('')}</tr>
+                <tr><td style="padding:10px; border:1px solid #ddd;">سعر المصعد (بدون ضريبة)</td>
+                    ${results.map(r => `<td style="padding:10px; border:1px solid #ddd;">${formatSAR(r.unitPrice)}</td>`).join('')}</tr>
+                <tr style="background:#f9f9f9; font-weight:bold;">
+                    <td style="padding:10px; border:1px solid #ddd;">الإجمالي لعدد ${num} مصاعد</td>
+                    ${results.map(r => `<td style="padding:10px; border:1px solid #ddd;">${formatSAR(r.beforeVat)}</td>`).join('')}
+                </tr>
+                <tr><td style="padding:10px; border:1px solid #ddd;">الضريبة 15%</td>
+                    ${results.map(r => `<td style="padding:10px; border:1px solid #ddd;">${formatSAR(r.vat)}</td>`).join('')}</tr>
+                <tr style="background:#e0f2f1; font-weight:bold; font-size:1.1em; color:#00695c;">
+                    <td style="padding:10px; border:1px solid #ddd;">السعر النهائي (شامل الضريبة)</td>
+                    ${results.map(r => `<td style="padding:10px; border:1px solid #ddd;">${formatSAR(r.total)}</td>`).join('')}
+                </tr>
+                <tr><td style="padding:10px; border:1px solid #ddd;">مدة التوريد</td>
+                    ${results.map(r => `<td style="padding:10px; border:1px solid #ddd;">${r.delivery}</td>`).join('')}</tr>
+            </tbody>
+        </table>
+    </div>`;
+
+    document.getElementById('comparison_area').innerHTML = html;
+}
+
+// دالة تنسيق العملة
+function formatSAR(num) {
+    return new Intl.NumberFormat('ar-SA', { style: 'currency', currency: 'SAR' }).format(num);
+}
+
+// تنفيذ حساب الارتفاع عند التحميل الأولي
 calculateTravelHeight();
 </script>
 
@@ -2363,9 +2401,9 @@ calculateTravelHeight();
 
 
 
-
 </body>
 </html>
+
 
 
 
