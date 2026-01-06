@@ -16,13 +16,14 @@
   }
 
   /* تخطيط الصفحة */
-  .en81-layout {
-    display: grid !important;
-    grid-template-columns: 1fr 1.3fr;
-    gap: 18px;
-    align-items: center;
-    margin-top: 10mm;
-  }
+ .en81-layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 15px;
+    background: #ffffff;
+    border-radius: 12px;
+}
 
   /* تكبير المخطط */
   .diagram-container {
@@ -361,11 +362,13 @@ th {
     margin-bottom: 6px !important;
     line-height: 1.6 !important;
   }
- .en81-layout {
-  display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap: 20px;
-  align-items: center;
+.en81-layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 15px;
+    background: #ffffff;
+    border-radius: 12px;
 }
    
 /* ===== EN81 Auto Highlight ===== */
@@ -1041,7 +1044,48 @@ consultants, and regulatory authorities across the Kingdom.
   </text>
 
 </svg>
+       
+<svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="0.5" fill="#e2e8f0" />
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#grid)" />
 
+  <g transform="translate(50, 50)">
+    <text x="0" y="-15" font-family="Arial" font-size="12" font-weight="bold" fill="#1e3a8a">SECTION VIEW</text>
+    <rect x="0" y="0" width="80" height="350" fill="none" stroke="#64748b" stroke-width="2" />
+    <path d="M0 0 L-5 5 M0 20 L-5 25 M0 40 L-5 45" stroke="#cbd5e1" stroke-width="1" /> <rect x="15" y="100" width="50" height="70" fill="#f1f5f9" stroke="#2563eb" stroke-width="1.5" />
+    <line x1="15" y1="105" x2="65" y2="105" stroke="#2563eb" stroke-width="0.5" />
+    
+    <line x1="72" y1="0" x2="72" y2="350" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4" />
+    
+    <g stroke="#ef4444" stroke-width="1">
+      <line x1="-15" y1="0" x2="-15" y2="350" />
+      <line x1="-20" y1="0" x2="-10" y2="0" />
+      <line x1="-20" y1="350" x2="-10" y2="350" />
+    </g>
+    <text x="-45" y="180" font-size="9" fill="#ef4444" transform="rotate(-90 -45 180)">TOTAL HEIGHT</text>
+  </g>
+
+  <g transform="translate(220, 100)">
+    <text x="0" y="-15" font-family="Arial" font-size="12" font-weight="bold" fill="#1e3a8a">PLAN VIEW (TOP)</text>
+    <rect x="0" y="0" width="130" height="130" fill="none" stroke="#1e293b" stroke-width="2.5" />
+    
+    <rect x="25" y="25" width="80" height="80" fill="#ebf2ff" stroke="#2563eb" stroke-width="2" rx="2" />
+    
+    <line x1="25" y1="130" x2="105" y2="130" stroke="#1e3a8a" stroke-width="4" />
+    <rect x="35" y="125" width="60" height="3" fill="#60a5fa" />
+    
+    <g fill="#475569" font-size="10">
+      <text x="50" y="15">HW</text>
+      <line x1="0" y1="20" x2="130" y2="20" stroke="#475569" stroke-width="0.5" />
+      <text x="135" y="70">HD</text>
+      <line x1="120" y1="0" x2="120" y2="130" stroke="#475569" stroke-width="0.5" />
+    </g>
+  </g>
+</svg>
 
     </div>
 
@@ -1896,6 +1940,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
 
 
 
