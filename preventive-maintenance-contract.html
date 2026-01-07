@@ -1244,13 +1244,12 @@ body::before{
 }
 
 /* ---------- Page Frame ---------- */
-.page-frame{
-  border:1.2px solid rgba(15,118,110,0.35);
-  border-radius:14px;
-  padding:18px 18px 22px 18px;
-  box-sizing:border-box;
-  position:relative;
-}
+.page-frame {
+    border: 2px solid #0f766e;
+    padding: 15px;
+    min-height: 95vh;
+    position: relative;
+  }
 
 /* ---------- Header ---------- */
 .print-header{
@@ -1399,6 +1398,18 @@ table{
   font-size:14px;
   font-weight:900;
   color:var(--brand);
+}
+.contract-summary, h3, .signature { 
+    page-break-inside: avoid; 
+  }
+  /* تحسين عرض البيانات */
+  .user-data-table {
+    width: 100%;
+    margin-bottom: 20px;
+    background: #f9fafb;
+  }
+  
+  .user-data-table td { padding: 8px; border: 1px solid #e5e7eb; }
 }
 
 /* ---------- Footer ---------- */
