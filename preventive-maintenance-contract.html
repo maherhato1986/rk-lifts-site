@@ -1297,71 +1297,66 @@ hr{
 }
 
 
-
 /* ===============================
-   تحرير النص
+   تحرير النص وتنسيق الواجهة
 =============================== */
-[contenteditable="true"]{
-  cursor:text;
-}
+[contenteditable="true"] { cursor: text; }
+[contenteditable="true"]:focus { outline: none; }
+[contenteditable="true"] span, [contenteditable="true"] b, [contenteditable="true"] i { cursor: text; }
 
-[contenteditable="true"]:focus{
-  outline:none;
-}
-
-[contenteditable="true"] span,
-[contenteditable="true"] b,
-[contenteditable="true"] i{
-  cursor:text;
-}
-
-
-.print-footer span{
-  margin: 0 6px;
-}
-/* ===== خلفية الورق ===== */
 body {
-  background: #f8f6f1; /* لون ورق مروّس فاخر */
+    background: #f8f6f1; /* لون ورق مروّس فاخر */
+    font-family: 'Cairo', 'Times New Roman', serif;
+    line-height: 1.6;
 }
 
-/* ===== إطار الصفحة ===== */
+/* إطار الصفحة الاحترافي */
 .page-frame {
-  border: 1.5px solid #0f766e;
-  padding: 18px;
-  min-height: 100%;
-  box-sizing: border-box;
-}
-
-/* عند الطباعة */
-@media print {
-  body {
-    background: #f8f6f1;
-  }
-
-  .page-frame {
     border: 1.5px solid #0f766e;
-  }
+    padding: 25px; /* زيادة التباعد الداخلي */
+    min-height: 100%;
+    box-sizing: border-box;
+    position: relative;
 }
 
-@page {
-  size: A4;
-  margin: 18mm 18mm 22mm 18mm;
+/* تنسيق الجداول لمنع الفراغات العشوائية */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
 }
 
+.contract-section {
+    margin-bottom: 20px;
+    text-align: justify; /* توزيع النص بشكل متساوي */
+}
+
+/* الخطوط */
+.lang-ar { font-family: 'Cairo', sans-serif; direction: rtl; }
+.lang-en { font-family: 'Arial', sans-serif; direction: ltr; font-size: 0.9em; color: #444; }
+
+/* تذييل الصفحة للطباعة */
 .print-footer {
-  position: fixed;
-  bottom: 10mm;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: 10px;
-  color: #6b7280;
+    position: fixed;
+    bottom: 10mm;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 10px;
+    color: #6b7280;
 }
+.print-footer span { margin: 0 6px; }
 
-.print-footer::after {
-  content: "Contract No: " attr(data-contract);
+/* إعدادات الطباعة النهائية */
+@media print {
+    body { background: #f8f6f1 !important; -webkit-print-color-adjust: exact; }
+    .page-frame { border: 1.5px solid #0f766e !important; }
+    .no-print { display: none; }
+    @page {
+        size: A4;
+        margin: 15mm;
+    }
 }
-
 
 </style>
 
