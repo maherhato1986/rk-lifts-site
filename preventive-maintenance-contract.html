@@ -660,13 +660,25 @@ let customer = null;
 const SELECTED_KEY  = 'rkl_selected_customer';
 
 function loadCustomersList(){
-  try{
-    return JSON.parse(localStorage.getItem(CUSTOMERS_KEY) || '[]');
-  }catch(e){
-    console.error('Error parsing rkl_customers', e);
-    return [];
+  const keysToTry = [
+    'rkl_customers',          // الأساسي
+    'customers',              // احتياط
+    'rklCustomers',           // احتياط
+    'rkl_customer_list'       // احتياط
+  ];
+
+  for (const k of keysToTry) {
+    try{
+      const raw = localStorage.getItem(k);
+      if(!raw) continue;
+      const arr = JSON.parse(raw);
+      if(Array.isArray(arr) && arr.length) return arr;
+    }catch(e){}
   }
+
+  return [];
 }
+
 
 function renderCustomerCard(c){
   const displayDiv = document.getElementById('customerInfo');
