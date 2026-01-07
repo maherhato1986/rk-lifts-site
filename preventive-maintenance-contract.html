@@ -1454,37 +1454,7 @@ function renderContractsTable(){
   });
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    // 1. محاولة جلب بيانات العميل المختار من الذاكرة
-    const savedCustomer = localStorage.getItem('rkl_selected_customer');
-    
-    if (savedCustomer) {
-        const customer = JSON.parse(savedCustomer);
-        
-        // 2. توزيع البيانات على الحقول (تأكد من مطابقة الـ id لكل حقل)
-        
-        // تعبئة اسم العميل
-        const nameField = document.getElementById('customer_name'); // تأكد أن هذا هو الـ ID في الـ HTML
-        if (nameField) nameField.value = customer.customer_name || '';
-        
-        // تعبئة رقم الجوال
-        const phoneField = document.getElementById('customer_phone');
-        if (phoneField) phoneField.value = customer.mobile || '';
 
-        // تعبئة الموقع (المدينة + الحي)
-        const locationField = document.getElementById('customer_location');
-        if (locationField) {
-            locationField.value = (customer.city || '') + ' - ' + (customer.district || '');
-        }
-
-        // تعبئة الرقم الضريبي (إن وجد في نموذج العقد)
-        const taxField = document.getElementById('tax_number');
-        if (taxField) taxField.value = customer.tax_number || '';
-
-        // بعد التعبئة، يفضل مسح الذاكرة لضمان عدم تكرار البيانات لعميل آخر بالخطأ لاحقاً
-        // localStorage.removeItem('rkl_selected_customer');
-    }
-});
 
 
 function reviewContract(){
@@ -1544,7 +1514,47 @@ function toggleOtherBrand(){
 }
 
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. جلب بيانات العميل المختار من الذاكرة المحلية
+    const savedCustomer = localStorage.getItem('rkl_selected_customer');
+    
+    if (savedCustomer) {
+        const customer = JSON.parse(savedCustomer);
+        
+        // 2. تعبئة الحقول بناءً على الـ IDs الموجودة في نسخة العقد الحالية
+        
+        // اسم العميل
+        if(document.getElementById('customerName')) {
+            document.getElementById('customerName').value = customer.customer_name || '';
+        }
+        
+        // الشخص المسؤول (المخول بالتوقيع)
+        if(document.getElementById('customerRepresentative')) {
+            document.getElementById('customerRepresentative').value = customer.contact_person || '';
+        }
+        
+        // رقم الجوال
+        if(document.getElementById('customerPhone')) {
+            document.getElementById('customerPhone').value = customer.mobile || '';
+        }
+        
+        // العنوان / الموقع (دمج المدينة والحي)
+        if(document.getElementById('customerAddress')) {
+            const fullAddr = (customer.city || '') + ' - ' + (customer.district || '');
+            document.getElementById('customerAddress').value = fullAddr;
+        }
 
+        // الرقم الضريبي
+        if(document.getElementById('customerTaxID')) {
+            document.getElementById('customerTaxID').value = customer.tax_number || '';
+        }
+
+        // تنظيف الذاكرة اختيارياً بعد التعبئة لضمان عدم الخلط في المرة القادمة
+        // localStorage.removeItem('rkl_selected_customer');
+    }
+});
+</script>
 
 
 
