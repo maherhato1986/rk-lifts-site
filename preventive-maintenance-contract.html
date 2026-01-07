@@ -441,9 +441,26 @@ button {
 
 
 <!-- ================== بيانات العميل ================== -->
+<!-- ================== بيانات العميل ================== -->
 <div class="section">
-<h3>أولاً: بيانات العميل</h3>
-<div id="customerInfo"></div>
+  <h3>أولاً: بيانات العميل</h3>
+
+  <div class="grid" style="align-items:end">
+    <div>
+      <label>اختيار العميل</label>
+      <select id="customerSelect">
+        <option value="">-- اختر العميل --</option>
+      </select>
+      <div style="margin-top:8px;font-size:12px;color:#6b7280">
+        إذا لم يظهر عميلك هنا، تأكد أنه محفوظ من صفحة إدارة العملاء.
+      </div>
+    </div>
+
+    <div>
+      <label>بيانات العميل</label>
+      <div id="customerInfo">—</div>
+    </div>
+  </div>
 </div>
 
 <!-- ================== إعدادات عامة ================== -->
@@ -646,20 +663,112 @@ button {
 
 
 <script>
-let customer=null;
+let customer = null;
 
-document.addEventListener('DOMContentLoaded',()=>{
-  const saved=localStorage.getItem('rkl_selected_customer');
-  if(!saved){alert('لم يتم اختيار عميل');return;}
-  customer=JSON.parse(saved);
+/* =========================================================
+   تحميل العملاء من التخزين (نفس فكرة elevator-quote)
+   - جرّب أكثر من مفتاح شائع عشان ما تتعطل لو اختلف اسم التخزين
+========================================================= */
+function getCustomersFromStorage(){
+  const possibleKeys = [
+    'rkl_customers',
+    'customers',
+    'rkl_customers_list',
+    'rkl_customer_list'
+  ];
 
-  document.getElementById('customerInfo').innerHTML=`
-    العميل: <span class="user-data">${customer.customer_name}</span>
+  for(const key of possibleKeys){
+    try{
+      const raw = localStorage.getItem(key);
+      if(!raw) continue;
+      const arr = JSON.parse(raw);
+      if(Array.isArray(arr) && arr.length) return arr;
+    }catch(e){}
+  }
+  return [];
+}
 
-    <p><b>الجوال:</b> ${customer.mobile}</p>
-    <p><b>العنوان:</b> ${customer.city} – ${customer.full_address||''}</p>
+function renderCustomerInfo(c){
+  const box = document.getElementById('customerInfo');
+  if(!c){
+    box.innerHTML = '—';
+    return;
+  }
+
+  box.innerHTML = `
+    العميل: <span class="user-data">${c.customer_name || c.name || '—'}</span>
+    <p><b>الجوال:</b> ${c.mobile || c.phone || '—'}</p>
+    <p><b>المدينة:</b> ${c.city || '—'}</p>
+    <p><b>العنوان:</b> ${(c.full_address || c.address || '—')}</p>
   `;
+}
+
+function fillCustomerSelect(){
+  const select = document.getElementById('customerSelect');
+  const customers = getCustomersFromStorage();
+
+  // تفريغ الخيارات
+  select.innerHTML = `<option value="">-- اختر العميل --</option>`;
+
+  // تعبئة الخيارات
+  customers.forEach((c, idx) => {
+    const name = c.customer_name || c.name || `عميل ${idx+1}`;
+    const city = c.city ? ` - ${c.city}` : '';
+    const opt = document.createElement('option');
+    opt.value = String(idx);
+    opt.textContent = `${name}${city}`;
+    select.appendChild(opt);
+  });
+
+  // إن كان هناك عميل مُحدد سابقًا
+  const saved = localStorage.getItem('rkl_selected_customer');
+  if(saved){
+    try{
+      const savedObj = JSON.parse(saved);
+      const savedName = savedObj.customer_name || savedObj.name || '';
+      const foundIndex = customers.findIndex(x => (x.customer_name || x.name || '') === savedName);
+      if(foundIndex > -1){
+        select.value = String(foundIndex);
+        customer = customers[foundIndex];
+        renderCustomerInfo(customer);
+        return;
+      }
+    }catch(e){}
+  }
+
+  // إذا ما في تحديد سابق: اعرض أول عميل (اختياري)
+  if(customers.length){
+    select.value = "0";
+    customer = customers[0];
+    localStorage.setItem('rkl_selected_customer', JSON.stringify(customer));
+    renderCustomerInfo(customer);
+  }else{
+    renderCustomerInfo(null);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  fillCustomerSelect();
+
+  document.getElementById('customerSelect').addEventListener('change', (e) => {
+    const customers = getCustomersFromStorage();
+    const idx = Number(e.target.value);
+
+    if(!e.target.value){
+      customer = null;
+      localStorage.removeItem('rkl_selected_customer');
+      renderCustomerInfo(null);
+      return;
+    }
+
+    customer = customers[idx] || null;
+    if(customer){
+      localStorage.setItem('rkl_selected_customer', JSON.stringify(customer));
+    }
+    renderCustomerInfo(customer);
+  });
 });
+
 
   function generateFullContractText(){
 
