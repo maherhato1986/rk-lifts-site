@@ -443,16 +443,7 @@ button {
 <!-- ================== بيانات العميل ================== -->
 <div class="section">
 <h3>أولاً: بيانات العميل</h3>
-
-<!-- ✅ اختيار عميل من القائمة -->
-<label style="display:block;margin:10px 0 6px;font-weight:700;">اختر العميل</label>
-<select id="customerSelect" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:10px;">
-  <option value="">— اختر عميل —</option>
-</select>
-
-<!-- ✅ عرض كامل بيانات العميل -->
-<div id="customerInfo" style="margin-top:10px;"></div>
-
+<div id="customerInfo"></div>
 </div>
 
 <!-- ================== إعدادات عامة ================== -->
@@ -655,138 +646,20 @@ button {
 
 
 <script>
-let customer = null;
-  const CUSTOMERS_KEY = 'rkl_customers';
-const SELECTED_KEY  = 'rkl_selected_customer';
+let customer=null;
 
-function loadCustomersList(){
-  const keysToTry = [
-    'rkl_customers',          // الأساسي
-    'customers',              // احتياط
-    'rklCustomers',           // احتياط
-    'rkl_customer_list'       // احتياط
-  ];
+document.addEventListener('DOMContentLoaded',()=>{
+  const saved=localStorage.getItem('rkl_selected_customer');
+  if(!saved){alert('لم يتم اختيار عميل');return;}
+  customer=JSON.parse(saved);
 
-  for (const k of keysToTry) {
-    try{
-      const raw = localStorage.getItem(k);
-      if(!raw) continue;
-      const arr = JSON.parse(raw);
-      if(Array.isArray(arr) && arr.length) return arr;
-    }catch(e){}
-  }
+  document.getElementById('customerInfo').innerHTML=`
+    العميل: <span class="user-data">${customer.customer_name}</span>
 
-  return [];
-}
-
-
-function renderCustomerCard(c){
-  const displayDiv = document.getElementById('customerInfo');
-  if(!displayDiv) return;
-
-  if(!c){
-    displayDiv.innerHTML = '<b style="color:#b91c1c">⚠️ الرجاء اختيار عميل من القائمة.</b>';
-    return;
-  }
-
-  const fullAddr = [
-    c.city || '',
-    c.district || '',
-    c.street || '',
-    c.full_address || ''
-  ].filter(Boolean).join(' - ');
-
-  displayDiv.innerHTML = `
-    <div style="background:#f0fdfa;padding:14px;border:1px solid #14b8a6;border-radius:12px;line-height:1.9">
-      <div><b>اسم العميل:</b> <span class="user-data">${c.customer_name || '—'}</span></div>
-      <div><b>نوع العميل:</b> ${c.customer_type === 'company' ? 'شركة' : (c.customer_type === 'individual' ? 'فرد' : (c.customer_type || '—'))}</div>
-      <div><b>المخول/الممثل:</b> ${c.contact_person || '—'}</div>
-      <div><b>الجوال:</b> ${c.mobile || '—'}</div>
-      <div><b>الهاتف:</b> ${c.phone || '—'}</div>
-      <div><b>البريد الإلكتروني:</b> ${c.email || '—'}</div>
-      <div><b>السجل التجاري:</b> ${c.cr_number || '—'}</div>
-      <div><b>الرقم الضريبي:</b> ${c.tax_number || '—'}</div>
-      <div><b>العنوان:</b> ${fullAddr || '—'}</div>
-    </div>
+    <p><b>الجوال:</b> ${customer.mobile}</p>
+    <p><b>العنوان:</b> ${customer.city} – ${customer.full_address||''}</p>
   `;
-}
-
-function setSelectedCustomer(c){
-  customer = c || null;
-  localStorage.setItem(SELECTED_KEY, JSON.stringify(c || {}));
-  renderCustomerCard(customer);
-}
-
-function populateCustomerSelect(){
-  const sel = document.getElementById('customerSelect');
-  if(!sel) return;
-
-  const customers = loadCustomersList();
-  sel.innerHTML = `<option value="">— اختر عميل —</option>`;
-
-  customers.forEach((c, idx) => {
-    const label = `${c.customer_name || 'عميل بدون اسم'} — ${c.city || ''} — ${c.mobile || ''}`.trim();
-    const opt = document.createElement('option');
-    opt.value = String(idx);
-    opt.textContent = label;
-    sel.appendChild(opt);
-  });
-
-  // ✅ لو يوجد عميل مختار مسبقًا من صفحة إدارة العملاء، حدده تلقائيًا
-  try{
-    const saved = localStorage.getItem(SELECTED_KEY);
-    if(saved){
-      const savedObj = JSON.parse(saved);
-      const matchIndex = customers.findIndex(x =>
-        (x.customer_name || '') === (savedObj.customer_name || '') &&
-        (x.mobile || '') === (savedObj.mobile || '')
-      );
-      if(matchIndex >= 0){
-        sel.value = String(matchIndex);
-        customer = customers[matchIndex];
-        renderCustomerCard(customer);
-        return;
-      }
-    }
-  }catch(e){}
-
-  renderCustomerCard(null);
-}
-
-
-function loadCustomerData() {
-    const saved = localStorage.getItem('rkl_selected_customer');
-    const displayDiv = document.getElementById('customerInfo');
-    
-    if (!saved) {
-        if (displayDiv) displayDiv.innerHTML = '<b style="color:red">⚠️ تنبيه: لم يتم اختيار عميل من النظام.</b>';
-        return;
-    }
-
-    try {
-        customer = JSON.parse(saved);
-        if (displayDiv) {
-            displayDiv.innerHTML = `
-                <div style="line-height:1.8">
-                    <b>اسم العميل:</b> <span class="user-data">${customer.customer_name || 'غير متوفر'}</span><br>
-                    <b>رقم الجوال:</b> ${customer.mobile || 'غير متوفر'}<br>
-                    <b>العنوان:</b> ${customer.city || ''} ${customer.full_address || ''}
-                </div>
-            `;
-        }
-    } catch (e) {
-        console.error("خطأ في قراءة بيانات العميل:", e);
-    }
-}
-
-// ✅ شغّل تحميل العميل + تعبئة الجدول عند فتح الصفحة
-window.addEventListener('load', function () {
-  populateCustomerSelect();   // ✅ يعبي القائمة ويعرض بيانات العميل المختار إن وجد
-  renderContractsTable();     // كما عندك (اختياري)
 });
-
-
-
 
   function generateFullContractText(){
 
@@ -1533,7 +1406,7 @@ function renderContractsTable(){
   });
 }
 
-
+document.addEventListener('DOMContentLoaded', renderContractsTable);
 
 
 function reviewContract(){
@@ -1593,41 +1466,8 @@ function toggleOtherBrand(){
 }
 
 </script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // 1. جلب البيانات من "صندوق الأمانات" في المتصفح
-    const savedCustomerData = localStorage.getItem('rkl_selected_customer');
-    
-    if (savedCustomerData) {
-        // 2. تحويل النص إلى كائن (Object)
-        const customer = JSON.parse(savedCustomerData);
-        
-        // 3. توزيع البيانات على الحقول (تطابق مع IDs ملفك رقم 19)
-        
-        // حقل اسم العميل
-        if(document.getElementById('customerName')) 
-            document.getElementById('customerName').value = customer.customer_name || '';
-            
-        // حقل المسؤول/الممثل
-        if(document.getElementById('customerRepresentative')) 
-            document.getElementById('customerRepresentative').value = customer.contact_person || '';
-            
-        // حقل الجوال
-        if(document.getElementById('customerPhone')) 
-            document.getElementById('customerPhone').value = customer.mobile || '';
-            
-        // حقل العنوان (دمج المدينة والحي والشارع)
-        if(document.getElementById('customerAddress')) {
-            const fullAddr = (customer.city || '') + ' - ' + (customer.district || '') + ' - ' + (customer.street || '');
-            document.getElementById('customerAddress').value = fullAddr;
-        }
-            
-        // حقل الرقم الضريبي
-        if(document.getElementById('customerTaxID')) 
-            document.getElementById('customerTaxID').value = customer.tax_number || '';
-    }
-});
-</script>
+
+
 
 
 </body>
