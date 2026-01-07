@@ -1093,12 +1093,11 @@ function calculateTotal(){
 
   
 function saveContract(){
-
- if(!customer){
-  alert('بيانات العميل غير موجودة');
-  return;
-}
-
+  // التأكد من اختيار عميل أولاً
+  if(!customer){
+    alert('بيانات العميل غير موجودة، يرجى اختيار عميل من القائمة');
+    return;
+  }
 
   const required = ['lang','contractDate','lifts','capacity','floors'];
   for(const id of required){
@@ -1112,9 +1111,9 @@ function saveContract(){
 
   const contract = {
     id: 'PMC-' + Date.now(),
-    customer: customer.customer_name,
+    customer: customer.customer_name || customer.name,
     lifts: document.getElementById('lifts').value,
-    total: calc.total.toFixed(2) + ' ريال',
+    total: calc.total + ' ريال',
     lang: document.getElementById('lang').value,
     date: document.getElementById('contractDate').value,
     content: generateFullContractText()
@@ -1130,11 +1129,11 @@ function saveContract(){
     JSON.stringify(contracts)
   );
 
+  // السطر الأهم: تحديث الجدول فوراً
   renderContractsTable();
 
-  alert('✅ تم حفظ العقد بنجاح، يمكنك طباعته من الجدول بالأسفل');
+  alert('✅ تم حفظ العقد بنجاح، وظهوره في الجدول بالأسفل');
 }
-
 
  
 
@@ -1494,8 +1493,8 @@ function renderContractsTable(){
   tbody.innerHTML = '';
 
   contracts.forEach((c, i) => {
-    tbody.innerHTML += `
-      <tr>
+    const row = document.createElement('tr');
+    row.innerHTML = `
         <td>${i+1}</td>
         <td>${c.id}</td>
         <td>${c.customer}</td>
@@ -1504,10 +1503,18 @@ function renderContractsTable(){
         <td>${c.lang}</td>
         <td>${c.date}</td>
         <td>
-          <button onclick='openPrintView(${JSON.stringify(c)})'>طباعة</button>
+          <button class="print-btn" data-index="${i}">طباعة</button>
         </td>
-      </tr>
     `;
+    tbody.appendChild(row);
+  });
+
+  // إضافة أحداث الضغط للأزرار بشكل آمن
+  document.querySelectorAll('.print-btn').forEach(btn => {
+    btn.onclick = function() {
+      const idx = this.getAttribute('data-index');
+      openPrintView(contracts[idx]);
+    };
   });
 }
 
