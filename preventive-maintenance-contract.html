@@ -443,7 +443,16 @@ button {
 <!-- ================== بيانات العميل ================== -->
 <div class="section">
 <h3>أولاً: بيانات العميل</h3>
-<div id="customerInfo"></div>
+
+<!-- ✅ اختيار عميل من القائمة -->
+<label style="display:block;margin:10px 0 6px;font-weight:700;">اختر العميل</label>
+<select id="customerSelect" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:10px;">
+  <option value="">— اختر عميل —</option>
+</select>
+
+<!-- ✅ عرض كامل بيانات العميل -->
+<div id="customerInfo" style="margin-top:10px;"></div>
+
 </div>
 
 <!-- ================== إعدادات عامة ================== -->
@@ -647,6 +656,91 @@ button {
 
 <script>
 let customer = null;
+  const CUSTOMERS_KEY = 'rkl_customers';
+const SELECTED_KEY  = 'rkl_selected_customer';
+
+function loadCustomersList(){
+  try{
+    return JSON.parse(localStorage.getItem(CUSTOMERS_KEY) || '[]');
+  }catch(e){
+    console.error('Error parsing rkl_customers', e);
+    return [];
+  }
+}
+
+function renderCustomerCard(c){
+  const displayDiv = document.getElementById('customerInfo');
+  if(!displayDiv) return;
+
+  if(!c){
+    displayDiv.innerHTML = '<b style="color:#b91c1c">⚠️ الرجاء اختيار عميل من القائمة.</b>';
+    return;
+  }
+
+  const fullAddr = [
+    c.city || '',
+    c.district || '',
+    c.street || '',
+    c.full_address || ''
+  ].filter(Boolean).join(' - ');
+
+  displayDiv.innerHTML = `
+    <div style="background:#f0fdfa;padding:14px;border:1px solid #14b8a6;border-radius:12px;line-height:1.9">
+      <div><b>اسم العميل:</b> <span class="user-data">${c.customer_name || '—'}</span></div>
+      <div><b>نوع العميل:</b> ${c.customer_type === 'company' ? 'شركة' : (c.customer_type === 'individual' ? 'فرد' : (c.customer_type || '—'))}</div>
+      <div><b>المخول/الممثل:</b> ${c.contact_person || '—'}</div>
+      <div><b>الجوال:</b> ${c.mobile || '—'}</div>
+      <div><b>الهاتف:</b> ${c.phone || '—'}</div>
+      <div><b>البريد الإلكتروني:</b> ${c.email || '—'}</div>
+      <div><b>السجل التجاري:</b> ${c.cr_number || '—'}</div>
+      <div><b>الرقم الضريبي:</b> ${c.tax_number || '—'}</div>
+      <div><b>العنوان:</b> ${fullAddr || '—'}</div>
+    </div>
+  `;
+}
+
+function setSelectedCustomer(c){
+  customer = c || null;
+  localStorage.setItem(SELECTED_KEY, JSON.stringify(c || {}));
+  renderCustomerCard(customer);
+}
+
+function populateCustomerSelect(){
+  const sel = document.getElementById('customerSelect');
+  if(!sel) return;
+
+  const customers = loadCustomersList();
+  sel.innerHTML = `<option value="">— اختر عميل —</option>`;
+
+  customers.forEach((c, idx) => {
+    const label = `${c.customer_name || 'عميل بدون اسم'} — ${c.city || ''} — ${c.mobile || ''}`.trim();
+    const opt = document.createElement('option');
+    opt.value = String(idx);
+    opt.textContent = label;
+    sel.appendChild(opt);
+  });
+
+  // ✅ لو يوجد عميل مختار مسبقًا من صفحة إدارة العملاء، حدده تلقائيًا
+  try{
+    const saved = localStorage.getItem(SELECTED_KEY);
+    if(saved){
+      const savedObj = JSON.parse(saved);
+      const matchIndex = customers.findIndex(x =>
+        (x.customer_name || '') === (savedObj.customer_name || '') &&
+        (x.mobile || '') === (savedObj.mobile || '')
+      );
+      if(matchIndex >= 0){
+        sel.value = String(matchIndex);
+        customer = customers[matchIndex];
+        renderCustomerCard(customer);
+        return;
+      }
+    }
+  }catch(e){}
+
+  renderCustomerCard(null);
+}
+
 
 function loadCustomerData() {
     const saved = localStorage.getItem('rkl_selected_customer');
@@ -675,13 +769,13 @@ function loadCustomerData() {
 
 // ✅ شغّل تحميل العميل + تعبئة الجدول عند فتح الصفحة
 window.addEventListener('load', function () {
-  loadCustomerData();     // يعبّي المتغير العالمي customer + يعرض البيانات داخل #customerInfo
-  renderContractsTable(); // اختياري: يعرض العقود المحفوظة في الجدول
+  populateCustomerSelect();   // ✅ يعبي القائمة ويعرض بيانات العميل المختار إن وجد
+  renderContractsTable();     // كما عندك (اختياري)
 });
 
 
 
-  
+
   function generateFullContractText(){
 
   const lang = document.getElementById('lang').value;
