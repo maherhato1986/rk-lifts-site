@@ -1454,7 +1454,37 @@ function renderContractsTable(){
   });
 }
 
-document.addEventListener('DOMContentLoaded', renderContractsTable);
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. محاولة جلب بيانات العميل المختار من الذاكرة
+    const savedCustomer = localStorage.getItem('rkl_selected_customer');
+    
+    if (savedCustomer) {
+        const customer = JSON.parse(savedCustomer);
+        
+        // 2. توزيع البيانات على الحقول (تأكد من مطابقة الـ id لكل حقل)
+        
+        // تعبئة اسم العميل
+        const nameField = document.getElementById('customer_name'); // تأكد أن هذا هو الـ ID في الـ HTML
+        if (nameField) nameField.value = customer.customer_name || '';
+        
+        // تعبئة رقم الجوال
+        const phoneField = document.getElementById('customer_phone');
+        if (phoneField) phoneField.value = customer.mobile || '';
+
+        // تعبئة الموقع (المدينة + الحي)
+        const locationField = document.getElementById('customer_location');
+        if (locationField) {
+            locationField.value = (customer.city || '') + ' - ' + (customer.district || '');
+        }
+
+        // تعبئة الرقم الضريبي (إن وجد في نموذج العقد)
+        const taxField = document.getElementById('tax_number');
+        if (taxField) taxField.value = customer.tax_number || '';
+
+        // بعد التعبئة، يفضل مسح الذاكرة لضمان عدم تكرار البيانات لعميل آخر بالخطأ لاحقاً
+        // localStorage.removeItem('rkl_selected_customer');
+    }
+});
 
 
 function reviewContract(){
