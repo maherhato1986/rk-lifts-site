@@ -1090,24 +1090,27 @@ function calculateTotal(){
 
 
 
-
-function saveContract(){
-  if(!customer){
-    alert('يرجى اختيار العميل أولاً');
+function saveContract() {
+  // 1. التأكد من اختيار العميل
+  if (!customer) {
+    alert('يرجى اختيار العميل أولاً من القائمة المنسدلة');
     return;
   }
 
-  // التحقق من الحقول الأساسية
-  const required = ['lang','contractDate','lifts','capacity','floors'];
-  for(const id of required){
-    if(!document.getElementById(id).value){
-      alert('يرجى تعبئة الحقول المطلوبة');
+  // 2. التحقق من الحقول الإلزامية
+  const required = ['lang', 'contractDate', 'lifts', 'capacity', 'floors'];
+  for (const id of required) {
+    const el = document.getElementById(id);
+    if (!el || !el.value) {
+      alert('يرجى تعبئة جميع الحقول المطلوبة');
       return;
     }
   }
 
+  // 3. حساب القيم
   const calc = calculateTotal();
 
+  // 4. تجهيز كائن العقد
   const contract = {
     id: 'PMC-' + Date.now(),
     customer: customer.customer_name || customer.name || 'عميل غير معروف',
@@ -1118,14 +1121,15 @@ function saveContract(){
     content: generateFullContractText()
   };
 
+  // 5. الحفظ في LocalStorage
   const contracts = JSON.parse(localStorage.getItem('rkl_maintenance_contracts') || '[]');
   contracts.push(contract);
   localStorage.setItem('rkl_maintenance_contracts', JSON.stringify(contracts));
 
-  // تحديث الجدول فوراً
+  // 6. تحديث الجدول في الصفحة فوراً
   renderContractsTable();
-  
-  alert('✅ تم الحفظ بنجاح وظهور العقد في الجدول');
+
+  alert('✅ تم حفظ العقد بنجاح');
 }
 
  
@@ -1482,31 +1486,60 @@ function getBrandValue(){
 
 function renderContractsTable(){
   const tbody = document.getElementById('contractsTable');
-  if (!tbody) return; // للتأكد من وجود الجدول في الصفحة
+  if (!tbody) return;
 
-  const contracts = JSON.parse(localStorage.getItem('rkl_maintenance_contracts') || '[]');
+  const contracts = JSON.parse(
+    localStorage.getItem('rkl_maintenance_contracts') || '[]'
+  );
+
   tbody.innerHTML = '';
 
   contracts.forEach((c, i) => {
+
+    /* =========================
+       معالجة بيانات العميل
+       - يدعم Object أو نص قديم
+    ========================= */
+    let customerName = '—';
+    let customerCity = '';
+
+    if (typeof c.customer === 'object' && c.customer !== null) {
+      customerName = c.customer.customer_name || c.customer.name || '—';
+      customerCity = c.customer.city ? ` - ${c.customer.city}` : '';
+    } else if (typeof c.customer === 'string') {
+      customerName = c.customer;
+    }
+
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td>${i+1}</td>
-      <td>${c.id}</td>
-      <td>${c.customer}</td>
-      <td>${c.lifts}</td>
-      <td>${c.total}</td>
-      <td>${c.lang}</td>
-      <td>${c.date}</td>
+      <td>${i + 1}</td>
+      <td>${c.id || '—'}</td>
       <td>
-        <button type="button" class="print-btn-action" data-index="${i}">طباعة</button>
+        <strong>${customerName}</strong>
+        <div style="font-size:12px;color:#6b7280">${customerCity}</div>
+      </td>
+      <td>${c.lifts || '—'}</td>
+      <td>${c.total || '—'}</td>
+      <td>${c.lang || '—'}</td>
+      <td>${c.date || '—'}</td>
+      <td>
+        <button
+          type="button"
+          class="print-btn-action"
+          data-index="${i}">
+          طباعة
+        </button>
       </td>
     `;
+
     tbody.appendChild(row);
   });
 
-  // ربط أزرار الطباعة بالدالة بشكل آمن برمجياً
+  /* =========================
+     ربط أزرار الطباعة
+  ========================= */
   document.querySelectorAll('.print-btn-action').forEach(btn => {
-    btn.onclick = function() {
+    btn.onclick = function () {
       const idx = this.getAttribute('data-index');
       openPrintView(contracts[idx]);
     };
