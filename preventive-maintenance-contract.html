@@ -733,7 +733,7 @@ if (brandSelect === 'Local') {
   <table>
     <tr>
       <td class="label">قيمة العقد قبل ضريبة القيمة المضافة</td>
-      <td class="value">$(Number(calc.total) / 1.15).toFixed(2)} ريال سعودي</td>
+      <td class="value">${(calc.total / 1.15).toFixed(2)} ريال سعودي</td>
     </tr>
     <tr>
       <td class="label">ضريبة القيمة المضافة (15%)</td>
@@ -741,7 +741,7 @@ if (brandSelect === 'Local') {
     </tr>
     <tr>
       <td class="label total">إجمالي قيمة العقد شامل الضريبة</td>
-      <td class="value total">${calc.total} ريال سعودي </td>
+      <td class="value total">${calc.total.toFixed(2)} ريال سعودي</td>
     </tr>
   </table>
 
@@ -991,16 +991,13 @@ function saveContract(){
 }
 
 
-
   const required = ['lang','contractDate','lifts','capacity','floors'];
-for(const id of required){
-  const el = document.getElementById(id);
-  if(!el || !el.value){
-    alert('الحقل التالي مطلوب: ' + id);
-    return;
+  for(const id of required){
+    if(!document.getElementById(id).value){
+      alert('يرجى تعبئة جميع الحقول الإلزامية');
+      return;
+    }
   }
-}
-
 
   const calc = calculateTotal();
 
@@ -1008,8 +1005,7 @@ for(const id of required){
     id: 'PMC-' + Date.now(),
     customer: customer.customer_name,
     lifts: document.getElementById('lifts').value,
-    total: calc.total + ' ريال',
-
+    total: calc.total.toFixed(2) + ' ريال',
     lang: document.getElementById('lang').value,
     date: document.getElementById('contractDate').value,
     content: generateFullContractText()
@@ -1424,8 +1420,7 @@ function reviewContract(){
   const building=document.getElementById('building').value;
   const brandSelect = document.getElementById('brandSelect').value || '';
 const brandOther  = document.getElementById('brandOther')?.value || '';
-const brand = getBrandValue();
-
+const brand = (brandSelect === 'Other' || brandSelect === 'Local')
   ? brandOther.toLowerCase()
   : brandSelect.toLowerCase();
 
