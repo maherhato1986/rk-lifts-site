@@ -799,49 +799,65 @@ if (brandSelect === 'Local') {
 
   const calc = calculateTotal();
 
-  /* ================== النص العربي ================== */
-  const ar = `
-بتوفيق من الله تم الاتفاق بتاريخ : ${date} ، بين كل من:
+/* ================== النص العربي ================== */
+const ar = `
+بعون الله وتوفيقه، فقد تم في يوم ${date} إبرام هذا العقد بين كلٍ من:
 
-(الطرف الأول)
+أولًا: الطرف الأول  
 مؤسسة آر كي ال RKL للمصاعد والسلالم الكهربائية  
-سجل تجاري رقم (1010709355)  
-الرياض – هاتف 0114774021  
-العنوان: السليمانية – الرياض  
-رقم تعميد الدفاع المدني: 1-001335970-45  
+سجل تجاري رقم: (1010709355)  
+رقم التعريف الضريبي: (302250422600003)  
+العنوان: حي السليمانية – مدينة الرياض – المملكة العربية السعودية  
+هاتف: 0114774021  
+ويُشار إليها لاحقًا بـ (الطرف الأول)
 
-(الطرف الثاني)
-العميل: ${customer.customer_name}  
+ثانيًا: الطرف الثاني  
+اسم العميل: ${customer.customer_name}  
 رقم الجوال: ${mobile}  
 العنوان: ${address}  
+ويُشار إليه لاحقًا بـ (الطرف الثاني)
 
-مقدمة العقد:
-بناءً على رغبة الطرف الثاني بصيانة عدد (${lifts}) مصعد
-نوع المصعد (${brand}) – مصاعد ركاب
-لمبنى (${buildingType}) في مدينة ${city}،
-فقد تم إسناد أعمال هذا العقد للطرف الأول وفق البنود التالية:
+### تمهيد:
+نظرًا لرغبة الطرف الثاني في التعاقد على أعمال الصيانة الوقائية الدورية لعدد (${lifts}) مصعد/مصاعد ركاب،
+من نوع (${brand})، تخدم مبنى (${buildingType}) الكائن في مدينة (${city})،
+وحيث إن الطرف الأول جهة متخصصة ومرخصة في أعمال صيانة المصاعد والسلالم الكهربائية،
+فقد اتفق الطرفان – وهما بكامل أهليتهما الشرعية والنظامية – على ما يلي:
 
-بنود العقد:
+### المادة (1): نطاق العقد
+يلتزم الطرف الأول بتقديم خدمات الصيانة الوقائية الدورية للمصاعد المشمولة بالعقد، وفقًا للمعايير الفنية المعتمدة وأنظمة السلامة المعمول بها في المملكة العربية السعودية.
 
-1- يقوم الطرف الأول بتقديم خدمات الصيانة الدورية مرة كل شهر بواسطة فنيين مؤهلين على مستوى عالٍ من الكفاءة، وذلك لفحص جميع المعدات وضبط نظافة جميع المحركات وأجهزة التحكم والأمان والتزييت والتشحيم لجميع حوامل المعدات وثوابتها.
+### المادة (2): أعمال الصيانة الوقائية
+تشمل أعمال الصيانة الوقائية – دون حصر – ما يلي:
+- الفحص الدوري الشهري لجميع مكونات المصعد.
+- تنظيف وتزييت الأجزاء الميكانيكية المتحركة.
+- فحص أجهزة الأمان وأنظمة التحكم.
+- التأكد من سلامة المحركات، الكوابح، الحبال، والأبواب.
+- تسجيل الملاحظات الفنية والتوصيات اللازمة.
 
-2- على الطرف الثاني إبلاغ الطرف الأول فورًا في حال حدوث تشغيل غير طبيعي أو توقف أي من المعدات، ليقوم الطرف الأول بتقديم خدمات الصيانة بواسطة فنيين متخصصين لتصحيح أوضاع التشغيل غير الطبيعية وإعادة المعدات إلى حالة التشغيل.
+### المادة (3): البلاغات والأعطال
+يلتزم الطرف الثاني بإبلاغ الطرف الأول فور ملاحظة أي خلل أو توقف غير طبيعي، ويقوم الطرف الأول باتخاذ الإجراءات اللازمة لإعادة المصعد إلى وضع التشغيل الطبيعي.
 
-3- يلتزم الطرف الأول بتدريب واحد أو اثنين من موظفي صيانة المبنى (يتم تعيينهم من قبل الطرف الثاني) على إجراءات إنقاذ الركاب المحتجزين داخل المصعد في حال حدوث عطل.
+### المادة (4): الاستجابة للطوارئ
+يلتزم الطرف الأول بالاستجابة لبلاغات الأعطال الطارئة خلال مدة زمنية معقولة حسب موقع المشروع وطبيعة العطل.
 
-4- يوافق الطرف الأول على توفير جميع زيوت التروس والشحوم ومواد التنظيف اللازمة لأعمال الصيانة.
+### المادة (5): تدريب موظفي العميل
+يلتزم الطرف الأول بتدريب عدد (1–2) من موظفي الطرف الثاني على إجراءات إنقاذ الركاب المحتجزين داخل المصعد في حالات الطوارئ.
 
-5- يوافق الطرف الثاني على تحمّل تكلفة استبدال قطع الغيار التالفة بأخرى أصلية على نفقته الخاصة.
+### المادة (6): المستلزمات التشغيلية
+يتعهد الطرف الأول بتوفير الزيوت، الشحوم، ومواد التنظيف اللازمة لأعمال الصيانة الوقائية.
 
-6- يقوم الطرف الأول بتنفيذ خدمات الصيانة المذكورة أعلاه مقابل أجور الصيانة السنوية المتفق عليها، والتي يلتزم الطرف الثاني بسدادها وفق التفاصيل التالية:
+### المادة (7): قطع الغيار
+لا يشمل هذا العقد توريد أو استبدال قطع الغيار، ويتحمل الطرف الثاني تكلفة أي قطع غيار يتم استبدالها، ويتم تسعيرها بعرض سعر مستقل ومعتمد.
+
+### المادة (8): قيمة العقد
+يلتزم الطرف الثاني بسداد قيمة العقد السنوي وفق البيان التالي:
 <div class="page-break"></div>
 
 <div class="contract-summary">
   <h4>ملخص القيمة الإجمالية للعقد</h4>
-
   <table>
     <tr>
-      <td class="label">قيمة العقد قبل ضريبة القيمة المضافة</td>
+      <td class="label">قيمة العقد قبل الضريبة</td>
       <td class="value">${(calc.total / 1.15).toFixed(2)} ريال سعودي</td>
     </tr>
     <tr>
@@ -853,115 +869,144 @@ if (brandSelect === 'Local') {
       <td class="value total">${calc.total.toFixed(2)} ريال سعودي</td>
     </tr>
   </table>
-
-  <div class="words">
-    <b>إجمالي قيمة العقد كتابةً:</b><br>
-    ${calc.total.toFixed(2)} ريال سعودي
-  </div>
 </div>
 
-<p>
-يُعد هذا المبلغ ملزمًا للطرفين بعد اعتماد العقد، ولا يشمل أي أعمال أو قطع غيار إضافية
-ما لم يتم الاتفاق عليها بعرض سعر مستقل وخطي.
-</p>
-
-• تاريخ بداية العقد:
-${date}
-
-• تاريخ نهاية العقد:
-${(() => {
+### المادة (9): مدة العقد
+تسري مدة هذا العقد لمدة سنة ميلادية واحدة تبدأ من:
+- تاريخ البداية: ${date}
+- تاريخ الانتهاء: ${(() => {
   const d = new Date(date);
   d.setFullYear(d.getFullYear() + 1);
   return d.toISOString().split('T')[0];
 })()}
 
-ويُعد هذا المبلغ ملزمًا للطرفين بعد اعتماد العقد، ولا يشمل أي أعمال أو قطع غيار إضافية ما لم يتم الاتفاق عليها بعرض سعر مستقل وخطي.
+ويتجدد العقد تلقائيًا ما لم يُخطر أحد الطرفين الآخر خطيًا بعدم الرغبة في التجديد قبل (60) يومًا من تاريخ الانتهاء.
 
-
-بيانات التحويل البنكي:
+### المادة (10): السداد والتحويل البنكي
+تُسدد الدفعات عبر التحويل البنكي إلى الحساب التالي:
 البنك: البنك الأهلي السعودي (SNB)  
 اسم الحساب: آر كي ال RKL  
 رقم الحساب: 01400005531406  
 الآيبان: SA1710000001400005531406  
 
-7- في حال إخفاق الطرف الثاني في سداد المستحقات في مواعيدها، يحق للطرف الأول إيقاف الأعمال فورًا دون أدنى مسؤولية عن أي أعطال أو حوادث خلال فترة الإيقاف، ويتحمل الطرف الثاني كامل المسؤولية.
+### المادة (11): الإيقاف بسبب عدم السداد
+يحق للطرف الأول إيقاف أعمال الصيانة مؤقتًا في حال تأخر الطرف الثاني عن السداد، دون أي مسؤولية قانونية.
 
-8- في حالات الطوارئ، يلتزم الطرف الثاني بالتواصل مع مكتب الصيانة هاتفيًا، والطرف الأول على استعداد لتلبية نداءات الطوارئ.
+### المادة (12): حدود المسؤولية
+لا يتحمل الطرف الأول أي مسؤولية عن الأعطال الناتجة عن:
+- سوء الاستخدام أو التحميل الزائد
+- العبث أو التخريب
+- انقطاع أو ضعف التيار الكهربائي
+- الكوارث الطبيعية أو الظروف القاهرة
+- تدخل أطراف غير معتمدة
 
-9- يوافق الطرف الأول على توفير فنيين مؤهلين في حالات الطوارئ أو المناسبات الخاصة مقابل رسوم إضافية حسب الطلب.
+### المادة (13): السلامة
+يلتزم الطرف الثاني بتوفير بيئة عمل آمنة داخل موقع المصاعد وفق اشتراطات السلامة المعتمدة.
 
-10- يسري هذا العقد لمدة سنة ميلادية ويتجدد تلقائيًا لمدة مماثلة ما لم يخطر أحد الطرفين الآخر خطيًا بعدم الرغبة في التجديد قبل 60 يومًا من تاريخ الانتهاء.
-11- لا يتحمل الطرف الأول أي مسؤولية عن الأعطال أو الأضرار الناتجة عن سوء الاستخدام، أو انقطاع التيار الكهربائي، أو الكوارث الطبيعية، أو أي تدخل من طرف ثالث غير معتمد.
-12- لا يتحمل الطرف الأول أي مسؤولية عن الأعطال الناتجة عن سوء الاستخدام، أو التحميل الزائد، أو العبث بالمصعد من قبل المستخدمين، وتكون معالجة هذه الأعطال بعرض سعر مستقل.
-13- يشمل هذا العقد أعمال الفحص والتنظيف والضبط، ولا يشمل توريد قطع الغيار إلا في حال النص على ذلك صراحة، ويتم تسعير قطع الغيار عند الحاجة بعرض سعر منفصل.
-14- يلتزم الطرف الأول بالاستجابة لبلاغات الأعطال الطارئة خلال مدة زمنية معقولة حسب موقع المشروع وطبيعة العطل، ولا يُعد التأخير الناتج عن ظروف خارجة عن الإرادة إخلالًا ببنود العقد.
-15- يلتزم الطرف الثاني بتوفير تغذية كهربائية مستقرة ومطابقة للمواصفات، ولا يتحمل الطرف الأول أي أعطال ناتجة عن ضعف أو انقطاع التيار الكهربائي.
-16- في حال تأخر الطرف الثاني عن سداد أي مستحقات مالية، يحق للطرف الأول تعليق أعمال الصيانة مؤقتًا إلى حين السداد دون أن يُعد ذلك إخلالًا بالعقد.
-17- أي زيارات إضافية خارج جدول الصيانة الوقائية المتفق عليه تُحتسب كزيارات إضافية ويتم تسعيرها بشكل منفصل.
-18- يلتزم الطرف الثاني بتوفير بيئة عمل آمنة داخل موقع المصعد، ولا يتحمل الطرف الأول أي مسؤولية عن الحوادث الناتجة عن عدم الالتزام بإجراءات السلامة داخل الموقع.
-19- لا يجوز إجراء أي تعديلات فنية أو برمجية على المصاعد من قبل أي طرف ثالث دون موافقة خطية من الطرف الأول.
-20- لا يُعد الطرف الأول مسؤولًا عن التأخير أو عدم التنفيذ الناتج عن ظروف قاهرة خارجة عن الإرادة مثل الكوارث الطبيعية، أو القرارات الحكومية، أو الحوادث العامة.
-21- يحق لأي من الطرفين إنهاء العقد بإشعار خطي قبل (30) يومًا، شريطة تسوية جميع الالتزامات المالية المترتبة حتى تاريخ الإنهاء.
-22- في حال حدوث أي نزاع – لا قدر الله – تكون الجهات القضائية المختصة في المملكة العربية السعودية هي المرجع للفصل فيه.
+### المادة (14): الإنهاء
+يجوز لأي من الطرفين إنهاء العقد بإشعار خطي مسبق مدته (30) يومًا، مع تسوية جميع الالتزامات المالية حتى تاريخ الإنهاء.
+### المادة (15): استحقاق كامل قيمة العقد
+يقر الطرف الثاني ويوافق صراحةً بأنه بمجرد سداد أي دفعة مالية من قيمة هذا العقد – سواء كانت دفعة جزئية أو أولية – فإن ذلك يُعد إقرارًا نهائيًا بالالتزام بكامل قيمة العقد السنوية، وتصبح القيمة الإجمالية للعقد مستحقة السداد للطرف الأول كاملةً، ولا يحق للطرف الثاني المطالبة بإلغاء العقد أو تخفيض قيمته أو تعليق الالتزام المالي لأي سبب كان بعد السداد الجزئي.
+
+### المادة (16): احتساب الزيارات في حال توقف المصعد
+يقر الطرف الثاني ويوافق على أن الزيارة الميدانية التي يقوم بها الطرف الأول تُعد زيارة صيانة مكتملة ضمن جدول الصيانة الوقائية المتفق عليه، حتى في حال كان المصعد متوقفًا عن العمل، أو تبين أثناء الزيارة وجود عطل يتطلب استبدال قطع غيار أو أعمال إضافية غير مشمولة في هذا العقد.
+
+ولا يلتزم الطرف الأول بإعادة زيارة الموقع أو تنفيذ أعمال إضافية إلا بعد اعتماد عرض سعر مستقل لتوريد أو استبدال قطع الغيار المطلوبة، وتُعد الزيارة المنفذة في هذه الحالة زيارة محتسبة ومكتملة ولا تُعاد مجانًا.
+
+### المادة (17): الاختصاص القضائي
+في حال نشوء أي نزاع – لا قدر الله – يكون الاختصاص القضائي للمحاكم المختصة في المملكة العربية السعودية.
+
+وبهذا تم توقيع هذا العقد بموافقة الطرفين، ويُعد نافذًا وملزمًا من تاريخ اعتماده.
 `;
 
-  /* ================== النص الإنجليزي ================== */
-  const en = `
-With the grace of God, this agreement was concluded on ${date} between:
 
-(First Party)
+/* ================== English Text ================== */
+const en = `
+By the grace of God, this Annual Preventive Maintenance Agreement was executed on ${date} between:
+
+First Party  
 RKL Elevators & Escalators  
-Commercial Registration No. 1010709355  
-Riyadh – Tel: 0114774021  
+Commercial Registration No.: 1010709355  
+VAT No.: 302250422600003  
+Address: Al Sulaymaniyah – Riyadh – Saudi Arabia  
+Tel: 0114774021  
+Hereinafter referred to as the “First Party”
 
-(Second Party)
-Customer: ${customer.customer_name}  
-Mobile: ${mobile}  
+Second Party  
+Customer Name: ${customer.customer_name}  
+Mobile No.: ${mobile}  
 Address: ${address}  
+Hereinafter referred to as the “Second Party”
 
-Introduction:
-Based on the second party’s request to maintain (${lifts}) passenger elevator(s),
-Brand (${brand}), located in a ${buildingType} building in ${city},
-the first party shall perform the maintenance services under the following terms:
+### Preamble:
+Whereas the Second Party desires to engage the First Party for annual preventive maintenance services for (${lifts}) passenger elevator(s),
+Brand (${brand}), serving a (${buildingType}) building located in (${city}),
+and whereas the First Party is a duly licensed and qualified elevator maintenance contractor,
+the parties hereby agree as follows:
 
-Contract Terms:
+### Article (1): Scope of Agreement
+The First Party shall provide preventive maintenance services in accordance with applicable safety standards and regulations of the Kingdom of Saudi Arabia.
 
-1- The first party shall provide periodic preventive maintenance once per month by highly qualified technicians to inspect all equipment, motors, controllers, safety devices, lubrication and cleaning.
+### Article (2): Preventive Maintenance Services
+Preventive maintenance services shall include, but not be limited to:
+- Monthly inspection of all elevator components
+- Cleaning and lubrication of mechanical parts
+- Inspection of safety devices and control systems
+- Functional testing of motors, brakes, ropes, and doors
+- Issuance of technical observations and recommendations
 
-2- The second party shall immediately notify the first party in case of abnormal operation or stoppage of any equipment to restore normal operation.
+### Article (3): Fault Reporting
+The Second Party shall promptly notify the First Party of any abnormal operation or stoppage.
 
-3- The first party shall train one or two building maintenance personnel nominated by the second party on rescue procedures for trapped passengers.
+### Article (4): Emergency Response
+The First Party shall respond to emergency breakdowns within a reasonable time depending on site location and fault nature.
 
-4- The first party shall provide all required gear oils, grease and cleaning materials.
+### Article (5): Training
+The First Party shall provide rescue procedure training to one or two building staff nominated by the Second Party.
 
-5- Spare parts replacement costs shall be borne by the second party.
+### Article (6): Consumables
+The First Party shall supply lubricants, grease, and cleaning materials required for preventive maintenance.
 
-6- The first party shall perform the above services in consideration of the agreed annual maintenance fees.
+### Article (7): Spare Parts
+Spare parts replacement is excluded from this contract and shall be quoted separately upon approval by the Second Party.
 
-Contract Value:
-The total contract value is SAR ${calc.total.toFixed(2)}, inclusive of 15% VAT and excluding spare parts.
+### Article (8): Contract Value
+The total annual contract value is SAR ${calc.total.toFixed(2)}, inclusive of 15% VAT, excluding spare parts.
 
-The contract shall commence upon full payment and remain valid for one calendar year.
+### Article (9): Contract Term
+This Agreement shall be valid for one calendar year from the commencement date and shall be automatically renewed unless terminated by written notice at least sixty (60) days prior to expiry.
 
-Bank Details:
+### Article (10): Payment Method
+Payments shall be made via bank transfer to:
 Bank: Saudi National Bank (SNB)  
 Account Name: RKL  
 IBAN: SA1710000001400005531406  
 
-7- In case of non-payment, the first party may suspend services without liability.
+### Article (11): Suspension
+The First Party reserves the right to suspend services in case of delayed payment without liability.
 
-8- Emergency calls shall be handled upon immediate notification.
+### Article (12): Limitation of Liability
+The First Party shall not be liable for failures resulting from misuse, overloading, power outages, vandalism, force majeure events, or unauthorized third-party intervention.
 
-9- Emergency or special services may be provided upon request with additional charges.
+### Article (13): Safety Compliance
+The Second Party shall ensure a safe working environment in accordance with safety regulations.
 
-10- This contract shall be valid for one year and automatically renewed unless either party provides written notice 60 days prior to expiry.
-11- The first party shall not be liable for any damages or failures resulting from misuse, power outages, force majeure, or unauthorized third-party intervention.
-12- The First Party shall not be liable for any failures or damages resulting from misuse, overloading, vandalism, or improper operation by users. Such cases shall be handled under a separate quotation.
-13- This contract covers inspection, cleaning, and adjustment works only. Spare parts supply or replacement is excluded unless otherwise agreed in writing and shall be quoted separately when required.
-14- In case of delayed payment by the Second Party, the First Party reserves the right to temporarily suspend maintenance services until full settlement, without being considered a breach of contract.
-15- The First Party shall not be held liable for delays or failure in performance caused by force majeure events beyond its control, including natural disasters, governmental actions, or general power outages.
-16- In the event of any dispute, the competent courts of the Kingdom of Saudi Arabia shall have exclusive jurisdiction.
+### Article (14): Termination
+Either party may terminate this Agreement with thirty (30) days’ prior written notice, subject to settlement of all outstanding dues.
+
+### Article (15): Full Contract Value Entitlement
+The Second Party hereby acknowledges and agrees that upon payment of any partial or initial amount under this Agreement, the full annual contract value shall become immediately due and payable to the First Party. Such payment shall constitute a final acknowledgment and commitment to the total contract value, and the Second Party shall not be entitled to cancel, reduce, or suspend the financial obligations under this Agreement for any reason after such payment.
+### Article (16): Visits During Elevator Shutdown or Spare Parts Requirement
+The Second Party acknowledges and agrees that any site visit carried out by the First Party shall be considered a completed preventive maintenance visit under the agreed schedule, even if the elevator is found to be out of service or requires spare parts replacement or additional works not covered under this Agreement.
+
+The First Party shall not be obligated to conduct additional visits or resume maintenance works unless a separate quotation for the required spare parts or corrective works is approved. The performed visit shall be deemed valid, completed, and non-refundable.
+
+### Article (17): Governing Law & Jurisdiction
+This Agreement shall be governed by the laws of the Kingdom of Saudi Arabia, and the competent courts of Saudi Arabia shall have exclusive jurisdiction.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
 `;
+
 
   /* ================== اختيار اللغة ================== */
   if(lang === 'ar') return ar;
