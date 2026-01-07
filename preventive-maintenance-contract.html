@@ -1516,46 +1516,39 @@ function toggleOtherBrand(){
 </script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // 1. جلب بيانات العميل المختار من الذاكرة المحلية
-    const savedCustomer = localStorage.getItem('rkl_selected_customer');
+    // 1. جلب البيانات من "صندوق الأمانات" في المتصفح
+    const savedCustomerData = localStorage.getItem('rkl_selected_customer');
     
-    if (savedCustomer) {
-        const customer = JSON.parse(savedCustomer);
+    if (savedCustomerData) {
+        // 2. تحويل النص إلى كائن (Object)
+        const customer = JSON.parse(savedCustomerData);
         
-        // 2. تعبئة الحقول بناءً على الـ IDs الموجودة في نسخة العقد الحالية
+        // 3. توزيع البيانات على الحقول (تطابق مع IDs ملفك رقم 19)
         
-        // اسم العميل
-        if(document.getElementById('customerName')) {
+        // حقل اسم العميل
+        if(document.getElementById('customerName')) 
             document.getElementById('customerName').value = customer.customer_name || '';
-        }
-        
-        // الشخص المسؤول (المخول بالتوقيع)
-        if(document.getElementById('customerRepresentative')) {
+            
+        // حقل المسؤول/الممثل
+        if(document.getElementById('customerRepresentative')) 
             document.getElementById('customerRepresentative').value = customer.contact_person || '';
-        }
-        
-        // رقم الجوال
-        if(document.getElementById('customerPhone')) {
+            
+        // حقل الجوال
+        if(document.getElementById('customerPhone')) 
             document.getElementById('customerPhone').value = customer.mobile || '';
-        }
-        
-        // العنوان / الموقع (دمج المدينة والحي)
+            
+        // حقل العنوان (دمج المدينة والحي والشارع)
         if(document.getElementById('customerAddress')) {
-            const fullAddr = (customer.city || '') + ' - ' + (customer.district || '');
+            const fullAddr = (customer.city || '') + ' - ' + (customer.district || '') + ' - ' + (customer.street || '');
             document.getElementById('customerAddress').value = fullAddr;
         }
-
-        // الرقم الضريبي
-        if(document.getElementById('customerTaxID')) {
+            
+        // حقل الرقم الضريبي
+        if(document.getElementById('customerTaxID')) 
             document.getElementById('customerTaxID').value = customer.tax_number || '';
-        }
-
-        // تنظيف الذاكرة اختيارياً بعد التعبئة لضمان عدم الخلط في المرة القادمة
-        // localStorage.removeItem('rkl_selected_customer');
     }
 });
 </script>
-
 
 
 </body>
