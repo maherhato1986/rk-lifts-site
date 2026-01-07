@@ -1172,83 +1172,102 @@ function openPrintView(contract){
 <head>
 <meta charset="UTF-8">
 <title>${contract.id}</title>
+
 <style>
-/* ===============================
-   إعداد صفحة A4
-=============================== */
+/* =========================================================
+   RKL Professional Print Styles (A4)
+   Replace the whole <style> inside openPrintView()
+========================================================= */
+
+/* ---------- Print Color Accuracy ---------- */
+*{
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ---------- Page Setup ---------- */
+@page{
+  size: A4;
+  margin: 14mm 14mm 16mm 14mm; /* أعلى يمين أسفل يسار */
+}
+
+:root{
+  --ink:#111827;
+  --muted:#6b7280;
+  --line:#e5e7eb;
+  --soft:#f8fafc;
+  --brand:#0f766e; /* RKL green */
+  --brand2:#115e59;
+}
+
+/* ---------- Base ---------- */
+html, body{
+  height:100%;
+}
 
 body{
-  font-family: "Cairo", "Tajawal", Arial, sans-serif;
-  color:#111827;
-  line-height:1.85;
+  margin:0;
   background:#fff;
-  font-size:14px;
+  color:var(--ink);
+  font-family:"Cairo","Tajawal",Arial,sans-serif;
+  font-size:13.8px;
+  line-height:1.7;
 }
 
-/* ===============================
-   إخفاء أي أدوات
-=============================== */
-@media print{
-  button,
-  .editor-toolbar{
-    display:none !important;
-  }
+/* ✅ مهم: لأن محتوى العقد عندك نص فيه \n و ### (ليس HTML) */
+.ar, .en, .contract{
+  white-space: pre-wrap;         /* يحافظ على الأسطر */
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
 }
 
-/* ===============================
-   الترويسة الرسمية
-=============================== */
-.print-header{
-  margin-bottom: 16px;
+/* ---------- Hide Tools (Editor / Buttons) ---------- */
+.editor-toolbar,
+button{
+  display:none !important;
 }
- .print-watermark{
-    position:fixed;
-    top:50%;
-    left:50%;
-    width:420px;
-    opacity:0.05;
-    transform:translate(-50%,-50%);
-    z-index:-1;
-    pointer-events:none;
-  }
-/* ===============================
-   خلفية مائية (Watermark)
-=============================== */
+
+/* ---------- Watermark (Background Logo) ---------- */
 body::before{
   content:"";
   position:fixed;
-  top:50%;
-  left:50%;
-  width:420px;
-  height:420px;
-  background:url('/public/images/logo.png') no-repeat center center;
-  background-size:contain;
-  opacity:0.05;              /* شفافية احترافية */
-  transform:translate(-50%, -50%);
+  inset:0;
+  background:
+    url('/public/images/logo.png') center center / 360px 360px no-repeat;
+  opacity:0.05;
   z-index:-1;
 }
-/* ===============================
-   دعم الاتجاهين (AR / EN)
-=============================== */
-.ar{
-  direction: rtl;
-  text-align: right;
+
+/* إن كان عندك <img class="print-watermark"> داخل الهيدر */
+.print-watermark{
+  display:none !important; /* نكتفي بالـ watermark الخلفية */
 }
 
-.en{
-  direction: ltr;
-  text-align: left;
-  font-family: Arial, "Segoe UI", sans-serif;
+/* ---------- Page Frame ---------- */
+.page-frame{
+  border:1.2px solid rgba(15,118,110,0.35);
+  border-radius:14px;
+  padding:18px 18px 22px 18px;
+  box-sizing:border-box;
+  position:relative;
+}
+
+/* ---------- Header ---------- */
+.print-header{
+  margin:0 0 12px 0;
+  padding:0 0 10px 0;
+  border-bottom:1px solid var(--line);
 }
 
 .print-header-row{
   display:flex;
   align-items:center;
   justify-content:space-between;
+  gap:12px;
 }
 
 .print-logo{
-  width:42px;     /* ✔ حجم أنيق */
+  width:44px;
   height:auto;
 }
 
@@ -1259,153 +1278,171 @@ body::before{
 
 .header-center h1{
   margin:0;
-  font-size:21px;
-  font-weight:700;
-  letter-spacing:0.3px;
+  font-size:18px;
+  font-weight:800;
+  color:var(--brand);
+  letter-spacing:0.2px;
 }
 
 .header-center p{
-  margin:4px 0;
-  font-size:12px;
-  color:#374151;
+  margin:3px 0 0 0;
+  font-size:11.5px;
+  color:var(--muted);
 }
 
 .header-meta{
+  min-width:150px;
   text-align:left;
   font-size:11px;
-  color:#374151;
-  min-width:140px;
+  color:var(--muted);
+}
+
+.header-meta b{
+  color:var(--ink);
+  font-weight:700;
 }
 
 .header-meta div{
-  margin-bottom:4px;
+  margin-bottom:6px;
 }
 
-/* ===============================
-   محتوى العقد
-=============================== */
+/* ---------- Contract Body ---------- */
 .contract{
-  font-size:14px;
+  font-size:13.6px;
 }
 
 .contract p{
-  margin:6px 0;
+  margin:4px 0;
 }
 
-/* ===============================
-   عناوين الأقسام
-=============================== */
-
-.section-title{
-  margin: 18px 0 8px;
+/* تحسين قراءة البنود */
+.contract .section-title{
+  margin:14px 0 6px 0;
+  font-weight:800;
+  color:var(--brand);
 }
 
-/* ===============================
-   تمييز القيم المدخلة
-=============================== */
+/* تمييز بيانات العميل */
 .user-data{
-  color:#1d4ed8;
-  font-weight:600;
+  color:var(--brand2);
+  font-weight:800;
 }
 
-/* ===============================
-   فاصل
-=============================== */
+/* ---------- Arabic / English Direction ---------- */
+.ar{
+  direction:rtl;
+  text-align:right;
+}
+
+.en{
+  direction:ltr;
+  text-align:left;
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size:13.2px;
+}
+
+/* ---------- Divider ---------- */
 hr{
   border:none;
-  border-top:1px dashed #9ca3af;
-  margin:30px 0;
+  border-top:1px dashed #cbd5e1;
+  margin:16px 0;
 }
 
-/* ===============================
-   التوقيعات
-=============================== */
+/* ---------- Tables (Contract Summary etc.) ---------- */
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin:10px 0 6px 0;
+  font-size:13px;
+  background:#fff;
+}
+
+.contract-summary{
+  background:var(--soft);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:14px 16px;
+  margin:14px 0 10px 0;
+  page-break-inside: avoid;
+}
+
+.contract-summary h4{
+  margin:0 0 10px 0;
+  text-align:center;
+  font-size:14.5px;
+  font-weight:800;
+  color:var(--brand);
+  border-bottom:1px solid var(--line);
+  padding-bottom:8px;
+}
+
+.contract-summary td{
+  padding:8px 8px;
+  vertical-align:top;
+}
+
+.contract-summary tr:not(:last-child){
+  border-bottom:1px dashed #d1d5db;
+}
+
+.contract-summary .label{
+  color:var(--muted);
+}
+
+.contract-summary .value{
+  text-align:left;
+  font-weight:800;
+  color:var(--ink);
+}
+
+.contract-summary .total{
+  font-size:14px;
+  font-weight:900;
+  color:var(--brand);
+}
+
+/* ---------- Footer ---------- */
+.print-footer{
+  position:fixed;
+  bottom:8mm;
+  left:0;
+  right:0;
+  text-align:center;
+  font-size:10px;
+  color:var(--muted);
+}
+
+/* ---------- Page Break ---------- */
+.page-break{
+  break-before: page;
+  height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+}
+
+/* ---------- Signature ---------- */
 .signature{
-  margin-top:55px;
+  margin-top:26px;
   display:flex;
   justify-content:space-between;
-  gap:30px;
+  gap:18px;
+  page-break-inside: avoid;
 }
 
 .signature div{
-  width:45%;
-  border-top:1px solid #000;
+  width:48%;
+  border-top:1.2px solid #111;
   padding-top:10px;
   text-align:center;
-  font-size:13px;
-}
-.signature{
-  page-break-inside: avoid;
-}
-.page-break{
-  break-before: page;
-  height: 0 !important;
-  margin: 0 !important;
+  font-size:12.5px;
+  color:var(--ink);
 }
 
-
-
-/* ===============================
-   تحرير النص وتنسيق الواجهة
-=============================== */
-[contenteditable="true"] { cursor: text; }
-[contenteditable="true"]:focus { outline: none; }
-[contenteditable="true"] span, [contenteditable="true"] b, [contenteditable="true"] i { cursor: text; }
-
-body {
-    background: #f8f6f1; /* لون ورق مروّس فاخر */
-    font-family: 'Cairo', 'Times New Roman', serif;
-    line-height: 1.6;
+/* ---------- Safety: Avoid Orphans/Widows ---------- */
+.contract, .ar, .en{
+  orphans: 3;
+  widows: 3;
 }
-
-/* إطار الصفحة الاحترافي */
-.page-frame {
-    border: 1.5px solid #0f766e;
-    padding: 25px; /* زيادة التباعد الداخلي */
-    min-height: 100%;
-    box-sizing: border-box;
-    position: relative;
-}
-
-/* تنسيق الجداول لمنع الفراغات العشوائية */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 15px;
-}
-
-.contract-section {
-    margin-bottom: 20px;
-    text-align: justify; /* توزيع النص بشكل متساوي */
-}
-
-/* الخطوط */
-.lang-ar { font-family: 'Cairo', sans-serif; direction: rtl; }
-.lang-en { font-family: 'Arial', sans-serif; direction: ltr; font-size: 0.9em; color: #444; }
-
-/* تذييل الصفحة للطباعة */
-.print-footer {
-    position: fixed;
-    bottom: 10mm;
-    left: 0;
-    right: 0;
-    text-align: center;
-    font-size: 10px;
-    color: #6b7280;
-}
-.print-footer span { margin: 0 6px; }
-
-/* إعدادات الطباعة النهائية */
-@media print {
-    body { background: #f8f6f1 !important; -webkit-print-color-adjust: exact; }
-    .page-frame { border: 1.5px solid #0f766e !important; }
-    .no-print { display: none; }
-    @page {
-        size: A4;
-        margin: 15mm;
-    }
-}
-
 </style>
 
 
