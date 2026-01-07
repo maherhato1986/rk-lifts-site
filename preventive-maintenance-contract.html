@@ -1091,18 +1091,17 @@ function calculateTotal(){
 
 
 
-  
 function saveContract(){
-  // التأكد من اختيار عميل أولاً
   if(!customer){
-    alert('بيانات العميل غير موجودة، يرجى اختيار عميل من القائمة');
+    alert('يرجى اختيار العميل أولاً');
     return;
   }
 
+  // التحقق من الحقول الأساسية
   const required = ['lang','contractDate','lifts','capacity','floors'];
   for(const id of required){
     if(!document.getElementById(id).value){
-      alert('يرجى تعبئة جميع الحقول الإلزامية');
+      alert('يرجى تعبئة الحقول المطلوبة');
       return;
     }
   }
@@ -1111,7 +1110,7 @@ function saveContract(){
 
   const contract = {
     id: 'PMC-' + Date.now(),
-    customer: customer.customer_name || customer.name,
+    customer: customer.customer_name || customer.name || 'عميل غير معروف',
     lifts: document.getElementById('lifts').value,
     total: calc.total + ' ريال',
     lang: document.getElementById('lang').value,
@@ -1119,20 +1118,14 @@ function saveContract(){
     content: generateFullContractText()
   };
 
-  const contracts = JSON.parse(
-    localStorage.getItem('rkl_maintenance_contracts') || '[]'
-  );
-
+  const contracts = JSON.parse(localStorage.getItem('rkl_maintenance_contracts') || '[]');
   contracts.push(contract);
-  localStorage.setItem(
-    'rkl_maintenance_contracts',
-    JSON.stringify(contracts)
-  );
+  localStorage.setItem('rkl_maintenance_contracts', JSON.stringify(contracts));
 
-  // السطر الأهم: تحديث الجدول فوراً
+  // تحديث الجدول فوراً
   renderContractsTable();
-
-  alert('✅ تم حفظ العقد بنجاح، وظهوره في الجدول بالأسفل');
+  
+  alert('✅ تم الحفظ بنجاح وظهور العقد في الجدول');
 }
 
  
@@ -1489,28 +1482,30 @@ function getBrandValue(){
 
 function renderContractsTable(){
   const tbody = document.getElementById('contractsTable');
+  if (!tbody) return; // للتأكد من وجود الجدول في الصفحة
+
   const contracts = JSON.parse(localStorage.getItem('rkl_maintenance_contracts') || '[]');
   tbody.innerHTML = '';
 
   contracts.forEach((c, i) => {
     const row = document.createElement('tr');
     row.innerHTML = `
-        <td>${i+1}</td>
-        <td>${c.id}</td>
-        <td>${c.customer}</td>
-        <td>${c.lifts}</td>
-        <td>${c.total}</td>
-        <td>${c.lang}</td>
-        <td>${c.date}</td>
-        <td>
-          <button class="print-btn" data-index="${i}">طباعة</button>
-        </td>
+      <td>${i+1}</td>
+      <td>${c.id}</td>
+      <td>${c.customer}</td>
+      <td>${c.lifts}</td>
+      <td>${c.total}</td>
+      <td>${c.lang}</td>
+      <td>${c.date}</td>
+      <td>
+        <button type="button" class="print-btn-action" data-index="${i}">طباعة</button>
+      </td>
     `;
     tbody.appendChild(row);
   });
 
-  // إضافة أحداث الضغط للأزرار بشكل آمن
-  document.querySelectorAll('.print-btn').forEach(btn => {
+  // ربط أزرار الطباعة بالدالة بشكل آمن برمجياً
+  document.querySelectorAll('.print-btn-action').forEach(btn => {
     btn.onclick = function() {
       const idx = this.getAttribute('data-index');
       openPrintView(contracts[idx]);
