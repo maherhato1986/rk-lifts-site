@@ -231,7 +231,7 @@ button:hover{
 <label>رقم الجوال</label>
 <input id="phone" placeholder="05XXXXXXXX" required>
   <label>البريد الإلكتروني</label>
-<input id="email" placeholder="example@email.com" required>
+<input id="email" name="email" placeholder="example@email.com" required>
 
 
 
@@ -243,9 +243,6 @@ button:hover{
   <option value="consult">استشارة فقط</option>
 </select>
 
-
-<!-- نوع الطلب (ثابت الآن) -->
-<input type="hidden" name="request_type" id="request_type">
 
 
 <div id="contractQuestion">
@@ -455,6 +452,7 @@ value="📩 طلب خدمة جديد – RKL | {{رقم_الطلب}}">
   <!-- إرسال نسخة من الإيميل للعميل -->
   <input type="hidden" name="_cc" id="cc_email">
 
+<input type="hidden" name="ملخص_الطلب_الكامل" id="full_summary">
 
 </form>
 
