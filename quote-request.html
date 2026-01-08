@@ -731,13 +731,13 @@ const whatsappMsg = `
   /* ===== تفاصيل حسب الحالة ===== */
   let details = "";
 
-  if (hasContract === "yes") {
+if (hasContract === "yes") {
     details = `
 اسم المشروع: ${document.querySelector('[name="project_name"]')?.value || "—"}
 نوع البلاغ: ${document.querySelector('[name="issue_type"]')?.value || "—"}
 حالة المصعد: ${document.querySelector('[name="lift_status"]')?.value || "—"}
 أولوية الطلب: ${document.querySelector('[name="priority"]')?.value || "—"}
-وصف العطل: ${document.querySelector('[name="description"]')?.value || "—"}
+وصف العطل: ${document.querySelector('[name="description_contract"]')?.value || "—"}
 `;
   }
 
@@ -793,7 +793,8 @@ function toggleVisits() {
 </script>
 <script>
 function stripAllNamesExceptSummary() {
-  const allowed = ['رقم_الطلب', 'ملخص_الطلب_الكامل'];
+  // أضفنا الحقول الأساسية لضمان عدم رفض السيرفر للطلب
+  const allowed = ['رقم_الطلب', 'ملخص_الطلب_الكامل', 'email', '_subject', '_template', '_captcha', '_language'];
 
   document
     .querySelectorAll('input[name], select[name], textarea[name]')
