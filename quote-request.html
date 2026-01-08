@@ -247,7 +247,8 @@ button:hover{
 
 
 
-<div id="contractQuestion">
+<div id="contractQuestion" style="display:none">
+
   <label>هل لديك عقد معنا؟</label>
   <select id="hasContract" onchange="toggleContractFlow()">
     <option value="">اختر</option>
@@ -561,14 +562,22 @@ function showSummary() {
   const byName = name => document.querySelector(`[name="${name}"]`)?.value || "—";
 
   const type = byId("type");
-  const hasContract = byId("hasContract");
-
   let serviceDetails = "";
 
-  /* =========================
-     صيانة مصاعد
-  ========================= */
+  // ⛔️ إذا كان الطلب توريد، لا تدخل منطق الصيانة نهائيًا
+  if (type === "supply") {
+    serviceDetails = `
+    <b>🏗️ اسم المشروع:</b> ${byId("project")}<br>
+    <b>🏢 نوع المبنى:</b> ${document.querySelector('#supply select')?.value || "—"}<br>
+    <b>🛗 عدد المصاعد:</b> ${document.querySelectorAll('#supply input[type="number"]')[0]?.value || "—"}<br>
+    <b>🏢 عدد الأدوار:</b> ${document.querySelectorAll('#supply input[type="number"]')[1]?.value || "—"}<br>
+    <b>📝 ملاحظات:</b><br>${document.querySelector('#supply textarea')?.value || "—"}
+    `;
+  }
+
+  // ✅ منطق الصيانة فقط إذا النوع maintenance
   if (type === "maintenance") {
+    const hasContract = byId("hasContract");
 
     if (hasContract === "yes") {
       serviceDetails = `
@@ -583,7 +592,6 @@ function showSummary() {
     if (hasContract === "no") {
       serviceDetails = `
       <b>🛠️ نوع الخدمة:</b> ${byName("service_type")}<br>
-      <b>🔁 عدد زيارات الصيانة:</b> ${byName("maintenance_visits")} زيارة<br>
       <b>🛗 عدد المصاعد:</b> ${byName("lifts_count")}<br>
       <b>🏢 نوع المبنى:</b> ${byName("building_type")}<br>
       <b>📊 عدد الوقفات:</b> ${byName("stops_count")}<br>
@@ -596,60 +604,6 @@ function showSummary() {
     }
   }
 
-  /* =========================
-     توريد وتركيب مصاعد
-  ========================= */
-  if (type === "supply") {
-    serviceDetails = `
-    <b>🏗️ اسم المشروع:</b> ${byId("project")}<br>
-    <b>🏢 نوع المبنى:</b> ${document.querySelector('#supply select')?.value || "—"}<br>
-    <b>🛗 عدد المصاعد:</b> ${document.querySelector('#supply input[type="number"]')?.value || "—"}<br>
-    <b>🏢 عدد الأدوار:</b> ${document.querySelectorAll('#supply input[type="number"]')[1]?.value || "—"}<br>
-   
-    <b>📝 ملاحظات:</b><br>${document.querySelector('#supply textarea')?.value || "—"}
-    `;
-  }
-
-  const summary = `
-  <div style="line-height:2">
-    <h4>📋 ملخص الطلب</h4>
-    <hr>
-    <b>👤 الاسم:</b> ${byId("name")}<br>
-    <b>📞 الجوال:</b> ${byId("phone")}<br>
-    <b>🛠️ نوع الطلب:</b> ${type}<br>
-
-    <hr>
-    ${serviceDetails}
-    <hr>
-
-    <b>📍 موقع المشروع:</b><br>
-    <a href="${byId("location")}" target="_blank">${byId("location")}</a>
-  </div>
-  `;
-
-document.getElementById("summaryBox").innerHTML = summary;
-document.getElementById("summaryBox").classList.remove("hidden");
-
-// ⬇️ هذا السطر الجديد (مهم)
-document.getElementById("full_summary").value =
-`📋 طلب خدمة جديد – RKL
-رقم الطلب: ${document.getElementById("request_id").value}
---------------------------------
-
-👤 الاسم: ${byId("name")}
-📞 الجوال: ${byId("phone")}
-🛠️ نوع الطلب: ${type}
-
-${serviceDetails
-  .replace(/<br>/g, "\n")
-  .replace(/<[^>]*>/g, "")
-}
-
-📍 موقع المشروع:
-${byId("location")}
-`;
-
-}
 
 
 </script>
@@ -804,6 +758,12 @@ function stripAllNamesExceptSummary() {
       }
     });
 }
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  hideAllSections();
+  document.getElementById("contractQuestion").style.display = "none";
+});
 </script>
 
 
