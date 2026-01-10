@@ -626,9 +626,14 @@ button {
 <textarea id="notes"></textarea>
 
 </div>
-<button onclick="saveContract()" style="margin-top:10px">
-  💾 حفظ العقد
+<button onclick="previewPricing()" style="margin-top:10px;background:#2563eb">
+  📊 عرض الحسبة
 </button>
+
+<button id="saveBtn" onclick="saveContract()" style="margin-top:10px;display:none">
+  💾 اعتماد وحفظ العقد
+</button>
+
 
 <!-- ================== مراجعة العقد ================== -->
 <div class="section" id="reviewSection" style="display:none">
@@ -1675,6 +1680,60 @@ function toggleOtherBrand(){
 </script>
 
 
+<script>
+function previewPricing(){
+
+  // تحقق من الحقول الأساسية
+  const required = ['lifts','capacity','floors','lang','contractDate'];
+  for(const id of required){
+    if(!document.getElementById(id).value){
+      alert('⚠️ يرجى تعبئة جميع الحقول الأساسية قبل عرض الحسبة');
+      return;
+    }
+  }
+
+  const calc = calculateTotal();
+
+  document.getElementById('reviewBox').innerHTML = `
+    <div class="contract-summary">
+      <h4>معاينة التسعير قبل الاعتماد</h4>
+      <table>
+        <tr>
+          <td class="label">عدد المصاعد</td>
+          <td class="value">${calc.lifts}</td>
+        </tr>
+        <tr>
+          <td class="label">المنطقة</td>
+          <td class="value">${calc.zone}</td>
+        </tr>
+        <tr>
+          <td class="label">السعر للمصعد (تقريبي)</td>
+          <td class="value">${calc.pricePerLift.toFixed(2)} ريال</td>
+        </tr>
+        <tr>
+          <td class="label">الإجمالي قبل الضريبة</td>
+          <td class="value">${calc.subtotal.toFixed(2)} ريال</td>
+        </tr>
+        <tr>
+          <td class="label">ضريبة القيمة المضافة (15%)</td>
+          <td class="value">${calc.vat.toFixed(2)} ريال</td>
+        </tr>
+        <tr>
+          <td class="label total">الإجمالي شامل الضريبة</td>
+          <td class="value total">${calc.total.toFixed(2)} ريال</td>
+        </tr>
+      </table>
+
+      <p class="words">
+        ⚠️ هذه الحسبة للمعاينة فقط. يمكنك تعديل البيانات ثم اعتماد العقد.
+      </p>
+    </div>
+  `;
+
+  document.getElementById('reviewSection').style.display = 'block';
+  document.getElementById('saveBtn').style.display = 'inline-block';
+}
+</script>
 
 
 </body>
