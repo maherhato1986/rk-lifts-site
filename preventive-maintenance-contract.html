@@ -439,8 +439,6 @@ button {
   </div>
 </div>
 
-
-<!-- ================== بيانات العميل ================== -->
 <!-- ================== بيانات العميل ================== -->
 <div class="section">
   <h3>أولاً: بيانات العميل</h3>
@@ -463,164 +461,191 @@ button {
   </div>
 </div>
 
-<!-- ================== إعدادات عامة ================== -->
-<div class="section">
-<h3>ثانياً: إعدادات العقد</h3>
-
-
-<div id="editableContract" class="contract">
-
-
-<div class="grid">
-  <div>
-    <label>لغة العقد</label>
-    <select id="lang">
-      <option value="">-- اختر --</option>
-      <option value="ar">عربي</option>
-      <option value="en">English</option>
-      <option value="both">عربي + English</option>
-    </select>
-  </div>
-
-  <div>
-    <label>تاريخ العقد</label>
-    <input id="contractDate" type="date">
-  </div>
-
-  <div>
-    <label>مدة العقد</label>
-    <select id="duration">
-      <option value="1">سنة واحدة</option>
-    </select>
-  </div>
-  <div>
-  <label>مدينة المشروع</label>
-  <select id="projectCity">
-    <option value="riyadh">الرياض</option>
-
-    <option value="near">مدن قريبة من الرياض</option>
-    <option value="medium">مدن متوسطة البعد</option>
-    <option value="far">مدن بعيدة</option>
-    <option value="remote">مدن نائية</option>
-  </select>
-</div>
-
-
-  <div>
-    <label>تجديد تلقائي</label>
-    <select id="renewal">
-      <option value="yes">نعم</option>
-      <option value="no">لا</option>
-    </select>
-  </div>
-</div>
-</div>
-
 <!-- ================== بيانات المصاعد ================== -->
 <div class="section">
-<h3>ثالثاً: بيانات المصاعد</h3>
+  <h3>ثانياً: بيانات المصاعد</h3>
 
-<div class="grid">
-  <div>
-    <label>عدد المصاعد</label>
-    <input id="lifts" type="number" min="1">
+  <div class="grid">
+    <div>
+      <label>عدد المصاعد</label>
+      <input id="lifts" type="number" min="1">
+    </div>
+
+    <div>
+      <label>نوع المصعد</label>
+      <select id="elevatorType">
+        <option value="passenger">ركاب</option>
+        <option value="service">خدمة</option>
+        <option value="panoramic">بانورامي</option>
+      </select>
+    </div>
+
+    <div>
+      <label>ماركة المصعد</label>
+      <select id="brandSelect" onchange="toggleOtherBrand()">
+        <option value="">-- اختر --</option>
+        <option value="Otis">Otis</option>
+        <option value="KONE">KONE</option>
+        <option value="Mitsubishi">Mitsubishi</option>
+        <option value="Schindler">Schindler</option>
+        <option value="Fuji">Fuji</option>
+        <option value="Local">تجميع محلي</option>
+        <option value="Other">أخرى</option>
+      </select>
+    </div>
+
+    <div id="otherBrandBox" style="display:none">
+      <label>اسم الماركة / التوضيح</label>
+      <input id="brandOther" placeholder="مثال: مصعد ركاب – مشروع برج السلام">
+    </div>
+
+    <div>
+      <label>حمولة المصعد (كجم)</label>
+      <select id="capacity">
+        <option value="">-- اختر --</option>
+        <option value="3000">150 – 320</option>
+        <option value="3500">350 – 550</option>
+        <option value="4000">600 – 900</option>
+        <option value="4500">901 – 1100</option>
+        <option value="5000">1101 – 1500</option>
+        <option value="5500">1501 – 1750</option>
+      </select>
+    </div>
+
+    <div>
+      <label>عدد الطوابق</label>
+      <input id="floors" type="number" min="1">
+    </div>
+
+    <div>
+      <label>نوع المبنى</label>
+      <select id="building">
+        <option value="private">خاص</option>
+        <option value="government">حكومي</option>
+      </select>
+    </div>
   </div>
-
-  <div>
-    <label>نوع المصعد</label>
-    <select id="elevatorType">
-      <option value="passenger">ركاب</option>
-      <option value="service">خدمة</option>
-      <option value="panoramic">بانورامي</option>
-    </select>
-  </div>
-  <div id="otherBrandBox" style="display:none">
-  <label>اسم الماركة / التوضيح</label>
-  <input id="brandOther"
-         placeholder="مثال: مصعد ركاب – مشروع برج السلام">
-</div>
-<div>
-  <label>ماركة المصعد</label>
-  <select id="brandSelect" onchange="toggleOtherBrand()">
-    <option value="">-- اختر --</option>
-    <option value="Otis">Otis</option>
-    <option value="KONE">KONE</option>
-    <option value="Mitsubishi">Mitsubishi</option>
-    <option value="Schindler">Schindler</option>
-    <option value="Fuji">Fuji</option>
-    <option value="Local">تجميع محلي</option>
-    <option value="Other">أخرى</option>
-  </select>
-</div>
-
-
-
-
-  <div>
-    <label>حمولة المصعد (كجم)</label>
-    <select id="capacity">
-      <option value="">-- اختر --</option>
-      <option value="3000">150 – 320</option>
-      <option value="3500">350 – 550</option>
-      <option value="4000">600 – 900</option>
-      <option value="4500">901 – 1100</option>
-      <option value="5000">1101 – 1500</option>
-      <option value="5500">1501 – 1750</option>
-    </select>
-  </div>
-
-  <div>
-    <label>عدد الطوابق</label>
-    <input id="floors" type="number" min="1">
-  </div>
-
-  <div>
-    <label>نوع المبنى</label>
-    <select id="building">
-      <option value="private">خاص</option>
-      <option value="government">حكومي</option>
-    </select>
-  </div>
-</div>
 </div>
 
-<!-- ================== نطاق الصيانة ================== -->
+<!-- ================== نوع الخدمة ================== -->
 <div class="section">
-<h3>رابعاً: نطاق الصيانة</h3>
+  <h3>ثالثاً: نوع الخدمة</h3>
 
-<div class="grid">
-  <div>
-    <label>عدد الزيارات الدورية</label>
-    <select id="visits">
-      <option value="monthly">زيارة شهرية</option>
-      <option value="bimonthly">زيارة كل شهرين</option>
-    </select>
-  </div>
+  <div class="grid">
+    <div>
+      <label>اختر نوع الخدمة</label>
+      <select id="serviceType" onchange="toggleServiceType()">
+        <option value="annual" selected>عقد صيانة وقائية سنوي</option>
+        <option value="once">زيارة لمرة واحدة</option>
+      </select>
+    </div>
 
-  <div>
-    <label>تدريب إنقاذ المحتجزين</label>
-    <select id="training">
-      <option value="yes">نعم</option>
-      <option value="no">لا</option>
-    </select>
-  </div>
-
-  <div>
-    <label>قطع الغيار</label>
-    <select id="spareParts">
-      <option value="excluded">غير مشمولة</option>
-      <option value="included">مشمولة (بعرض خاص)</option>
-    </select>
-  </div>
-
-  <div>
-    <label>خدمة الطوارئ</label>
-    <select id="emergency">
-      <option value="normal">أوقات الدوام</option>
-      <option value="extended">خارج الدوام (إضافي)</option>
-    </select>
+    <div>
+      <label>ملاحظة</label>
+      <div style="background:#ecfeff;border:1px dashed #0f766e;padding:12px;border-radius:10px;font-size:13px">
+        عند اختيار "زيارة لمرة واحدة" سيتم عرض نموذج متطلبات الزيارة وإخفاء إعدادات العقد السنوي.
+      </div>
+    </div>
   </div>
 </div>
+
+<!-- ================== صندوق العقد السنوي (يظهر فقط عند annual) ================== -->
+<div id="annualBox">
+
+  <!-- ================== إعدادات العقد السنوي ================== -->
+  <div class="section">
+    <h3>رابعاً: إعدادات العقد السنوي</h3>
+
+    <div id="editableContract" class="contract">
+      <div class="grid">
+        <div>
+          <label>لغة العقد</label>
+          <select id="lang">
+            <option value="">-- اختر --</option>
+            <option value="ar">عربي</option>
+            <option value="en">English</option>
+            <option value="both">عربي + English</option>
+          </select>
+        </div>
+
+        <div>
+          <label>تاريخ العقد</label>
+          <input id="contractDate" type="date">
+        </div>
+
+        <div>
+          <label>مدة العقد</label>
+          <select id="duration">
+            <option value="1">سنة واحدة</option>
+          </select>
+        </div>
+
+        <div>
+          <label>مدينة المشروع</label>
+          <select id="projectCity">
+            <option value="riyadh">الرياض</option>
+            <option value="near">مدن قريبة من الرياض</option>
+            <option value="medium">مدن متوسطة البعد</option>
+            <option value="far">مدن بعيدة</option>
+            <option value="remote">مدن نائية</option>
+          </select>
+        </div>
+
+        <div>
+          <label>تجديد تلقائي</label>
+          <select id="renewal">
+            <option value="yes">نعم</option>
+            <option value="no">لا</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================== نطاق الصيانة (العقد السنوي) ================== -->
+  <div class="section">
+    <h3>خامساً: نطاق الصيانة (العقد السنوي)</h3>
+
+    <div class="grid">
+      <div>
+        <label>عدد الزيارات الدورية</label>
+        <select id="visits">
+          <option value="monthly">زيارة شهرية</option>
+          <option value="bimonthly">زيارة كل شهرين</option>
+        </select>
+      </div>
+
+      <div>
+        <label>تدريب إنقاذ المحتجزين</label>
+        <select id="training">
+          <option value="yes">نعم</option>
+          <option value="no">لا</option>
+        </select>
+      </div>
+
+      <div>
+        <label>قطع الغيار</label>
+        <select id="spareParts">
+          <option value="excluded">غير مشمولة</option>
+          <option value="included">مشمولة (بعرض خاص)</option>
+        </select>
+      </div>
+
+      <div>
+        <label>خدمة الطوارئ</label>
+        <select id="emergency">
+          <option value="normal">أوقات الدوام</option>
+          <option value="extended">خارج الدوام (إضافي)</option>
+        </select>
+      </div>
+    </div>
+
+    <label style="margin-top:15px">ملاحظات إضافية</label>
+    <textarea id="notes"></textarea>
+  </div>
+
+</div>
+
 
 <label style="margin-top:15px">ملاحظات إضافية</label>
 <textarea id="notes"></textarea>
