@@ -701,8 +701,6 @@ button {
 </div>
 
 
-<label style="margin-top:15px">ملاحظات إضافية</label>
-<textarea id="notes"></textarea>
 
 </div>
 <button onclick="previewPricing()" style="margin-top:10px;background:#2563eb">
@@ -1186,71 +1184,87 @@ function calculateTotal(){
 
 
 
-
 function saveContract() {
-  console.log("بدء عملية الحفظ...");
-
-  // 1. التأكد من اختيار العميل
   if (!customer) {
-    alert('⚠️ يرجى اختيار العميل أولاً من القائمة المنسدلة');
+    alert('⚠️ يرجى اختيار العميل أولاً');
     return;
   }
 
-  // 2. التحقق من الحقول الإلزامية الأساسية
-  const lang = document.getElementById('lang').value;
-  const date = document.getElementById('contractDate').value;
+  const serviceType = document.getElementById('serviceType')?.value || 'annual';
+
+  // حقول مشتركة
   const lifts = document.getElementById('lifts').value;
   const capacity = document.getElementById('capacity').value;
   const floors = document.getElementById('floors').value;
 
-  if (!lang || !date || !lifts || !capacity || !floors) {
-    alert('⚠️ يرجى تعبئة جميع الحقول المطلوبة (اللغة، التاريخ، عدد المصاعد، الحمولة، الطوابق)');
+  if (!lifts || !capacity || !floors) {
+    alert('⚠️ يرجى تعبئة بيانات المصاعد الأساسية (عدد المصاعد، الحمولة، الطوابق)');
     return;
   }
 
+  // تحقق حسب النوع
+  if (serviceType === 'annual') {
+    const lang = document.getElementById('lang').value;
+    const date = document.getElementById('contractDate').value;
+    if (!lang || !date) {
+      alert('⚠️ يرجى تعبئة (اللغة + تاريخ العقد) للعقد السنوي');
+      return;
+    }
+  } else {
+    const onceRequired = ['onceVisitType','onceDate','onceIssue','oncePrice'];
+    for (const id of onceRequired) {
+      if (!document.getElementById(id).value) {
+        alert('⚠️ يرجى تعبئة متطلبات الزيارة (نوع الزيارة، التاريخ، الوصف، سعر الزيارة)');
+        return;
+      }
+    }
+  }
+
   try {
-    // 3. حساب القيم
-    const calc = calculateTotal();
-    
-    // 4. تجهيز كائن العقد
-const contract = {
-  id: 'PMC-' + Date.now(),
-  customer: customer,
-  lifts: lifts,
+    const calc = window.finalCalcOverride || calculateTotal();
 
-  // ✅ السعر النهائي من المعاينة (حتى لو عدّله المستخدم)
-  total: calc.total.toFixed(2) + ' ريال',
+    const contract = {
+      id: (serviceType === 'once' ? 'VIS-' : 'PMC-') + Date.now(),
+      serviceType,
+      customer,
+      lifts,
 
-  // ✅ نخزّن تفاصيل التسعير (عشان نطبع عرض سعر رسمي)
-  pricing: {
-    zone: calc.zone || '—',
-    pricePerLift: Number(calc.pricePerLift || 0),
-    subtotal: Number(calc.subtotal || 0),
-    vat: Number(calc.vat || 0),
-    total: Number(calc.total || 0),
-    isManual: !!calc.isManual
-  },
+      total: calc.total.toFixed(2) + ' ريال',
+      pricing: {
+        zone: calc.zone || '—',
+        pricePerLift: Number(calc.pricePerLift || 0),
+        subtotal: Number(calc.subtotal || 0),
+        vat: Number(calc.vat || 0),
+        total: Number(calc.total || 0),
+        isManual: !!calc.isManual
+      },
 
-  lang: lang,
-  date: date,
+      // بيانات إضافية حسب النوع
+      lang: (serviceType === 'annual') ? document.getElementById('lang').value : 'ar',
+      date: (serviceType === 'annual') ? document.getElementById('contractDate').value : document.getElementById('onceDate').value,
 
-  // ممكن تبقيه أو تلغيه لاحقًا
-  content: generateFullContractText()
-};
+      onceDetails: (serviceType === 'once') ? {
+        visitType: document.getElementById('onceVisitType').value,
+        visitDate: document.getElementById('onceDate').value,
+        urgency: document.getElementById('onceUrgency').value,
+        stopped: document.getElementById('onceStopped').value,
+        issue: document.getElementById('onceIssue').value,
+        priceBeforeVat: Number(document.getElementById('oncePrice').value || 0)
+      } : null,
 
+      // خليه فقط للسنوي
+      content: (serviceType === 'annual') ? generateFullContractText() : ''
+    };
 
-    // 5. الحفظ في LocalStorage
     const contracts = JSON.parse(localStorage.getItem('rkl_maintenance_contracts') || '[]');
     contracts.push(contract);
     localStorage.setItem('rkl_maintenance_contracts', JSON.stringify(contracts));
 
-    // 6. تحديث الجدول
     renderContractsTable();
-
-    alert('✅ تم حفظ العقد بنجاح وإضافته للسجل');
+    alert('✅ تم الحفظ بنجاح وإضافته للسجل');
   } catch (error) {
-    console.error("خطأ أثناء الحفظ:", error);
-    alert('❌ حدث خطأ داخلي أثناء الحفظ: ' + error.message);
+    console.error(error);
+    alert('❌ حدث خطأ أثناء الحفظ: ' + error.message);
   }
 }
 
@@ -1593,7 +1607,8 @@ table{
 
 
     <div class="header-center">
-      <h1>عقد صيانة وقائية للمصاعد</h1>
+      <h1>${serviceType === 'once' ? 'عرض سعر زيارة لمرة واحدة' : 'عرض سعر صيانة وقائية للمصاعد'}</h1>
+
       <p>آر كي ال RKL للمصاعد والسلالم الكهربائية</p>
       <p class="small">السجل التجاري: 1010709355 | هاتف: 0114774021</p>
     </div>
@@ -1773,10 +1788,10 @@ function toggleOtherBrand(){
 }
 
 </script>
-
+<script>
 window.manualPricePerLift = null; // سعر يدوي للمصعد (قبل الخصومات والمنطقة إلخ)
 window.finalCalcOverride = null;  // نتيجة حساب نهائية بعد تعديل المستخدم (للاستخدام بالحفظ)
-
+</script>
 <script>
 function fmt(n){
   return (Number(n || 0)).toFixed(2);
@@ -1981,7 +1996,9 @@ function esc(s){
 }
 
 function printOfferFromPreview(){
-  // لازم يكون في معاينة محسوبة قبل الطباعة
+
+  const serviceType = document.getElementById('serviceType')?.value || 'annual';
+
   const calc = window.finalCalcOverride || calculateTotal();
   if(!calc || !calc.total){
     alert('⚠️ اعرض الحسبة أولاً ثم اطبع عرض السعر');
@@ -1992,9 +2009,7 @@ function printOfferFromPreview(){
     return;
   }
 
-  const date = document.getElementById('contractDate').value || '';
   const lifts = Number(document.getElementById('lifts').value || 0);
-
   const building = document.getElementById('building').value === 'government' ? 'حكومي' : 'خاص';
   const elevatorType = document.getElementById('elevatorType').value || '—';
 
@@ -2002,190 +2017,21 @@ function printOfferFromPreview(){
   const brandOther  = document.getElementById('brandOther')?.value || '';
   const brand = (brandSelect === 'Other') ? (brandOther || '—') : (brandSelect || '—');
 
-  const visits = document.getElementById('visits').value === 'monthly' ? 'زيارة شهرية (12 زيارة)' : 'زيارة كل شهرين (6 زيارات)';
-  const emergency = document.getElementById('emergency').value === 'extended' ? 'خارج الدوام (إضافي)' : 'أوقات الدوام';
-  const spareParts = document.getElementById('spareParts').value === 'included' ? 'مشمولة (بعرض خاص)' : 'غير مشمولة';
-  const training = document.getElementById('training').value === 'yes' ? 'نعم' : 'لا';
-  const notes = document.getElementById('notes').value || '—';
+  // ✅ التاريخ يختلف حسب النوع
+  const date = (serviceType === 'once')
+    ? (document.getElementById('onceDate').value || '')
+    : (document.getElementById('contractDate').value || '');
 
-  const offerId = 'Q-' + Date.now();
+  // ✅ محتوى الخدمة يختلف حسب النوع
+  let serviceHtml = '';
+  if(serviceType === 'annual'){
+    const visits = document.getElementById('visits').value === 'monthly' ? 'زيارة شهرية (12 زيارة)' : 'زيارة كل شهرين (6 زيارات)';
+    const emergency = document.getElementById('emergency').value === 'extended' ? 'خارج الدوام (إضافي)' : 'أوقات الدوام';
+    const spareParts = document.getElementById('spareParts').value === 'included' ? 'مشمولة (بعرض خاص)' : 'غير مشمولة';
+    const training = document.getElementById('training').value === 'yes' ? 'نعم' : 'لا';
+    const notes = document.getElementById('notes').value || '—';
 
-  const w = window.open('', '_blank');
-  w.document.write(`
-<!doctype html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>عرض سعر - ${offerId}</title>
-<style>
-*{ -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-@page{ size:A4; margin:14mm; }
-
-:root{
-  --ink:#111827;
-  --muted:#6b7280;
-  --line:#e5e7eb;
-  --soft:#f8fafc;
-  --brand:#0f766e;
-}
-
-body{
-  font-family:"Cairo","Tajawal",Arial,sans-serif;
-  color:var(--ink);
-  margin:0;
-  background:#fff;
-  line-height:1.7;
-  font-size:13.5px;
-}
-
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:url('/public/images/logo.png') center center / 360px 360px no-repeat;
-  opacity:0.05;
-  z-index:-1;
-}
-
-.wrap{
-  border:2px solid var(--brand);
-  border-radius:12px;
-  padding:14px 16px;
-  min-height: 97vh;
-}
-
-.header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  border-bottom:1px solid var(--line);
-  padding-bottom:10px;
-  margin-bottom:12px;
-}
-.logo{ width:48px; height:auto; }
-.hcenter{ text-align:center; flex:1; }
-.hcenter h1{ margin:0; color:var(--brand); font-size:18px; font-weight:900; }
-.hcenter p{ margin:2px 0 0; color:var(--muted); font-size:11.5px; }
-
-.meta{
-  text-align:left;
-  font-size:11.5px;
-  color:var(--muted);
-  min-width:180px;
-}
-.meta b{ color:var(--ink); }
-
-.section{
-  background:var(--soft);
-  border:1px solid var(--line);
-  border-radius:12px;
-  padding:12px 14px;
-  margin:10px 0;
-  page-break-inside: avoid;
-}
-.section h3{
-  margin:0 0 10px;
-  font-size:14.5px;
-  color:var(--brand);
-  font-weight:900;
-  border-bottom:1px solid var(--line);
-  padding-bottom:8px;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap:10px 14px;
-}
-.kv{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  border-bottom:1px dashed #d1d5db;
-  padding:6px 0;
-}
-.kv:last-child{ border-bottom:none; }
-.k{ color:var(--muted); }
-.v{ font-weight:800; text-align:left; }
-
-.table{
-  width:100%;
-  border-collapse:collapse;
-  margin-top:6px;
-  font-size:13px;
-}
-.table th{
-  background:var(--brand);
-  color:#fff;
-  padding:10px 8px;
-  text-align:center;
-}
-.table td{
-  border:1px solid var(--line);
-  padding:10px 8px;
-}
-.totalRow td{
-  font-weight:900;
-  color:var(--brand);
-  font-size:14px;
-}
-
-.footer{
-  margin-top:12px;
-  color:var(--muted);
-  font-size:11.5px;
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  border-top:1px solid var(--line);
-  padding-top:10px;
-}
-.badge{
-  display:inline-block;
-  padding:6px 10px;
-  border-radius:999px;
-  background:#ecfeff;
-  border:1px dashed var(--brand);
-  color:var(--brand);
-  font-weight:900;
-  font-size:11.5px;
-}
-
-.actions{ margin-top:12px; display:flex; gap:10px; }
-button{ padding:10px 14px; border:0; border-radius:10px; background:var(--brand); color:#fff; font-weight:800; cursor:pointer;}
-@media print{ .actions{ display:none; } }
-</style>
-</head>
-<body>
-  <div class="wrap">
-
-    <div class="header">
-      <img class="logo" src="/public/images/logo.png" alt="RKL"/>
-      <div class="hcenter">
-        <h1>عرض سعر صيانة وقائية للمصاعد</h1>
-        <p>آر كي ال RKL للمصاعد والسلالم الكهربائية — السجل التجاري 1010709355 — الرقم الضريبي 302250422600003</p>
-      </div>
-      <div class="meta">
-        <div><b>رقم العرض:</b> ${offerId}</div>
-        <div><b>التاريخ:</b> ${esc(date)}</div>
-        <div><b>المدينة/المنطقة:</b> ${esc(calc.zone || '—')}</div>
-      </div>
-    </div>
-
-    <div class="section">
-      <h3>بيانات العميل</h3>
-      <div class="grid">
-        <div class="kv"><span class="k">اسم العميل</span><span class="v">${esc(customer.customer_name || customer.name || '—')}</span></div>
-        <div class="kv"><span class="k">رقم الجوال</span><span class="v">${esc(customer.mobile || customer.phone || '—')}</span></div>
-        <div class="kv"><span class="k">المدينة</span><span class="v">${esc(customer.city || '—')}</span></div>
-        <div class="kv"><span class="k">العنوان</span><span class="v">${esc(customer.full_address || customer.address || '—')}</span></div>
-      </div>
-    </div>
-
-    <div class="section">
-      <h3>وصف الخدمة</h3>
+    serviceHtml = `
       <div class="grid">
         <div class="kv"><span class="k">عدد المصاعد</span><span class="v">${lifts}</span></div>
         <div class="kv"><span class="k">نوع المبنى</span><span class="v">${esc(building)}</span></div>
@@ -2197,143 +2043,35 @@ button{ padding:10px 14px; border:0; border-radius:10px; background:var(--brand)
         <div class="kv"><span class="k">قطع الغيار</span><span class="v">${esc(spareParts)}</span></div>
       </div>
       <div style="margin-top:8px;color:#374151"><b>ملاحظات:</b> ${esc(notes)}</div>
-      <div style="margin-top:8px">
-        <span class="badge">${calc.isManual ? 'سعر معدل يدويًا' : 'سعر محسوب تلقائيًا'}</span>
+    `;
+  } else {
+    const vt = document.getElementById('onceVisitType').selectedOptions[0]?.textContent || '—';
+    const urgency = document.getElementById('onceUrgency').value === 'urgent' ? 'مستعجل' : 'عادي';
+    const stopped = document.getElementById('onceStopped').value === 'yes' ? 'نعم' : 'لا';
+    const issue = document.getElementById('onceIssue').value || '—';
+
+    serviceHtml = `
+      <div class="grid">
+        <div class="kv"><span class="k">نوع الزيارة</span><span class="v">${esc(vt)}</span></div>
+        <div class="kv"><span class="k">تاريخ الزيارة</span><span class="v">${esc(date)}</span></div>
+        <div class="kv"><span class="k">الأولوية</span><span class="v">${esc(urgency)}</span></div>
+        <div class="kv"><span class="k">توقف كامل</span><span class="v">${esc(stopped)}</span></div>
+
+        <div class="kv"><span class="k">عدد المصاعد</span><span class="v">${lifts}</span></div>
+        <div class="kv"><span class="k">نوع المبنى</span><span class="v">${esc(building)}</span></div>
+        <div class="kv"><span class="k">نوع المصعد</span><span class="v">${esc(elevatorType)}</span></div>
+        <div class="kv"><span class="k">الماركة</span><span class="v">${esc(brand)}</span></div>
       </div>
-    </div>
 
-    <div class="section">
-      <h3>البيان المالي</h3>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>البند</th>
-            <th>القيمة</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>السعر للمصعد (سنوي)</td>
-            <td style="text-align:left;font-weight:900">${Number(calc.pricePerLift||0).toFixed(2)} ريال</td>
-          </tr>
-          <tr>
-            <td>الإجمالي قبل الضريبة</td>
-            <td style="text-align:left;font-weight:900">${Number(calc.subtotal||0).toFixed(2)} ريال</td>
-          </tr>
-          <tr>
-            <td>ضريبة القيمة المضافة (15%)</td>
-            <td style="text-align:left;font-weight:900">${Number(calc.vat||0).toFixed(2)} ريال</td>
-          </tr>
-          <tr class="totalRow">
-            <td>الإجمالي شامل الضريبة</td>
-            <td style="text-align:left">${Number(calc.total||0).toFixed(2)} ريال</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div style="margin-top:10px;color:#6b7280;font-size:11.5px">
-        • العرض لا يشمل قطع الغيار (إن لم يذكر خلاف ذلك) ويتم تسعيرها بعرض مستقل.<br/>
-        • صلاحية العرض: 15 يومًا من تاريخ الإصدار (يمكن تعديلها حسب سياسة المؤسسة).<br/>
-        • يتم البدء بالخدمة بعد اعتماد العرض وسداد الدفعة المتفق عليها.
+      <div style="margin-top:10px;color:#374151">
+        <b>وصف المشكلة/المطلوب:</b><br>${esc(issue)}
       </div>
-    </div>
-   <div class="section">
-  <h3>طرق السداد</h3>
+    `;
+  }
 
-  <div class="grid">
-    <div class="kv">
-      <span class="k">اسم المستفيد</span>
-      <span class="v">آر كي ال RKL للمصاعد والسلالم الكهربائية</span>
-    </div>
+  const offerId = 'Q-' + Date.now();
+  const w = window.open('', '_blank');
 
-    <div class="kv">
-      <span class="k">البنك</span>
-      <span class="v">البنك الأهلي السعودي (SNB)</span>
-    </div>
-
-    <div class="kv">
-      <span class="k">رقم الحساب</span>
-      <span class="v">01400005531406</span>
-    </div>
-
-    <div class="kv">
-      <span class="k">الآيبان (IBAN)</span>
-      <span class="v">SA1710000001400005531406</span>
-    </div>
-
-    <div class="kv">
-      <span class="k">رمز السويفت (SWIFT)</span>
-      <span class="v">NCBKSAJE</span>
-    </div>
-  </div>
-
-  <div style="margin-top:10px;color:#6b7280;font-size:11.5px">
-    • يرجى إرسال إشعار التحويل بعد السداد عبر البريد الالكتروني admin@rkl.sa أو الوتساب 0114774021 لاعتماد الدفع.
-  </div>
-</div>
-<div class="section">
-  <h3>Payment Method</h3>
-
-  <div class="grid">
-    <div class="kv">
-      <span class="k">Beneficiary Name</span>
-      <span class="v">RKL Elevators & Escalators</span>
-    </div>
-
-    <div class="kv">
-      <span class="k">Bank</span>
-      <span class="v">Saudi National Bank (SNB)</span>
-    </div>
-
-    <div class="kv">
-      <span class="k">Account Number</span>
-      <span class="v">01400005531406</span>
-    </div>
-
-    <div class="kv">
-      <span class="k">IBAN</span>
-      <span class="v">SA1710000001400005531406</span>
-    </div>
-
-    <div class="kv">
-      <span class="k">SWIFT Code</span>
-      <span class="v">NCBKSAJE</span>
-    </div>
-  </div>
-
-  <div style="margin-top:10px;color:#6b7280;font-size:11.5px">
-    • Kindly share the bank transfer receipt after payment for confirmation admin@rkl.sa 0114774021.
-  </div>
-</div>
-
-
-      <div style="margin-top:10px;color:#6b7280;font-size:11.5px">
-        • في حال رغبتكم بالدفع الإلكتروني، يرجى طلب رابط الدفع/فاتورة الدفع من فريقنا عبر واتساب أو البريد الرسمي.
-      </div>
-    </div>
-
-    <div class="footer">
-      <div>
-        <b>بيانات المؤسسة:</b><br/>
-        آر كي ال RKL — السليمانية، الرياض — هاتف: 0114774021 — admin@rk-lifts.com
-      </div>
-      <div style="text-align:left">
-        <b>الحساب البنكي:</b><br/>
-        SNB — IBAN: SA1710000001400005531406
-      </div>
-    </div>
-
-    <div class="actions">
-      <button onclick="window.print()">🖨️ طباعة</button>
-    </div>
-
-  </div>
-</body>
-</html>
-  `);
-
-  w.document.close();
-}
 </script>
 
 
