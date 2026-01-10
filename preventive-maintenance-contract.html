@@ -720,27 +720,49 @@ button {
 </div>
 
 </div>
- <div class="section">
-  <h3>سجل عقود الصيانة الوقائية</h3>
+<!-- ================== سجل الخدمات ================== -->
+<div class="section">
+  <h3>سجل الصيانة (عقود سنوية + زيارات لمرة واحدة)</h3>
 
+  <!-- جدول العقود السنوية -->
+  <h4 style="margin:10px 0;color:#0f766e">أ) العقود السنوية المعتمدة</h4>
   <div class="table-wrap">
     <table border="1" width="100%" cellpadding="8" style="border-collapse:collapse">
+      <thead style="background:#f3f4f6">
+        <tr>
+          <th>#</th>
+          <th>رقم العقد</th>
+          <th>العميل</th>
+          <th>عدد المصاعد</th>
+          <th>قيمة العقد</th>
+          <th>اللغة</th>
+          <th>تاريخ العقد</th>
+          <th>إجراءات</th>
+        </tr>
+      </thead>
+      <tbody id="annualContractsTable"></tbody>
+    </table>
+  </div>
 
-    <thead style="background:#f3f4f6">
-      <tr>
-        <th>#</th>
-        <th>رقم العقد</th>
-        <th>العميل</th>
-        <th>عدد المصاعد</th>
-        <th>قيمة العقد</th>
-        <th>اللغة</th>
-        <th>تاريخ العقد</th>
-        <th>إجراءات</th>
-      </tr>
-    </thead>
-    <tbody id="contractsTable"></tbody>
-  </table>
-      </div>
+  <!-- جدول الزيارات -->
+  <h4 style="margin:18px 0 10px;color:#0f766e">ب) الزيارات لمرة واحدة (عرض سعر / تقرير)</h4>
+  <div class="table-wrap">
+    <table border="1" width="100%" cellpadding="8" style="border-collapse:collapse">
+      <thead style="background:#f3f4f6">
+        <tr>
+          <th>#</th>
+          <th>رقم الزيارة</th>
+          <th>العميل</th>
+          <th>عدد المصاعد</th>
+          <th>قيمة الزيارة</th>
+          <th>تاريخ الزيارة</th>
+          <th>نوع الزيارة</th>
+          <th>إجراءات</th>
+        </tr>
+      </thead>
+      <tbody id="onceVisitsTable"></tbody>
+    </table>
+  </div>
 </div>
 
 
@@ -1278,6 +1300,7 @@ function openPrintView(contract){
     return;
   }
 
+   const serviceType = contract.serviceType || 'annual'; // ✅ أضف هذا
   const w = window.open('', '_blank');
 
   w.document.write(`
@@ -1668,24 +1691,23 @@ function getBrandValue(){
 }
 
 function renderContractsTable(){
-  const tbody = document.getElementById('contractsTable');
-  if (!tbody) return;
+  const annualTbody = document.getElementById('annualContractsTable');
+  const onceTbody   = document.getElementById('onceVisitsTable');
+  if (!annualTbody || !onceTbody) return;
 
-  const contracts = JSON.parse(
-    localStorage.getItem('rkl_maintenance_contracts') || '[]'
-  );
+  const items = JSON.parse(localStorage.getItem('rkl_maintenance_contracts') || '[]');
 
-  tbody.innerHTML = '';
+  annualTbody.innerHTML = '';
+  onceTbody.innerHTML = '';
 
-  contracts.forEach((c, i) => {
+  let annualIndex = 0;
+  let onceIndex = 0;
 
-    /* =========================
-       معالجة بيانات العميل
-       - يدعم Object أو نص قديم
-    ========================= */
+  items.forEach((c, i) => {
+
+    // اسم العميل (يدعم Object أو نص قديم)
     let customerName = '—';
     let customerCity = '';
-
     if (typeof c.customer === 'object' && c.customer !== null) {
       customerName = c.customer.customer_name || c.customer.name || '—';
       customerCity = c.customer.city ? ` - ${c.customer.city}` : '';
@@ -1693,41 +1715,89 @@ function renderContractsTable(){
       customerName = c.customer;
     }
 
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${i + 1}</td>
-      <td>${c.id || '—'}</td>
-      <td>
-        <strong>${customerName}</strong>
-        <div style="font-size:12px;color:#6b7280">${customerCity}</div>
-      </td>
-      <td>${c.lifts || '—'}</td>
-      <td>${c.total || '—'}</td>
-      <td>${c.lang || '—'}</td>
-      <td>${c.date || '—'}</td>
-      <td>
-        <button
-          type="button"
-          class="print-btn-action"
-          data-index="${i}">
-          طباعة
-        </button>
-      </td>
-    `;
+    const serviceType = c.serviceType || 'annual';
 
-    tbody.appendChild(row);
+    // =======================
+    // (أ) العقود السنوية فقط
+    // شرطنا هنا: annual + فيه content (يعني عقد فعلي)
+    // =======================
+    if(serviceType === 'annual' && c.content){
+      annualIndex++;
+
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${annualIndex}</td>
+        <td>${c.id || '—'}</td>
+        <td>
+          <strong>${customerName}</strong>
+          <div style="font-size:12px;color:#6b7280">${customerCity}</div>
+        </td>
+        <td>${c.lifts || '—'}</td>
+        <td>${c.total || '—'}</td>
+        <td>${c.lang || '—'}</td>
+        <td>${c.date || '—'}</td>
+        <td>
+          <button type="button" class="print-annual" data-index="${i}">طباعة العقد</button>
+        </td>
+      `;
+      annualTbody.appendChild(row);
+      return;
+    }
+
+    // =======================
+    // (ب) الزيارات لمرة واحدة
+    // =======================
+    if(serviceType === 'once'){
+      onceIndex++;
+
+      const vt = c.onceDetails?.visitType || '—';
+      const vtLabel =
+        vt === 'inspection' ? 'فحص وتشخيص' :
+        vt === 'repair'     ? 'صيانة/إصلاح' :
+        vt === 'rescue'     ? 'احتجاز/إنقاذ' : '—';
+
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${onceIndex}</td>
+        <td>${c.id || '—'}</td>
+        <td>
+          <strong>${customerName}</strong>
+          <div style="font-size:12px;color:#6b7280">${customerCity}</div>
+        </td>
+        <td>${c.lifts || '—'}</td>
+        <td>${c.total || '—'}</td>
+        <td>${c.date || '—'}</td>
+        <td>${vtLabel}</td>
+        <td>
+          <button type="button" class="print-once-offer" data-index="${i}">طباعة عرض السعر</button>
+        </td>
+      `;
+      onceTbody.appendChild(row);
+      return;
+    }
+
+    // إذا عندك بيانات قديمة annual بدون content، تجاهلها أو لاحقاً نرتّبها
   });
 
-  /* =========================
-     ربط أزرار الطباعة
-  ========================= */
-  document.querySelectorAll('.print-btn-action').forEach(btn => {
-    btn.onclick = function () {
-      const idx = this.getAttribute('data-index');
-      openPrintView(contracts[idx]);
+  // ربط أزرار الطباعة للعقود السنوية
+  document.querySelectorAll('.print-annual').forEach(btn => {
+    btn.onclick = function(){
+      const idx = Number(this.getAttribute('data-index'));
+      openPrintView(items[idx]); // نفس الطباعة الحالية
+    };
+  });
+
+  // ربط أزرار طباعة عرض سعر الزيارة
+  document.querySelectorAll('.print-once-offer').forEach(btn => {
+    btn.onclick = function(){
+      const idx = Number(this.getAttribute('data-index'));
+      // هنا سنطبع "عرض السعر" للزيارة
+      // استخدم نفس printOfferFromPreview إذا بدك، أو نجهز Print View خاص للزيارة لاحقًا
+      openPrintView(items[idx]); // مؤقتاً نفس الدالة (وسنعدلها بالخطوة التالية)
     };
   });
 }
+
 
 document.addEventListener('DOMContentLoaded', renderContractsTable);
 
@@ -1961,7 +2031,12 @@ function previewPricing(){
   }
 
   document.getElementById('reviewSection').style.display = 'block';
-  document.getElementById('saveBtn').style.display = 'inline-block';
+  const btn = document.getElementById('saveBtn');
+btn.style.display = 'inline-block';
+
+const serviceType = document.getElementById('serviceType')?.value || 'annual';
+btn.textContent = (serviceType === 'once') ? '💾 حفظ الزيارة في السجل' : '💾 اعتماد وحفظ العقد';
+
 }
 
 </script>
