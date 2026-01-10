@@ -1679,21 +1679,54 @@ function toggleOtherBrand(){
 
 </script>
 
+window.manualPricePerLift = null; // سعر يدوي للمصعد (قبل الخصومات والمنطقة إلخ)
+window.finalCalcOverride = null;  // نتيجة حساب نهائية بعد تعديل المستخدم (للاستخدام بالحفظ)
 
 <script>
-function previewPricing(){
+function fmt(n){
+  return (Number(n || 0)).toFixed(2);
+}
 
-  // تحقق من الحقول الأساسية
-  const required = ['lifts','capacity','floors','lang','contractDate'];
-  for(const id of required){
-    if(!document.getElementById(id).value){
-      alert('⚠️ يرجى تعبئة جميع الحقول الأساسية قبل عرض الحسبة');
-      return;
-    }
+function recomputeFromManual(){
+  const lifts = Number(document.getElementById('lifts').value || 0);
+  if(!lifts) return;
+
+  // قراءة السعر اليدوي للمصعد من الحقل
+  const v = Number(document.getElementById('manualPricePerLift')?.value || 0);
+  if(!v || v <= 0){
+    // رجّع للحسبة التلقائية لو فاضي أو صفر
+    window.manualPricePerLift = null;
+    const calc = calculateTotal();
+    window.finalCalcOverride = calc;
+    paintPreview(calc, false);
+    return;
   }
 
-  const calc = calculateTotal();
+  window.manualPricePerLift = v;
 
+  // ✅ هنا نطبّق نفس منطق الخصومات (3 مصاعد خصم 10%) + الضريبة
+  let subtotal = v * lifts;
+
+  if (lifts >= 3) subtotal *= 0.90; // خصم 10%
+
+  const vat = subtotal * 0.15;
+  const total = subtotal + vat;
+
+  const calc = {
+    pricePerLift: v,
+    lifts,
+    zone: (cityZones[document.getElementById('projectCity')?.value || 'riyadh']?.label) || '—',
+    subtotal,
+    vat,
+    total,
+    isManual: true
+  };
+
+  window.finalCalcOverride = calc;
+  paintPreview(calc, true);
+}
+
+function paintPreview(calc, isManual){
   document.getElementById('reviewBox').innerHTML = `
     <div class="contract-summary">
       <h4>معاينة التسعير قبل الاعتماد</h4>
@@ -1707,33 +1740,66 @@ function previewPricing(){
           <td class="value">${calc.zone}</td>
         </tr>
         <tr>
-          <td class="label">السعر للمصعد (تقريبي)</td>
-          <td class="value">${calc.pricePerLift.toFixed(2)} ريال</td>
+          <td class="label">السعر للمصعد (قابل للتعديل)</td>
+          <td class="value">
+            <input
+              id="manualPricePerLift"
+              type="number"
+              min="0"
+              step="0.01"
+              style="width:180px;text-align:left"
+              value="${fmt(calc.pricePerLift)}"
+              oninput="recomputeFromManual()"
+            />
+            <div style="font-size:12px;color:#6b7280;margin-top:4px">
+              ${isManual ? '✅ تم اعتماد سعر يدوي، وسيتم الحفظ عليه.' : 'ℹ️ هذا سعر محسوب تلقائيًا، ويمكنك تعديله.'}
+            </div>
+          </td>
         </tr>
         <tr>
           <td class="label">الإجمالي قبل الضريبة</td>
-          <td class="value">${calc.subtotal.toFixed(2)} ريال</td>
+          <td class="value"><span id="pv_subtotal">${fmt(calc.subtotal)}</span> ريال</td>
         </tr>
         <tr>
           <td class="label">ضريبة القيمة المضافة (15%)</td>
-          <td class="value">${calc.vat.toFixed(2)} ريال</td>
+          <td class="value"><span id="pv_vat">${fmt(calc.vat)}</span> ريال</td>
         </tr>
         <tr>
           <td class="label total">الإجمالي شامل الضريبة</td>
-          <td class="value total">${calc.total.toFixed(2)} ريال</td>
+          <td class="value total"><span id="pv_total">${fmt(calc.total)}</span> ريال</td>
         </tr>
       </table>
 
       <p class="words">
-        ⚠️ هذه الحسبة للمعاينة فقط. يمكنك تعديل البيانات ثم اعتماد العقد.
+        ⚠️ المعاينة قبل الاعتماد. يمكنك تعديل سعر المصعد من الجدول وسيتم تحديث الإجمالي تلقائيًا.
       </p>
     </div>
   `;
+}
+
+function previewPricing(){
+  const required = ['lifts','capacity','floors','lang','contractDate'];
+  for(const id of required){
+    if(!document.getElementById(id).value){
+      alert('⚠️ يرجى تعبئة جميع الحقول الأساسية قبل عرض الحسبة');
+      return;
+    }
+  }
+
+  // ✅ ابدأ بالحسبة التلقائية كقيمة افتراضية للـ input
+  const calc = calculateTotal();
+
+  // افتراضيًا: لا يوجد سعر يدوي بعد
+  window.manualPricePerLift = null;
+  window.finalCalcOverride = calc;
+
+  paintPreview(calc, false);
 
   document.getElementById('reviewSection').style.display = 'block';
   document.getElementById('saveBtn').style.display = 'inline-block';
 }
 </script>
+
 
 
 </body>
