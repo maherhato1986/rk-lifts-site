@@ -1281,6 +1281,151 @@ function saveContract() {
     const contracts = JSON.parse(localStorage.getItem('rkl_maintenance_contracts') || '[]');
     contracts.push(contract);
     localStorage.setItem('rkl_maintenance_contracts', JSON.stringify(contracts));
+function printAnnualOfferFromRecord(rec){
+  if(!rec || !rec.id){
+    alert('خطأ: السجل غير مكتمل');
+    return;
+  }
+
+  const c = rec.customer || {};
+  const customerName = c.customer_name || c.name || '—';
+  const mobile = c.mobile || c.phone || '—';
+  const city = c.city || '—';
+  const address = c.full_address || c.address || '—';
+
+  // الأسعار المحفوظة (نفضل pricing لأنه رقم)
+  const p = rec.pricing || {};
+  const subtotal = Number(p.subtotal || 0);
+  const vat = Number(p.vat || 0);
+  const total = Number(p.total || 0);
+
+  const lifts = rec.lifts || '—';
+  const date = rec.date || '—';
+
+  const w = window.open('', '_blank');
+
+  w.document.write(`
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<title>عرض سعر - ${rec.id}</title>
+<style>
+*{ -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+@page{ size:A4; margin:14mm 14mm 16mm 14mm; }
+body{
+  margin:0; font-family:"Cairo","Tajawal",Arial,sans-serif;
+  color:#111827; font-size:13.5px; line-height:1.7; background:#fff;
+}
+:root{ --brand:#0f766e; --line:#e5e7eb; --muted:#6b7280; --soft:#f8fafc; }
+
+body::before{
+  content:""; position:fixed; inset:0;
+  background:url('/public/images/logo.png') center/360px no-repeat;
+  opacity:0.05; z-index:-1;
+}
+.page{
+  border:2px solid var(--brand);
+  padding:14px; min-height:95vh;
+}
+.header{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding-bottom:10px; border-bottom:1px solid var(--line); margin-bottom:12px;
+}
+.header img{ width:44px; }
+.hc{ text-align:center; flex:1; }
+.hc h1{ margin:0; font-size:18px; font-weight:800; color:var(--brand); }
+.hc p{ margin:3px 0 0; font-size:11.5px; color:var(--muted); }
+.meta{ min-width:180px; text-align:left; font-size:11px; color:var(--muted); }
+.meta b{ color:#111827; }
+
+.block{
+  background:var(--soft);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:12px 14px;
+  margin:12px 0;
+}
+.grid{
+  display:grid; grid-template-columns:repeat(2, 1fr); gap:8px 14px;
+}
+.kv{ display:flex; justify-content:space-between; gap:10px; }
+.k{ color:var(--muted); }
+.v{ font-weight:800; color:#111827; text-align:left; }
+table{
+  width:100%; border-collapse:collapse; margin-top:8px; font-size:13px;
+}
+td{ padding:8px; border-bottom:1px dashed #d1d5db; }
+.totalRow td{ font-weight:900; color:var(--brand); border-bottom:none; }
+.footer{
+  position:fixed; bottom:8mm; left:0; right:0;
+  text-align:center; font-size:10px; color:var(--muted);
+}
+button{ display:none !important; }
+</style>
+</head>
+<body>
+<div class="footer">آر كي ال RKL للمصاعد والسلالم الكهربائية — السجل التجاري: 1010709355 — الرقم الضريبي: 302250422600003</div>
+
+<div class="page">
+  <div class="header">
+    <img src="/public/images/logo.png" alt="RKL" />
+    <div class="hc">
+      <h1>عرض سعر — صيانة وقائية سنوية</h1>
+      <p>آر كي ال RKL للمصاعد والسلالم الكهربائية</p>
+      <p>الرياض — هاتف 0114774021 — admin@rk-lifts.com</p>
+    </div>
+    <div class="meta">
+      <div><b>رقم المرجع:</b><br>${rec.id}</div>
+      <div><b>التاريخ:</b><br>${date}</div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div style="font-weight:900;color:#0f766e;margin-bottom:8px">بيانات العميل</div>
+    <div class="grid">
+      <div class="kv"><span class="k">العميل</span><span class="v">${customerName}</span></div>
+      <div class="kv"><span class="k">الجوال</span><span class="v">${mobile}</span></div>
+      <div class="kv"><span class="k">المدينة</span><span class="v">${city}</span></div>
+      <div class="kv"><span class="k">العنوان</span><span class="v">${address}</span></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div style="font-weight:900;color:#0f766e;margin-bottom:8px">نطاق الخدمة</div>
+    <div class="grid">
+      <div class="kv"><span class="k">نوع الخدمة</span><span class="v">صيانة وقائية سنوية</span></div>
+      <div class="kv"><span class="k">عدد المصاعد</span><span class="v">${lifts}</span></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div style="font-weight:900;color:#0f766e;margin-bottom:8px;text-align:center">ملخص الأسعار</div>
+    <table>
+      <tr><td class="k">الإجمالي قبل الضريبة</td><td class="v">${subtotal.toFixed(2)} ريال</td></tr>
+      <tr><td class="k">ضريبة القيمة المضافة (15%)</td><td class="v">${vat.toFixed(2)} ريال</td></tr>
+      <tr class="totalRow"><td>الإجمالي شامل الضريبة</td><td>${total.toFixed(2)} ريال</td></tr>
+    </table>
+    <div style="margin-top:10px;color:#6b7280;font-size:12px">
+      * العرض لا يشمل قطع الغيار (إن لزم يتم إصدار عرض مستقل).<br>
+      * بعد اعتماد العرض يتم إصدار عقد صيانة وقائية سنوي رسمي.
+    </div>
+  </div>
+
+  <div style="margin-top:18px;display:flex;justify-content:space-between;gap:16px">
+    <div style="width:48%;border-top:1px solid #111;padding-top:10px;text-align:center">توقيع وختم المؤسسة</div>
+    <div style="width:48%;border-top:1px solid #111;padding-top:10px;text-align:center">اسم وتوقيع العميل</div>
+  </div>
+
+</div>
+
+<script>window.print();</script>
+</body>
+</html>
+  `);
+
+  w.document.close();
+}
 
     renderContractsTable();
     alert('✅ تم الحفظ بنجاح وإضافته للسجل');
@@ -1736,9 +1881,11 @@ function renderContractsTable(){
         <td>${c.total || '—'}</td>
         <td>${c.lang || '—'}</td>
         <td>${c.date || '—'}</td>
-        <td>
-          <button type="button" class="print-annual" data-index="${i}">طباعة العقد</button>
-        </td>
+       <td>
+  <button type="button" class="print-annual-offer" data-index="${i}">🖨️ طباعة عرض السعر</button>
+  <button type="button" class="print-annual-contract" data-index="${i}">🖨️ طباعة العقد</button>
+</td>
+
       `;
       annualTbody.appendChild(row);
       return;
@@ -1779,13 +1926,22 @@ function renderContractsTable(){
     // إذا عندك بيانات قديمة annual بدون content، تجاهلها أو لاحقاً نرتّبها
   });
 
-  // ربط أزرار الطباعة للعقود السنوية
-  document.querySelectorAll('.print-annual').forEach(btn => {
-    btn.onclick = function(){
-      const idx = Number(this.getAttribute('data-index'));
-      openPrintView(items[idx]); // نفس الطباعة الحالية
-    };
-  });
+// (1) طباعة عرض السعر للعقد السنوي من السجل
+document.querySelectorAll('.print-annual-offer').forEach(btn => {
+  btn.onclick = function(){
+    const idx = Number(this.getAttribute('data-index'));
+    printAnnualOfferFromRecord(items[idx]);
+  };
+});
+
+// (2) طباعة العقد السنوي من السجل
+document.querySelectorAll('.print-annual-contract').forEach(btn => {
+  btn.onclick = function(){
+    const idx = Number(this.getAttribute('data-index'));
+    openPrintView(items[idx]); // نفس طباعة العقد الحالية
+  };
+});
+
 
   // ربط أزرار طباعة عرض سعر الزيارة
   document.querySelectorAll('.print-once-offer').forEach(btn => {
