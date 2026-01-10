@@ -2030,12 +2030,16 @@ function previewPricing(){
     `;
   }
 
-  document.getElementById('reviewSection').style.display = 'block';
-  const btn = document.getElementById('saveBtn');
+document.getElementById('reviewSection').style.display = 'block';
+
+const btn = document.getElementById('saveBtn');
 btn.style.display = 'inline-block';
 
-const serviceType = document.getElementById('serviceType')?.value || 'annual';
-btn.textContent = (serviceType === 'once') ? '💾 حفظ الزيارة في السجل' : '💾 اعتماد وحفظ العقد';
+// ✅ لا تعرّف serviceType مرة ثانية (استخدم الموجود بالأعلى)
+btn.textContent = (serviceType === 'once')
+  ? '💾 حفظ الزيارة في السجل'
+  : '💾 اعتماد وحفظ العقد';
+
 
 }
 
