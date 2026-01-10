@@ -1281,7 +1281,16 @@ function saveContract() {
     const contracts = JSON.parse(localStorage.getItem('rkl_maintenance_contracts') || '[]');
     contracts.push(contract);
     localStorage.setItem('rkl_maintenance_contracts', JSON.stringify(contracts));
-function printAnnualOfferFromRecord(rec){
+
+    renderContractsTable();
+    alert('✅ تم الحفظ بنجاح وإضافته للسجل');
+  } catch (error) {
+    console.error(error);
+    alert('❌ حدث خطأ أثناء الحفظ: ' + error.message);
+  }
+}
+
+ function printAnnualOfferFromRecord(rec){
   if(!rec || !rec.id){
     alert('خطأ: السجل غير مكتمل');
     return;
@@ -1427,15 +1436,6 @@ button{ display:none !important; }
   w.document.close();
 }
 
-    renderContractsTable();
-    alert('✅ تم الحفظ بنجاح وإضافته للسجل');
-  } catch (error) {
-    console.error(error);
-    alert('❌ حدث خطأ أثناء الحفظ: ' + error.message);
-  }
-}
-
- 
 
 
 function openPrintView(contract){
