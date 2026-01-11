@@ -716,7 +716,7 @@ button {
 <div class="section" id="reviewSection" style="display:none">
 <h3>خامساً: مراجعة العقد</h3>
 <div class="review-box" id="reviewBox"></div>
-<button onclick="printOfferFromPreview()">🖨️ طباعة عرض السعر</button>
+
 </div>
 
 </div>
@@ -1738,6 +1738,11 @@ function renderContractsTable(){
         <td>${c.date || '—'}</td>
         <td>
           <button type="button" class="print-annual" data-index="${i}">طباعة العقد</button>
+          <button
+    class="print-btn"
+    onclick="printAnnualContract(${contract.id})">
+    🖨️ طباعة عرض سعر العقد
+  </button>
         </td>
       `;
       annualTbody.appendChild(row);
