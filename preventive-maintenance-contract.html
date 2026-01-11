@@ -2057,6 +2057,7 @@ function openOnceVisitReportPrint(visit){
   const urgencyLabel = (d.urgency === 'urgent') ? 'مستعجل' : 'عادي';
   const stoppedLabel = (d.stopped === 'yes') ? 'نعم (توقف كامل)' : 'لا';
 
+  // قيم مالية محفوظة (إن وجدت)
   const subtotal = Number(calc.subtotal || 0);
   const vat      = Number(calc.vat || 0);
   const total    = Number(calc.total || 0);
@@ -2091,7 +2092,6 @@ body{
   color:var(--ink);
   line-height:1.75;
   margin:0;
-  background:#fff;
 }
 
 body::before{
@@ -2103,57 +2103,10 @@ body::before{
   z-index:-1;
 }
 
-/* ====== Editor Toolbar ====== */
-.editor-toolbar{
-  position:sticky;
-  top:0;
-  z-index:9999;
-  background:#ffffff;
-  border-bottom:1px solid var(--line);
-  padding:10px 12px;
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  align-items:center;
-}
-
-.editor-toolbar .btn{
-  background:var(--brand);
-  color:#fff;
-  border:none;
-  padding:8px 10px;
-  border-radius:10px;
-  font-size:13px;
-  font-weight:700;
-  cursor:pointer;
-}
-.editor-toolbar .btn:hover{ background:var(--brand2); }
-
-.editor-toolbar select{
-  border:1px solid var(--line);
-  border-radius:10px;
-  padding:8px 10px;
-  font-size:13px;
-  background:#fff;
-}
-
-.editor-toolbar .hint{
-  margin-inline-start:auto;
-  font-size:12px;
-  color:var(--muted);
-}
-
-/* ====== Editable Area ====== */
-#editableOnceReport{
-  outline:none;
-}
-
-/* ====== Report Layout ====== */
 .frame{
   border:1.5px solid var(--brand);
   border-radius:14px;
   padding:14px 16px;
-  margin:12px;
 }
 
 .header{
@@ -2164,6 +2117,7 @@ body::before{
   padding-bottom:10px;
   border-bottom:2px solid var(--line);
 }
+
 .logo{ width:44px; height:auto; }
 .center{ text-align:center; flex:1; }
 .center h1{ margin:0; color:var(--brand2); font-size:18px; font-weight:900; }
@@ -2174,7 +2128,6 @@ body::before{
   font-size:12px;
   color:var(--muted);
   line-height:1.6;
-  text-align:right;
 }
 .meta b{ color:var(--ink); }
 
@@ -2198,7 +2151,18 @@ th,td{
   padding:8px 10px;
   vertical-align:top;
 }
-th{ background:var(--soft); width:28%; }
+th{
+  background:var(--soft);
+  width:28%;
+}
+
+.note{
+  background:#fff;
+  border:1px dashed var(--line);
+  border-radius:12px;
+  padding:10px 12px;
+  color:#374151;
+}
 
 .kv{
   display:grid;
@@ -2213,14 +2177,6 @@ th{ background:var(--soft); width:28%; }
 }
 .card .k{ color:var(--muted); font-size:12px; }
 .card .v{ font-weight:800; }
-
-.note{
-  background:#fff;
-  border:1px dashed var(--line);
-  border-radius:12px;
-  padding:10px 12px;
-  color:#374151;
-}
 
 .footer{
   margin-top:14px;
@@ -2251,47 +2207,30 @@ th{ background:var(--soft); width:28%; }
   margin-bottom:6px;
 }
 
-/* Print: hide editor */
+.actions{
+  margin-top:14px;
+  display:flex;
+  gap:8px;
+}
+button{
+  background:var(--brand);
+  color:#fff;
+  border:none;
+  padding:10px 14px;
+  border-radius:10px;
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+}
+button:hover{ background:var(--brand2); }
+
 @media print{
-  .editor-toolbar{ display:none !important; }
-  .frame{ margin:0; }
+  .actions{ display:none !important; }
 }
 </style>
 </head>
 
 <body>
-
-<!-- ====== Toolbar (Editable) ====== -->
-<div class="editor-toolbar">
-  <button class="btn" onclick="formatCmd('bold')"><b>B</b></button>
-  <button class="btn" onclick="formatCmd('italic')"><i>I</i></button>
-  <button class="btn" onclick="formatCmd('underline')"><u>U</u></button>
-
-  <select onchange="formatCmd('foreColor', this.value)">
-    <option value="">لون النص</option>
-    <option value="#000000">أسود</option>
-    <option value="#2563eb">أزرق</option>
-    <option value="#dc2626">أحمر</option>
-    <option value="#16a34a">أخضر</option>
-  </select>
-
-  <select onchange="formatCmd('fontSize', this.value)">
-    <option value="">حجم الخط</option>
-    <option value="3">صغير</option>
-    <option value="4">عادي</option>
-    <option value="5">كبير</option>
-    <option value="6">كبير جدًا</option>
-  </select>
-
-  <button class="btn" onclick="saveDraft()">💾 حفظ التعديلات</button>
-  <button class="btn" onclick="window.print()">🖨️ طباعة</button>
-
-  <div class="hint">المسودة تُحفظ تلقائيًا لكل زيارة</div>
-</div>
-
-<!-- ====== Editable Content ====== -->
-<div id="editableOnceReport" contenteditable="true">
-
   <div class="frame">
 
     <div class="header">
@@ -2325,102 +2264,73 @@ th{ background:var(--soft); width:28%; }
         <div class="card"><div class="k">توقف كامل</div><div class="v">${stoppedLabel}</div></div>
         <div class="card"><div class="k">عدد المصاعد</div><div class="v">${visit.lifts || '—'}</div></div>
       </div>
-    </div>
 
-    <div class="section">
-      <h3>ثالثاً: وصف المشكلة / المطلوب</h3>
-      <div class="note">${issue}</div>
-      <div style="margin-top:8px;color:var(--muted);font-size:12px">
-        * يمكن تعديل النص أعلاه مباشرة حسب تقرير الفني.
+      <div style="margin-top:10px" class="note">
+        <b>وصف المشكلة / المطلوب:</b><br>${issue}
       </div>
     </div>
 
     <div class="section">
-      <h3>رابعاً: الملخص المالي</h3>
+      <h3>ثالثاً: نتائج الزيارة (يُستكمل أثناء التنفيذ)</h3>
+      <div class="note">
+        <b>نتيجة الفحص / التشخيص:</b><br>—<br><br>
+        <b>الأعمال المنفذة (إن وجدت):</b><br>—<br><br>
+        <b>ملاحظات فنية:</b><br>—
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>رابعاً: التوصيات والمتطلبات</h3>
+      <div class="note">
+        <b>التوصيات:</b><br>—<br><br>
+        <b>قطع غيار مطلوبة (إن وجدت):</b><br>—<br><br>
+        <b>إجراء مقترح:</b><br>—
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>خامساً: ملخص مالي (إن وُجد في السجل)</h3>
       <table>
-        <tr><th>القيمة قبل الضريبة</th><td>${fmt(subtotal)} ريال</td></tr>
-        <tr><th>ضريبة 15%</th><td>${fmt(vat)} ريال</td></tr>
-        <tr><th><b>الإجمالي شامل الضريبة</b></th><td><b>${fmt(total)} ريال</b></td></tr>
+        <tr><th>القيمة قبل الضريبة</th><td>${subtotal.toFixed(2)} ريال</td></tr>
+        <tr><th>ضريبة القيمة المضافة (15%)</th><td>${vat.toFixed(2)} ريال</td></tr>
+        <tr><th><b>الإجمالي شامل الضريبة</b></th><td><b>${total.toFixed(2)} ريال</b></td></tr>
       </table>
-    </div>
-
-    <div class="section">
-      <h3>خامساً: ملاحظات الفني (قابل للتعديل)</h3>
-      <div class="note">— اكتب ملاحظات الفني هنا…</div>
-    </div>
-
-    <div class="section">
-      <h3>سادساً: توصيات (قابل للتعديل)</h3>
-      <div class="note">— اكتب التوصيات هنا…</div>
+      <div class="note" style="margin-top:8px">
+        <b>ملاحظة:</b> هذا الملخص خاص برسوم الزيارة فقط ولا يشمل قطع الغيار أو الأعمال الإضافية إلا بعرض سعر مستقل.
+      </div>
     </div>
 
     <div class="signature">
       <div class="box">
-        <div class="t">توقيع الفني</div>
-        <div>الاسم: ____________</div>
-        <div>التوقيع: __________</div>
+        <div class="t">توقيع وختم المؤسسة</div>
+        الاسم: —<br>
+        التاريخ: —
       </div>
       <div class="box">
-        <div class="t">توقيع العميل</div>
-        <div>الاسم: ____________</div>
-        <div>التوقيع: __________</div>
+        <div class="t">استلام/اعتماد العميل</div>
+        الاسم: —<br>
+        التوقيع: —<br>
+        التاريخ: —
       </div>
     </div>
 
     <div class="footer">
-      <div>العنوان: السليمانية – الرياض</div>
-      <div>admin@rk-lifts.com</div>
+      <div>آر كي ال RKL للمصاعد والسلالم الكهربائية</div>
+      <div>Ref: ${refNo}</div>
+    </div>
+
+    <div class="actions">
+      <button onclick="window.print()">🧾 طباعة التقرير</button>
+      <button onclick="window.close()">إغلاق</button>
     </div>
 
   </div>
-
-</div>
-
-<script>
-  const REF_NO = ${JSON.stringify(refNo)};
-  const DRAFT_KEY = 'rkl_once_visit_report_drafts';
-
-  function formatCmd(cmd, val=null){
-    try{
-      document.execCommand(cmd, false, val);
-    }catch(e){}
-  }
-
-  function loadDraft(){
-    try{
-      const raw = localStorage.getItem(DRAFT_KEY);
-      if(!raw) return;
-      const obj = JSON.parse(raw);
-      if(obj && obj[REF_NO]){
-        document.getElementById('editableOnceReport').innerHTML = obj[REF_NO];
-      }
-    }catch(e){}
-  }
-
-  function saveDraft(){
-    try{
-      const html = document.getElementById('editableOnceReport').innerHTML;
-      const raw = localStorage.getItem(DRAFT_KEY);
-      const obj = raw ? JSON.parse(raw) : {};
-      obj[REF_NO] = html;
-      localStorage.setItem(DRAFT_KEY, JSON.stringify(obj));
-      alert('✅ تم حفظ التعديلات لهذه الزيارة');
-    }catch(e){
-      alert('❌ تعذر حفظ التعديلات: ' + e.message);
-    }
-  }
-
-  // تحميل مسودة إن وجدت
-  loadDraft();
-</script>
-
 </body>
 </html>
   `);
 
   w.document.close();
 }
-
 
   
 function recomputeFromManual(){
