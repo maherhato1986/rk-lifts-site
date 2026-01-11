@@ -1914,10 +1914,16 @@ function renderContractsTable(){
         <td>${c.total || '—'}</td>
         <td>${c.date || '—'}</td>
         <td>${vtLabel}</td>
-       <td>
-  <button type="button" class="print-once-offer" data-index="${i}">🖨️ طباعة عرض السعر زياره</button>
-  <button type="button" class="print-once-report" data-index="${i}">🧾 طباعة التقرير زياره</button>
+     <td>
+  <button type="button" class="print-once-offer" data-index="${i}">
+    🖨️ طباعة عرض السعر زياره
+  </button>
+
+  <button type="button" class="print-once-report" data-index="${i}">
+    🧾 طباعة التقرير زياره
+  </button>
 </td>
+
       `;
       onceTbody.appendChild(row);
       return;
@@ -1942,14 +1948,22 @@ document.querySelectorAll('.print-annual-offer').forEach(btn => {
 
 
   // ربط أزرار طباعة عرض سعر الزيارة
-  document.querySelectorAll('.print-once-offer').forEach(btn => {
-    btn.onclick = function(){
-      const idx = Number(this.getAttribute('data-index'));
-      // هنا سنطبع "عرض السعر" للزيارة
-      // استخدم نفس printOfferFromPreview إذا بدك، أو نجهز Print View خاص للزيارة لاحقًا
-      openPrintView(items[idx]); // مؤقتاً نفس الدالة (وسنعدلها بالخطوة التالية)
-    };
-  });
+// ✅ عرض سعر الزيارة (قالب رسمي مستقل)
+document.querySelectorAll('.print-once-offer').forEach(btn => {
+  btn.onclick = function(){
+    const idx = Number(this.getAttribute('data-index'));
+    openOnceVisitOfferPrint(items[idx]);
+  };
+});
+
+// ✅ تقرير الزيارة (قالب رسمي مستقل)
+document.querySelectorAll('.print-once-report').forEach(btn => {
+  btn.onclick = function(){
+    const idx = Number(this.getAttribute('data-index'));
+    openOnceVisitReportPrint(items[idx]);
+  };
+});
+
 }
 
 
