@@ -421,7 +421,7 @@ button {
 </head>
 
 <body>
-  <div class="print-footer" data-contract="${contract.id}"></div>
+ 
 
 <div class="container">
 
@@ -1736,14 +1736,15 @@ function renderContractsTable(){
         <td>${c.total || '—'}</td>
         <td>${c.lang || '—'}</td>
         <td>${c.date || '—'}</td>
-        <td>
-          <button type="button" class="print-annual" data-index="${i}">طباعة العقد</button>
-          <button
-    class="print-btn"
-    onclick="printAnnualContract(${contract.id})">
+      <td>
+  <button type="button" class="print-annual" data-index="${i}">طباعة العقد</button>
+
+  <!-- ✅ زر عرض السعر داخل جدول (أ) -->
+  <button type="button" class="print-annual-offer" data-index="${i}">
     🖨️ طباعة عرض سعر العقد
   </button>
-        </td>
+</td>
+
       `;
       annualTbody.appendChild(row);
       return;
@@ -1791,6 +1792,13 @@ function renderContractsTable(){
       openPrintView(items[idx]); // نفس الطباعة الحالية
     };
   });
+document.querySelectorAll('.print-annual-offer').forEach(btn => {
+  btn.onclick = function(){
+    const idx = Number(this.getAttribute('data-index'));
+    // مؤقتًا نطبع بنفس openPrintView (إذا عندك قالب مختلف لعرض السعر نربطه هنا لاحقًا)
+    openPrintView(items[idx]);
+  };
+});
 
   // ربط أزرار طباعة عرض سعر الزيارة
   document.querySelectorAll('.print-once-offer').forEach(btn => {
