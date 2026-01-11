@@ -1204,6 +1204,197 @@ function calculateTotal(){
   };
 }
 
+/* =========================================================
+   ✅ معاينة التسعير (زر 📊 عرض الحسبة)
+   - تُظهر reviewSection
+   - تملأ reviewBox
+   - تُظهر زر الحفظ saveBtn
+   - تدعم سعر يدوي للمصعد (للعقد السنوي)
+========================================================= */
+
+window.manualPricePerLift = null; // سعر يدوي للمصعد
+window.finalCalcOverride  = null; // نتيجة معتمدة بعد التعديل
+
+function fmt(n){
+  return (Number(n || 0)).toFixed(2);
+}
+
+function paintPreviewAnnual(calc, isManual){
+  const box = document.getElementById('reviewBox');
+  if(!box) return;
+
+  box.innerHTML = `
+    <div class="contract-summary">
+      <h4>معاينة التسعير قبل الاعتماد</h4>
+      <table>
+        <tr>
+          <td class="label">عدد المصاعد</td>
+          <td class="value">${calc.lifts}</td>
+        </tr>
+        <tr>
+          <td class="label">المنطقة</td>
+          <td class="value">${calc.zone || '—'}</td>
+        </tr>
+        <tr>
+          <td class="label">السعر للمصعد (قابل للتعديل)</td>
+          <td class="value" style="text-align:left;direction:ltr">
+            <input
+              id="manualPricePerLift"
+              type="number"
+              min="0"
+              step="0.01"
+              style="width:180px;text-align:left"
+              value="${fmt(calc.pricePerLift)}"
+              oninput="recomputeFromManual()"
+            />
+            <div style="font-size:12px;color:#6b7280;margin-top:4px;direction:rtl;text-align:right">
+              ${isManual ? '✅ تم اعتماد سعر يدوي وسيتم الحفظ عليه.' : 'ℹ️ هذا سعر محسوب تلقائيًا ويمكنك تعديله.'}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">الإجمالي قبل الضريبة</td>
+          <td class="value"><span id="pv_subtotal">${fmt(calc.subtotal)}</span> ريال</td>
+        </tr>
+        <tr>
+          <td class="label">ضريبة القيمة المضافة (15%)</td>
+          <td class="value"><span id="pv_vat">${fmt(calc.vat)}</span> ريال</td>
+        </tr>
+        <tr>
+          <td class="label total">الإجمالي شامل الضريبة</td>
+          <td class="value total"><span id="pv_total">${fmt(calc.total)}</span> ريال</td>
+        </tr>
+      </table>
+
+      <p class="words">⚠️ هذه المعاينة قبل الاعتماد. عدّل سعر المصعد وسيتم تحديث الإجمالي تلقائيًا.</p>
+    </div>
+  `;
+}
+
+function recomputeFromManual(){
+  const lifts = Number(document.getElementById('lifts')?.value || 0);
+  if(!lifts) return;
+
+  const v = Number(document.getElementById('manualPricePerLift')?.value || 0);
+
+  // لو فاضي/صفر → رجّع للحسبة التلقائية
+  if(!v || v <= 0){
+    window.manualPricePerLift = null;
+    const calc = calculateTotal();
+    window.finalCalcOverride = calc;
+    paintPreviewAnnual(calc, false);
+    return;
+  }
+
+  window.manualPricePerLift = v;
+
+  // ✅ نفس منطق الخصم عند 3 مصاعد (10%) + الضريبة
+  let subtotal = v * lifts;
+  if(lifts >= 3) subtotal *= 0.90;
+
+  const vat = subtotal * 0.15;
+  const total = subtotal + vat;
+
+  const zone =
+    (cityZones?.[document.getElementById('projectCity')?.value || 'riyadh']?.label) || '—';
+
+  const calc = {
+    pricePerLift: v,
+    lifts,
+    zone,
+    subtotal,
+    vat,
+    total,
+    isManual: true
+  };
+
+  window.finalCalcOverride = calc;
+
+  // تحديث أرقام المعاينة بدون إعادة رسم كامل
+  const s = document.getElementById('pv_subtotal');
+  const v1 = document.getElementById('pv_vat');
+  const t = document.getElementById('pv_total');
+  if(s) s.textContent = fmt(subtotal);
+  if(v1) v1.textContent = fmt(vat);
+  if(t) t.textContent = fmt(total);
+}
+
+function previewPricing(){
+  const serviceType = document.getElementById('serviceType')?.value || 'annual';
+
+  // ✅ تأكد من الحقول الأساسية
+  const baseRequired = ['lifts','capacity','floors'];
+  for(const id of baseRequired){
+    const el = document.getElementById(id);
+    if(!el || !el.value){
+      alert('⚠️ يرجى تعبئة بيانات المصاعد الأساسية (عدد المصاعد، الحمولة، الطوابق)');
+      return;
+    }
+  }
+
+  // ✅ سنوي: يتطلب (لغة + تاريخ)
+  if(serviceType === 'annual'){
+    const annualRequired = ['lang','contractDate'];
+    for(const id of annualRequired){
+      const el = document.getElementById(id);
+      if(!el || !el.value){
+        alert('⚠️ يرجى تعبئة (لغة العقد + تاريخ العقد) لعرض حسبة العقد السنوي');
+        return;
+      }
+    }
+
+    const calc = calculateTotal();
+    window.manualPricePerLift = null;
+    window.finalCalcOverride = calc;
+    paintPreviewAnnual(calc, false);
+
+  } else {
+    // ✅ زيارة: يتطلب متطلبات الزيارة
+    const onceRequired = ['onceVisitType','onceDate','onceIssue','oncePrice'];
+    for(const id of onceRequired){
+      const el = document.getElementById(id);
+      if(!el || !el.value){
+        alert('⚠️ يرجى تعبئة متطلبات الزيارة (نوع الزيارة، التاريخ، الوصف، سعر الزيارة)');
+        return;
+      }
+    }
+
+    const subtotal = Number(document.getElementById('oncePrice').value || 0);
+    const vat = subtotal * 0.15;
+    const total = subtotal + vat;
+
+    const box = document.getElementById('reviewBox');
+    box.innerHTML = `
+      <div class="contract-summary">
+        <h4>معاينة عرض سعر (زيارة لمرة واحدة)</h4>
+        <table>
+          <tr><td class="label">نوع الزيارة</td><td class="value">${document.getElementById('onceVisitType').selectedOptions[0]?.textContent || '—'}</td></tr>
+          <tr><td class="label">تاريخ الزيارة</td><td class="value">${document.getElementById('onceDate').value}</td></tr>
+          <tr><td class="label">المبلغ قبل الضريبة</td><td class="value">${fmt(subtotal)} ريال</td></tr>
+          <tr><td class="label">الضريبة (15%)</td><td class="value">${fmt(vat)} ريال</td></tr>
+          <tr><td class="label total">الإجمالي شامل الضريبة</td><td class="value total">${fmt(total)} ريال</td></tr>
+        </table>
+      </div>
+    `;
+
+    window.finalCalcOverride = {
+      pricePerLift: 0,
+      lifts: Number(document.getElementById('lifts').value || 0),
+      zone: '—',
+      subtotal,
+      vat,
+      total,
+      isManual: true,
+      mode: 'once'
+    };
+  }
+
+  // ✅ إظهار صندوق المعاينة + زر الحفظ
+  document.getElementById('reviewSection').style.display = 'block';
+  const btn = document.getElementById('saveBtn');
+  btn.style.display = 'inline-block';
+  btn.textContent = (serviceType === 'once') ? '💾 حفظ الزيارة في السجل' : '💾 اعتماد وحفظ العقد';
+}
 
 
 function saveContract() {
