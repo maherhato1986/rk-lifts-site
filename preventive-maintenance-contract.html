@@ -1680,6 +1680,121 @@ ${
 
   w.document.close();
 }
+
+  function openAnnualContractOfferPrint(contract){
+
+  if(!contract || contract.serviceType !== 'annual'){
+    alert('❌ هذا ليس عقد صيانة سنوي');
+    return;
+  }
+
+  const calc = contract.pricing;
+  if(!calc || !calc.total){
+    alert('❌ بيانات التسعير غير مكتملة');
+    return;
+  }
+
+  const w = window.open('', '_blank');
+
+  w.document.write(`
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>عرض سعر عقد صيانة سنوي</title>
+
+<style>
+@page { size:A4; margin:15mm }
+body{
+  font-family:"Cairo","Tajawal",Arial;
+  color:#111;
+  font-size:14px;
+}
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:2px solid #0f766e;
+  padding-bottom:10px;
+}
+.header img{ width:42px }
+.header h1{
+  margin:0;
+  color:#0f766e;
+  font-size:20px;
+}
+.section{ margin-top:20px }
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+}
+td,th{
+  border:1px solid #e5e7eb;
+  padding:8px;
+}
+th{ background:#f0fdfa }
+.footer{
+  margin-top:40px;
+  font-size:12px;
+  color:#555;
+  text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <img src="/public/images/logo.png">
+  <h1>عرض سعر عقد صيانة وقائية سنوي</h1>
+</div>
+
+<div class="section">
+  <b>العميل:</b> ${contract.customer.customer_name || '—'}<br>
+  <b>رقم العرض:</b> ${contract.id}<br>
+  <b>تاريخ العرض:</b> ${contract.date}
+</div>
+
+<div class="section">
+  <table>
+    <tr>
+      <th>عدد المصاعد</th>
+      <th>قيمة العقد قبل الضريبة</th>
+      <th>الضريبة 15%</th>
+      <th>الإجمالي شامل الضريبة</th>
+    </tr>
+    <tr>
+      <td>${contract.lifts}</td>
+      <td>${calc.subtotal.toFixed(2)} ريال</td>
+      <td>${calc.vat.toFixed(2)} ريال</td>
+      <td><b>${calc.total.toFixed(2)} ريال</b></td>
+    </tr>
+  </table>
+</div>
+
+<div class="section">
+  <b>ملاحظات:</b><br>
+  هذا العرض خاص بعقد صيانة وقائية سنوي،  
+  ولا يشمل قطع الغيار إلا بعرض سعر مستقل.
+</div>
+
+<div class="footer">
+  مؤسسة آر كي ال RKL للمصاعد والسلالم الكهربائية<br>
+  س.ت: 1010709355 – الرقم الضريبي: 302250422600003
+</div>
+
+<br>
+<button onclick="window.print()">🖨️ طباعة عرض السعر</button>
+
+</body>
+</html>
+  `);
+
+  w.document.close();
+}
+
+  
 function getBrandValue(){
   const brandSelect = document.getElementById('brandSelect').value;
   const brandOther  = document.getElementById('brandOther')?.value || '';
@@ -1795,10 +1910,10 @@ function renderContractsTable(){
 document.querySelectorAll('.print-annual-offer').forEach(btn => {
   btn.onclick = function(){
     const idx = Number(this.getAttribute('data-index'));
-    // مؤقتًا نطبع بنفس openPrintView (إذا عندك قالب مختلف لعرض السعر نربطه هنا لاحقًا)
-    openPrintView(items[idx]);
+    openAnnualContractOfferPrint(items[idx]);
   };
 });
+
 
   // ربط أزرار طباعة عرض سعر الزيارة
   document.querySelectorAll('.print-once-offer').forEach(btn => {
