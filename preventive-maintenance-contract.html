@@ -1312,20 +1312,18 @@ function openPrintView(contract){
 
 <style>
 /* =========================================================
-   RKL Professional Contract Print Styles (A4) – FINAL
-   Content unchanged – Styling only
+   RKL Contract Print Styles (A4) – FINAL FIX
+   - Fix header spacing
+   - Reserve space for footer (no overlap)
+   - Keep financial summary/table safe
+   - Prevent nested frames issues
 ========================================================= */
 
-/* ---------- Print Color Accuracy ---------- */
-*{
-  -webkit-print-color-adjust: exact;
-  print-color-adjust: exact;
-}
+*{ -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
-/* ---------- Page Setup ---------- */
 @page{
   size:A4;
-  margin:16mm 14mm 18mm 14mm;
+  margin:16mm 14mm 22mm 14mm; /* ✅ زودنا الهامش السفلي عشان الفوتر */
 }
 
 :root{
@@ -1337,11 +1335,8 @@ function openPrintView(contract){
   --brand2:#115e59;
 }
 
-/* ---------- Base ---------- */
-html,body{
-  height:100%;
-}
-
+/* Base */
+html,body{ height:100%; }
 body{
   margin:0;
   background:#fff;
@@ -1358,13 +1353,10 @@ body{
   overflow-wrap:anywhere;
 }
 
-/* ---------- Hide UI ---------- */
-.editor-toolbar,
-button{
-  display:none!important;
-}
+/* Hide UI */
+.editor-toolbar, button{ display:none!important; }
 
-/* ---------- Watermark ---------- */
+/* Watermark */
 body::before{
   content:"";
   position:fixed;
@@ -1373,33 +1365,30 @@ body::before{
   opacity:0.045;
   z-index:-1;
 }
+.print-watermark{ display:none!important; }
 
-.print-watermark{ display:none!important }
-
-/* ---------- Page Frame ---------- */
+/* ✅ إطار الصفحة (لكن نترك مساحة للفوتر) */
 .page-frame{
   outline:1.5px solid var(--brand);
   outline-offset:-8px;
   padding:18px 20px;
+  padding-bottom:32mm; /* ✅ أهم سطر: يمنع دخول الفوتر على النص */
   min-height:96vh;
+  box-sizing:border-box;
 }
 
-/* ---------- Header ---------- */
+/* Header */
 .print-header{
-  margin-bottom:16px;
-  padding-bottom:12px;
+  margin:0 0 16px 0;
+  padding:0 0 12px 0;
   border-bottom:1px solid var(--line);
 }
 
 .print-header-row{
   display:flex;
-  align-items:center;
+  align-items:flex-start;
   justify-content:space-between;
   gap:14px;
-}
-
-.print-logo{
-  width:46px;
 }
 
 .header-center{
@@ -1416,75 +1405,55 @@ body::before{
 }
 
 .header-center p{
-  margin-top:4px;
+  margin:4px 0 0 0;
   font-size:11.8px;
   color:var(--muted);
 }
 
 .header-meta{
-  min-width:160px;
+  min-width:170px;
   font-size:11.5px;
   color:var(--muted);
-}
-
-.header-meta b{
-  color:var(--ink);
-  font-weight:700;
-}
-
-.header-meta div{
-  margin-bottom:6px;
-}
-
-/* ---------- Contract Body ---------- */
-.contract{
-  font-size:13.8px;
-}
-
-.contract p{
-  margin:6px 0;
-}
-
-/* Section titles */
-.contract .section-title{
-  margin:18px 0 8px;
-  font-size:14.5px;
-  font-weight:900;
-  color:var(--brand);
-}
-
-/* Highlight client data */
-.user-data{
-  color:var(--brand2);
-  font-weight:900;
-}
-
-/* ---------- Language Direction ---------- */
-.ar{
-  direction:rtl;
-  text-align:right;
-}
-
-.en{
-  direction:ltr;
+  line-height:1.45;
   text-align:left;
-  font-family:"Segoe UI",Arial,sans-serif;
-  font-size:13.3px;
 }
+.header-meta b{ color:var(--ink); font-weight:800; }
+.header-meta div{ margin-bottom:6px; }
 
-/* ---------- Divider ---------- */
+/* Contract body */
+.contract{ font-size:13.8px; }
+.contract p{ margin:6px 0; }
+
+/* Divider */
 hr{
   border:none;
   border-top:1px solid #cbd5e1;
   margin:18px 0;
 }
 
-/* ---------- Tables ---------- */
+/* Tables */
 table{
   width:100%;
   border-collapse:collapse;
   margin:12px 0;
   font-size:13.4px;
+  table-layout:fixed;            /* ✅ يمنع خروج الأعمدة */
+}
+td,th{
+  border:1px solid var(--line);
+  padding:9px 10px;
+  vertical-align:top;
+  word-break:break-word;
+}
+
+/* ✅ أهم جزء: يمنع دخول “ملخص العقد/الدفعات” داخل الصفحات */
+.contract-summary,
+.contract-summary table,
+.contract-summary tr,
+.contract-summary td,
+.contract-summary th{
+  page-break-inside:avoid !important;
+  break-inside:avoid !important;
 }
 
 .contract-summary{
@@ -1493,7 +1462,6 @@ table{
   border-radius:14px;
   padding:16px 18px;
   margin:18px 0 12px;
-  page-break-inside:avoid;
 }
 
 .contract-summary h4{
@@ -1506,46 +1474,18 @@ table{
   padding-bottom:10px;
 }
 
-.contract-summary td{
-  padding:9px 10px;
-  vertical-align:top;
-}
+.contract-summary .label{ color:var(--muted); }
+.contract-summary .value{ font-weight:800; color:var(--ink); text-align:left; }
+.contract-summary .total{ font-size:15px; font-weight:900; color:var(--brand); }
 
-.contract-summary tr:not(:last-child){
-  border-bottom:1px solid var(--line);
-}
+/* Language Direction */
+.ar{ direction:rtl; text-align:right; }
+.en{ direction:ltr; text-align:left; font-family:"Segoe UI",Arial,sans-serif; font-size:13.3px; }
 
-.contract-summary .label{
-  color:var(--muted);
-}
-
-.contract-summary .value{
-  font-weight:800;
-  color:var(--ink);
-}
-
-.contract-summary .total{
-  font-size:15px;
-  font-weight:900;
-  color:var(--brand);
-}
-
-/* User info table */
-.user-data-table{
-  width:100%;
-  margin:16px 0;
-  background:#fafafa;
-}
-
-.user-data-table td{
-  padding:10px;
-  border:1px solid var(--line);
-}
-
-/* ---------- Footer ---------- */
+/* Footer */
 .print-footer{
   position:fixed;
-  bottom:9mm;
+  bottom:8mm;
   left:0;
   right:0;
   text-align:center;
@@ -1553,14 +1493,10 @@ table{
   color:var(--muted);
 }
 
-/* ---------- Page Break ---------- */
-.page-break{
-  break-before:page;
-  margin:0;
-  padding:0;
-}
+/* Page Break */
+.page-break{ break-before:page; margin:0; padding:0; }
 
-/* ---------- Signature ---------- */
+/* Signature */
 .signature{
   margin-top:34px;
   display:flex;
@@ -1568,7 +1504,6 @@ table{
   gap:24px;
   page-break-inside:avoid;
 }
-
 .signature div{
   width:48%;
   border-top:1.5px solid var(--ink);
@@ -1578,12 +1513,10 @@ table{
   font-weight:600;
 }
 
-/* ---------- Print Safety ---------- */
-.contract,.ar,.en{
-  orphans:3;
-  widows:3;
-}
+/* Print safety */
+.contract,.ar,.en{ orphans:3; widows:3; }
 </style>
+
 
 
 
@@ -1616,7 +1549,8 @@ table{
 <div class="page-frame">
   <div id="editableContent" contenteditable="true" class="contract">
 <!-- ================== Cover Page ================== -->
-<div class="page-frame" style="page-break-after:always">
+<div style="page-break-after:always">
+
 
   <div style="text-align:center;margin-top:120px">
     <img src="/public/images/logo.png" style="width:90px;margin-bottom:20px">
@@ -1649,7 +1583,8 @@ table{
 
 
     <div class="header-center">
-      <h1>${serviceType === 'once' ? 'عرض سعر زيارة لمرة واحدة' : 'عرض سعر صيانة وقائية للمصاعد'}</h1>
+     <h1>${serviceType === 'once' ? 'عرض سعر زيارة لمرة واحدة' : 'عقد صيانة وقائية سنوي للمصاعد'}</h1>
+
 
       <p>آر كي ال RKL للمصاعد والسلالم الكهربائية</p>
       <p class="small">السجل التجاري: 1010709355 | هاتف: 0114774021</p>
