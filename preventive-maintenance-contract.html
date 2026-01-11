@@ -1681,7 +1681,7 @@ ${
   w.document.close();
 }
 
-  function openAnnualContractOfferPrint(contract){
+function openAnnualContractOfferPrint(contract){
 
   if(!contract || contract.serviceType !== 'annual'){
     alert('❌ هذا ليس عقد صيانة سنوي');
@@ -1689,10 +1689,29 @@ ${
   }
 
   const calc = contract.pricing;
-  if(!calc || !calc.total){
-    alert('❌ بيانات التسعير غير مكتملة');
-    return;
-  }
+  const customer = contract.customer || {};
+  const refNo = contract.id;
+  const date  = contract.date;
+
+  const visits =
+    document.getElementById('visits')?.value === 'monthly'
+      ? '12 زيارة (زيارة شهرية)'
+      : '6 زيارات (كل شهرين)';
+
+  const emergency =
+    document.getElementById('emergency')?.value === 'extended'
+      ? 'خدمة طوارئ خارج أوقات الدوام'
+      : 'خدمة طوارئ خلال أوقات الدوام';
+
+  const spareParts =
+    document.getElementById('spareParts')?.value === 'included'
+      ? 'قطع الغيار مشمولة (بعرض خاص)'
+      : 'قطع الغيار غير مشمولة';
+
+  const training =
+    document.getElementById('training')?.value === 'yes'
+      ? 'يشمل تدريب إنقاذ محتجزين'
+      : 'لا يشمل تدريب';
 
   const w = window.open('', '_blank');
 
@@ -1701,14 +1720,14 @@ ${
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>عرض سعر عقد صيانة سنوي</title>
+<title>عرض سعر عقد صيانة وقائية سنوي</title>
 
 <style>
-@page { size:A4; margin:15mm }
+@page{size:A4;margin:15mm}
 body{
   font-family:"Cairo","Tajawal",Arial;
-  color:#111;
   font-size:14px;
+  color:#111;
 }
 .header{
   display:flex;
@@ -1717,13 +1736,17 @@ body{
   border-bottom:2px solid #0f766e;
   padding-bottom:10px;
 }
-.header img{ width:42px }
-.header h1{
-  margin:0;
+.header img{width:45px}
+.header h1{margin:0;color:#0f766e;font-size:20px}
+
+.section{margin-top:22px}
+.section h3{
+  margin-bottom:10px;
   color:#0f766e;
-  font-size:20px;
+  border-bottom:1px solid #e5e7eb;
+  padding-bottom:6px;
 }
-.section{ margin-top:20px }
+
 table{
   width:100%;
   border-collapse:collapse;
@@ -1733,12 +1756,13 @@ td,th{
   border:1px solid #e5e7eb;
   padding:8px;
 }
-th{ background:#f0fdfa }
+th{background:#f0fdfa}
+
 .footer{
   margin-top:40px;
+  text-align:center;
   font-size:12px;
   color:#555;
-  text-align:center;
 }
 </style>
 </head>
@@ -1751,21 +1775,47 @@ th{ background:#f0fdfa }
 </div>
 
 <div class="section">
-  <b>العميل:</b> ${contract.customer.customer_name || '—'}<br>
-  <b>رقم العرض:</b> ${contract.id}<br>
-  <b>تاريخ العرض:</b> ${contract.date}
+  <b>العميل:</b> ${customer.customer_name || '—'}<br>
+  <b>رقم العرض:</b> ${refNo}<br>
+  <b>تاريخ العرض:</b> ${date}
 </div>
 
 <div class="section">
+  <h3>تفاصيل المصاعد</h3>
   <table>
     <tr>
       <th>عدد المصاعد</th>
-      <th>قيمة العقد قبل الضريبة</th>
-      <th>الضريبة 15%</th>
-      <th>الإجمالي شامل الضريبة</th>
+      <th>نوع الخدمة</th>
+      <th>مدة العقد</th>
     </tr>
     <tr>
       <td>${contract.lifts}</td>
+      <td>صيانة وقائية سنوية</td>
+      <td>سنة واحدة</td>
+    </tr>
+  </table>
+</div>
+
+<div class="section">
+  <h3>نطاق الصيانة المشمولة</h3>
+  <table>
+    <tr><th>البند</th><th>التفاصيل</th></tr>
+    <tr><td>عدد الزيارات</td><td>${visits}</td></tr>
+    <tr><td>خدمة الطوارئ</td><td>${emergency}</td></tr>
+    <tr><td>قطع الغيار</td><td>${spareParts}</td></tr>
+    <tr><td>التدريب</td><td>${training}</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h3>الملخص المالي</h3>
+  <table>
+    <tr>
+      <th>القيمة قبل الضريبة</th>
+      <th>ضريبة 15%</th>
+      <th>الإجمالي شامل الضريبة</th>
+    </tr>
+    <tr>
       <td>${calc.subtotal.toFixed(2)} ريال</td>
       <td>${calc.vat.toFixed(2)} ريال</td>
       <td><b>${calc.total.toFixed(2)} ريال</b></td>
@@ -1774,9 +1824,12 @@ th{ background:#f0fdfa }
 </div>
 
 <div class="section">
-  <b>ملاحظات:</b><br>
-  هذا العرض خاص بعقد صيانة وقائية سنوي،  
-  ولا يشمل قطع الغيار إلا بعرض سعر مستقل.
+  <h3>ملاحظات وشروط</h3>
+  <p>
+    هذا العرض خاص بعقد صيانة وقائية سنوي، ولا يشمل قطع الغيار
+    إلا بعرض سعر مستقل ومعتمد.  
+    جميع الزيارات تُحتسب ضمن العقد حتى في حال توقف المصعد.
+  </p>
 </div>
 
 <div class="footer">
@@ -1793,6 +1846,7 @@ th{ background:#f0fdfa }
 
   w.document.close();
 }
+
 
   
 function getBrandValue(){
