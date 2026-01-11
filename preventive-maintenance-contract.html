@@ -2031,455 +2031,232 @@ window.manualPricePerLift = null; // سعر يدوي للمصعد (قبل الخ
 window.finalCalcOverride = null;  // نتيجة حساب نهائية بعد تعديل المستخدم (للاستخدام بالحفظ)
 </script>
 <script>
+/* ====== أدوات صغيرة ====== */
 function fmt(n){
   return (Number(n || 0)).toFixed(2);
 }
-function openOnceVisitOfferPrint(visit){
-  if(!visit || visit.serviceType !== 'once'){
-    alert('❌ هذا ليس سجل زيارة لمرة واحدة');
-    return;
-  }
+function esc(s){
+  return String(s ?? '').replace(/[&<>"']/g, m => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
+  }[m]));
+}
 
-  const customer = visit.customer || {};
-  const refNo = visit.id || '—';
-  const date  = visit.date || (visit.onceDetails?.visitDate || '—');
-  const d = visit.onceDetails || {};
+/* =========================================================
+   تقرير زيارة لمرة واحدة (قابل للتعديل داخل نافذة الطباعة)
+========================================================= */
+function openOnceVisitReportPrint(visit){
+  try{
+    if(!visit || visit.serviceType !== 'once'){
+      alert('❌ هذا ليس سجل زيارة لمرة واحدة');
+      return;
+    }
 
-  const vt = d.visitType || '';
-  const vtLabel =
-    vt === 'inspection' ? 'فحص وتشخيص' :
-    vt === 'repair'     ? 'صيانة/إصلاح' :
-    vt === 'rescue'     ? 'احتجاز/إنقاذ' : '—';
+    const customer = visit.customer || {};
+    const refNo = visit.id || '—';
+    const date  = visit.date || '—';
+    const d = visit.onceDetails || {};
+    const calc = visit.pricing || {};
 
-  const urgencyLabel = (d.urgency === 'urgent') ? 'مستعجل' : 'عادي';
-  const stoppedLabel = (d.stopped === 'yes') ? 'نعم (توقف كامل)' : 'لا';
+    const vt = d.visitType || '';
+    const vtLabel =
+      vt === 'inspection' ? 'فحص وتشخيص' :
+      vt === 'repair'     ? 'صيانة/إصلاح' :
+      vt === 'rescue'     ? 'احتجاز/إنقاذ' : '—';
 
-  // السعر الأساسي: من oncePrice (قبل الضريبة) أو من البيانات المحفوظة
-  const priceBeforeVat =
-    Number(d.priceBeforeVat ?? 0) ||
-    Number(visit.pricing?.subtotal ?? 0) ||
-    0;
+    const urgencyLabel = (d.urgency === 'urgent') ? 'مستعجل' : 'عادي';
+    const stoppedLabel = (d.stopped === 'yes') ? 'نعم (توقف كامل)' : 'لا';
 
-  const vat   = +(priceBeforeVat * 0.15).toFixed(2);
-  const total = +(priceBeforeVat + vat).toFixed(2);
+    const subtotal = Number(calc.subtotal || 0);
+    const vat      = Number(calc.vat || 0);
+    const total    = Number(calc.total || 0);
+    const hasFinancial = total > 0;
 
-  const issue = (d.issue || '—').toString()
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;');
+    const issue = esc(d.issue || '—');
 
-  const w = window.open('', '_blank');
-  if(!w){
-    alert('⚠️ المتصفح منع فتح نافذة جديدة (Popup). فعّل السماح ثم جرّب مرة أخرى.');
-    return;
-  }
+    // حفظ التعديل لكل زيارة
+    const LS_KEY = `rkl_once_visit_report_edit_${refNo}`;
 
-  w.document.write(`
-<!DOCTYPE html>
+    const w = window.open('', '_blank');
+    if(!w){
+      alert('⚠️ المتصفح منع فتح نافذة جديدة (Popup). فعّل السماح ثم جرّب مرة أخرى.');
+      return;
+    }
+
+    w.document.write(`<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>عرض سعر زيارة لمرة واحدة - ${refNo}</title>
+<title>تقرير زيارة لمرة واحدة - ${esc(refNo)}</title>
 
 <style>
 @page{ size:A4; margin:15mm; }
 *{ -webkit-print-color-adjust: exact; print-color-adjust: exact; box-sizing:border-box; }
-
 :root{
-  --ink:#111827;
-  --muted:#6b7280;
-  --line:#e5e7eb;
-  --soft:#f8fafc;
-  --brand:#0f766e;
-  --brand2:#115e59;
+  --ink:#111827; --muted:#6b7280; --line:#e5e7eb; --soft:#f8fafc;
+  --brand:#0f766e; --brand2:#115e59;
 }
-
-body{
-  font-family:"Cairo","Tajawal",Arial,sans-serif;
-  font-size:14px;
-  color:var(--ink);
-  line-height:1.75;
-  margin:0;
-}
-
+body{ font-family:"Cairo","Tajawal",Arial,sans-serif; font-size:14px; color:var(--ink); line-height:1.75; margin:0; }
 body::before{
-  content:"";
-  position:fixed;
-  inset:0;
+  content:""; position:fixed; inset:0;
   background:url('/public/images/logo.png') center center / 340px no-repeat;
-  opacity:0.045;
-  z-index:-1;
+  opacity:0.045; z-index:-1;
 }
-
-.frame{
-  border:1.5px solid var(--brand);
-  border-radius:14px;
-  padding:14px 16px;
-}
-
+.frame{ border:1.5px solid var(--brand); border-radius:14px; padding:14px 16px; }
 .header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  padding-bottom:10px;
-  border-bottom:2px solid var(--line);
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding-bottom:10px; border-bottom:2px solid var(--line);
 }
-
 .logo{ width:44px; height:auto; }
 .center{ text-align:center; flex:1; }
 .center h1{ margin:0; color:var(--brand2); font-size:18px; font-weight:900; }
 .center p{ margin:4px 0 0; color:var(--muted); font-size:11.5px; }
-
-.meta{
-  min-width:170px;
-  font-size:12px;
-  color:var(--muted);
-  line-height:1.6;
-  text-align:right;
-}
+.meta{ min-width:170px; font-size:12px; color:var(--muted); line-height:1.6; text-align:right; }
 .meta b{ color:var(--ink); }
 
 .section{ margin-top:14px; }
 .section h3{
-  margin:0 0 8px 0;
-  color:var(--brand2);
-  font-size:14px;
-  font-weight:900;
-  border-bottom:1px solid var(--line);
-  padding-bottom:6px;
+  margin:0 0 8px 0; color:var(--brand2); font-size:14px; font-weight:900;
+  border-bottom:1px solid var(--line); padding-bottom:6px;
 }
+table{ width:100%; border-collapse:collapse; font-size:13px; }
+th,td{ border:1px solid var(--line); padding:8px 10px; vertical-align:top; }
+th{ background:var(--soft); width:35%; }
 
-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:13px;
-}
-th,td{
-  border:1px solid var(--line);
-  padding:8px 10px;
-  vertical-align:top;
-}
-th{
-  background:var(--soft);
-  width:28%;
-}
+.note{ background:#fff; border:1px dashed var(--line); border-radius:12px; padding:10px 12px; color:#374151; }
 
-.badge{
-  display:inline-block;
-  padding:3px 8px;
-  border-radius:999px;
-  background:#ecfeff;
-  border:1px solid #a5f3fc;
-  color:#0f766e;
-  font-size:12px;
-  font-weight:800;
+.toolbar{ display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+.toolbar button{
+  background:var(--brand); color:#fff; border:none; padding:9px 12px;
+  border-radius:10px; font-size:13px; font-weight:800; cursor:pointer;
 }
-
-.note{
-  background:#fff;
-  border:1px dashed var(--line);
-  border-radius:12px;
-  padding:10px 12px;
-  color:#374151;
-}
-
-.fin{
-  background:var(--soft);
-  border:1px solid var(--line);
-  border-radius:14px;
-  padding:12px 14px;
-  page-break-inside:avoid;
-}
-
-.fin table{ margin-top:8px; }
-.fin td{ direction:ltr; text-align:left; font-weight:800; }
-
-.footer{
-  margin-top:14px;
-  border-top:2px solid var(--line);
-  padding-top:10px;
-  color:var(--muted);
-  font-size:11.5px;
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-}
-
-.actions{
-  margin-top:14px;
-  display:flex;
-  gap:8px;
-}
-button{
-  background:var(--brand);
-  color:#fff;
-  border:none;
-  padding:10px 14px;
-  border-radius:10px;
-  font-size:13px;
-  font-weight:800;
-  cursor:pointer;
-}
-button:hover{ background:var(--brand2); }
+.toolbar button.secondary{ background:#334155; }
+.toolbar .hint{ font-size:12px; color:var(--muted); align-self:center; margin-right:auto; }
+.editable{ outline:2px dashed rgba(15,118,110,0.25); outline-offset:6px; border-radius:12px; }
 
 @media print{
-  .actions{ display:none !important; }
+  .toolbar{ display:none !important; }
+  .editable{ outline:none !important; }
 }
 </style>
 </head>
 
 <body>
-  <div class="frame">
+<div class="frame">
 
-    <div class="header">
-      <img src="/public/images/logo.png" class="logo" alt="RKL">
-      <div class="center">
-        <h1>عرض سعر زيارة لمرة واحدة</h1>
-        <p>آر كي ال RKL للمصاعد والسلالم الكهربائية</p>
-        <p>السجل التجاري: 1010709355 | الرقم الضريبي: 302250422600003 | هاتف: 0114774021</p>
-      </div>
-      <div class="meta">
-        <div><b>رقم المرجع:</b> ${refNo}</div>
-        <div><b>تاريخ الزيارة:</b> ${date}</div>
-      </div>
+  <div class="header">
+    <img src="/public/images/logo.png" class="logo" alt="RKL">
+    <div class="center">
+      <h1>تقرير زيارة لمرة واحدة</h1>
+      <p>آر كي ال RKL للمصاعد والسلالم الكهربائية</p>
+      <p>السجل التجاري: 1010709355 | الرقم الضريبي: 302250422600003 | هاتف: 0114774021</p>
+    </div>
+    <div class="meta">
+      <div><b>رقم المرجع:</b> ${esc(refNo)}</div>
+      <div><b>تاريخ الزيارة:</b> ${esc(date)}</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>أولاً: بيانات العميل</h3>
+    <table>
+      <tr><th>اسم العميل</th><td>${esc(customer.customer_name || customer.name || '—')}</td></tr>
+      <tr><th>الجوال</th><td>${esc(customer.mobile || customer.phone || '—')}</td></tr>
+      <tr><th>المدينة</th><td>${esc(customer.city || '—')}</td></tr>
+      <tr><th>العنوان</th><td>${esc(customer.full_address || customer.address || '—')}</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h3>ثانياً: تفاصيل الزيارة</h3>
+    <table>
+      <tr><th>نوع الزيارة</th><td>${esc(vtLabel)}</td></tr>
+      <tr><th>الأولوية</th><td>${esc(urgencyLabel)}</td></tr>
+      <tr><th>هل يوجد توقف كامل؟</th><td>${esc(stoppedLabel)}</td></tr>
+      <tr><th>وصف المشكلة / المطلوب</th><td>${issue}</td></tr>
+    </table>
+  </div>
+
+  <!-- ✅ منطقة قابلة للتعديل -->
+  <div id="editableReport" class="editable" contenteditable="true">
+
+    <div class="section">
+      <h3>ثالثاً: نتائج الزيارة (يُستكمل أثناء التنفيذ)</h3>
+      <div class="note">—</div>
     </div>
 
     <div class="section">
-      <h3>أولاً: بيانات العميل</h3>
-      <table>
-        <tr><th>اسم العميل</th><td>${customer.customer_name || customer.name || '—'}</td></tr>
-        <tr><th>الجوال</th><td>${customer.mobile || customer.phone || '—'}</td></tr>
-        <tr><th>المدينة</th><td>${customer.city || '—'}</td></tr>
-        <tr><th>العنوان</th><td>${customer.full_address || customer.address || '—'}</td></tr>
-      </table>
+      <h3>رابعاً: التوصيات والمتطلبات</h3>
+      <div class="note">—</div>
     </div>
 
     <div class="section">
-      <h3>ثانياً: تفاصيل الزيارة</h3>
-      <table>
-        <tr><th>نوع الزيارة</th><td><span class="badge">${vtLabel}</span></td></tr>
-        <tr><th>الأولوية</th><td>${urgencyLabel}</td></tr>
-        <tr><th>هل يوجد توقف كامل؟</th><td>${stoppedLabel}</td></tr>
-      </table>
-
-      <div class="section" style="margin-top:12px">
-        <h3>ثالثاً: وصف المشكلة / المطلوب</h3>
-        <div class="note">${issue}</div>
-      </div>
-    </div>
-
-    <div class="section">
-      <h3>رابعاً: العرض المالي</h3>
-      <div class="fin">
-        <table>
-          <tr><th>القيمة قبل الضريبة</th><td>${fmt(priceBeforeVat)} SAR</td></tr>
-          <tr><th>ضريبة القيمة المضافة 15%</th><td>${fmt(vat)} SAR</td></tr>
-          <tr><th><b>الإجمالي شامل الضريبة</b></th><td><b>${fmt(total)} SAR</b></td></tr>
-        </table>
-      </div>
-      <div class="note" style="margin-top:10px">
-        <b>ملاحظات:</b> هذا العرض خاص بزيارة لمرة واحدة وفق البيانات أعلاه. أي أعمال إضافية أو قطع غيار (إن وجدت) يتم تسعيرها بعرض مستقل بعد المعاينة.
-      </div>
-    </div>
-
-    <div class="footer">
-      <div>العنوان: السليمانية – الرياض</div>
-      <div>البريد: admin@rk-lifts.com</div>
-      <div>الهاتف: 0114774021</div>
-    </div>
-
-    <div class="actions">
-      <button onclick="window.print()">🖨️ طباعة عرض السعر</button>
+      <h3>خامساً: ملخص مالي (إن وُجد في السجل)</h3>
+      ${
+        hasFinancial
+          ? `<table>
+              <tr><th>القيمة قبل الضريبة</th><td>${fmt(subtotal)} ريال</td></tr>
+              <tr><th>ضريبة القيمة المضافة 15%</th><td>${fmt(vat)} ريال</td></tr>
+              <tr><th><b>الإجمالي شامل الضريبة</b></th><td><b>${fmt(total)} ريال</b></td></tr>
+            </table>
+            <div class="note" style="margin-top:8px"><b>ملاحظة:</b> هذا الملخص خاص برسوم الزيارة فقط.</div>`
+          : `<div class="note">لا يوجد ملخص مالي محفوظ لهذه الزيارة داخل السجل. يمكنك كتابة الملخص هنا إن لزم.</div>`
+      }
     </div>
 
   </div>
-</body>
-</html>
-  `);
 
-  w.document.close();
+  <div class="toolbar">
+    <button onclick="saveEdits()">💾 حفظ التعديل</button>
+    <button class="secondary" onclick="loadEdits()">↩️ استرجاع آخر تعديل</button>
+    <button class="secondary" onclick="window.print()">🧾 طباعة التقرير</button>
+    <span class="hint">الأقسام داخل الإطار المتقطع قابلة للتعديل وسيتم حفظها لهذه الزيارة فقط.</span>
+  </div>
+
+</div>
+
+<script>
+function saveEdits(){
+  try{
+    const html = document.getElementById('editableReport').innerHTML;
+    localStorage.setItem('${LS_KEY}', html);
+    alert('✅ تم حفظ التعديل لهذه الزيارة');
+  }catch(e){ alert('❌ تعذر الحفظ: ' + e.message); }
 }
-
-function openOnceVisitReportPrint(visit){ if(!visit || visit.serviceType !== 'once'){ alert('❌ هذا ليس سجل زيارة لمرة واحدة'); return; } const customer = visit.customer || {}; const refNo = visit.id || '—'; const date  = visit.date || '—'; const d = visit.onceDetails || {}; const calc = visit.pricing || {}; const vt = d.visitType || ''; const vtLabel = vt === 'inspection' ? 'فحص وتشخيص' : vt === 'repair'     ? 'صيانة/إصلاح' : vt === 'rescue'     ? 'احتجاز/إنقاذ' : '—'; const urgencyLabel = (d.urgency === 'urgent') ? 'مستعجل' : 'عادي'; const stoppedLabel = (d.stopped === 'yes') ? 'نعم (توقف كامل)' : 'لا'; // قيم مالية محفوظة (إن وجدت) const subtotal = Number(calc.subtotal || 0); const vat      = Number(calc.vat || 0); const total    = Number(calc.total || 0); const issue = (d.issue || '—') .toString() .replace(/</g,'&lt;') .replace(/>/g,'&gt;'); const LS_KEY = `rkl_once_visit_report_edit_${refNo}`; const w = window.open('', '_blank'); if(!w){ alert('⚠️ المتصفح منع فتح نافذة جديدة (Popup). فعّل السماح ثم جرّب مرة أخرى.'); return; } const hasFinancial = total > 0; w.document.write(` <!DOCTYPE html> <html lang="ar" dir="rtl"> <head> <meta charset="UTF-8"> <title>تقرير زيارة لمرة واحدة - ${refNo}</title> <style> @page{ size:A4; margin:15mm; } *{ -webkit-print-color-adjust: exact; print-color-adjust: exact; box-sizing:border-box; } :root{ --ink:#111827; --muted:#6b7280; --line:#e5e7eb; --soft:#f8fafc; --brand:#0f766e; --brand2:#115e59; } body{ font-family:"Cairo","Tajawal",Arial,sans-serif; font-size:14px; color:var(--ink); line-height:1.75; margin:0; } body::before{ content:""; position:fixed; inset:0; background:url('/public/images/logo.png') center center / 340px no-repeat; opacity:0.045; z-index:-1; } .frame{ border:1.5px solid var(--brand); border-radius:14px; padding:14px 16px; } .header{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding-bottom:10px; border-bottom:2px solid var(--line); } .logo{ width:44px; height:auto; } .center{ text-align:center; flex:1; } .center h1{ margin:0; color:var(--brand2); font-size:18px; font-weight:900; } .center p{ margin:4px 0 0; color:var(--muted); font-size:11.5px; } .meta{ min-width:170px; font-size:12px; color:var(--muted); line-height:1.6; text-align:right; } .meta b{ color:var(--ink); } .section{ margin-top:14px; } .section h3{ margin:0 0 8px 0; color:var(--brand2); font-size:14px; font-weight:900; border-bottom:1px solid var(--line); padding-bottom:6px; } .kv{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; } .card{ background:var(--soft); border:1px solid var(--line); border-radius:12px; padding:10px 12px; } .card .k{ font-size:12px; color:var(--muted); } .card .v{ font-weight:900; margin-top:2px; } table{ width:100%; border-collapse:collapse; font-size:13px; } th,td{ border:1px solid var(--line); padding:8px 10px; vertical-align:top; } th{ background:var(--soft); width:35%; } .note{ background:#fff; border:1px dashed var(--line); border-radius:12px; padding:10px 12px; color:#374151; } /* ====== Editable UX ====== */ .toolbar{ display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; } .toolbar button{ background:var(--brand); color:#fff; border:none; padding:9px 12px; border-radius:10px; font-size:13px; font-weight:800; cursor:pointer; } .toolbar button.secondary{ background:#334155; } .toolbar .hint{ font-size:12px; color:var(--muted); align-self:center; margin-right:auto; } .editable{ outline:2px dashed rgba(15,118,110,0.25); outline-offset:6px; border-radius:12px; } /* Print: اخفاء أزرار التعديل */ @media print{ .toolbar{ display:none !important; } .editable{ outline:none !important; } } </style> </head> <body> <div class="frame"> <div class="header"> <img src="/public/images/logo.png" class="logo" alt="RKL"> <div class="center"> <h1>تقرير زيارة لمرة واحدة</h1> <p>آر كي ال RKL للمصاعد والسلالم الكهربائية</p> <p>السجل التجاري: 1010709355 | الرقم الضريبي: 302250422600003 | هاتف: 0114774021</p> </div> <div class="meta"> <div><b>رقم المرجع:</b> ${refNo}</div> <div><b>تاريخ الزيارة:</b> ${date}</div> </div> </div> <div class="section"> <h3>أولاً: بيانات العميل</h3> <table> <tr><th>اسم العميل</th><td>${customer.customer_name || customer.name || '—'}</td></tr> <tr><th>الجوال</th><td>${customer.mobile || customer.phone || '—'}</td></tr> <tr><th>المدينة</th><td>${customer.city || '—'}</td></tr> <tr><th>العنوان</th><td>${customer.full_address || customer.address || '—'}</td></tr> </table> </div> <div class="section"> <h3>ثانياً: تفاصيل الزيارة</h3> <div class="kv"> <div class="card"><div class="k">نوع الزيارة</div><div class="v">${vtLabel}</div></div> <div class="card"><div class="k">الأولوية</div><div class="v">${urgencyLabel}</div></div> <div class="card"><div class="k">توقف كامل</div><div class="v">${stoppedLabel}</div></div> <div class="card"><div class="k">عدد المصاعد</div><div class="v">${visit.lifts || '—'}</div></div> </div> <div style="margin-top:10px" class="note"> <b>وصف المشكلة / المطلوب:</b><br>${issue} </div> </div> <!-- ✅ منطقة قابلة للتعديل + تُحفظ في LocalStorage --> <div id="editableReport" class="editable" contenteditable="true"> <div class="section"> <h3>ثالثاً: نتائج الزيارة (يُستكمل أثناء التنفيذ)</h3> <div class="note"> <b>نتيجة الفحص / التشخيص:</b><br>—<br><br> <b>الأعمال المنفذة (إن وجدت):</b><br>—<br><br> <b>ملاحظات فنية:</b><br>— </div> </div> <div class="section"> <h3>رابعاً: التوصيات والمتطلبات</h3> <div class="note"> <b>التوصيات:</b><br>—<br><br> <b>قطع غيار مطلوبة (إن وجدت):</b><br>—<br><br> <b>إجراء مقترح:</b><br>— </div> </div> <div class="section"> <h3>خامساً: ملخص مالي (إن وُجد في السجل)</h3> ${hasFinancial ? ` <table> <tr><th>القيمة قبل الضريبة</th><td>${subtotal.toFixed(2)} ريال</td></tr> <tr><th>ضريبة القيمة المضافة (15%)</th><td>${vat.toFixed(2)} ريال</td></tr> <tr><th><b>الإجمالي شامل الضريبة</b></th><td><b>${total.toFixed(2)} ريال</b></td></tr> </table> <div class="note" style="margin-top:8px"> <b>ملاحظة:</b> هذا الملخص خاص برسوم الزيارة فقط ولا يشمل قطع الغيار أو الأعمال الإضافية إلا بعرض سعر مستقل. </div> ` : ` <div class="note"> لا يوجد ملخص مالي محفوظ لهذه الزيارة داخل السجل. يمكنك كتابة الملخص هنا إن لزم. </div> `} </div> </div> <div class="toolbar"> <button onclick="saveEdits()">💾 حفظ التعديل</button> <button class="secondary" onclick="loadEdits()">↩️ استرجاع آخر تعديل</button> <button class="secondary" onclick="window.print()">🧾 طباعة التقرير</button> <span class="hint">ملاحظة: الأقسام داخل الإطار المتقطع قابلة للتعديل وسيتم حفظها لهذه الزيارة فقط.</span> </div> </div> <script> function saveEdits(){ try{ const html = document.getElementById('editableReport').innerHTML; localStorage.setItem('${LS_KEY}', html); alert('✅ تم حفظ التعديل لهذه الزيارة'); }catch(e){ alert('❌ تعذر الحفظ: ' + e.message); } } function loadEdits(){ try{ const saved = localStorage.getItem('${LS_KEY}'); if(saved){ document.getElementById('editableReport').innerHTML = saved; alert('✅ تم استرجاع آخر تعديل'); }else{ alert('لا يوجد تعديل محفوظ سابقًا لهذه الزيارة'); } }catch(e){ alert('❌ تعذر الاسترجاع: ' + e.message); } } // تحميل تلقائي عند الفتح (إن وجد) (function autoLoad(){ try{ const saved = localStorage.getItem('${LS_KEY}'); if(saved){ document.getElementById('editableReport').innerHTML = saved; } }catch(e){} })(); </script> </body> </html> `); w.document.close(); }
-
-  
-function recomputeFromManual(){
-  const lifts = Number(document.getElementById('lifts').value || 0);
-  if(!lifts) return;
-
-  // قراءة السعر اليدوي للمصعد من الحقل
-  const v = Number(document.getElementById('manualPricePerLift')?.value || 0);
-  if(!v || v <= 0){
-    // رجّع للحسبة التلقائية لو فاضي أو صفر
-    window.manualPricePerLift = null;
-    const calc = calculateTotal();
-    window.finalCalcOverride = calc;
-    paintPreview(calc, false);
-    return;
-  }
-
-  window.manualPricePerLift = v;
-
-  // ✅ هنا نطبّق نفس منطق الخصومات (3 مصاعد خصم 10%) + الضريبة
-  let subtotal = v * lifts;
-
-  if (lifts >= 3) subtotal *= 0.90; // خصم 10%
-
-  const vat = subtotal * 0.15;
-  const total = subtotal + vat;
-
-  const calc = {
-    pricePerLift: v,
-    lifts,
-    zone: (cityZones[document.getElementById('projectCity')?.value || 'riyadh']?.label) || '—',
-    subtotal,
-    vat,
-    total,
-    isManual: true
-  };
-
-  window.finalCalcOverride = calc;
-  paintPreview(calc, true);
-}
-
-function paintPreview(calc, isManual){
-  document.getElementById('reviewBox').innerHTML = `
-    <div class="contract-summary">
-      <h4>معاينة التسعير قبل الاعتماد</h4>
-      <table>
-        <tr>
-          <td class="label">عدد المصاعد</td>
-          <td class="value">${calc.lifts}</td>
-        </tr>
-        <tr>
-          <td class="label">المنطقة</td>
-          <td class="value">${calc.zone}</td>
-        </tr>
-        <tr>
-          <td class="label">السعر للمصعد (قابل للتعديل)</td>
-          <td class="value">
-            <input
-              id="manualPricePerLift"
-              type="number"
-              min="0"
-              step="0.01"
-              style="width:180px;text-align:left"
-              value="${fmt(calc.pricePerLift)}"
-              oninput="recomputeFromManual()"
-            />
-            <div style="font-size:12px;color:#6b7280;margin-top:4px">
-              ${isManual ? '✅ تم اعتماد سعر يدوي، وسيتم الحفظ عليه.' : 'ℹ️ هذا سعر محسوب تلقائيًا، ويمكنك تعديله.'}
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td class="label">الإجمالي قبل الضريبة</td>
-          <td class="value"><span id="pv_subtotal">${fmt(calc.subtotal)}</span> ريال</td>
-        </tr>
-        <tr>
-          <td class="label">ضريبة القيمة المضافة (15%)</td>
-          <td class="value"><span id="pv_vat">${fmt(calc.vat)}</span> ريال</td>
-        </tr>
-        <tr>
-          <td class="label total">الإجمالي شامل الضريبة</td>
-          <td class="value total"><span id="pv_total">${fmt(calc.total)}</span> ريال</td>
-        </tr>
-      </table>
-
-      <p class="words">
-        ⚠️ المعاينة قبل الاعتماد. يمكنك تعديل سعر المصعد من الجدول وسيتم تحديث الإجمالي تلقائيًا.
-      </p>
-    </div>
-  `;
-}
-
-function previewPricing(){
-
-  const serviceType = document.getElementById('serviceType')?.value || 'annual';
-
-  // حقول مشتركة (عميل + بيانات المصاعد الأساسية)
-  const baseRequired = ['lifts','capacity','floors'];
-  for(const id of baseRequired){
-    if(!document.getElementById(id).value){
-      alert('⚠️ يرجى تعبئة بيانات المصاعد الأساسية (عدد المصاعد، الحمولة، الطوابق)');
-      return;
+function loadEdits(){
+  try{
+    const saved = localStorage.getItem('${LS_KEY}');
+    if(saved){
+      document.getElementById('editableReport').innerHTML = saved;
+      alert('✅ تم استرجاع آخر تعديل');
+    }else{
+      alert('لا يوجد تعديل محفوظ سابقًا لهذه الزيارة');
     }
-  }
-
-  // تحقق حسب النوع
-  if(serviceType === 'annual'){
-    const annualRequired = ['lang','contractDate'];
-    for(const id of annualRequired){
-      if(!document.getElementById(id).value){
-        alert('⚠️ يرجى تعبئة (لغة العقد + تاريخ العقد) لعرض حسبة العقد السنوي');
-        return;
-      }
-    }
-
-    const calc = calculateTotal();
-    window.manualPricePerLift = null;
-    window.finalCalcOverride = calc;
-    paintPreview(calc, false);
-
-  } else {
-    // زيارة لمرة واحدة
-    const onceRequired = ['onceVisitType','onceDate','onceIssue','oncePrice'];
-    for(const id of onceRequired){
-      if(!document.getElementById(id).value){
-        alert('⚠️ يرجى تعبئة متطلبات الزيارة (نوع الزيارة، التاريخ، الوصف، سعر الزيارة)');
-        return;
-      }
-    }
-
-    const lifts = Number(document.getElementById('lifts').value || 0);
-    const priceBeforeVat = Number(document.getElementById('oncePrice').value || 0);
-
-    const subtotal = priceBeforeVat;       // زيارة واحدة: المبلغ قبل الضريبة
-    const vat = subtotal * 0.15;
-    const total = subtotal + vat;
-
-    const calc = {
-      pricePerLift: (subtotal / Math.max(lifts,1)), // فقط للعرض
-      lifts,
-      zone: (cityZones[document.getElementById('projectCity')?.value || 'riyadh']?.label) || '—',
-      subtotal,
-      vat,
-      total,
-      isManual: true,
-      mode: 'once'
-    };
-
-    window.finalCalcOverride = calc;
-
-    // معاينة بسيطة للزيارة الواحدة (بدون حقل تعديل سعر المصعد)
-    document.getElementById('reviewBox').innerHTML = `
-      <div class="contract-summary">
-        <h4>معاينة عرض سعر (زيارة لمرة واحدة)</h4>
-        <table>
-          <tr><td class="label">نوع الزيارة</td><td class="value">${document.getElementById('onceVisitType').selectedOptions[0].textContent}</td></tr>
-          <tr><td class="label">تاريخ الزيارة</td><td class="value">${document.getElementById('onceDate').value}</td></tr>
-          <tr><td class="label">المبلغ قبل الضريبة</td><td class="value">${subtotal.toFixed(2)} ريال</td></tr>
-          <tr><td class="label">الضريبة (15%)</td><td class="value">${vat.toFixed(2)} ريال</td></tr>
-          <tr><td class="label total">الإجمالي شامل الضريبة</td><td class="value total">${total.toFixed(2)} ريال</td></tr>
-        </table>
-      </div>
-    `;
-  }
-
-document.getElementById('reviewSection').style.display = 'block';
-
-const btn = document.getElementById('saveBtn');
-btn.style.display = 'inline-block';
-
-// ✅ لا تعرّف serviceType مرة ثانية (استخدم الموجود بالأعلى)
-btn.textContent = (serviceType === 'once')
-  ? '💾 حفظ الزيارة في السجل'
-  : '💾 اعتماد وحفظ العقد';
-
-
+  }catch(e){ alert('❌ تعذر الاسترجاع: ' + e.message); }
 }
-
+(function autoLoad(){
+  try{
+    const saved = localStorage.getItem('${LS_KEY}');
+    if(saved) document.getElementById('editableReport').innerHTML = saved;
+  }catch(e){}
+})();
 </script>
+
+</body>
+</html>`);
+
+    w.document.close();
+  }catch(err){
+    console.error(err);
+    alert('❌ خطأ في طباعة التقرير: ' + err.message);
+  }
+}
+
+/* ✅ اختبار سريع بعد التحميل (يساعدك تعرف إذا السكربت توقف بسبب SyntaxError) */
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('openOnceVisitReportPrint:', typeof window.openOnceVisitReportPrint);
+});
+</script>
+
 
 <script>
   function toggleServiceType(){
