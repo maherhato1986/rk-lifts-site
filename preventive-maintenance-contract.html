@@ -1312,8 +1312,8 @@ function openPrintView(contract){
 
 <style>
 /* =========================================================
-   RKL Professional Print Styles (A4)
-   Replace the whole <style> inside openPrintView()
+   RKL Professional Contract Print Styles (A4) – FINAL
+   Content unchanged – Styling only
 ========================================================= */
 
 /* ---------- Print Color Accuracy ---------- */
@@ -1324,8 +1324,8 @@ function openPrintView(contract){
 
 /* ---------- Page Setup ---------- */
 @page{
-  size: A4;
-  margin: 14mm 14mm 16mm 14mm; /* أعلى يمين أسفل يسار */
+  size:A4;
+  margin:16mm 14mm 18mm 14mm;
 }
 
 :root{
@@ -1333,12 +1333,12 @@ function openPrintView(contract){
   --muted:#6b7280;
   --line:#e5e7eb;
   --soft:#f8fafc;
-  --brand:#0f766e; /* RKL green */
+  --brand:#0f766e;
   --brand2:#115e59;
 }
 
 /* ---------- Base ---------- */
-html, body{
+html,body{
   height:100%;
 }
 
@@ -1347,51 +1347,47 @@ body{
   background:#fff;
   color:var(--ink);
   font-family:"Cairo","Tajawal",Arial,sans-serif;
-  font-size:13.8px;
-  line-height:1.7;
+  font-size:14px;
+  line-height:1.75;
 }
 
-/* ✅ مهم: لأن محتوى العقد عندك نص فيه \n و ### (ليس HTML) */
-.ar, .en, .contract{
-  white-space: pre-wrap;         /* يحافظ على الأسطر */
-  word-wrap: break-word;
-  overflow-wrap: anywhere;
+/* Preserve text formatting */
+.ar,.en,.contract{
+  white-space:pre-wrap;
+  word-break:break-word;
+  overflow-wrap:anywhere;
 }
 
-/* ---------- Hide Tools (Editor / Buttons) ---------- */
+/* ---------- Hide UI ---------- */
 .editor-toolbar,
 button{
-  display:none !important;
+  display:none!important;
 }
 
-/* ---------- Watermark (Background Logo) ---------- */
+/* ---------- Watermark ---------- */
 body::before{
   content:"";
   position:fixed;
   inset:0;
-  background:
-    url('/public/images/logo.png') center center / 360px 360px no-repeat;
-  opacity:0.05;
+  background:url('/public/images/logo.png') center center / 340px no-repeat;
+  opacity:0.045;
   z-index:-1;
 }
 
-/* إن كان عندك <img class="print-watermark"> داخل الهيدر */
-.print-watermark{
-  display:none !important; /* نكتفي بالـ watermark الخلفية */
-}
+.print-watermark{ display:none!important }
 
 /* ---------- Page Frame ---------- */
-.page-frame {
-    border: 2px solid #0f766e;
-    padding: 15px;
-    min-height: 95vh;
-    position: relative;
-  }
+.page-frame{
+  outline:1.5px solid var(--brand);
+  outline-offset:-8px;
+  padding:18px 20px;
+  min-height:96vh;
+}
 
 /* ---------- Header ---------- */
 .print-header{
-  margin:0 0 12px 0;
-  padding:0 0 10px 0;
+  margin-bottom:16px;
+  padding-bottom:12px;
   border-bottom:1px solid var(--line);
 }
 
@@ -1399,12 +1395,11 @@ body::before{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:12px;
+  gap:14px;
 }
 
 .print-logo{
-  width:44px;
-  height:auto;
+  width:46px;
 }
 
 .header-center{
@@ -1414,22 +1409,21 @@ body::before{
 
 .header-center h1{
   margin:0;
-  font-size:18px;
-  font-weight:800;
+  font-size:19px;
+  font-weight:900;
   color:var(--brand);
-  letter-spacing:0.2px;
+  letter-spacing:.3px;
 }
 
 .header-center p{
-  margin:3px 0 0 0;
-  font-size:11.5px;
+  margin-top:4px;
+  font-size:11.8px;
   color:var(--muted);
 }
 
 .header-meta{
-  min-width:150px;
-  text-align:left;
-  font-size:11px;
+  min-width:160px;
+  font-size:11.5px;
   color:var(--muted);
 }
 
@@ -1444,27 +1438,28 @@ body::before{
 
 /* ---------- Contract Body ---------- */
 .contract{
-  font-size:13.6px;
+  font-size:13.8px;
 }
 
 .contract p{
-  margin:4px 0;
+  margin:6px 0;
 }
 
-/* تحسين قراءة البنود */
+/* Section titles */
 .contract .section-title{
-  margin:14px 0 6px 0;
-  font-weight:800;
+  margin:18px 0 8px;
+  font-size:14.5px;
+  font-weight:900;
   color:var(--brand);
 }
 
-/* تمييز بيانات العميل */
+/* Highlight client data */
 .user-data{
   color:var(--brand2);
-  font-weight:800;
+  font-weight:900;
 }
 
-/* ---------- Arabic / English Direction ---------- */
+/* ---------- Language Direction ---------- */
 .ar{
   direction:rtl;
   text-align:right;
@@ -1473,52 +1468,51 @@ body::before{
 .en{
   direction:ltr;
   text-align:left;
-  font-family: "Segoe UI", Arial, sans-serif;
-  font-size:13.2px;
+  font-family:"Segoe UI",Arial,sans-serif;
+  font-size:13.3px;
 }
 
 /* ---------- Divider ---------- */
 hr{
   border:none;
-  border-top:1px dashed #cbd5e1;
-  margin:16px 0;
+  border-top:1px solid #cbd5e1;
+  margin:18px 0;
 }
 
-/* ---------- Tables (Contract Summary etc.) ---------- */
+/* ---------- Tables ---------- */
 table{
   width:100%;
   border-collapse:collapse;
-  margin:10px 0 6px 0;
-  font-size:13px;
-  background:#fff;
+  margin:12px 0;
+  font-size:13.4px;
 }
 
 .contract-summary{
   background:var(--soft);
   border:1px solid var(--line);
-  border-radius:12px;
-  padding:14px 16px;
-  margin:14px 0 10px 0;
-  page-break-inside: avoid;
+  border-radius:14px;
+  padding:16px 18px;
+  margin:18px 0 12px;
+  page-break-inside:avoid;
 }
 
 .contract-summary h4{
-  margin:0 0 10px 0;
+  margin:0 0 12px;
   text-align:center;
-  font-size:14.5px;
-  font-weight:800;
+  font-size:15px;
+  font-weight:900;
   color:var(--brand);
   border-bottom:1px solid var(--line);
-  padding-bottom:8px;
+  padding-bottom:10px;
 }
 
 .contract-summary td{
-  padding:8px 8px;
+  padding:9px 10px;
   vertical-align:top;
 }
 
 .contract-summary tr:not(:last-child){
-  border-bottom:1px dashed #d1d5db;
+  border-bottom:1px solid var(--line);
 }
 
 .contract-summary .label{
@@ -1526,72 +1520,71 @@ table{
 }
 
 .contract-summary .value{
-  text-align:left;
   font-weight:800;
   color:var(--ink);
 }
 
 .contract-summary .total{
-  font-size:14px;
+  font-size:15px;
   font-weight:900;
   color:var(--brand);
 }
-.contract-summary, h3, .signature { 
-    page-break-inside: avoid; 
-  }
-  /* تحسين عرض البيانات */
-  .user-data-table {
-    width: 100%;
-    margin-bottom: 20px;
-    background: #f9fafb;
-  }
-  
-  .user-data-table td { padding: 8px; border: 1px solid #e5e7eb; }
+
+/* User info table */
+.user-data-table{
+  width:100%;
+  margin:16px 0;
+  background:#fafafa;
+}
+
+.user-data-table td{
+  padding:10px;
+  border:1px solid var(--line);
 }
 
 /* ---------- Footer ---------- */
 .print-footer{
   position:fixed;
-  bottom:8mm;
+  bottom:9mm;
   left:0;
   right:0;
   text-align:center;
-  font-size:10px;
+  font-size:10.5px;
   color:var(--muted);
 }
 
 /* ---------- Page Break ---------- */
 .page-break{
-  break-before: page;
-  height:0 !important;
-  margin:0 !important;
-  padding:0 !important;
+  break-before:page;
+  margin:0;
+  padding:0;
 }
 
 /* ---------- Signature ---------- */
 .signature{
-  margin-top:26px;
+  margin-top:34px;
   display:flex;
   justify-content:space-between;
-  gap:18px;
-  page-break-inside: avoid;
+  gap:24px;
+  page-break-inside:avoid;
 }
 
 .signature div{
   width:48%;
-  border-top:1.2px solid #111;
-  padding-top:10px;
+  border-top:1.5px solid var(--ink);
+  padding-top:12px;
   text-align:center;
-  font-size:12.5px;
-  color:var(--ink);
+  font-size:13px;
+  font-weight:600;
 }
 
-/* ---------- Safety: Avoid Orphans/Widows ---------- */
-.contract, .ar, .en{
-  orphans: 3;
-  widows: 3;
+/* ---------- Print Safety ---------- */
+.contract,.ar,.en{
+  orphans:3;
+  widows:3;
 }
 </style>
+
 
 
 </head>
@@ -1622,6 +1615,32 @@ table{
 </div>
 <div class="page-frame">
   <div id="editableContent" contenteditable="true" class="contract">
+<!-- ================== Cover Page ================== -->
+<div class="page-frame" style="page-break-after:always">
+
+  <div style="text-align:center;margin-top:120px">
+    <img src="/public/images/logo.png" style="width:90px;margin-bottom:20px">
+    
+    <h1 style="font-size:26px;color:#0f766e;margin:0">
+      عقد صيانة وقائية سنوي للمصاعد
+    </h1>
+
+    <div style="width:140px;height:3px;background:#0f766e;margin:20px auto"></div>
+
+    <p style="font-size:15px">
+      بين<br>
+      <b>مؤسسة آر كي ال RKL للمصاعد والسلالم الكهربائية</b><br>
+      و<br>
+      <b>${contract.customer.customer_name || '—'}</b>
+    </p>
+
+    <div style="margin-top:40px;font-size:14px">
+      <p><b>رقم العقد:</b> ${contract.id}</p>
+      <p><b>تاريخ العقد:</b> ${contract.date}</p>
+    </div>
+  </div>
+
+</div>
 
 <div class="print-header">
   <div class="print-header-row">
