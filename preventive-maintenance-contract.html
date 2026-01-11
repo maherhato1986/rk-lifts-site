@@ -1312,18 +1312,14 @@ function openPrintView(contract){
 
 <style>
 /* =========================================================
-   RKL Contract Print Styles (A4) – FINAL FIX
-   - Fix header spacing
-   - Reserve space for footer (no overlap)
-   - Keep financial summary/table safe
-   - Prevent nested frames issues
+   RKL Contract Print Styles (A4) – FINAL (Header + Summary Fix)
 ========================================================= */
 
-*{ -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+*{ -webkit-print-color-adjust: exact; print-color-adjust: exact; box-sizing:border-box; }
 
 @page{
   size:A4;
-  margin:16mm 14mm 22mm 14mm; /* ✅ زودنا الهامش السفلي عشان الفوتر */
+  margin:16mm 14mm 22mm 14mm;
 }
 
 :root{
@@ -1346,17 +1342,17 @@ body{
   line-height:1.75;
 }
 
-/* Preserve text formatting */
+/* Preserve contract newlines + markdown-ish layout */
 .ar,.en,.contract{
   white-space:pre-wrap;
   word-break:break-word;
   overflow-wrap:anywhere;
 }
 
-/* Hide UI */
+/* Hide UI elements */
 .editor-toolbar, button{ display:none!important; }
 
-/* Watermark */
+/* Watermark (background only) */
 body::before{
   content:"";
   position:fixed;
@@ -1365,16 +1361,21 @@ body::before{
   opacity:0.045;
   z-index:-1;
 }
-.print-watermark{ display:none!important; }
 
-/* ✅ إطار الصفحة (لكن نترك مساحة للفوتر) */
+/* ✅ لا نخفي الشعار في الترويسة */
+.print-logo{
+  width:44px;
+  height:auto;
+  display:block;
+}
+
+/* Frame */
 .page-frame{
   outline:1.5px solid var(--brand);
   outline-offset:-8px;
   padding:18px 20px;
-  padding-bottom:32mm; /* ✅ أهم سطر: يمنع دخول الفوتر على النص */
+  padding-bottom:32mm;           /* مساحة للفوتر */
   min-height:96vh;
-  box-sizing:border-box;
 }
 
 /* Header */
@@ -1384,16 +1385,19 @@ body::before{
   border-bottom:1px solid var(--line);
 }
 
+/* ✅ نخلي ترتيب flex ثابت لقراءة “شعار - عنوان - بيانات” */
 .print-header-row{
   display:flex;
   align-items:flex-start;
   justify-content:space-between;
   gap:14px;
+  direction:ltr;                 /* ✅ يحل مشكلة انقلاب أماكن العناصر */
 }
 
 .header-center{
   text-align:center;
   flex:1;
+  direction:rtl;                 /* نص عربي طبيعي */
 }
 
 .header-center h1{
@@ -1401,7 +1405,7 @@ body::before{
   font-size:19px;
   font-weight:900;
   color:var(--brand);
-  letter-spacing:.3px;
+  letter-spacing:.2px;
 }
 
 .header-center p{
@@ -1410,58 +1414,53 @@ body::before{
   color:var(--muted);
 }
 
+/* ✅ بيانات العقد تكون يمين الصفحة وبشكل مرتب */
 .header-meta{
-  min-width:170px;
+  min-width:175px;
   font-size:11.5px;
   color:var(--muted);
   line-height:1.45;
-  text-align:left;
+  text-align:right;
+  direction:rtl;
 }
 .header-meta b{ color:var(--ink); font-weight:800; }
 .header-meta div{ margin-bottom:6px; }
 
-/* Contract body */
+/* Body */
 .contract{ font-size:13.8px; }
 .contract p{ margin:6px 0; }
 
-/* Divider */
 hr{
   border:none;
   border-top:1px solid #cbd5e1;
   margin:18px 0;
 }
 
-/* Tables */
+/* Tables (global) */
 table{
   width:100%;
+  max-width:100%;
   border-collapse:collapse;
   margin:12px 0;
   font-size:13.4px;
-  table-layout:fixed;            /* ✅ يمنع خروج الأعمدة */
+  table-layout:auto;             /* ✅ يمنع تمدد/تكسير غريب */
 }
 td,th{
   border:1px solid var(--line);
   padding:9px 10px;
   vertical-align:top;
-  word-break:break-word;
 }
 
-/* ✅ أهم جزء: يمنع دخول “ملخص العقد/الدفعات” داخل الصفحات */
-.contract-summary,
-.contract-summary table,
-.contract-summary tr,
-.contract-summary td,
-.contract-summary th{
-  page-break-inside:avoid !important;
-  break-inside:avoid !important;
-}
-
+/* Contract Summary (Financial box) */
 .contract-summary{
   background:var(--soft);
   border:1px solid var(--line);
   border-radius:14px;
   padding:16px 18px;
   margin:18px 0 12px;
+  overflow:hidden;
+  page-break-inside:avoid !important;
+  break-inside:avoid !important;
 }
 
 .contract-summary h4{
@@ -1474,11 +1473,28 @@ td,th{
   padding-bottom:10px;
 }
 
-.contract-summary .label{ color:var(--muted); }
-.contract-summary .value{ font-weight:800; color:var(--ink); text-align:left; }
-.contract-summary .total{ font-size:15px; font-weight:900; color:var(--brand); }
+.contract-summary table,
+.contract-summary tr,
+.contract-summary td,
+.contract-summary th{
+  page-break-inside:avoid !important;
+  break-inside:avoid !important;
+}
 
-/* Language Direction */
+.contract-summary .label{ color:var(--muted); }
+.contract-summary .value{
+  font-weight:800;
+  color:var(--ink);
+  text-align:left;               /* الأرقام يسار أفضل */
+  direction:ltr;
+}
+.contract-summary .total{
+  font-size:15px;
+  font-weight:900;
+  color:var(--brand);
+}
+
+/* Language */
 .ar{ direction:rtl; text-align:right; }
 .en{ direction:ltr; text-align:left; font-family:"Segoe UI",Arial,sans-serif; font-size:13.3px; }
 
@@ -1579,7 +1595,8 @@ td,th{
 <div class="print-header">
   <div class="print-header-row">
 
-   <img src="/public/images/logo.png" class="print-watermark">
+  <img src="/public/images/logo.png" class="print-logo" alt="RKL">
+
 
 
     <div class="header-center">
