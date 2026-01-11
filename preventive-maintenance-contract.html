@@ -1914,9 +1914,10 @@ function renderContractsTable(){
         <td>${c.total || '—'}</td>
         <td>${c.date || '—'}</td>
         <td>${vtLabel}</td>
-        <td>
-          <button type="button" class="print-once-offer" data-index="${i}">طباعة عرض السعر</button>
-        </td>
+       <td>
+  <button type="button" class="print-once-offer" data-index="${i}">🖨️ طباعة عرض السعر زياره</button>
+  <button type="button" class="print-once-report" data-index="${i}">🧾 طباعة التقرير زياره</button>
+</td>
       `;
       onceTbody.appendChild(row);
       return;
