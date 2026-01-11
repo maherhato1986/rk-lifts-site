@@ -2082,6 +2082,7 @@ function openOnceVisitReportPrint(visit){
       return;
     }
 
+    w.document.open();
     w.document.write(`<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -2243,18 +2244,16 @@ function loadEdits(){
 
 </body>
 </html>`);
-
     w.document.close();
+
   }catch(err){
     console.error(err);
     alert('❌ خطأ في طباعة التقرير: ' + err.message);
   }
 }
 
-/* ✅ اختبار سريع بعد التحميل (يساعدك تعرف إذا السكربت توقف بسبب SyntaxError) */
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('openOnceVisitReportPrint:', typeof window.openOnceVisitReportPrint);
-});
+
+
 </script>
 
 
