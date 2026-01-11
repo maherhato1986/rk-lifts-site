@@ -2030,6 +2030,7 @@ function toggleOtherBrand(){
 window.manualPricePerLift = null; // سعر يدوي للمصعد (قبل الخصومات والمنطقة إلخ)
 window.finalCalcOverride = null;  // نتيجة حساب نهائية بعد تعديل المستخدم (للاستخدام بالحفظ)
 </script>
+
 <script>
 /* ====== أدوات صغيرة ====== */
 function fmt(n){
@@ -2043,6 +2044,7 @@ function esc(s){
 
 /* =========================================================
    تقرير زيارة لمرة واحدة (قابل للتعديل داخل نافذة الطباعة)
+   ✅ نسخة صحيحة 100% (بدون <script> داخل document.write)
 ========================================================= */
 function openOnceVisitReportPrint(visit){
   try{
@@ -2082,8 +2084,8 @@ function openOnceVisitReportPrint(visit){
       return;
     }
 
-    w.document.open();
-    w.document.write(`<!DOCTYPE html>
+    // HTML (بدون أي <script> داخله)
+    const html = `<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -2207,47 +2209,61 @@ th{ background:var(--soft); width:35%; }
   </div>
 
   <div class="toolbar">
-    <button onclick="saveEdits()">💾 حفظ التعديل</button>
-    <button class="secondary" onclick="loadEdits()">↩️ استرجاع آخر تعديل</button>
-    <button class="secondary" onclick="window.print()">🧾 طباعة التقرير</button>
+    <button id="btnSaveEdits">💾 حفظ التعديل</button>
+    <button class="secondary" id="btnLoadEdits">↩️ استرجاع آخر تعديل</button>
+    <button class="secondary" id="btnPrint">🧾 طباعة التقرير</button>
     <span class="hint">الأقسام داخل الإطار المتقطع قابلة للتعديل وسيتم حفظها لهذه الزيارة فقط.</span>
   </div>
 
 </div>
-
-<script>
-function saveEdits(){
-  try{
-    const html = document.getElementById('editableReport').innerHTML;
-    localStorage.setItem('${LS_KEY}', html);
-    alert('✅ تم حفظ التعديل لهذه الزيارة');
-  }catch(e){ alert('❌ تعذر الحفظ: ' + e.message); }
-}
-function loadEdits(){
-  try{
-    const saved = localStorage.getItem('${LS_KEY}');
-    if(saved){
-      document.getElementById('editableReport').innerHTML = saved;
-      alert('✅ تم استرجاع آخر تعديل');
-    }else{
-      alert('لا يوجد تعديل محفوظ سابقًا لهذه الزيارة');
-    }
-  }catch(e){ alert('❌ تعذر الاسترجاع: ' + e.message); }
-}
-(function autoLoad(){
-  try{
-    const saved = localStorage.getItem('${LS_KEY}');
-    if(saved) document.getElementById('editableReport').innerHTML = saved;
-  }catch(e){}
-})();
-</script>
-
 </body>
-</html>`);
+</html>`;
 
+    // اكتب المحتوى ثم اغلق
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
 
+    // ✅ اربط الأزرار من نافذة الطباعة (بدون <script> داخل الـ HTML)
+    w.onload = () => {
+      try{
+        const editable = w.document.getElementById('editableReport');
 
+        // تحميل تلقائي إن وجد
+        const saved = localStorage.getItem(LS_KEY);
+        if(saved) editable.innerHTML = saved;
 
+        // حفظ
+        w.document.getElementById('btnSaveEdits').onclick = () => {
+          localStorage.setItem(LS_KEY, editable.innerHTML);
+          w.alert('✅ تم حفظ التعديل لهذه الزيارة');
+        };
+
+        // استرجاع
+        w.document.getElementById('btnLoadEdits').onclick = () => {
+          const s = localStorage.getItem(LS_KEY);
+          if(!s) return w.alert('لا يوجد تعديل محفوظ سابقًا');
+          editable.innerHTML = s;
+          w.alert('✅ تم استرجاع آخر تعديل');
+        };
+
+        // طباعة
+        w.document.getElementById('btnPrint').onclick = () => {
+          localStorage.setItem(LS_KEY, editable.innerHTML);
+          w.print();
+        };
+
+      }catch(e){
+        console.error(e);
+        alert('❌ خطأ داخل نافذة التقرير: ' + e.message);
+      }
+    };
+
+  }catch(err){
+    console.error(err);
+    alert('❌ خطأ في طباعة التقرير: ' + err.message);
+  }
+}
 </script>
 
 
