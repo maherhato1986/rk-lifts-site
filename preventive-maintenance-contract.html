@@ -1830,17 +1830,6 @@ function getBrandValue(){
   return brandSelect.toLowerCase();
 }
 
- function updateOnceVisitReportInStorage(visitId, editedHtml){
-  const items = JSON.parse(localStorage.getItem('rkl_maintenance_contracts') || '[]');
-  const idx = items.findIndex(x => x && x.id === visitId && x.serviceType === 'once');
-  if(idx === -1) return false;
-
-  items[idx].onceReportHtml = editedHtml; // ✅ نخزن التقرير المعدّل
-  localStorage.setItem('rkl_maintenance_contracts', JSON.stringify(items));
-  return true;
-}
- 
-  
 function renderContractsTable(){
   const annualTbody = document.getElementById('annualContractsTable');
   const onceTbody   = document.getElementById('onceVisitsTable');
@@ -2046,143 +2035,6 @@ function fmt(n){
   return (Number(n || 0)).toFixed(2);
 }
 
- function escapeHtml(s){
-  return String(s ?? '')
-    .replaceAll('&','&amp;')
-    .replaceAll('<','&lt;')
-    .replaceAll('>','&gt;')
-    .replaceAll('"','&quot;')
-    .replaceAll("'","&#039;");
-}
-
-function moneySAR(n){
-  const x = Number(n || 0);
-  return x.toLocaleString('ar-SA', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ريال';
-}
-
-// ✅ هذه الدالة كانت مفقودة في ملفك الحالي لذلك زر عرض السعر لا يعمل
-function openOnceVisitOfferPrint(visit){
-  if(!visit || visit.serviceType !== 'once'){
-    alert('❌ هذا ليس سجل زيارة لمرة واحدة');
-    return;
-  }
-
-  const customer = visit.customer || {};
-  const refNo = visit.id || '—';
-  const date  = visit.date || '—';
-
-  const d = visit.onceDetails || {};
-  const calc = visit.pricing || {};
-
-  const vt = d.visitType || '';
-  const vtLabel =
-    vt === 'inspection' ? 'فحص وتشخيص' :
-    vt === 'repair'     ? 'صيانة/إصلاح' :
-    vt === 'rescue'     ? 'احتجاز/إنقاذ' : '—';
-
-  const urgencyLabel = (d.urgency === 'urgent') ? 'مستعجل' : 'عادي';
-  const stoppedLabel = (d.stopped === 'yes') ? 'نعم (توقف كامل)' : 'لا';
-
-  const subtotal = Number(calc.subtotal || 0);
-  const vat      = Number(calc.vat || 0);
-  const total    = Number(calc.total || 0);
-
-  const w = window.open('', '_blank');
-  w.document.write(`
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<title>عرض سعر زيارة لمرة واحدة - ${escapeHtml(refNo)}</title>
-<style>
-@page{ size:A4; margin:15mm; }
-*{ -webkit-print-color-adjust: exact; print-color-adjust: exact; box-sizing:border-box; }
-:root{ --ink:#111827; --muted:#6b7280; --line:#e5e7eb; --soft:#f8fafc; --brand:#0f766e; --brand2:#115e59; }
-body{ font-family:"Cairo","Tajawal",Arial,sans-serif; font-size:14px; color:var(--ink); line-height:1.75; margin:0; }
-body::before{ content:""; position:fixed; inset:0; background:url('/public/images/logo.png') center center/340px no-repeat; opacity:.045; z-index:-1; }
-.frame{ border:1.5px solid var(--brand); border-radius:14px; padding:14px 16px; }
-.header{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding-bottom:10px; border-bottom:2px solid var(--line); }
-.logo{ width:44px; height:auto; }
-.center{ text-align:center; flex:1; }
-.center h1{ margin:0; color:var(--brand2); font-size:18px; font-weight:900; }
-.center p{ margin:4px 0 0; color:var(--muted); font-size:11.5px; }
-.meta{ min-width:170px; font-size:12px; color:var(--muted); line-height:1.6; text-align:right; }
-.meta b{ color:var(--ink); }
-.section{ margin-top:14px; }
-.section h3{ margin:0 0 8px 0; color:var(--brand2); font-size:14px; font-weight:900; border-bottom:1px solid var(--line); padding-bottom:6px; }
-table{ width:100%; border-collapse:collapse; font-size:13px; }
-th,td{ border:1px solid var(--line); padding:8px 10px; vertical-align:top; }
-th{ background:var(--soft); width:28%; }
-.box{ background:#fff; border:1px dashed var(--line); border-radius:12px; padding:10px 12px; }
-.actions{ margin-top:14px; display:flex; gap:8px; }
-button{ background:var(--brand); color:#fff; border:none; padding:10px 14px; border-radius:10px; font-size:13px; font-weight:700; cursor:pointer; }
-button:hover{ background:var(--brand2); }
-@media print{ .actions{ display:none !important; } }
-</style>
-</head>
-<body>
-  <div class="frame">
-    <div class="header">
-      <img src="/public/images/logo.png" class="logo" alt="RKL">
-      <div class="center">
-        <h1>عرض سعر زيارة لمرة واحدة</h1>
-        <p>آر كي ال RKL للمصاعد والسلالم الكهربائية</p>
-        <p>السجل التجاري: 1010709355 | الرقم الضريبي: 302250422600003 | هاتف: 0114774021</p>
-      </div>
-      <div class="meta">
-        <div><b>رقم المرجع:</b> ${escapeHtml(refNo)}</div>
-        <div><b>تاريخ الزيارة:</b> ${escapeHtml(date)}</div>
-      </div>
-    </div>
-
-    <div class="section">
-      <h3>أولاً: بيانات العميل</h3>
-      <table>
-        <tr><th>اسم العميل</th><td>${escapeHtml(customer.customer_name || customer.name || '—')}</td></tr>
-        <tr><th>الجوال</th><td>${escapeHtml(customer.mobile || customer.phone || '—')}</td></tr>
-        <tr><th>المدينة</th><td>${escapeHtml(customer.city || '—')}</td></tr>
-        <tr><th>العنوان</th><td>${escapeHtml(customer.full_address || customer.address || '—')}</td></tr>
-      </table>
-    </div>
-
-    <div class="section">
-      <h3>ثانياً: تفاصيل الزيارة</h3>
-      <table>
-        <tr><th>نوع الزيارة</th><td>${escapeHtml(vtLabel)}</td></tr>
-        <tr><th>الأولوية</th><td>${escapeHtml(urgencyLabel)}</td></tr>
-        <tr><th>هل يوجد توقف كامل؟</th><td>${escapeHtml(stoppedLabel)}</td></tr>
-        <tr><th>عدد المصاعد</th><td>${escapeHtml(visit.lifts || '—')}</td></tr>
-      </table>
-      <div class="box" style="margin-top:10px">
-        <b>وصف المشكلة / المطلوب:</b><br>
-        ${escapeHtml(d.issue || '—')}
-      </div>
-    </div>
-
-    <div class="section">
-      <h3>ثالثاً: الملخص المالي</h3>
-      <table>
-        <tr><th>القيمة قبل الضريبة</th><td>${moneySAR(subtotal)}</td></tr>
-        <tr><th>ضريبة القيمة المضافة (15%)</th><td>${moneySAR(vat)}</td></tr>
-        <tr><th><b>الإجمالي شامل الضريبة</b></th><td><b>${moneySAR(total)}</b></td></tr>
-      </table>
-      <div class="box" style="margin-top:10px">
-        <b>ملاحظة:</b> هذا العرض خاص برسوم الزيارة فقط، ولا يشمل قطع الغيار أو الأعمال الإضافية إلا بعرض سعر مستقل.
-      </div>
-    </div>
-
-    <div class="actions">
-      <button onclick="window.print()">🖨️ طباعة عرض السعر</button>
-      <button onclick="window.close()">إغلاق</button>
-    </div>
-  </div>
-</body>
-</html>
-  `);
-  w.document.close();
-}
- 
-  
 function openOnceVisitReportPrint(visit){
   if(!visit || visit.serviceType !== 'once'){
     alert('❌ هذا ليس سجل زيارة لمرة واحدة');
@@ -2220,13 +2072,6 @@ function openOnceVisitReportPrint(visit){
 <head>
 <meta charset="UTF-8">
 <title>تقرير زيارة لمرة واحدة - ${refNo}</title>
-<div style="padding:10px;display:flex;gap:8px" class="no-print">
-  <button onclick="saveReport()">💾 حفظ التعديل</button>
-  <button onclick="window.print()">🧾 طباعة</button>
-  <button onclick="window.close()">إغلاق</button>
-</div>
-
-<div id="editableReport" contenteditable="true">
 
 <style>
 @page{ size:A4; margin:15mm; }
@@ -2480,28 +2325,6 @@ button:hover{ background:var(--brand2); }
     </div>
 
   </div>
-</div>
-
-<script>
-  // ✅ إذا كان في تقرير معدل سابقًا نعرضه
-  const stored = ${JSON.stringify(visit.onceReportHtml || '')};
-  if(stored && stored.trim()){
-    document.getElementById('editableReport').innerHTML = stored;
-  }
-
-  function saveReport(){
-    const html = document.getElementById('editableReport').innerHTML;
-    // نحفظ داخل الصفحة الأصلية (opener)
-    if(window.opener && window.opener.updateOnceVisitReportInStorage){
-      const ok = window.opener.updateOnceVisitReportInStorage(${JSON.stringify(visit.id || '')}, html);
-      alert(ok ? '✅ تم حفظ التعديل' : '❌ لم يتم العثور على الزيارة للحفظ');
-    }else{
-      alert('❌ لا يمكن الحفظ (opener غير متاح)');
-    }
-  }
-</script>
-
-  
 </body>
 </html>
   `);
