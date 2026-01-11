@@ -2021,6 +2021,304 @@ function fmt(n){
   return (Number(n || 0)).toFixed(2);
 }
 
+function openOnceVisitReportPrint(visit){
+  if(!visit || visit.serviceType !== 'once'){
+    alert('❌ هذا ليس سجل زيارة لمرة واحدة');
+    return;
+  }
+
+  const customer = visit.customer || {};
+  const refNo = visit.id || '—';
+  const date  = visit.date || '—';
+
+  const d = visit.onceDetails || {};
+  const calc = visit.pricing || {};
+
+  const vt = d.visitType || '';
+  const vtLabel =
+    vt === 'inspection' ? 'فحص وتشخيص' :
+    vt === 'repair'     ? 'صيانة/إصلاح' :
+    vt === 'rescue'     ? 'احتجاز/إنقاذ' : '—';
+
+  const urgencyLabel = (d.urgency === 'urgent') ? 'مستعجل' : 'عادي';
+  const stoppedLabel = (d.stopped === 'yes') ? 'نعم (توقف كامل)' : 'لا';
+
+  // قيم مالية محفوظة (إن وجدت)
+  const subtotal = Number(calc.subtotal || 0);
+  const vat      = Number(calc.vat || 0);
+  const total    = Number(calc.total || 0);
+
+  const issue = (d.issue || '—').toString().replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+  const w = window.open('', '_blank');
+
+  w.document.write(`
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>تقرير زيارة لمرة واحدة - ${refNo}</title>
+
+<style>
+@page{ size:A4; margin:15mm; }
+*{ -webkit-print-color-adjust: exact; print-color-adjust: exact; box-sizing:border-box; }
+
+:root{
+  --ink:#111827;
+  --muted:#6b7280;
+  --line:#e5e7eb;
+  --soft:#f8fafc;
+  --brand:#0f766e;
+  --brand2:#115e59;
+}
+
+body{
+  font-family:"Cairo","Tajawal",Arial,sans-serif;
+  font-size:14px;
+  color:var(--ink);
+  line-height:1.75;
+  margin:0;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:url('/public/images/logo.png') center center / 340px no-repeat;
+  opacity:0.045;
+  z-index:-1;
+}
+
+.frame{
+  border:1.5px solid var(--brand);
+  border-radius:14px;
+  padding:14px 16px;
+}
+
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding-bottom:10px;
+  border-bottom:2px solid var(--line);
+}
+
+.logo{ width:44px; height:auto; }
+.center{ text-align:center; flex:1; }
+.center h1{ margin:0; color:var(--brand2); font-size:18px; font-weight:900; }
+.center p{ margin:4px 0 0; color:var(--muted); font-size:11.5px; }
+
+.meta{
+  min-width:170px;
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.6;
+}
+.meta b{ color:var(--ink); }
+
+.section{ margin-top:14px; }
+.section h3{
+  margin:0 0 8px 0;
+  color:var(--brand2);
+  font-size:14px;
+  font-weight:900;
+  border-bottom:1px solid var(--line);
+  padding-bottom:6px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+}
+th,td{
+  border:1px solid var(--line);
+  padding:8px 10px;
+  vertical-align:top;
+}
+th{
+  background:var(--soft);
+  width:28%;
+}
+
+.note{
+  background:#fff;
+  border:1px dashed var(--line);
+  border-radius:12px;
+  padding:10px 12px;
+  color:#374151;
+}
+
+.kv{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:10px;
+}
+.card{
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:10px 12px;
+  background:#fff;
+}
+.card .k{ color:var(--muted); font-size:12px; }
+.card .v{ font-weight:800; }
+
+.footer{
+  margin-top:14px;
+  border-top:2px solid var(--line);
+  padding-top:10px;
+  color:var(--muted);
+  font-size:11.5px;
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.signature{
+  margin-top:14px;
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:10px;
+}
+.signature .box{
+  border:1px dashed var(--line);
+  border-radius:12px;
+  padding:12px;
+  min-height:85px;
+}
+.signature .t{
+  font-weight:900;
+  color:var(--ink);
+  margin-bottom:6px;
+}
+
+.actions{
+  margin-top:14px;
+  display:flex;
+  gap:8px;
+}
+button{
+  background:var(--brand);
+  color:#fff;
+  border:none;
+  padding:10px 14px;
+  border-radius:10px;
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+}
+button:hover{ background:var(--brand2); }
+
+@media print{
+  .actions{ display:none !important; }
+}
+</style>
+</head>
+
+<body>
+  <div class="frame">
+
+    <div class="header">
+      <img src="/public/images/logo.png" class="logo" alt="RKL">
+      <div class="center">
+        <h1>تقرير زيارة لمرة واحدة</h1>
+        <p>آر كي ال RKL للمصاعد والسلالم الكهربائية</p>
+        <p>السجل التجاري: 1010709355 | الرقم الضريبي: 302250422600003 | هاتف: 0114774021</p>
+      </div>
+      <div class="meta">
+        <div><b>رقم المرجع:</b> ${refNo}</div>
+        <div><b>تاريخ الزيارة:</b> ${date}</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>أولاً: بيانات العميل</h3>
+      <table>
+        <tr><th>اسم العميل</th><td>${customer.customer_name || customer.name || '—'}</td></tr>
+        <tr><th>الجوال</th><td>${customer.mobile || customer.phone || '—'}</td></tr>
+        <tr><th>المدينة</th><td>${customer.city || '—'}</td></tr>
+        <tr><th>العنوان</th><td>${customer.full_address || customer.address || '—'}</td></tr>
+      </table>
+    </div>
+
+    <div class="section">
+      <h3>ثانياً: تفاصيل الزيارة</h3>
+      <div class="kv">
+        <div class="card"><div class="k">نوع الزيارة</div><div class="v">${vtLabel}</div></div>
+        <div class="card"><div class="k">الأولوية</div><div class="v">${urgencyLabel}</div></div>
+        <div class="card"><div class="k">توقف كامل</div><div class="v">${stoppedLabel}</div></div>
+        <div class="card"><div class="k">عدد المصاعد</div><div class="v">${visit.lifts || '—'}</div></div>
+      </div>
+
+      <div style="margin-top:10px" class="note">
+        <b>وصف المشكلة / المطلوب:</b><br>${issue}
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>ثالثاً: نتائج الزيارة (يُستكمل أثناء التنفيذ)</h3>
+      <div class="note">
+        <b>نتيجة الفحص / التشخيص:</b><br>—<br><br>
+        <b>الأعمال المنفذة (إن وجدت):</b><br>—<br><br>
+        <b>ملاحظات فنية:</b><br>—
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>رابعاً: التوصيات والمتطلبات</h3>
+      <div class="note">
+        <b>التوصيات:</b><br>—<br><br>
+        <b>قطع غيار مطلوبة (إن وجدت):</b><br>—<br><br>
+        <b>إجراء مقترح:</b><br>—
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>خامساً: ملخص مالي (إن وُجد في السجل)</h3>
+      <table>
+        <tr><th>القيمة قبل الضريبة</th><td>${subtotal.toFixed(2)} ريال</td></tr>
+        <tr><th>ضريبة القيمة المضافة (15%)</th><td>${vat.toFixed(2)} ريال</td></tr>
+        <tr><th><b>الإجمالي شامل الضريبة</b></th><td><b>${total.toFixed(2)} ريال</b></td></tr>
+      </table>
+      <div class="note" style="margin-top:8px">
+        <b>ملاحظة:</b> هذا الملخص خاص برسوم الزيارة فقط ولا يشمل قطع الغيار أو الأعمال الإضافية إلا بعرض سعر مستقل.
+      </div>
+    </div>
+
+    <div class="signature">
+      <div class="box">
+        <div class="t">توقيع وختم المؤسسة</div>
+        الاسم: —<br>
+        التاريخ: —
+      </div>
+      <div class="box">
+        <div class="t">استلام/اعتماد العميل</div>
+        الاسم: —<br>
+        التوقيع: —<br>
+        التاريخ: —
+      </div>
+    </div>
+
+    <div class="footer">
+      <div>آر كي ال RKL للمصاعد والسلالم الكهربائية</div>
+      <div>Ref: ${refNo}</div>
+    </div>
+
+    <div class="actions">
+      <button onclick="window.print()">🧾 طباعة التقرير</button>
+      <button onclick="window.close()">إغلاق</button>
+    </div>
+
+  </div>
+</body>
+</html>
+  `);
+
+  w.document.close();
+}
+
+  
 function recomputeFromManual(){
   const lifts = Number(document.getElementById('lifts').value || 0);
   if(!lifts) return;
