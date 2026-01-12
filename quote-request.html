@@ -723,45 +723,8 @@ ${visitsText}- عدد المصاعد: ${vn("lifts_count")}
   };
 }
 
-/* =========================
-   عرض ملخص الطلب + تعبئة الحقل المخفي للإيميل
-========================= */
-function showSummary() {
-  const summary = buildFullSummary();
-
-  const box = document.getElementById("summaryBox");
-  if (box) {
-    box.innerHTML = summary.html;
-    box.classList.remove("hidden");
-  }
-
-  const hidden = document.getElementById("full_summary");
-  if (hidden) hidden.value = summary.text;
-}
 
 
-/* =========================
-   FormSubmit + WhatsApp (قبل الإرسال)
-========================= */
-function prepareBeforeSubmit() {
-  // رقم الطلب
-  const reqId = generateRequestId();
-  document.getElementById("request_id").value = reqId;
-
-  // ملخص كامل للإيميل + واجهة
-  showSummary();
-
-  // نسخة للعميل
-  document.getElementById("cc_email").value = v("email");
-
-  // إرسال واتساب للعميل
-  setTimeout(() => {
-    sendWhatsAppToClient(reqId);
-  }, 350);
-
-  // تقليل الحقول المرسلة (إذا أردت)
-  stripAllNamesExceptSummary();
-}
 
 /* =========================
    WhatsApp
@@ -1033,29 +996,7 @@ function toggleVisits() {
   }
 }        
 </script>
-<script>
-function stripAllNamesExceptSummary() {
-  const allowed = [
-    'رقم_الطلب',
-    'ملخص_الطلب_الكامل',
-    'email',
-    '_subject',
-    '_template',
-    '_captcha',
-    '_language',
-    '_cc',
-    'request_type'
-  ];
 
-  document
-    .querySelectorAll('input[name], select[name], textarea[name]')
-    .forEach(el => {
-      if (!allowed.includes(el.name)) {
-        el.removeAttribute('name');
-      }
-    });
-}
-</script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   hideAllSections();
@@ -1103,6 +1044,76 @@ function prepareBeforeSubmit() {
 
   // ✅ لا تحذف الأسماء إلا بعد تجهيز كل شيء
   stripAllNamesExceptSummary();
+}
+</script>
+
+  <script>
+/* =========================
+   ملخص موحد (للصفحة + الإيميل)
+========================= */
+function showSummary() {
+  const summary = buildFullSummary(); // تستخدم دالتك الموجودة
+
+  // ✅ عرض الملخص في الصفحة
+  const box = document.getElementById("summaryBox");
+  if (box) {
+    box.innerHTML = summary.html;
+    box.classList.remove("hidden");
+  }
+
+  // ✅ تعبئة الملخص النصي للإيميل (ملخص_الطلب_الكامل)
+  const hidden = document.getElementById("full_summary");
+  if (hidden) hidden.value = summary.text;
+
+  // ✅ تعبئة موقع المشروع للإيميل (حقل منفصل)
+  const locHidden = document.getElementById("location_hidden");
+  if (locHidden) locHidden.value = document.getElementById("location")?.value || "—";
+}
+
+/* =========================
+   قبل الإرسال: رقم طلب + ملخص + واتساب + تقليل الحقول
+========================= */
+function prepareBeforeSubmit() {
+  // رقم الطلب
+  const reqId = generateRequestId();
+  document.getElementById("request_id").value = reqId;
+
+  // ✅ جهّز الملخص (لصفحة العرض + للإيميل)
+  showSummary();
+
+  // نسخة للعميل
+  document.getElementById("cc_email").value = (document.getElementById("email")?.value || "").trim();
+
+  // واتساب للعميل (بعد تجهيز الملخص)
+  setTimeout(() => {
+    if (typeof sendWhatsAppToClient === "function") sendWhatsAppToClient(reqId);
+  }, 350);
+
+  // ✅ لا تحذف name إلا بعد تجهيز كل شيء
+  stripAllNamesExceptSummary();
+}
+
+/* =========================
+   السماح فقط بالحقول الضرورية + الصور + الموقع
+========================= */
+function stripAllNamesExceptSummary() {
+  const allowed = [
+    'رقم_الطلب',
+    'ملخص_الطلب_الكامل',
+    'موقع_المشروع',
+    'attachments',
+    'email',
+    '_subject',
+    '_template',
+    '_captcha',
+    '_language',
+    '_cc',
+    'request_type'
+  ];
+
+  document.querySelectorAll('input[name], select[name], textarea[name]').forEach(el => {
+    if (!allowed.includes(el.name)) el.removeAttribute('name');
+  });
 }
 </script>
 
