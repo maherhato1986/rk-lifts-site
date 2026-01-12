@@ -291,12 +291,13 @@ button:hover{
   <textarea name="description_contract"></textarea>
 
 
-  <label>إرفاق صور / مخطط (اختياري)</label>
-<small style="color:#666;">
-• يمكنك رفع أكثر من صورة  
-• يمكنك التصوير مباشرة من كاميرا الجوال  
-• يمكنك رفع ملف PDF (مخطط)
-</small>
+<label>إرفاق صور / مخطط</label>
+<input
+  type="file"
+  name="attachments"
+  accept="image/*,application/pdf"
+  multiple>
+
 
 
 
@@ -449,6 +450,7 @@ value="📩 طلب خدمة جديد – RKL | {{رقم_الطلب}}">
 
 
   <!-- الحقول التي ستظهر في جدول الإيميل -->
+<input type="hidden" name="موقع_المشروع" id="location_hidden">
 
 
   <!-- الملخص التفصيلي (يظهر كنص خارج الجدول) -->
@@ -737,6 +739,7 @@ function showSummary() {
   if (hidden) hidden.value = summary.text;
 }
 
+
 /* =========================
    FormSubmit + WhatsApp (قبل الإرسال)
 ========================= */
@@ -808,18 +811,20 @@ function generateRequestId() {
 /* =========================
    تقليل الحقول المرسلة (اختياري)
 ========================= */
-function stripAllNamesExceptSummary() {
-  const allowed = [
-    'رقم_الطلب',
-    'ملخص_الطلب_الكامل',
-    'email',
-    '_subject',
-    '_template',
-    '_captcha',
-    '_language',
-    '_cc',
-    'request_type'
-  ];
+const allowed = [
+  'رقم_الطلب',
+  'ملخص_الطلب_الكامل',
+  'email',
+  '_subject',
+  '_template',
+  '_captcha',
+  '_language',
+  '_cc',
+  'request_type',
+  'attachments',        // ✅ السماح بالصور
+  'موقع_المشروع'        // ✅ الموقع
+];
+
 
   document.querySelectorAll('input[name], select[name], textarea[name]').forEach(el => {
     if (!allowed.includes(el.name)) el.removeAttribute('name');
@@ -858,26 +863,23 @@ function showSummary() {
 
 <script>
 function prepareBeforeSubmit() {
-  // ✅ توليد رقم الطلب
   const reqId = generateRequestId();
   document.getElementById("request_id").value = reqId;
 
-  // ✅ بناء الملخص الكامل + عرضه + تخزينه للحقل المخفي (الإيميل)
+  // ✅ حفظ موقع المشروع للإيميل
+  document.getElementById("location_hidden").value =
+    document.getElementById("location")?.value || "—";
+
   showSummary();
+  document.getElementById("cc_email").value = v("email");
 
-  // ✅ إرسال نسخة للعميل على الإيميل
-  document.getElementById("cc_email").value = document.getElementById("email").value || "";
-
-  // ✅ واتساب (بعد تجهيز الملخص ورقم الطلب)
   setTimeout(() => {
-    if (typeof sendWhatsAppToClient === "function") {
-      sendWhatsAppToClient(reqId);
-    }
-  }, 400);
+    sendWhatsAppToClient(reqId);
+  }, 350);
 
-  // ✅ الآن قلّص الحقول المرسلة وخلي فقط الضروري + الملخص
   stripAllNamesExceptSummary();
-} 
+}
+
   
 /* =========================
    عرض ملخص الطلب
