@@ -395,37 +395,128 @@ button:hover{
 
 
 
+<!-- توريد وتركيب -->
+<div id="supply" class="section" style="display:none">
 
+  <h3 style="margin-top:0">قسم توريد وتركيب المصاعد</h3>
 
+  <label>اسم المشروع</label>
+  <input id="project" name="project_name_supply" placeholder="مثال: برج السليمانية">
 
+  <label>مدينة المشروع</label>
+  <input name="city_supply" placeholder="مثال: الرياض">
 
+  <label>نوع المبنى</label>
+  <select name="building_type_supply">
+    <option value="">اختر</option>
+    <option>سكني</option>
+    <option>تجاري</option>
+    <option>مستشفى</option>
+    <option>حكومي</option>
+    <option>مدرسة</option>
+    <option>فندق</option>
+  </select>
 
-<!-- توريد -->
-<div id="supply" class="section hidden">
-<label>اسم المشروع</label>
-<input id="project" name="project_name">
+  <label>نوع المصعد المطلوب</label>
+  <select name="elevator_usage_supply">
+    <option value="">اختر</option>
+    <option>ركاب (Passenger)</option>
+    <option>خدمات (Service)</option>
+    <option>بانوراما (Panoramic)</option>
+    <option>مستشفى (Bed)</option>
+    <option>بضائع (Goods)</option>
+  </select>
 
+  <div class="grid" style="grid-template-columns:repeat(2,1fr);gap:12px">
+    <div>
+      <label>عدد المصاعد</label>
+      <input type="number" name="lifts_count_supply" min="1" placeholder="مثال: 2">
+    </div>
+    <div>
+      <label>عدد الأدوار / الوقفات</label>
+      <input type="number" name="stops_count_supply" min="2" placeholder="مثال: 10">
+    </div>
+  </div>
 
-<label>نوع المبنى</label>
-<select name="building_type_supply">
-  <option>سكني</option>
-  <option>تجاري</option>
-  <option>مستشفى</option>
-</select>
+  <div class="grid" style="grid-template-columns:repeat(2,1fr);gap:12px">
+    <div>
+      <label>حمولة المصعد (كجم)</label>
+      <select name="capacity_supply">
+        <option value="">اختر</option>
+        <option>450</option><option>630</option><option>800</option>
+        <option>1000</option><option>1275</option><option>1600</option><option>2000</option>
+      </select>
+    </div>
+    <div>
+      <label>السرعة (م/ث)</label>
+      <select name="speed_supply">
+        <option value="">اختر</option>
+        <option>1.0</option><option>1.5</option><option>1.75</option><option>2.0</option>
+      </select>
+    </div>
+  </div>
 
-<label>عدد المصاعد</label>
-<input type="number" name="lifts_count_supply">
+  <label>نظام التشغيل</label>
+  <select name="system_supply">
+    <option value="">اختر</option>
+    <option>MRL (بدون غرفة ماكينة)</option>
+    <option>MR (غرفة ماكينة)</option>
+    <option>Hydraulic (هيدروليك)</option>
+  </select>
 
-<label>عدد الأدوار</label>
-<input type="number" name="floors_count_supply">
+  <label>نوع الباب</label>
+  <select name="door_type_supply">
+    <option value="">اختر</option>
+    <option>سنترال (Center Opening)</option>
+    <option>سايد (Side Opening)</option>
+    <option>تلسكوبي (Telescopic)</option>
+  </select>
 
+  <label>فتحات الدخول</label>
+  <select name="openings_supply">
+    <option value="">اختر</option>
+    <option>فتحة واحدة</option>
+    <option>فتحتين متقابلتين</option>
+    <option>فتحتين متعامدتين</option>
+  </select>
 
+  <label>تغذية الكهرباء بالموقع</label>
+  <select name="power_supply">
+    <option value="">اختر</option>
+    <option>220V 1Phase</option>
+    <option>380V 3Phase</option>
+  </select>
 
+  <h4 style="margin:18px 0 8px">بيانات البئر (اختياري – إذا متوفر)</h4>
+  <div class="grid" style="grid-template-columns:repeat(2,1fr);gap:12px">
+    <div>
+      <label>عرض البئر (mm)</label>
+      <input type="number" name="shaft_w" placeholder="مثال: 2000">
+    </div>
+    <div>
+      <label>عمق البئر (mm)</label>
+      <input type="number" name="shaft_d" placeholder="مثال: 1800">
+    </div>
+  </div>
 
-<label>ملاحظات</label>
-<textarea name="supply_notes"></textarea>
+  <div class="grid" style="grid-template-columns:repeat(2,1fr);gap:12px">
+    <div>
+      <label>الحفرة PIT (mm)</label>
+      <input type="number" name="pit_mm" placeholder="مثال: 1200">
+    </div>
+    <div>
+      <label>العلوي OH (mm)</label>
+      <input type="number" name="oh_mm" placeholder="مثال: 4200">
+    </div>
+  </div>
+
+  <label>ملاحظات / متطلبات خاصة</label>
+  <textarea name="supply_notes" placeholder="اذكر أي اشتراطات، وقت التسليم، أو ملاحظات عن الموقع"></textarea>
 
 </div>
+
+
+
 
 <!-- ملخص -->
 <div class="section">
@@ -583,7 +674,11 @@ function toggleType() {
 
   if (type === "supply") {
     const supply = document.getElementById("supply");
-    if (supply) supply.style.display = "block";
+    if (supply) {
+  supply.style.display = "block";
+  supply.classList.remove("hidden");
+}
+
     showMapAndFix();
   }
 
@@ -628,24 +723,45 @@ function buildFullSummary() {
   let detailsHtml = "";
   let detailsText = "";
 
-  // توريد
-  if (reqType === "supply") {
-    detailsHtml = `
-      <b>🏗️ تفاصيل التوريد:</b><br>
-      <b>اسم المشروع:</b> ${v("project")}<br>
-      <b>نوع المبنى:</b> ${vn("building_type_supply")}<br>
-      <b>عدد المصاعد:</b> ${vn("lifts_count_supply")}<br>
-      <b>عدد الأدوار:</b> ${vn("floors_count_supply")}<br>
-      <b>ملاحظات:</b><br>${vn("supply_notes")}
-    `;
-    detailsText =
+if (reqType === "supply") {
+  detailsHtml = `
+    <b>🏗️ تفاصيل التوريد:</b><br>
+    <b>اسم المشروع:</b> ${v("project")}<br>
+    <b>مدينة المشروع:</b> ${vn("city_supply")}<br>
+    <b>نوع المبنى:</b> ${vn("building_type_supply")}<br>
+    <b>نوع المصعد:</b> ${vn("elevator_usage_supply")}<br>
+    <b>عدد المصاعد:</b> ${vn("lifts_count_supply")}<br>
+    <b>عدد الوقفات:</b> ${vn("stops_count_supply")}<br>
+    <b>الحمولة (كجم):</b> ${vn("capacity_supply")}<br>
+    <b>السرعة (م/ث):</b> ${vn("speed_supply")}<br>
+    <b>النظام:</b> ${vn("system_supply")}<br>
+    <b>نوع الباب:</b> ${vn("door_type_supply")}<br>
+    <b>الفتحات:</b> ${vn("openings_supply")}<br>
+    <b>الكهرباء:</b> ${vn("power_supply")}<br>
+    <b>أبعاد البئر:</b> ${vn("shaft_w")} × ${vn("shaft_d")} mm<br>
+    <b>PIT:</b> ${vn("pit_mm")} mm — <b>OH:</b> ${vn("oh_mm")} mm<br>
+    <b>ملاحظات:</b><br>${vn("supply_notes")}
+  `;
+
+  detailsText =
 `تفاصيل التوريد:
 - اسم المشروع: ${v("project")}
+- المدينة: ${vn("city_supply")}
 - نوع المبنى: ${vn("building_type_supply")}
+- نوع المصعد: ${vn("elevator_usage_supply")}
 - عدد المصاعد: ${vn("lifts_count_supply")}
-- عدد الأدوار: ${vn("floors_count_supply")}
+- عدد الوقفات: ${vn("stops_count_supply")}
+- الحمولة (كجم): ${vn("capacity_supply")}
+- السرعة (م/ث): ${vn("speed_supply")}
+- النظام: ${vn("system_supply")}
+- نوع الباب: ${vn("door_type_supply")}
+- الفتحات: ${vn("openings_supply")}
+- الكهرباء: ${vn("power_supply")}
+- عرض/عمق البئر (mm): ${vn("shaft_w")} × ${vn("shaft_d")}
+- PIT (mm): ${vn("pit_mm")} | OH (mm): ${vn("oh_mm")}
 - ملاحظات: ${vn("supply_notes")}`;
-  }
+}
+
 
   // صيانة
   if (reqType === "maintenance") {
