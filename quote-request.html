@@ -583,6 +583,203 @@ function initMap() {
   });
 }
 
+ function buildFullSummary() {
+  const v = (id) => (document.getElementById(id)?.value || "—").trim();
+  const vn = (name) => (document.querySelector(`[name="${name}"]`)?.value || "—").trim();
+
+  // بيانات العميل الأساسية
+  const customerName = v("name");
+  const phone = v("phone");
+  const email = v("email");
+  const reqType = v("type"); // maintenance | supply | consult
+  const hasContract = v("hasContract");
+  const location = v("location");
+
+  const typeLabel =
+    reqType === "maintenance" ? "صيانة مصاعد" :
+    reqType === "supply" ? "توريد وتركيب مصاعد" :
+    reqType === "consult" ? "استشارة فقط" : "—";
+
+  // عنوان الحالة
+  let detailsHtml = "";
+  let detailsText = "";
+
+  // ========= توريد =========
+  if (reqType === "supply") {
+    const project = v("project");
+    const buildingType = vn("building_type_supply");
+    const liftsCount = vn("lifts_count_supply");
+    const floorsCount = vn("floors_count_supply");
+    const notes = vn("supply_notes");
+
+    detailsHtml = `
+      <b>🏗️ تفاصيل التوريد:</b><br>
+      <b>اسم المشروع:</b> ${project}<br>
+      <b>نوع المبنى:</b> ${buildingType}<br>
+      <b>عدد المصاعد:</b> ${liftsCount}<br>
+      <b>عدد الأدوار:</b> ${floorsCount}<br>
+      <b>ملاحظات:</b><br>${notes}
+    `;
+
+    detailsText =
+`تفاصيل التوريد:
+- اسم المشروع: ${project}
+- نوع المبنى: ${buildingType}
+- عدد المصاعد: ${liftsCount}
+- عدد الأدوار: ${floorsCount}
+- ملاحظات: ${notes}`;
+  }
+
+  // ========= صيانة =========
+  if (reqType === "maintenance") {
+    if (hasContract === "yes") {
+      const projectName = vn("project_name");
+      const issueType = vn("issue_type");
+      const liftStatus = vn("lift_status");
+      const priority = vn("priority");
+      const desc = vn("description_contract");
+
+      detailsHtml = `
+        <b>🧾 تفاصيل الصيانة (يوجد عقد):</b><br>
+        <b>اسم المشروع/الموقع:</b> ${projectName}<br>
+        <b>نوع البلاغ:</b> ${issueType}<br>
+        <b>حالة المصعد:</b> ${liftStatus}<br>
+        <b>الأولوية:</b> ${priority}<br>
+        <b>وصف العطل:</b><br>${desc}
+      `;
+
+      detailsText =
+`تفاصيل الصيانة (يوجد عقد):
+- اسم المشروع/الموقع: ${projectName}
+- نوع البلاغ: ${issueType}
+- حالة المصعد: ${liftStatus}
+- الأولوية: ${priority}
+- وصف العطل: ${desc}`;
+    }
+
+    if (hasContract === "no") {
+      const serviceType = vn("service_type");
+      const visits = vn("maintenance_visits");
+      const liftsCount = vn("lifts_count");
+      const stops = vn("stops_count");
+      const capacity = vn("capacity");
+      const building = vn("building_type");
+      const brand = vn("lift_brand");
+      const condition = vn("lift_condition");
+      const age = vn("lift_age");
+      const notes = vn("description_no_contract");
+
+      const visitsLine = (serviceType.includes("عقد صيانة") && visits !== "—" && visits !== "")
+        ? `<b>عدد الزيارات السنوية:</b> ${visits}<br>` : "";
+
+      const visitsTextLine = (serviceType.includes("عقد صيانة") && visits !== "—" && visits !== "")
+        ? `- عدد الزيارات السنوية: ${visits}\n` : "";
+
+      detailsHtml = `
+        <b>🧾 تفاصيل الصيانة (لا يوجد عقد):</b><br>
+        <b>نوع الخدمة:</b> ${serviceType}<br>
+        ${visitsLine}
+        <b>عدد المصاعد:</b> ${liftsCount}<br>
+        <b>عدد الوقفات (الأدوار):</b> ${stops}<br>
+        <b>الحمولة (كجم):</b> ${capacity}<br>
+        <b>نوع المبنى:</b> ${building}<br>
+        <b>نوع المصاعد:</b> ${brand}<br>
+        <b>حالة المصعد:</b> ${condition}<br>
+        <b>العمر التقريبي:</b> ${age}<br>
+        <b>ملاحظات:</b><br>${notes}
+      `;
+
+      detailsText =
+`تفاصيل الصيانة (لا يوجد عقد):
+- نوع الخدمة: ${serviceType}
+${visitsTextLine}- عدد المصاعد: ${liftsCount}
+- عدد الوقفات (الأدوار): ${stops}
+- الحمولة (كجم): ${capacity}
+- نوع المبنى: ${building}
+- نوع المصاعد: ${brand}
+- حالة المصعد: ${condition}
+- العمر التقريبي: ${age}
+- ملاحظات: ${notes}`.replace(/\n\n/g, "\n");
+    }
+  }
+
+  // ========= الرأس الموحد =========
+  const headerHtml = `
+    <b>🧑‍💼 بيانات العميل:</b><br>
+    <b>الاسم:</b> ${customerName}<br>
+    <b>الجوال:</b> ${phone}<br>
+    <b>البريد:</b> ${email}<br>
+    <b>نوع الطلب:</b> ${typeLabel}<br>
+    <b>هل يوجد عقد؟</b> ${
+      reqType === "maintenance" ? (hasContract === "yes" ? "نعم" : hasContract === "no" ? "لا" : "—") : "—"
+    }<br>
+    <b>الموقع:</b> ${location}<br><br>
+  `;
+
+  const headerText =
+`بيانات العميل:
+- الاسم: ${customerName}
+- الجوال: ${phone}
+- البريد: ${email}
+- نوع الطلب: ${typeLabel}
+- هل يوجد عقد؟ ${reqType === "maintenance" ? (hasContract === "yes" ? "نعم" : hasContract === "no" ? "لا" : "—") : "—"}
+- الموقع: ${location}
+`;
+
+  return {
+    typeLabel,
+    html: headerHtml + (detailsHtml || "<b>تفاصيل الطلب:</b> —"),
+    text: headerText + "\n" + (detailsText || "تفاصيل الطلب: —")
+  };
+}
+</script>
+2) استبدل showSummary() بهذا
+html
+Copy code
+<script>
+function showSummary() {
+  const summary = buildFullSummary();
+  const box = document.getElementById("summaryBox");
+  if (box) {
+    box.innerHTML = summary.html;
+    box.classList.remove("hidden");
+  }
+
+  // ✅ مهم: تعبئة الحقل المخفي ليظهر في الإيميل
+  const hidden = document.getElementById("full_summary");
+  if (hidden) hidden.value = summary.text;
+}
+</script>
+3) استبدل prepareBeforeSubmit() بهذا (يرسل واتساب + يعبّي الإيميل)
+ملاحظة: في ملفك الحالي أنت أزلت استدعاء واتساب داخل prepareBeforeSubmit()، لازم يرجع. 
+cb705330-1c34-420d-b5b3-9584fbf…
+
+
+html
+Copy code
+<script>
+function prepareBeforeSubmit() {
+  // ✅ توليد رقم الطلب
+  const reqId = generateRequestId();
+  document.getElementById("request_id").value = reqId;
+
+  // ✅ بناء الملخص الكامل + عرضه + تخزينه للحقل المخفي (الإيميل)
+  showSummary();
+
+  // ✅ إرسال نسخة للعميل على الإيميل
+  document.getElementById("cc_email").value = document.getElementById("email").value || "";
+
+  // ✅ واتساب (بعد تجهيز الملخص ورقم الطلب)
+  setTimeout(() => {
+    if (typeof sendWhatsAppToClient === "function") {
+      sendWhatsAppToClient(reqId);
+    }
+  }, 400);
+
+  // ✅ الآن قلّص الحقول المرسلة وخلي فقط الضروري + الملخص
+  stripAllNamesExceptSummary();
+} 
+  
 /* =========================
    عرض ملخص الطلب
 ========================= */
@@ -702,11 +899,9 @@ function normalizeSaudiPhone(phone) {
   return '';
 }
 
-function sendWhatsAppToClient() {
-
-  /* ===== البيانات الأساسية ===== */
-  const name = document.getElementById("name").value || "—";
-  const rawPhone = document.getElementById("phone").value;
+function sendWhatsAppToClient(forcedReqId) {
+  const name = (document.getElementById("name").value || "—").trim();
+  const rawPhone = document.getElementById("phone").value || "";
   const phone = normalizeSaudiPhone(rawPhone);
 
   if (!phone) {
@@ -714,59 +909,23 @@ function sendWhatsAppToClient() {
     return false;
   }
 
-  const type = document.getElementById("type").value || "—";
-  const hasContract = document.getElementById("hasContract").value || "—";
-  const location = document.getElementById("location").value || "—";
-const reqId = document.getElementById("request_id").value;
+  const reqId = forcedReqId || document.getElementById("request_id").value || "—";
+  const summary = buildFullSummary();
 
-const whatsappMsg = `
-مرحبًا ${name} 👋
+  const whatsappMsg =
+`مرحبًا ${name} 👋
 تم استلام طلبك لدى *RKL للمصاعد* ✅
 
 🆔 رقم الطلب: ${reqId}
-🛠️ نوع الطلب: ${type}
-📍 الموقع: ${location}
+🛠️ نوع الطلب: ${summary.typeLabel}
 
-📎 يرجى إرسال الصور / المخطط مع ذكر رقم الطلب الى رقم 0114774021 - admin@rkl.sa .
-`;
+📌 ملخص الطلب:
+${summary.text}
 
-  /* ===== تفاصيل حسب الحالة ===== */
-  let details = "";
+📎 يرجى إرسال الصور/المخطط مع ذكر رقم الطلب إلى: 0114774021 أو admin@rkl.sa`;
 
-if (hasContract === "yes") {
-    details = `
-اسم المشروع: ${document.querySelector('[name="project_name"]')?.value || "—"}
-نوع البلاغ: ${document.querySelector('[name="issue_type"]')?.value || "—"}
-حالة المصعد: ${document.querySelector('[name="lift_status"]')?.value || "—"}
-أولوية الطلب: ${document.querySelector('[name="priority"]')?.value || "—"}
-وصف العطل: ${document.querySelector('[name="description_contract"]')?.value || "—"}
-`;
-  }
-
-  if (hasContract === "no") {
-  details = `
-نوع الخدمة: ${document.querySelector('[name="service_type"]')?.value || "—"}
-عدد المصاعد: ${document.querySelector('[name="lifts_count"]')?.value || "—"}
-نوع المبنى: ${document.querySelector('[name="building_type"]')?.value || "—"}
-عدد الوقفات: ${document.querySelector('[name="stops_count"]')?.value || "—"}
-حمولة المصعد: ${document.querySelector('[name="capacity"]')?.value || "—"} كجم
-نوع المصاعد: ${document.querySelector('[name="lift_brand"]')?.value || "—"}
-حالة المصعد: ${document.querySelector('[name="lift_condition"]')?.value || "—"}
-عمر المصعد: ${document.querySelector('[name="lift_age"]')?.value || "—"}
-ملاحظات: ${document.querySelector('[name="description"]')?.value || "—"}
-`;
-}
-
-
-
-  window.open(
-    "https://wa.me/" + phone + "?text=" + encodeURIComponent(whatsappMsg),
-    "_blank"
-  );
-document.getElementById("cc_email").value =
-  document.getElementById("email").value;
-
-  return true; // مهم جدًا للسماح بإرسال الفورم
+  window.open("https://wa.me/" + phone + "?text=" + encodeURIComponent(whatsappMsg), "_blank");
+  return true;
 }
 
 function generateRequestId() {
@@ -795,8 +954,17 @@ function toggleVisits() {
 </script>
 <script>
 function stripAllNamesExceptSummary() {
-  // أضفنا الحقول الأساسية لضمان عدم رفض السيرفر للطلب
-  const allowed = ['رقم_الطلب', 'ملخص_الطلب_الكامل', 'email', '_subject', '_template', '_captcha', '_language'];
+  const allowed = [
+    'رقم_الطلب',
+    'ملخص_الطلب_الكامل',
+    'email',
+    '_subject',
+    '_template',
+    '_captcha',
+    '_language',
+    '_cc',
+    'request_type'
+  ];
 
   document
     .querySelectorAll('input[name], select[name], textarea[name]')
