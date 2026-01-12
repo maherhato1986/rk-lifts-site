@@ -808,28 +808,8 @@ function generateRequestId() {
   return `RKL-${y}${m}${d}-${r}`;
 }
 
-/* =========================
-   تقليل الحقول المرسلة (اختياري)
-========================= */
-const allowed = [
-  'رقم_الطلب',
-  'ملخص_الطلب_الكامل',
-  'email',
-  '_subject',
-  '_template',
-  '_captcha',
-  '_language',
-  '_cc',
-  'request_type',
-  'attachments',        // ✅ السماح بالصور
-  'موقع_المشروع'        // ✅ الموقع
-];
 
 
-  document.querySelectorAll('input[name], select[name], textarea[name]').forEach(el => {
-    if (!allowed.includes(el.name)) el.removeAttribute('name');
-  });
-}
 
 /* =========================
    عند تحميل الصفحة
@@ -1083,6 +1063,48 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
+<script>
+function stripAllNamesExceptSummary() {
+  const allowed = [
+    'رقم_الطلب',
+    'ملخص_الطلب_الكامل',
+    'email',
+    '_subject',
+    '_template',
+    '_captcha',
+    '_language',
+    '_cc',
+    'request_type',
+    'attachments',      // ✅ للصور
+    'موقع_المشروع'      // ✅ للموقع
+  ];
+
+  document.querySelectorAll('input[name], select[name], textarea[name]').forEach(el => {
+    if (!allowed.includes(el.name)) el.removeAttribute('name');
+  });
+}
+
+function prepareBeforeSubmit() {
+  const reqId = generateRequestId();
+  document.getElementById("request_id").value = reqId;
+
+  // ✅ حفظ الموقع للإيميل
+  document.getElementById("location_hidden").value =
+    document.getElementById("location")?.value || "—";
+
+  // ✅ بناء الملخص وتخزينه للإيميل
+  showSummary();
+
+  // ✅ نسخة للعميل
+  document.getElementById("cc_email").value = document.getElementById("email")?.value || "";
+
+  // ✅ واتساب
+  setTimeout(() => { sendWhatsAppToClient(reqId); }, 350);
+
+  // ✅ لا تحذف الأسماء إلا بعد تجهيز كل شيء
+  stripAllNamesExceptSummary();
+}
+</script>
 
 
 </body>
