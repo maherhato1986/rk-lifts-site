@@ -535,9 +535,9 @@ button:hover{
 <input type="hidden" name="رقم_الطلب" id="request_id">
 
 
-  <!-- إعدادات FormSubmit -->
-<input type="hidden" name="_subject"
-value="📩 طلب خدمة جديد – RKL | {{رقم_الطلب}}">
+<input type="hidden" name="_subject" id="email_subject"
+value="📩 طلب خدمة جديد – RKL">
+
 
 
   <input type="hidden" name="_captcha" value="false">
@@ -986,31 +986,50 @@ document.addEventListener("DOMContentLoaded", () => {
 <script>
 function prepareBeforeSubmit() {
 
-  // توليد الملخص
-  showSummary();
-
-  // توليد رقم الطلب
+  // ✅ توليد رقم الطلب أولاً (عشان يدخل في الملخص + عنوان الإيميل)
   const reqId = generateRequestId();
   document.getElementById("request_id").value = reqId;
 
-  // إزالة جميع name ما عدا الملخص ورقم الطلب
+  // ✅ عنوان إيميل احترافي (للإدارة + العميل)
+  const reqType = document.getElementById("type")?.value || "";
+  const typeLabel =
+    reqType === "maintenance" ? "صيانة" :
+    reqType === "supply" ? "توريد وتركيب" :
+    reqType === "consult" ? "استشارة" : "طلب";
+
+  const customerName = (document.getElementById("name")?.value || "").trim() || "عميل";
+  const subjectEl = document.getElementById("email_subject"); // لازم تضيف id للـ _subject
+  if (subjectEl) {
+    subjectEl.value = `RKL | ${typeLabel} | رقم الطلب: ${reqId} | ${customerName}`;
+  }
+
+  // ✅ تحديث موقع المشروع في الحقل المخفي للإيميل (إن وجد)
+  const locHidden = document.getElementById("location_hidden");
+  if (locHidden) {
+    locHidden.value = document.getElementById("location")?.value || "—";
+  }
+
+  // ✅ توليد الملخص بعد رقم الطلب (حتى يظهر رقم الطلب داخل الإيميل والملخص)
+  showSummary();
+
+  // ✅ نسخة للعميل
+  document.getElementById("cc_email").value =
+    document.getElementById("email")?.value || "";
+
+  // ✅ إزالة جميع name ما عدا الضروري (بعد تجهيز كل شيء)
   stripAllNamesExceptSummary();
 
-  // نسخة للعميل
-  document.getElementById("cc_email").value =
-    document.getElementById("email").value || "";
-
-  // واتساب
-setTimeout(() => {
-  // إذا initMap لم تشتغل لأن القسم كان مخفي وقت التحميل
-  if (!window.__rklMapInitialized) {
-    initMap();
-  } else if (window.google && window.google.maps && window.map) {
-    google.maps.event.trigger(window.map, "resize");
-  }
-}, 250);
+  // ✅ واتساب / وإعادة تهيئة الخريطة (كما كان عندك)
+  setTimeout(() => {
+    if (!window.__rklMapInitialized) {
+      try { initMap(); } catch(e) {}
+    } else if (window.google && window.google.maps && window.map) {
+      try { google.maps.event.trigger(window.map, "resize"); } catch(e) {}
+    }
+  }, 250);
 
 }
+
 
 
 
