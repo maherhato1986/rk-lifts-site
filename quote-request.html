@@ -477,7 +477,7 @@ let map, marker;
 ========================= */
 function toggleType() {
   const type = document.getElementById("type").value;
-document.getElementById("request_type").value = type;
+  document.getElementById("request_type").value = type;
 
   // إخفاء كل الأقسام أولاً
   hideAllSections();
@@ -486,16 +486,31 @@ document.getElementById("request_type").value = type;
   document.getElementById("contractQuestion").style.display = "none";
   document.getElementById("hasContract").value = "";
 
+  const showMapAndFix = () => {
+    document.getElementById("mapSection").style.display = "block";
+
+    // مهم جداً: تهيئة/إعادة رسم الخريطة بعد ظهور القسم
+    setTimeout(() => {
+      // إذا الخريطة لم تُنشأ سابقاً أنشئها الآن
+      if (!window.__rklMapInitialized) {
+        window.__rklMapInitialized = true;
+        initMap();
+      } else if (window.google && window.google.maps && window.map) {
+        google.maps.event.trigger(window.map, "resize");
+      }
+    }, 250);
+  };
+
   if (type === "maintenance") {
     // صيانة → يظهر سؤال العقد + الخريطة
     document.getElementById("contractQuestion").style.display = "block";
-    document.getElementById("mapSection").style.display = "block";
+    showMapAndFix();
   }
 
   if (type === "supply") {
     // توريد وتركيب → فقط قسم التوريد + الخريطة
     document.getElementById("supply").style.display = "block";
-    document.getElementById("mapSection").style.display = "block";
+    showMapAndFix();
   }
 
   if (type === "consult") {
@@ -544,6 +559,10 @@ function initMap() {
     zoom: 12
   });
 
+  // ✅ مهم: اجعل الخريطة متاحة عالميًا لإعادة الرسم بعد إظهار القسم
+  window.map = map;
+  window.__rklMapInitialized = true;
+
   map.addListener("click", function (e) {
     if (marker) marker.setMap(null);
 
@@ -556,6 +575,7 @@ function initMap() {
       `https://maps.google.com/?q=${e.latLng.lat()},${e.latLng.lng()}`;
   });
 }
+
 
 function showSummary() {
 
@@ -627,11 +647,15 @@ function prepareBeforeSubmit() {
     document.getElementById("email").value || "";
 
   // واتساب
-  setTimeout(() => {
-    if (typeof sendWhatsAppToClient === "function") {
-      sendWhatsAppToClient();
-    }
-  }, 800);
+setTimeout(() => {
+  // إذا initMap لم تشتغل لأن القسم كان مخفي وقت التحميل
+  if (!window.__rklMapInitialized) {
+    initMap();
+  } else if (window.google && window.google.maps && window.map) {
+    google.maps.event.trigger(window.map, "resize");
+  }
+}, 250);
+
 }
 
 
