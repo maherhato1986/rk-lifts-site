@@ -470,7 +470,11 @@ value="📩 طلب خدمة جديد – RKL | {{رقم_الطلب}}">
 </div>
 
 <script>
+/* =========================
+   Globals
+========================= */
 let map, marker;
+window.__rklMapInitialized = false;
 
 /* =========================
    التحكم بنوع الطلب
@@ -493,10 +497,11 @@ function toggleType() {
     setTimeout(() => {
       // إذا الخريطة لم تُنشأ سابقاً أنشئها الآن
       if (!window.__rklMapInitialized) {
-        window.__rklMapInitialized = true;
         initMap();
       } else if (window.google && window.google.maps && window.map) {
         google.maps.event.trigger(window.map, "resize");
+        // احتياط: إعادة تمركز بسيطة
+        try { window.map.setCenter(window.map.getCenter()); } catch(e) {}
       }
     }, 250);
   };
@@ -517,7 +522,6 @@ function toggleType() {
     alert("📞 سيتم التواصل معك لتقديم استشارة فنية مجانية");
   }
 }
-
 
 /* =========================
    هل يوجد عقد؟
@@ -547,14 +551,17 @@ function hideAllSections() {
   document.getElementById("mapSection").style.display = "none";
 }
 
-
 /* =========================
    Google Map
 ========================= */
 function initMap() {
   const defaultLocation = { lat: 24.7136, lng: 46.6753 };
 
-  map = new google.maps.Map(document.getElementById("map"), {
+  // إذا عنصر الخريطة غير موجود لا تكمل
+  const mapEl = document.getElementById("map");
+  if (!mapEl) return;
+
+  map = new google.maps.Map(mapEl, {
     center: defaultLocation,
     zoom: 12
   });
@@ -576,9 +583,10 @@ function initMap() {
   });
 }
 
-
+/* =========================
+   عرض ملخص الطلب
+========================= */
 function showSummary() {
-
   const byId = id => document.getElementById(id)?.value || "—";
   const byName = name => document.querySelector(`[name="${name}"]`)?.value || "—";
 
@@ -588,11 +596,11 @@ function showSummary() {
   // ⛔️ إذا كان الطلب توريد، لا تدخل منطق الصيانة نهائيًا
   if (type === "supply") {
     serviceDetails = `
-    <b>🏗️ اسم المشروع:</b> ${byId("project")}<br>
-    <b>🏢 نوع المبنى:</b> ${document.querySelector('#supply select')?.value || "—"}<br>
-    <b>🛗 عدد المصاعد:</b> ${document.querySelectorAll('#supply input[type="number"]')[0]?.value || "—"}<br>
-    <b>🏢 عدد الأدوار:</b> ${document.querySelectorAll('#supply input[type="number"]')[1]?.value || "—"}<br>
-    <b>📝 ملاحظات:</b><br>${document.querySelector('#supply textarea')?.value || "—"}
+      <b>🏗️ اسم المشروع:</b> ${byId("project")}<br>
+      <b>🏢 نوع المبنى:</b> ${document.querySelector('#supply select')?.value || "—"}<br>
+      <b>🛗 عدد المصاعد:</b> ${document.querySelectorAll('#supply input[type="number"]')[0]?.value || "—"}<br>
+      <b>🏢 عدد الأدوار:</b> ${document.querySelectorAll('#supply input[type="number"]')[1]?.value || "—"}<br>
+      <b>📝 ملاحظات:</b><br>${document.querySelector('#supply textarea')?.value || "—"}
     `;
   }
 
@@ -602,32 +610,47 @@ function showSummary() {
 
     if (hasContract === "yes") {
       serviceDetails = `
-      <b>🏢 اسم المشروع:</b> ${byName("project_name")}<br>
-      <b>🔧 نوع البلاغ:</b> ${byName("issue_type")}<br>
-      <b>🚨 حالة المصعد:</b> ${byName("lift_status")}<br>
-      <b>⚡ أولوية الطلب:</b> ${byName("priority")}<br>
-      <b>📝 وصف العطل:</b><br>${byName("description_contract")}
+        <b>🏢 اسم المشروع:</b> ${byName("project_name")}<br>
+        <b>🔧 نوع البلاغ:</b> ${byName("issue_type")}<br>
+        <b>🚨 حالة المصعد:</b> ${byName("lift_status")}<br>
+        <b>⚡ أولوية الطلب:</b> ${byName("priority")}<br>
+        <b>📝 وصف العطل:</b><br>${byName("description_contract")}
       `;
     }
 
     if (hasContract === "no") {
       serviceDetails = `
-      <b>🛠️ نوع الخدمة:</b> ${byName("service_type")}<br>
-      <b>🛗 عدد المصاعد:</b> ${byName("lifts_count")}<br>
-      <b>🏢 نوع المبنى:</b> ${byName("building_type")}<br>
-      <b>📊 عدد الوقفات:</b> ${byName("stops_count")}<br>
-      <b>⚖️ الحمولة:</b> ${byName("capacity")} كجم<br>
-      <b>🏭 نوع المصاعد:</b> ${byName("lift_brand")}<br>
-      <b>🚨 حالة المصعد:</b> ${byName("lift_condition")}<br>
-      <b>⏳ عمر المصعد:</b> ${byName("lift_age")}<br>
-      <b>📝 ملاحظات:</b><br>${byName("description_no_contract")}
+        <b>🛠️ نوع الخدمة:</b> ${byName("service_type")}<br>
+        <b>🛗 عدد المصاعد:</b> ${byName("lifts_count")}<br>
+        <b>🏢 نوع المبنى:</b> ${byName("building_type")}<br>
+        <b>📊 عدد الوقفات:</b> ${byName("stops_count")}<br>
+        <b>⚖️ الحمولة:</b> ${byName("capacity")} كجم<br>
+        <b>🏭 نوع المصاعد:</b> ${byName("lift_brand")}<br>
+        <b>🚨 حالة المصعد:</b> ${byName("lift_condition")}<br>
+        <b>⏳ عمر المصعد:</b> ${byName("lift_age")}<br>
+        <b>📝 ملاحظات:</b><br>${byName("description_no_contract")}
       `;
     }
   }
 
+  // ✅ عرض الملخص في الصندوق
+  const box = document.getElementById("summaryBox");
+  if (box) {
+    box.innerHTML = serviceDetails || "—";
+    box.classList.remove("hidden");
+  }
+} // ✅ إغلاق showSummary بشكل صحيح
 
-
+/* =========================
+   عند تحميل الصفحة
+========================= */
+document.addEventListener("DOMContentLoaded", () => {
+  hideAllSections();
+  const cq = document.getElementById("contractQuestion");
+  if (cq) cq.style.display = "none";
+});
 </script>
+
  
 <script>
 function prepareBeforeSubmit() {
