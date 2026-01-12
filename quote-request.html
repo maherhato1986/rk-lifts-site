@@ -375,7 +375,21 @@ button:hover{
 
 </div>
 
+<!-- ✅ مرفقات الطلب (يعمل في جميع الحالات) -->
+<div class="section" id="attachmentsSection">
+  <label>إرفاق صور / ملفات (اختياري)</label>
+  <small style="color:#666;">
+    • يمكنك رفع صور متعددة أو ملف PDF / Word<br>
+    • هذه المرفقات ستصل مرفقة في البريد الإلكتروني تلقائيًا
+  </small>
 
+  <input
+    type="file"
+    id="attachments"
+    name="attachments"
+    accept="image/*,application/pdf,.doc,.docx"
+    multiple>
+</div>
 
 <div id="mapSection">
   <label>موقع المشروع</label>
@@ -409,21 +423,7 @@ button:hover{
 <label>عدد الأدوار</label>
 <input type="number" name="floors_count_supply">
 
-<!-- ✅ مرفقات الطلب (يعمل في جميع الحالات) -->
-<div class="section" id="attachmentsSection">
-  <label>إرفاق صور / ملفات (اختياري)</label>
-  <small style="color:#666;">
-    • يمكنك رفع صور متعددة أو ملف PDF / Word<br>
-    • هذه المرفقات ستصل مرفقة في البريد الإلكتروني تلقائيًا
-  </small>
 
-  <input
-    type="file"
-    id="attachments"
-    name="attachments"
-    accept="image/*,application/pdf,.doc,.docx"
-    multiple>
-</div>
 
 
 <label>ملاحظات</label>
@@ -793,42 +793,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-<script>
-function showSummary() {
-  const summary = buildFullSummary();
-  const box = document.getElementById("summaryBox");
-  if (box) {
-    box.innerHTML = summary.html;
-    box.classList.remove("hidden");
-  }
 
-  // ✅ مهم: تعبئة الحقل المخفي ليظهر في الإيميل
-  const hidden = document.getElementById("full_summary");
-  if (hidden) hidden.value = summary.text;
-}
-</script>
 
 
 
 
 <script>
-function prepareBeforeSubmit() {
-  const reqId = generateRequestId();
-  document.getElementById("request_id").value = reqId;
 
-  // ✅ حفظ موقع المشروع للإيميل
-  document.getElementById("location_hidden").value =
-    document.getElementById("location")?.value || "—";
-
-  showSummary();
-  document.getElementById("cc_email").value = v("email");
-
-  setTimeout(() => {
-    sendWhatsAppToClient(reqId);
-  }, 350);
-
-  stripAllNamesExceptSummary();
-}
 
   
 /* =========================
@@ -1012,25 +983,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 <script>
-function stripAllNamesExceptSummary() {
-  const allowed = [
-    'رقم_الطلب',
-    'ملخص_الطلب_الكامل',
-    'موقع_المشروع',
-    'attachments',
-    'email',
-    '_subject',
-    '_template',
-    '_captcha',
-    '_language',
-    '_cc',
-    'request_type'
-  ];
 
-  document.querySelectorAll('input[name], select[name], textarea[name]').forEach(el => {
-    if (!allowed.includes(el.name)) el.removeAttribute('name');
-  });
-}
 
 
 function prepareBeforeSubmit() {
@@ -1122,6 +1075,65 @@ function stripAllNamesExceptSummary() {
   document.querySelectorAll('input[name], select[name], textarea[name]').forEach(el => {
     if (!allowed.includes(el.name)) el.removeAttribute('name');
   });
+}
+</script>
+<script>
+function attachmentsInfo(){
+  const f = document.getElementById("attachments")?.files;
+  return (!f || !f.length) ? "لا يوجد" : `${f.length} ملف/صورة`;
+}
+
+function showSummary(){
+  const summary = buildFullSummary();
+
+  const box = document.getElementById("summaryBox");
+  if (box){
+    box.innerHTML = summary.html + `<br><b>المرفقات:</b> ${attachmentsInfo()}`;
+    box.classList.remove("hidden");
+  }
+
+  const hidden = document.getElementById("full_summary");
+  if (hidden){
+    hidden.value = summary.text + `\n- المرفقات: ${attachmentsInfo()}`;
+  }
+
+  const locHidden = document.getElementById("location_hidden");
+  if (locHidden){
+    locHidden.value = document.getElementById("location")?.value || "—";
+  }
+}
+
+function stripAllNamesExceptSummary(){
+  const allowed = [
+    'رقم_الطلب',
+    'ملخص_الطلب_الكامل',
+    'موقع_المشروع',
+    'attachments',
+    'email',
+    '_subject',
+    '_template',
+    '_captcha',
+    '_language',
+    '_cc',
+    'request_type'
+  ];
+
+  document.querySelectorAll('input[name], select[name], textarea[name]').forEach(el=>{
+    if(!allowed.includes(el.name)) el.removeAttribute('name');
+  });
+}
+
+function prepareBeforeSubmit(){
+  const reqId = generateRequestId();
+  document.getElementById("request_id").value = reqId;
+
+  showSummary();
+  document.getElementById("cc_email").value =
+    (document.getElementById("email")?.value || "").trim();
+
+  setTimeout(()=>{ sendWhatsAppToClient(reqId); }, 350);
+
+  stripAllNamesExceptSummary();
 }
 </script>
 
