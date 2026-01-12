@@ -468,7 +468,6 @@ value="📩 طلب خدمة جديد – RKL | {{رقم_الطلب}}">
 </p>
 
 </div>
-
 <script>
 /* =========================
    Globals
@@ -477,96 +476,54 @@ let map, marker;
 window.__rklMapInitialized = false;
 
 /* =========================
-   التحكم بنوع الطلب
+   Helpers
 ========================= */
-function toggleType() {
-  const type = document.getElementById("type").value;
-  document.getElementById("request_type").value = type;
-
-  // إخفاء كل الأقسام أولاً
-  hideAllSections();
-
-  // إخفاء سؤال العقد افتراضياً
-  document.getElementById("contractQuestion").style.display = "none";
-  document.getElementById("hasContract").value = "";
-
-  const showMapAndFix = () => {
-    document.getElementById("mapSection").style.display = "block";
-
-    // مهم جداً: تهيئة/إعادة رسم الخريطة بعد ظهور القسم
-    setTimeout(() => {
-      // إذا الخريطة لم تُنشأ سابقاً أنشئها الآن
-      if (!window.__rklMapInitialized) {
-        initMap();
-      } else if (window.google && window.google.maps && window.map) {
-        google.maps.event.trigger(window.map, "resize");
-        // احتياط: إعادة تمركز بسيطة
-        try { window.map.setCenter(window.map.getCenter()); } catch(e) {}
-      }
-    }, 250);
-  };
-
-  if (type === "maintenance") {
-    // صيانة → يظهر سؤال العقد + الخريطة
-    document.getElementById("contractQuestion").style.display = "block";
-    showMapAndFix();
-  }
-
-  if (type === "supply") {
-    // توريد وتركيب → فقط قسم التوريد + الخريطة
-    document.getElementById("supply").style.display = "block";
-    showMapAndFix();
-  }
-
-  if (type === "consult") {
-    alert("📞 سيتم التواصل معك لتقديم استشارة فنية مجانية");
-  }
+function v(id){
+  return (document.getElementById(id)?.value ?? "—").toString().trim() || "—";
 }
-
-/* =========================
-   هل يوجد عقد؟
-========================= */
-function toggleContractFlow() {
-  const val = document.getElementById("hasContract").value;
-
-  document.getElementById("withContract").style.display = "none";
-  document.getElementById("withoutContract").style.display = "none";
-
-  if (val === "yes") {
-    document.getElementById("withContract").style.display = "block";
-  }
-
-  if (val === "no") {
-    document.getElementById("withoutContract").style.display = "block";
-  }
+function vn(name){
+  return (document.querySelector(`[name="${name}"]`)?.value ?? "—").toString().trim() || "—";
 }
 
 /* =========================
    إخفاء كل الأقسام
 ========================= */
 function hideAllSections() {
-  document.getElementById("withContract").style.display = "none";
-  document.getElementById("withoutContract").style.display = "none";
-  document.getElementById("supply").style.display = "none";
-  document.getElementById("mapSection").style.display = "none";
+  const ids = ["withContract","withoutContract","supply","mapSection"];
+  ids.forEach(i => {
+    const el = document.getElementById(i);
+    if (el) el.style.display = "none";
+  });
+}
+
+/* =========================
+   هل يوجد عقد؟
+========================= */
+function toggleContractFlow() {
+  const val = document.getElementById("hasContract")?.value || "";
+  const withC = document.getElementById("withContract");
+  const withoutC = document.getElementById("withoutContract");
+  if (withC) withC.style.display = "none";
+  if (withoutC) withoutC.style.display = "none";
+
+  if (val === "yes" && withC) withC.style.display = "block";
+  if (val === "no"  && withoutC) withoutC.style.display = "block";
 }
 
 /* =========================
    Google Map
 ========================= */
 function initMap() {
-  const defaultLocation = { lat: 24.7136, lng: 46.6753 };
-
-  // إذا عنصر الخريطة غير موجود لا تكمل
   const mapEl = document.getElementById("map");
   if (!mapEl) return;
+
+  const defaultLocation = { lat: 24.7136, lng: 46.6753 };
 
   map = new google.maps.Map(mapEl, {
     center: defaultLocation,
     zoom: 12
   });
 
-  // ✅ مهم: اجعل الخريطة متاحة عالميًا لإعادة الرسم بعد إظهار القسم
   window.map = map;
   window.__rklMapInitialized = true;
 
@@ -583,15 +540,77 @@ function initMap() {
   });
 }
 
- function buildFullSummary() {
-  const v = (id) => (document.getElementById(id)?.value || "—").trim();
-  const vn = (name) => (document.querySelector(`[name="${name}"]`)?.value || "—").trim();
+/* =========================
+   التحكم بنوع الطلب
+========================= */
+function toggleType() {
+  const type = document.getElementById("type")?.value || "";
+  document.getElementById("request_type").value = type;
 
-  // بيانات العميل الأساسية
-  const customerName = v("name");
-  const phone = v("phone");
-  const email = v("email");
-  const reqType = v("type"); // maintenance | supply | consult
+  hideAllSections();
+
+  // إخفاء سؤال العقد افتراضياً
+  const cq = document.getElementById("contractQuestion");
+  if (cq) cq.style.display = "none";
+  const hasC = document.getElementById("hasContract");
+  if (hasC) hasC.value = "";
+
+  const showMapAndFix = () => {
+    const ms = document.getElementById("mapSection");
+    if (ms) ms.style.display = "block";
+
+    setTimeout(() => {
+      if (!window.__rklMapInitialized) {
+        // إذا Google استدعت initMap قبل ما يظهر القسم، أعد التهيئة الآن
+        try { initMap(); } catch(e) {}
+      } else if (window.google?.maps && window.map) {
+        google.maps.event.trigger(window.map, "resize");
+        try { window.map.setCenter(window.map.getCenter()); } catch(e) {}
+      }
+    }, 250);
+  };
+
+  if (type === "maintenance") {
+    if (cq) cq.style.display = "block";
+    showMapAndFix();
+  }
+
+  if (type === "supply") {
+    const supply = document.getElementById("supply");
+    if (supply) supply.style.display = "block";
+    showMapAndFix();
+  }
+
+  if (type === "consult") {
+    alert("📞 سيتم التواصل معك لتقديم استشارة فنية مجانية");
+  }
+}
+
+/* =========================
+   عدد الزيارات (للعقد السنوي)
+========================= */
+function toggleVisits() {
+  const service = document.getElementById("serviceType")?.value || "";
+  const visitsSelect = document.getElementById("maintenanceVisits");
+  const visitsLabel = document.getElementById("visitsLabel");
+
+  if (!visitsSelect || !visitsLabel) return;
+
+  if (service.includes("عقد صيانة")) {
+    visitsSelect.style.display = "block";
+    visitsLabel.style.display = "block";
+  } else {
+    visitsSelect.style.display = "none";
+    visitsLabel.style.display = "none";
+    visitsSelect.value = "";
+  }
+}
+
+/* =========================
+   بناء ملخص كامل (HTML + Text)
+========================= */
+function buildFullSummary() {
+  const reqType = v("type");          // maintenance | supply | consult
   const hasContract = v("hasContract");
   const location = v("location");
 
@@ -600,142 +619,224 @@ function initMap() {
     reqType === "supply" ? "توريد وتركيب مصاعد" :
     reqType === "consult" ? "استشارة فقط" : "—";
 
-  // عنوان الحالة
   let detailsHtml = "";
   let detailsText = "";
 
-  // ========= توريد =========
+  // توريد
   if (reqType === "supply") {
-    const project = v("project");
-    const buildingType = vn("building_type_supply");
-    const liftsCount = vn("lifts_count_supply");
-    const floorsCount = vn("floors_count_supply");
-    const notes = vn("supply_notes");
-
     detailsHtml = `
       <b>🏗️ تفاصيل التوريد:</b><br>
-      <b>اسم المشروع:</b> ${project}<br>
-      <b>نوع المبنى:</b> ${buildingType}<br>
-      <b>عدد المصاعد:</b> ${liftsCount}<br>
-      <b>عدد الأدوار:</b> ${floorsCount}<br>
-      <b>ملاحظات:</b><br>${notes}
+      <b>اسم المشروع:</b> ${v("project")}<br>
+      <b>نوع المبنى:</b> ${vn("building_type_supply")}<br>
+      <b>عدد المصاعد:</b> ${vn("lifts_count_supply")}<br>
+      <b>عدد الأدوار:</b> ${vn("floors_count_supply")}<br>
+      <b>ملاحظات:</b><br>${vn("supply_notes")}
     `;
-
     detailsText =
 `تفاصيل التوريد:
-- اسم المشروع: ${project}
-- نوع المبنى: ${buildingType}
-- عدد المصاعد: ${liftsCount}
-- عدد الأدوار: ${floorsCount}
-- ملاحظات: ${notes}`;
+- اسم المشروع: ${v("project")}
+- نوع المبنى: ${vn("building_type_supply")}
+- عدد المصاعد: ${vn("lifts_count_supply")}
+- عدد الأدوار: ${vn("floors_count_supply")}
+- ملاحظات: ${vn("supply_notes")}`;
   }
 
-  // ========= صيانة =========
+  // صيانة
   if (reqType === "maintenance") {
     if (hasContract === "yes") {
-      const projectName = vn("project_name");
-      const issueType = vn("issue_type");
-      const liftStatus = vn("lift_status");
-      const priority = vn("priority");
-      const desc = vn("description_contract");
-
       detailsHtml = `
         <b>🧾 تفاصيل الصيانة (يوجد عقد):</b><br>
-        <b>اسم المشروع/الموقع:</b> ${projectName}<br>
-        <b>نوع البلاغ:</b> ${issueType}<br>
-        <b>حالة المصعد:</b> ${liftStatus}<br>
-        <b>الأولوية:</b> ${priority}<br>
-        <b>وصف العطل:</b><br>${desc}
+        <b>اسم المشروع/الموقع:</b> ${vn("project_name")}<br>
+        <b>نوع البلاغ:</b> ${vn("issue_type")}<br>
+        <b>حالة المصعد:</b> ${vn("lift_status")}<br>
+        <b>الأولوية:</b> ${vn("priority")}<br>
+        <b>وصف العطل:</b><br>${vn("description_contract")}
       `;
-
       detailsText =
 `تفاصيل الصيانة (يوجد عقد):
-- اسم المشروع/الموقع: ${projectName}
-- نوع البلاغ: ${issueType}
-- حالة المصعد: ${liftStatus}
-- الأولوية: ${priority}
-- وصف العطل: ${desc}`;
+- اسم المشروع/الموقع: ${vn("project_name")}
+- نوع البلاغ: ${vn("issue_type")}
+- حالة المصعد: ${vn("lift_status")}
+- الأولوية: ${vn("priority")}
+- وصف العطل: ${vn("description_contract")}`;
     }
 
     if (hasContract === "no") {
       const serviceType = vn("service_type");
       const visits = vn("maintenance_visits");
-      const liftsCount = vn("lifts_count");
-      const stops = vn("stops_count");
-      const capacity = vn("capacity");
-      const building = vn("building_type");
-      const brand = vn("lift_brand");
-      const condition = vn("lift_condition");
-      const age = vn("lift_age");
-      const notes = vn("description_no_contract");
-
-      const visitsLine = (serviceType.includes("عقد صيانة") && visits !== "—" && visits !== "")
-        ? `<b>عدد الزيارات السنوية:</b> ${visits}<br>` : "";
-
-      const visitsTextLine = (serviceType.includes("عقد صيانة") && visits !== "—" && visits !== "")
-        ? `- عدد الزيارات السنوية: ${visits}\n` : "";
+      const visitsHtml = (serviceType.includes("عقد صيانة") && visits !== "—") ? `<b>عدد الزيارات السنوية:</b> ${visits}<br>` : "";
+      const visitsText = (serviceType.includes("عقد صيانة") && visits !== "—") ? `- عدد الزيارات السنوية: ${visits}\n` : "";
 
       detailsHtml = `
         <b>🧾 تفاصيل الصيانة (لا يوجد عقد):</b><br>
         <b>نوع الخدمة:</b> ${serviceType}<br>
-        ${visitsLine}
-        <b>عدد المصاعد:</b> ${liftsCount}<br>
-        <b>عدد الوقفات (الأدوار):</b> ${stops}<br>
-        <b>الحمولة (كجم):</b> ${capacity}<br>
-        <b>نوع المبنى:</b> ${building}<br>
-        <b>نوع المصاعد:</b> ${brand}<br>
-        <b>حالة المصعد:</b> ${condition}<br>
-        <b>العمر التقريبي:</b> ${age}<br>
-        <b>ملاحظات:</b><br>${notes}
+        ${visitsHtml}
+        <b>عدد المصاعد:</b> ${vn("lifts_count")}<br>
+        <b>عدد الوقفات:</b> ${vn("stops_count")}<br>
+        <b>الحمولة (كجم):</b> ${vn("capacity")}<br>
+        <b>نوع المبنى:</b> ${vn("building_type")}<br>
+        <b>نوع المصاعد:</b> ${vn("lift_brand")}<br>
+        <b>حالة المصعد:</b> ${vn("lift_condition")}<br>
+        <b>العمر التقريبي:</b> ${vn("lift_age")}<br>
+        <b>ملاحظات:</b><br>${vn("description_no_contract")}
       `;
-
       detailsText =
 `تفاصيل الصيانة (لا يوجد عقد):
 - نوع الخدمة: ${serviceType}
-${visitsTextLine}- عدد المصاعد: ${liftsCount}
-- عدد الوقفات (الأدوار): ${stops}
-- الحمولة (كجم): ${capacity}
-- نوع المبنى: ${building}
-- نوع المصاعد: ${brand}
-- حالة المصعد: ${condition}
-- العمر التقريبي: ${age}
-- ملاحظات: ${notes}`.replace(/\n\n/g, "\n");
+${visitsText}- عدد المصاعد: ${vn("lifts_count")}
+- عدد الوقفات: ${vn("stops_count")}
+- الحمولة (كجم): ${vn("capacity")}
+- نوع المبنى: ${vn("building_type")}
+- نوع المصاعد: ${vn("lift_brand")}
+- حالة المصعد: ${vn("lift_condition")}
+- العمر التقريبي: ${vn("lift_age")}
+- ملاحظات: ${vn("description_no_contract")}`.replace(/\n\n/g,"\n");
     }
   }
 
-  // ========= الرأس الموحد =========
   const headerHtml = `
     <b>🧑‍💼 بيانات العميل:</b><br>
-    <b>الاسم:</b> ${customerName}<br>
-    <b>الجوال:</b> ${phone}<br>
-    <b>البريد:</b> ${email}<br>
+    <b>الاسم:</b> ${v("name")}<br>
+    <b>الجوال:</b> ${v("phone")}<br>
+    <b>البريد:</b> ${v("email")}<br>
     <b>نوع الطلب:</b> ${typeLabel}<br>
-    <b>هل يوجد عقد؟</b> ${
-      reqType === "maintenance" ? (hasContract === "yes" ? "نعم" : hasContract === "no" ? "لا" : "—") : "—"
-    }<br>
+    <b>هل يوجد عقد؟</b> ${reqType === "maintenance" ? (hasContract === "yes" ? "نعم" : hasContract === "no" ? "لا" : "—") : "—"}<br>
     <b>الموقع:</b> ${location}<br><br>
   `;
 
   const headerText =
 `بيانات العميل:
-- الاسم: ${customerName}
-- الجوال: ${phone}
-- البريد: ${email}
+- الاسم: ${v("name")}
+- الجوال: ${v("phone")}
+- البريد: ${v("email")}
 - نوع الطلب: ${typeLabel}
 - هل يوجد عقد؟ ${reqType === "maintenance" ? (hasContract === "yes" ? "نعم" : hasContract === "no" ? "لا" : "—") : "—"}
-- الموقع: ${location}
-`;
+- الموقع: ${location}`;
 
   return {
     typeLabel,
     html: headerHtml + (detailsHtml || "<b>تفاصيل الطلب:</b> —"),
-    text: headerText + "\n" + (detailsText || "تفاصيل الطلب: —")
+    text: headerText + "\n\n" + (detailsText || "تفاصيل الطلب: —")
   };
 }
+
+/* =========================
+   عرض ملخص الطلب + تعبئة الحقل المخفي للإيميل
+========================= */
+function showSummary() {
+  const summary = buildFullSummary();
+
+  const box = document.getElementById("summaryBox");
+  if (box) {
+    box.innerHTML = summary.html;
+    box.classList.remove("hidden");
+  }
+
+  const hidden = document.getElementById("full_summary");
+  if (hidden) hidden.value = summary.text;
+}
+
+/* =========================
+   FormSubmit + WhatsApp (قبل الإرسال)
+========================= */
+function prepareBeforeSubmit() {
+  // رقم الطلب
+  const reqId = generateRequestId();
+  document.getElementById("request_id").value = reqId;
+
+  // ملخص كامل للإيميل + واجهة
+  showSummary();
+
+  // نسخة للعميل
+  document.getElementById("cc_email").value = v("email");
+
+  // إرسال واتساب للعميل
+  setTimeout(() => {
+    sendWhatsAppToClient(reqId);
+  }, 350);
+
+  // تقليل الحقول المرسلة (إذا أردت)
+  stripAllNamesExceptSummary();
+}
+
+/* =========================
+   WhatsApp
+========================= */
+function normalizeSaudiPhone(phone) {
+  phone = (phone || "").toString().replace(/\D/g, '');
+  if (phone.startsWith('05')) return '966' + phone.substring(1);
+  if (phone.startsWith('5')) return '966' + phone;
+  if (phone.startsWith('966')) return phone;
+  return '';
+}
+
+function sendWhatsAppToClient(forcedReqId) {
+  const phone = normalizeSaudiPhone(v("phone"));
+  if (!phone) return;
+
+  const reqId = forcedReqId || v("request_id");
+  const summary = buildFullSummary();
+
+  const msg =
+`مرحبًا ${v("name")} 👋
+تم استلام طلبك لدى *RKL للمصاعد* ✅
+
+🆔 رقم الطلب: ${reqId}
+🛠️ نوع الطلب: ${summary.typeLabel}
+
+📌 ملخص الطلب:
+${summary.text}
+
+📎 يرجى إرسال الصور/المخطط مع ذكر رقم الطلب إلى: 0114774021 أو admin@rkl.sa`;
+
+  window.open("https://wa.me/" + phone + "?text=" + encodeURIComponent(msg), "_blank");
+}
+
+/* =========================
+   رقم الطلب
+========================= */
+function generateRequestId() {
+  const now = new Date();
+  const y = now.getFullYear().toString().slice(2);
+  const m = String(now.getMonth() + 1).padStart(2, '0');
+  const d = String(now.getDate()).padStart(2, '0');
+  const r = Math.floor(Math.random() * 900 + 100);
+  return `RKL-${y}${m}${d}-${r}`;
+}
+
+/* =========================
+   تقليل الحقول المرسلة (اختياري)
+========================= */
+function stripAllNamesExceptSummary() {
+  const allowed = [
+    'رقم_الطلب',
+    'ملخص_الطلب_الكامل',
+    'email',
+    '_subject',
+    '_template',
+    '_captcha',
+    '_language',
+    '_cc',
+    'request_type'
+  ];
+
+  document.querySelectorAll('input[name], select[name], textarea[name]').forEach(el => {
+    if (!allowed.includes(el.name)) el.removeAttribute('name');
+  });
+}
+
+/* =========================
+   عند تحميل الصفحة
+========================= */
+document.addEventListener("DOMContentLoaded", () => {
+  hideAllSections();
+  const cq = document.getElementById("contractQuestion");
+  if (cq) cq.style.display = "none";
+});
 </script>
-2) استبدل showSummary() بهذا
-html
-Copy code
+
+
+
 <script>
 function showSummary() {
   const summary = buildFullSummary();
@@ -750,13 +851,10 @@ function showSummary() {
   if (hidden) hidden.value = summary.text;
 }
 </script>
-3) استبدل prepareBeforeSubmit() بهذا (يرسل واتساب + يعبّي الإيميل)
-ملاحظة: في ملفك الحالي أنت أزلت استدعاء واتساب داخل prepareBeforeSubmit()، لازم يرجع. 
-cb705330-1c34-420d-b5b3-9584fbf…
 
 
-html
-Copy code
+
+
 <script>
 function prepareBeforeSubmit() {
   // ✅ توليد رقم الطلب
