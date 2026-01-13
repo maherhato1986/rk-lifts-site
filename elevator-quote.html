@@ -414,8 +414,9 @@
     <p class="muted">اختر الماركات للمقارنة (حد أقصى 3):</p>
 
     <label><input type="checkbox" class="compare-brand" value="FUJI_MRL" /> FUJI – MRL</label><br>
-    <label><input type="checkbox" class="compare-brand" value="ITALY_MRL" /> ITALIAN – MRL</label><br>
-    <label><input type="checkbox" class="compare-brand" value="LOCAL_ASSEMBLY" /> LOCAL ASSEMBLY – MRL</label>
+<label><input type="checkbox" class="compare-brand" value="VERTILIFT_MRL" /> VERTILIFT – MRL</label><br>
+<label><input type="checkbox" class="compare-brand" value="LOCAL_MRL" /> LOCAL ASSEMBLY – MRL</label>
+
   </div>
 </div>
 
@@ -1468,14 +1469,22 @@ function getRegionAdderSar(loc) {
         const projectLocation = document.getElementById('project_location')?.value || '';
 
      
+// ✅ إذا المقارنة مفعّلة: احسب الماركات المحددة واعرض جدول المقارنة فقط
 if (document.getElementById('enable_compare').checked) {
-  calculateComparison({
+  await calculateComparison({
     capacity,
     speed,
     floors,
-    liftsCount
+    liftsCount,
+    currency,
+    vatRate,
+    includeVat,
+    projectLocation,
+    cabinDesign: document.getElementById("cabin_design")?.value || "",
   });
+  return; // مهم: لا نكمل حسبة ماركة واحدة
 }
+
 
 
         if (!brandKey || !capacity || !speed || !floors || floors < 2 || liftsCount < 1) {
@@ -2191,120 +2200,269 @@ row.querySelector(".oh-cell").innerText    = opt.oh;
 </script>
 
 <script>
+/* =========================================================
+   1) حساب ارتفاع الرحلة Travel Height (mm)
+========================================================= */
 function calculateTravelHeight() {
-    const floors = Number(document.getElementById('floors')?.value);
-    const floorHeightMM = Number(document.getElementById('floorHeight')?.value);
-    const travelInput = document.getElementById('travelHeight');
+  const floorsEl = document.getElementById('floors');
+  const fhEl = document.getElementById('floorHeight');
+  const travelEl = document.getElementById('travelHeight');
+  if (!travelEl) return;
 
-    if (!travelInput) return;
+  const floors = Number(floorsEl?.value || 0);
+  const floorHeightMM = Number(fhEl?.value || 0);
 
-    if (floors >= 2 && floorHeightMM > 0) {
-        const travelMM = (floors - 1) * floorHeightMM;
-        travelInput.value = Math.round(travelMM);
-    } else {
-        travelInput.value = '';
-    }
+  if (floors >= 2 && floorHeightMM > 0) {
+    const travelMM = (floors - 1) * floorHeightMM;
+    travelEl.value = Math.round(travelMM);
+  } else {
+    travelEl.value = '';
+  }
 }
 
 // ربط الأحداث
 ['floors', 'floorHeight'].forEach(id => {
-    const el = document.getElementById(id);
-    if (!el) return;
-
-    el.addEventListener('input', calculateTravelHeight);
-    el.addEventListener('change', calculateTravelHeight);
-});
-// ===============================
-// تفعيل / إخفاء المقارنة
-// ===============================
-document.getElementById('enable_compare').addEventListener('change', e => {
-  document.getElementById('compare_brands_box').style.display =
-    e.target.checked ? 'block' : 'none';
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('input', calculateTravelHeight);
+  el.addEventListener('change', calculateTravelHeight);
 });
 
-// ===============================
-// حساب المقارنة
-// ===============================
-async function calculateComparison(baseInputs) {
-  const selectedBrands = [...document.querySelectorAll('.compare-brand:checked')]
-    .map(cb => cb.value)
-    .slice(0, 3);
 
-  if (selectedBrands.length < 2) return;
+/* =========================================================
+   2) مقارنة عروض الأسعار (تحسب الماركات المختارة فقط)
+   - يعتمد على دوالك الموجودة: loadBrandData, findModel, getRegionAdderSar
+   - ويستخدم COST_PARAMS + CABIN_DESIGN_ADDITIONAL + BRAND_SOURCES
+========================================================= */
 
-  const results = [];
-
-  for (const brand of selectedBrands) {
-    await loadBrandData(brand);              // نفس دالتك الحالية
-    const model = findModel(baseInputs.capacity, baseInputs.speed);
-
-    if (!model) continue;
-
-    const quote = calculateInternalQuote(model, baseInputs);
-    results.push({ brand, ...quote });
-  }
-
-  renderComparison(results);
+// تنسيق SAR
+function formatSAR(n) {
+  const v = Number(n || 0);
+  return v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' SAR';
 }
 
-// ===============================
-// نفس منطق calculateQuote ولكن داخلي
-// ===============================
-// ===============================
-// الحسبة المعدلة (الأكثر دقة)
-// ===============================
-function calculateInternalQuote(model, base) {
-  // 1. حساب سعر المصنع بالدولار وتحويله للريال
-  const extraFloors = Math.max(0, base.floors - model.baseFloors);
-  const factoryUsd = model.basePriceUsd + (model.extraPerFloorUsd * extraFloors);
-  const factorySar = factoryUsd * model.exchangeRateToSAR;
+// تفعيل / إخفاء المقارنة + تنظيم التحديد
+(function initCompareUI(){
+  const enable = document.getElementById('enable_compare');
+  const box = document.getElementById('compare_brands_box');
+  const resultBox = document.getElementById('compare_result');
+  const numbersBox = document.getElementById('numbers-wrapper');
 
-  // 2. حساب المصاريف الثابتة والمتغيرة من COST_PARAMS
-  // ملاحظة: تأكد أن COST_PARAMS معرفة في كودك العلوي
-  const shipping = COST_PARAMS.shippingUsd * model.exchangeRateToSAR; // تحويل الشحن لريال
-  const insurance = factorySar * COST_PARAMS.insuranceRate; // 1% تأمين
-  const clearance = COST_PARAMS.clearanceSar; // 1200 ريال
-  const inland = COST_PARAMS.inlandTransportSar; // 1500 ريال
-  const installation = COST_PARAMS.installationBaseSar; // 9000 ريال
+  if (!enable) return;
 
-  // إجمالي التكاليف التشغيلية (بدلاً من نسبة 12% العشوائية)
-  const totalOverhead = shipping + insurance + clearance + inland + installation;
+  function syncCompareUI(){
+    const on = !!enable.checked;
 
-  // 3. حساب الربح (25% من إجمالي التكلفة)
-  const totalCost = factorySar + totalOverhead;
-  const profit = totalCost * 0.25;
+    if (box) box.style.display = on ? 'block' : 'none';
 
-  // 4. الحسبة النهائية والضريبة
-  const beforeVat = totalCost + profit;
-  const vat = beforeVat * 0.15;
+    // إذا ألغى المقارنة: أخفِ النتائج الخاصة بالمقارنة وارجع النتائج الرقمية
+    if (!on) {
+      if (resultBox) resultBox.style.display = 'none';
+      if (numbersBox) numbersBox.style.display = 'block';
+    }
+  }
+
+  enable.addEventListener('change', syncCompareUI);
+  syncCompareUI();
+
+  // حد أقصى 3 ماركات
+  document.querySelectorAll('.compare-brand').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const checked = document.querySelectorAll('.compare-brand:checked');
+      if (checked.length > 3) {
+        cb.checked = false;
+        alert('الحد الأقصى للمقارنة هو 3 ماركات فقط.');
+      }
+    });
+  });
+})();
+
+
+// ============ حسبة داخلية "مطابقة" لمنطقك الحالي ============
+async function calculateForBrand(brandKey, base) {
+  // تحميل ملف الماركة
+  await loadBrandData(brandKey);
+  if (!window.currentBrandData) return null;
+
+  const model = findModel(base.capacity, base.speed);
+  if (!model) return null;
+
+  const rate = window.currentBrandData.exchangeRateToSAR || 1;
+  const isLocalAssembly = (brandKey === 'LOCAL_MRL');
+
+  const floors = Number(base.floors || 0);
+  const liftsCount = Number(base.liftsCount || 1);
+  const vatRate = Number(base.vatRate || 0);
+  const includeVat = !!base.includeVat;
+
+  // 1) سعر المصنع (FOB)
+  const extraFloors = Math.max(0, floors - Number(model.baseFloors || 0));
+  const factoryUsd = Number(model.basePriceUsd || 0) + (Number(model.extraPerFloorUsd || 0) * extraFloors);
+  let factorySar = factoryUsd * rate;
+
+  // 2) الشحن + التأمين (صفر للمحلي)
+  const shippingInsuranceSar = isLocalAssembly
+    ? 0
+    : (
+        (Number(COST_PARAMS.shippingUsdPerLift || 0) * rate) +
+        (factoryUsd * (Number(COST_PARAMS.insurancePercent || 0) / 100) * rate)
+      );
+
+  // 3) التخليص + النقل الداخلي + فرق المنطقة
+  const regionAdder = (typeof getRegionAdderSar === 'function')
+    ? getRegionAdderSar(base.projectLocation || '')
+    : 0;
+
+  const clearanceTransportSar = isLocalAssembly
+    ? (Number(COST_PARAMS.inlandTransportSar || 0) + regionAdder)
+    : (Number(COST_PARAMS.clearanceSar || 0) + Number(COST_PARAMS.inlandTransportSar || 0) + regionAdder);
+
+  // 4) التركيب + التشغيل
+  const installationCommissioningSar =
+    Number(COST_PARAMS.installationSar || 0) + Number(COST_PARAMS.commissioningSar || 0);
+
+  // 5) تشطيب الكبينة
+  const cabinExtraCost = (window.CABIN_DESIGN_ADDITIONAL && base.cabinDesign)
+    ? (Number(CABIN_DESIGN_ADDITIONAL[base.cabinDesign]) || 0)
+    : 0;
+
+  // 6) التكلفة المباشرة
+  const directCostSar = factorySar + shippingInsuranceSar + clearanceTransportSar + installationCommissioningSar + cabinExtraCost;
+
+  // 7) مصاريف تشغيل
+  const overheadSar = directCostSar * (Number(COST_PARAMS.overheadPercent || 0) / 100);
+
+  // 8) تكلفة قبل الربح
+  const costBeforeProfitSar = directCostSar + overheadSar;
+
+  // 9) ربح (مطابق لفكرتك: VERTILIFT +3)
+  const profitPercent =
+    brandKey === 'VERTILIFT_MRL'
+      ? (Number(COST_PARAMS.profitPercent || 0) + 3)
+      : Number(COST_PARAMS.profitPercent || 0);
+
+  const profitSar = costBeforeProfitSar * (profitPercent / 100);
+
+  // 10) قبل الضريبة
+  const totalBeforeVatSar = costBeforeProfitSar + profitSar;
+
+  // 11) الضريبة + الإجمالي
+  const vatSar = totalBeforeVatSar * (vatRate / 100);
+  const totalWithVatSar = includeVat ? (totalBeforeVatSar + vatSar) : totalBeforeVatSar;
+
+  // إجمالي كل المصاعد
+  const beforeTotal = totalBeforeVatSar * liftsCount;
+  const vatTotal = vatSar * liftsCount;
+  const totalTotal = totalWithVatSar * liftsCount;
+
+  // مدة التوريد
+  const delivery = model.delivery || model.deliveryWeeks || 'حسب عرض المصنع';
 
   return {
-    beforeVat: beforeVat,
-    vat: vat,
-    total: beforeVat + vat,
-    delivery: model.delivery || '45-60 يوم'
+    brandKey,
+    brandLabel: (window.BRAND_SOURCES && BRAND_SOURCES[brandKey]?.label) ? BRAND_SOURCES[brandKey].label : brandKey,
+    beforeVat: beforeTotal,
+    vat: vatTotal,
+    total: totalTotal,
+    delivery
   };
 }
 
-// ===============================
-// عرض النتائج
-// ===============================
-function renderComparison(results) {
-  document.getElementById('compare_result').style.display = 'block';
 
-  results.forEach((r, i) => {
-    const idx = i + 1;
-    document.getElementById(`col_${idx}`).innerText = r.brand;
-    document.getElementById(`c${idx}_before`).innerText = formatSAR(r.beforeVat);
-    document.getElementById(`c${idx}_vat`).innerText = formatSAR(r.vat);
-    document.getElementById(`c${idx}_total`).innerText = formatSAR(r.total);
-    document.getElementById(`c${idx}_delivery`).innerText = r.delivery;
+// ============ حساب المقارنة ============
+async function calculateComparison(baseInputs) {
+  const selectedBrands = Array.from(document.querySelectorAll('.compare-brand:checked'))
+    .map(cb => cb.value)
+    .slice(0, 3);
+
+  if (selectedBrands.length < 2) {
+    alert('يرجى اختيار ماركتين على الأقل للمقارنة.');
+    return;
+  }
+
+  const results = [];
+  for (const brandKey of selectedBrands) {
+    const r = await calculateForBrand(brandKey, baseInputs);
+    if (r) results.push(r);
+  }
+
+  if (!results.length) {
+    alert('لا توجد نتائج مطابقة للمواصفات المختارة ضمن ملفات الأسعار.');
+    return;
+  }
+
+  renderComparison(results);
+
+  // عند المقارنة: أخفِ النتائج الرقمية
+  const numbersBox = document.getElementById('numbers-wrapper');
+  if (numbersBox) numbersBox.style.display = 'none';
+}
+
+
+// ============ عرض النتائج في جدول المقارنة ============
+function renderComparison(results) {
+  const box = document.getElementById('compare_result');
+  if (!box) return;
+
+  box.style.display = 'block';
+
+  // تنظيف الأعمدة دائمًا أولاً
+  for (let i = 1; i <= 3; i++) {
+    const col = document.getElementById(`col_${i}`);
+    const b = document.getElementById(`c${i}_before`);
+    const v = document.getElementById(`c${i}_vat`);
+    const t = document.getElementById(`c${i}_total`);
+    const d = document.getElementById(`c${i}_delivery`);
+
+    if (col) col.innerText = '';
+    if (b) b.innerText = '—';
+    if (v) v.innerText = '—';
+    if (t) t.innerText = '—';
+    if (d) d.innerText = '—';
+  }
+
+  // تعبئة حسب عدد النتائج
+  results.forEach((r, idx0) => {
+    const idx = idx0 + 1;
+
+    const col = document.getElementById(`col_${idx}`);
+    const b = document.getElementById(`c${idx}_before`);
+    const v = document.getElementById(`c${idx}_vat`);
+    const t = document.getElementById(`c${idx}_total`);
+    const d = document.getElementById(`c${idx}_delivery`);
+
+    if (col) col.innerText = r.brandLabel;
+    if (b) b.innerText = formatSAR(r.beforeVat);
+    if (v) v.innerText = formatSAR(r.vat);
+    if (t) t.innerText = formatSAR(r.total);
+    if (d) d.innerText = r.delivery;
   });
 }
 
-// حساب فوري عند التحميل
+
+/* =========================================================
+   3) تشغيل فوري عند التحميل
+========================================================= */
 calculateTravelHeight();
+
+
+/* =========================================================
+   4) مهم: الربط الصحيح مع زر "حساب عرض السعر"
+   - ضع هذا الجزء داخل calculateQuote() عندك (مش هنا)
+   - لكنه مذكور للتذكير فقط:
+
+   if (document.getElementById('enable_compare').checked) {
+     await calculateComparison({
+       capacity, speed, floors, liftsCount,
+       vatRate, includeVat,
+       projectLocation,
+       cabinDesign: document.getElementById("cabin_design")?.value || ""
+     });
+     return;
+   }
+========================================================= */
 </script>
+
 
 
 
@@ -2314,6 +2472,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
