@@ -1388,6 +1388,20 @@ function getRegionAdderSar(loc) {
   return 2500;
 }
   
+function getShippingUsdPerLiftByQty(qty) {
+  // الأساس الحالي
+  const base = COST_PARAMS.shippingUsdPerLift; // 500
+
+  // سلم خصم واقعي (قابل للتعديل)
+  let discount = 0;
+  if (qty >= 10) discount = 0.22;      // 22% خصم
+  else if (qty >= 6) discount = 0.15;  // 15%
+  else if (qty >= 3) discount = 0.08;  // 8%
+
+  // حد أدنى حتى لا يصير رقم غير منطقي
+  const minPerLift = 280; // USD حد أدنى تقديري
+  return Math.max(base * (1 - discount), minPerLift);
+}
 
     async function calculateQuote() {
         const brandKey = document.getElementById('brand').value;
@@ -1444,7 +1458,7 @@ if (!currentBrandData) {
        const shippingInsuranceSar = isLocalAssembly
     ? 0
     : (
-        (COST_PARAMS.shippingUsdPerLift * rate) +
+        (getShippingUsdPerLiftByQty(liftsCount) * rate) +
         (factoryUsd * (COST_PARAMS.insurancePercent / 100) * rate)
       );
 
@@ -2249,6 +2263,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
