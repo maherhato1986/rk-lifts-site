@@ -1503,354 +1503,125 @@ async function calculateQuote() {
 
   // ✅ وضع المفرد
   const brandKey = document.getElementById('brand').value;
+  const divisor = 1;
+
   if (!brandKey) {
     alert('يرجى اختيار الماركة للحساب.');
     return;
   }
 
-
-
-        if (!brandKey || !capacity || !speed || !floors || floors < 2 || liftsCount < 1) {
-            alert('يرجى اختيار الماركة والسعة والسرعة وإدخال عدد أدوار صحيح (٢ فأكثر) وعدد مصاعد واحد فأكثر.');
-            return;
-        }
-
-        if (!currentBrandData) {
-    await loadBrandData(brandKey);
-}
-
-if (!currentBrandData) {
-    console.log("❌ لم يتم تحميل بيانات الماركة");
+  if (!currentBrandData) await loadBrandData(brandKey);
+  if (!currentBrandData) {
+    alert('تعذر تحميل ملف الأسعار للماركة المحددة.');
     return;
-}
+  }
 
-        const model = findModel(capacity, speed);
-        if (!model) {
-            alert('لم يتم العثور على توليفة مطابقة لهذه السعة والسرعة في ملف الأسعار.');
-            return;
-        }
+  const model = findModel(capacity, speed);
+  if (!model) {
+    alert('لم يتم العثور على توليفة مطابقة لهذه السعة والسرعة في ملف الأسعار.');
+    return;
+  }
 
-        const rate = currentBrandData.exchangeRateToSAR || 1;
-        const isLocalAssembly = (brandKey === 'LOCAL_MRL');
+  const rate = currentBrandData.exchangeRateToSAR || 1;
+  const isLocalAssembly = (brandKey === 'LOCAL_MRL');
 
+  const extraFloors = Math.max(0, floors - model.baseFloors);
+  const factoryUsd = model.basePriceUsd + (model.extraPerFloorUsd * extraFloors);
+  let factorySar = factoryUsd * rate;
 
-        // عدد الأدوار الإضافية عن سعر المصنع
-        const extraFloors = Math.max(0, floors - model.baseFloors);
-
-        // 1) سعر المصنع بالدولار + الزيادة لكل دور إضافي
-        const factoryUsd = model.basePriceUsd + (model.extraPerFloorUsd * extraFloors);
-
-        // تحويل لسعودي
-        let factorySar = factoryUsd * rate;
-
-
-        // 2) الشحن + التأمين
-       const shippingInsuranceSar = isLocalAssembly
-    ? 0
-    : (
-        (COST_PARAMS.shippingUsdPerLift * rate) +
-        (factoryUsd * (COST_PARAMS.insurancePercent / 100) * rate)
-      );
-
-
-        // 3) التخليص + النقل الداخلي
-    const regionAdder = getRegionAdderSar(projectLocation);
-
-const clearanceTransportSar = isLocalAssembly
-  ? COST_PARAMS.inlandTransportSar + regionAdder
-  : (COST_PARAMS.clearanceSar + COST_PARAMS.inlandTransportSar + regionAdder);
-
-
-
-        // 4) التركيب + التشغيل
-        const installationCommissioningSar = COST_PARAMS.installationSar + COST_PARAMS.commissioningSar;
-
-        // 5) التكلفة المباشرة قبل مصاريف التشغيل
-        const directCostSar =
-            factorySar +
-            shippingInsuranceSar +
-            clearanceTransportSar +
-            installationCommissioningSar;
-        const cabinDesign = document.getElementById("cabin_design").value;
-const cabinExtraCost = CABIN_DESIGN_ADDITIONAL[cabinDesign] || 0;
-       
-
-
-const directCostSarFinal = directCostSar + cabinExtraCost;
-
-     
-
-const factoryCostPerLift = factorySar / divisor;
-
-
-// حفظ سعر FUJI للمقارنة
-const profitPercent =
-  brandKey === 'VERTILIFT_MRL'
-    ? COST_PARAMS.profitPercent + 3
-    : COST_PARAMS.profitPercent;
-
-
-
-// بعد حساب factorySar
-if (isLocalAssembly && window.lastFujiFactorySar) {
-  const maxDiff = window.lastFujiFactorySar * 0.05;
-  factorySar = Math.min(
-    Math.max(factorySar, window.lastFujiFactorySar - maxDiff),
-    window.lastFujiFactorySar + maxDiff
+  const shippingInsuranceSar = isLocalAssembly ? 0 : (
+    (COST_PARAMS.shippingUsdPerLift * rate) +
+    (factoryUsd * (COST_PARAMS.insurancePercent / 100) * rate)
   );
+
+  const regionAdder = getRegionAdderSar(projectLocation);
+  const clearanceTransportSar = isLocalAssembly
+    ? (COST_PARAMS.inlandTransportSar + regionAdder)
+    : (COST_PARAMS.clearanceSar + COST_PARAMS.inlandTransportSar + regionAdder);
+
+  const installationCommissioningSar = COST_PARAMS.installationSar + COST_PARAMS.commissioningSar;
+
+  const cabinDesign = document.getElementById("cabin_design").value;
+  const cabinExtraCost = CABIN_DESIGN_ADDITIONAL[cabinDesign] || 0;
+
+  const directCostSarFinal =
+    (factorySar + shippingInsuranceSar + clearanceTransportSar + installationCommissioningSar) +
+    cabinExtraCost;
+
+  const overheadSar = directCostSarFinal * (COST_PARAMS.overheadPercent / 100);
+
+  const costBeforeProfitSar = directCostSarFinal + overheadSar;
+
+  const profitPercent =
+    brandKey === 'VERTILIFT_MRL'
+      ? COST_PARAMS.profitPercent + 3
+      : COST_PARAMS.profitPercent;
+
+  const profitSar = costBeforeProfitSar * (profitPercent / 100);
+  const totalBeforeVatSar = costBeforeProfitSar + profitSar;
+
+  const factoryCostPerLift = factorySar / divisor;
+  const shippingInsurancePerLift = shippingInsuranceSar / divisor;
+  const clearanceTransportPerLift = clearanceTransportSar / divisor;
+  const installationCommissioningPerLift = installationCommissioningSar / divisor;
+  const overheadPerLift = overheadSar / divisor;
+  const costBeforeProfitPerLift = costBeforeProfitSar / divisor;
+  const profitPerLift = profitSar / divisor;
+  const totalBeforeVatPerLift = totalBeforeVatSar / divisor;
+
+  const vatAmountPerLift = totalBeforeVatPerLift * (vatRate / 100);
+  const totalWithVatPerLift = includeVat ? (totalBeforeVatPerLift + vatAmountPerLift) : totalBeforeVatPerLift;
+
+  const result = {
+    brandKey,
+    floors,
+    liftsCount,
+    factoryCostPerLift,
+    shippingInsurancePerLift,
+    clearanceTransportPerLift,
+    installationCommissioningPerLift,
+    overheadPerLift,
+    costBeforeProfitPerLift,
+    profitPerLift,
+    totalBeforeVatPerLift,
+    vatAmountPerLift,
+    totalWithVatPerLift,
+    factoryCost: factoryCostPerLift * liftsCount,
+    shippingInsuranceCost: shippingInsurancePerLift * liftsCount,
+    clearanceTransportCost: clearanceTransportPerLift * liftsCount,
+    installationCommissioningCost: installationCommissioningPerLift * liftsCount,
+    overheadCost: overheadPerLift * liftsCount,
+    costBeforeProfit: costBeforeProfitPerLift * liftsCount,
+    profitAmount: profitPerLift * liftsCount,
+    totalBeforeVat: totalBeforeVatPerLift * liftsCount,
+    vatRate,
+    vatAmount: vatAmountPerLift * liftsCount,
+    totalWithVat: totalWithVatPerLift * liftsCount,
+    includeVat,
+    overheadPercent: COST_PARAMS.overheadPercent,
+    cabinExtraPerLift: cabinExtraCost,
+    cabinExtraTotal: cabinExtraCost * liftsCount,
+    profitPercent
+  };
+
+  generateNumbersView(result, model, currency);
+  generateQuoteText(result, model, currency);
 }
 
+        function syncModeUI(){
+  const mode = document.querySelector('input[name="quote_mode"]:checked')?.value || 'single';
+  document.getElementById('compare_box').style.display = (mode === 'compare') ? 'block' : 'none';
+  document.getElementById('single_brand_box').style.display = (mode === 'compare') ? 'none' : 'block';
+  if (mode !== 'compare') document.getElementById('compare_result').style.display = 'none';
+}
+document.querySelectorAll('input[name="quote_mode"]').forEach(r => r.addEventListener('change', syncModeUI));
+syncModeUI();
 
-        // 6) مصاريف التشغيل
-        const overheadSar = directCostSarFinal * (COST_PARAMS.overheadPercent / 100);
-
-
-
-        // 7) تكلفة قبل الربح
-        const costBeforeProfitSar = directCostSarFinal + overheadSar;
-
-
-        // 8) هامش الربح
-        const profitSar = costBeforeProfitSar * (profitPercent / 100);
-
-
-        // 9) سعر البيع قبل الضريبة
-        const totalBeforeVatSar = costBeforeProfitSar + profitSar;
-
-       
-
-       
-        const shippingInsurancePerLift = shippingInsuranceSar / divisor;
-        const clearanceTransportPerLift = clearanceTransportSar / divisor;
-        const installationCommissioningPerLift = installationCommissioningSar / divisor;
-        const overheadPerLift = overheadSar / divisor;
-        const costBeforeProfitPerLift = costBeforeProfitSar / divisor;
-        const profitPerLift = profitSar / divisor;
-        const totalBeforeVatPerLift = totalBeforeVatSar / divisor;
-
-        const vatAmountPerLift = totalBeforeVatPerLift * (vatRate / 100);
-        const totalWithVatPerLift = includeVat
-            ? totalBeforeVatPerLift + vatAmountPerLift
-            : totalBeforeVatPerLift;
-
-        // مجاميع لعدد المصاعد
-        const factoryCostTotal = factoryCostPerLift * liftsCount;
-        const shippingInsuranceTotal = shippingInsurancePerLift * liftsCount;
-        const clearanceTransportTotal = clearanceTransportPerLift * liftsCount;
-        const installationCommissioningTotal = installationCommissioningPerLift * liftsCount;
-        const overheadTotal = overheadPerLift * liftsCount;
-        const costBeforeProfitTotal = costBeforeProfitPerLift * liftsCount;
-        const profitTotal = profitPerLift * liftsCount;
-        const totalBeforeVatTotal = totalBeforeVatPerLift * liftsCount;
-        const vatAmountTotal = vatAmountPerLift * liftsCount;
-        const totalWithVatTotal = totalWithVatPerLift * liftsCount;
-
-        const result = {
-            brandKey,
-            floors,
-            liftsCount,
-            // للمصعد الواحد
-            factoryCostPerLift,
-            shippingInsurancePerLift,
-            clearanceTransportPerLift,
-            installationCommissioningPerLift,
-            overheadPerLift,
-            costBeforeProfitPerLift,
-            profitPerLift,
-            totalBeforeVatPerLift,
-            vatAmountPerLift,
-            totalWithVatPerLift,
-            // الإجمالي لكل المصاعد
-            factoryCost: factoryCostTotal,
-            shippingInsuranceCost: shippingInsuranceTotal,
-            clearanceTransportCost: clearanceTransportTotal,
-            installationCommissioningCost: installationCommissioningTotal,
-            overheadCost: overheadTotal,
-            costBeforeProfit: costBeforeProfitTotal,
-            profitAmount: profitTotal,
-            totalBeforeVat: totalBeforeVatTotal,
-            vatRate,
-            vatAmount: vatAmountTotal,
-            totalWithVat: totalWithVatTotal,
-            includeVat,
-            overheadPercent: COST_PARAMS.overheadPercent,
-             cabinExtraPerLift: cabinExtraCost,
-cabinExtraTotal: cabinExtraCost * liftsCount,
-            profitPercent: profitPercent
-        };
-
-        generateNumbersView(result, model, currency);
-        generateQuoteText(result, model, currency);
-      
-
-
-                // حفظ لقطة من هذا العرض لاستخدامها عند الضغط على "حفظ عرض السعر"
-        const manualCustomerName = document.getElementById('customer_name').value.trim();
-        const projectName = document.getElementById('project_name').value.trim();
-
-        const finalCustomerName =
-            (selectedCustomer?.customer_name || manualCustomerName || 'العميل الكريم').trim();
-
-        const brandLabel = BRAND_SOURCES[brandKey]?.label || brandKey;
-
-// ✅ استخراج المقاسات من جدول المصاعد
-const shaftRows = document.querySelectorAll("#shaft-table tbody tr");
-const shaftsSummary = [];
-
-shaftRows.forEach((row, index) => {
-    const shaft = row.querySelector(".shaft-select")?.value || "";
-    const cabin = row.querySelector(".cabin-cell")?.innerText || "";
-    const door  = row.querySelector(".door-cell")?.innerText || "";
-
-    if (shaft || cabin || door) {
-        shaftsSummary.push(
-            `مصعد ${index + 1}: بئر ${shaft} | كابين ${cabin} | باب ${door}`
-        );
-    }
-});
-        
-const quoteNumber = `RKL-${new Date().getFullYear()}-${Date.now().toString().slice(-5)}`;
-
-// ============================================
-// ✅ تجميع المقاسات بالتفصيل لكل مصعد
-// ============================================
-const selectedCabin = [];
-const selectedShaft = [];
-const selectedDoor  = [];
-const selectedPit   = [];
-const selectedOH    = [];
-
-shaftRows.forEach((row) => {
-    const shaft = row.querySelector(".shaft-select")?.value || '';
-    const cabin = row.querySelector(".cabin-cell")?.innerText || '';
-    const door  = row.querySelector(".door-cell")?.innerText || '';
-    const pit   = row.querySelector(".pit-cell")?.innerText || '';
-    const oh    = row.querySelector(".oh-cell")?.innerText || '';
-
-    if (cabin) selectedCabin.push(cabin);
-    if (shaft) selectedShaft.push(shaft);
-    if (door)  selectedDoor.push(door);
-    if (pit)   selectedPit.push(pit);
-    if (oh)    selectedOH.push(oh);
-});
-        
-        
-lastQuoteSnapshot = {
-    quoteNumber,
-
-    /* =========================
-       1) بيانات عامة
-    ========================= */
-    timestamp: new Date().toISOString(),
-    customerName: finalCustomerName || '',
-    projectName: projectName || '',
-      projectLocation: projectLocation || '',
-
-    brandKey,
-    brandLabel,
-
-    capacity: capacity ? (capacity + ' kg') : '',
-    speed: speed ? (speed + ' m/s') : '',
-    floors: floors || '',
-    floorHeight: document.getElementById('floorHeight')?.value || '',
-travelHeight: document.getElementById('travelHeight')?.value || '',
-    liftsCount: liftsCount || 1,
-
-    /* =========================
-       2) المقاسات – (مطابق لواجهة العرض)
-    ========================= */
-    shaftsSummary: shaftsSummary || '',
-
-    // تظهر في Page 3 + Page 4
-    cabinSize: Array.isArray(selectedCabin) ? selectedCabin.join(' | ') : (selectedCabin || ''),
-    shaftSize: Array.isArray(selectedShaft) ? selectedShaft.join(' | ') : (selectedShaft || ''),
-    doors:     Array.isArray(selectedDoor)  ? selectedDoor.join(' | ')  : (selectedDoor || ''),
-    pit:       Array.isArray(selectedPit)   ? selectedPit.join(' | ')   : (selectedPit || ''),
-    oh:        Array.isArray(selectedOH)    ? selectedOH.join(' | ')    : (selectedOH || ''),
-
-    /* =========================
-       3) التشطيب
-    ========================= */
-    cabinDesign: document.getElementById("cabin_design")?.value || 'Standard',
-    floorFinish: document.getElementById("floor_finish")?.value || 'Standard',
-
-    /* =========================
-       4) مواصفات فنية
-    ========================= */
-    machineType: model?.machineType || 'MRL – Traction',
-    stops: floors || '',
-
-    /* =========================
-       5) السعر
-    ========================= */
-    totalWithVat: result?.totalWithVat || 0,
-
-
-
-
-pricePerUnit: liftsCount && result?.totalWithVat
-    ? (result.totalWithVat / liftsCount)
-    : (result?.totalWithVat || 0),
-
-currency: currency || 'SAR',
-
-// نسبة الضريبة كنسبة مئوية (15 = 15%)
-vatRate: vatRate || 15,
-
-includeVat: includeVat === true,
-
-payments: {
-    advance50: result?.totalWithVat
-        ? (result.totalWithVat * 0.50)
-        : 0,
-
-    mechanical25: result?.totalWithVat
-        ? (result.totalWithVat * 0.25)
-        : 0,
-
-    electrical20: result?.totalWithVat
-        ? (result.totalWithVat * 0.20)
-        : 0,
-
-    handover5: result?.totalWithVat
-        ? (result.totalWithVat * 0.05)
-        : 0
-},
-
-
-    /* =========================
-       6) بيانات العميل الموسعة
-       (مطابقة 1:1 مع elevator-quote-offer.html)
-    ========================= */
-    preferredContact: selectedCustomer?.preferred_contact || '',
-
-    customerDetails: selectedCustomer ? {
-        customer_type: selectedCustomer.customer_type || '',
-        contact_person: selectedCustomer.contact_person || '',
-        id_number: selectedCustomer.id_number || '',
-        cr_number: selectedCustomer.cr_number || '',
-        tax_number: selectedCustomer.tax_number || '',
-        city: selectedCustomer.city || '',
-        district: selectedCustomer.district || '',
-        street: selectedCustomer.street || '',
-        building_no: selectedCustomer.building_no || '',
-        postal_code: selectedCustomer.postal_code || '',
-        full_address: selectedCustomer.full_address || '',
-        mobile: selectedCustomer.mobile || '',
-        phone: selectedCustomer.phone || '',
-        email: selectedCustomer.email || '',
-        preferred_contact: selectedCustomer.preferred_contact || '',
-        notes: selectedCustomer.notes || '',
-    } : {}
-};
-
-
-
-    }
 
     // ========================== تهيئة الأحداث عند تحميل الصفحة ==========================
        // ========================== تهيئة الأحداث عند تحميل الصفحة ==========================
     (function init() {
+    
         // تحميل العملاء من صفحة customer-manager
         populateCustomerDropdown();
 
@@ -2498,6 +2269,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
