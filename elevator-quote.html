@@ -385,40 +385,59 @@
 
 
 
+<div class="section-title">٢. اختيار نوع المصعد</div>
 
-
-                    <div class="section-title">٢. اختيار نوع المصعد</div>
-                    <div class="form-grid">
-                        <div>
-                            <label for="brand">
-                                الماركة / نوع النظام
-                            </label>
-                           <select id="brand" required>
-    <option value="">اختر الماركة...</option>
-    <option value="FUJI_MRL">JAPAN FUJI – MRL</option>
-    <option value="VERTILIFT_MRL">ITALY VERTILIFT – MRL</option>
-
-    <!-- ✅ أضف هذا السطر -->
-    <option value="LOCAL_MRL">LOCAL ASSEMBLY – MRL Passenger</option>
-</select>
-                            <!-- ===============================
-  مقارنة عروض الأسعار
-=============================== -->
-<div class="card mt-3">
-  <label class="flex items-center gap-2">
-    <input type="checkbox" id="enable_compare" />
-    <strong>هل ترغب بالحصول على عروض أسعار مقارنة؟</strong>
-  </label>
-
-  <div id="compare_brands_box" style="display:none; margin-top:10px;">
-    <p class="muted">اختر الماركات للمقارنة (حد أقصى 3):</p>
-
-    <label><input type="checkbox" class="compare-brand" value="FUJI_MRL" /> FUJI – MRL</label><br>
-<label><input type="checkbox" class="compare-brand" value="VERTILIFT_MRL" /> VERTILIFT – MRL</label><br>
-<label><input type="checkbox" class="compare-brand" value="LOCAL_MRL" /> LOCAL ASSEMBLY – MRL</label>
-
+<!-- ✅ وضع الحساب -->
+<div class="card" style="margin-bottom:12px;">
+  <div class="inline" style="justify-content:space-between; gap:10px; flex-wrap:wrap;">
+    <div class="inline">
+      <input type="radio" name="quote_mode" id="mode_single" value="single" checked />
+      <label for="mode_single" style="margin:0;">حساب ماركة واحدة</label>
+    </div>
+    <div class="inline">
+      <input type="radio" name="quote_mode" id="mode_compare" value="compare" />
+      <label for="mode_compare" style="margin:0;">مقارنة ماركات</label>
+    </div>
+  </div>
+  <div class="hint" style="margin-top:6px;">
+    عند المقارنة: اختر “ماركة مرجعية” لتعبئة السعة/السرعة، ثم اختر الماركات المراد مقارنتها.
   </div>
 </div>
+
+<div class="form-grid">
+  <!-- ✅ ماركة مرجعية -->
+  <div>
+    <label for="brand_ref">الماركة المرجعية (لتعبئة السعة/السرعة)</label>
+    <select id="brand_ref" required>
+      <option value="">اختر الماركة...</option>
+      <option value="FUJI_MRL">JAPAN FUJI – MRL</option>
+      <option value="VERTILIFT_MRL">ITALY VERTILIFT – MRL</option>
+      <option value="LOCAL_MRL">LOCAL ASSEMBLY – MRL Passenger</option>
+    </select>
+    <div class="hint">هذه الماركة فقط تُستخدم لعرض خيارات السعة والسرعة في القوائم.</div>
+  </div>
+
+  <!-- ✅ ماركة الحساب المفرد (تظهر فقط في single) -->
+  <div id="single_brand_box">
+    <label for="brand">الماركة / نوع النظام (للحساب)</label>
+    <select id="brand" required>
+      <option value="">اختر الماركة...</option>
+      <option value="FUJI_MRL">JAPAN FUJI – MRL</option>
+      <option value="VERTILIFT_MRL">ITALY VERTILIFT – MRL</option>
+      <option value="LOCAL_MRL">LOCAL ASSEMBLY – MRL Passenger</option>
+    </select>
+    <div class="hint">في وضع “حساب ماركة واحدة” يتم الحساب على هذه الماركة فقط.</div>
+  </div>
+
+  <!-- ✅ صندوق المقارنة (يظهر فقط في compare) -->
+  <div id="compare_box" style="display:none;">
+    <label>اختر الماركات للمقارنة (حد أقصى 3)</label>
+    <div style="border:1px solid #e5e7eb;border-radius:10px;padding:10px;background:#f9fafb;">
+      <label class="inline"><input type="checkbox" class="compare-brand" value="FUJI_MRL" /> FUJI – MRL</label><br>
+      <label class="inline"><input type="checkbox" class="compare-brand" value="VERTILIFT_MRL" /> VERTILIFT – MRL</label><br>
+      <label class="inline"><input type="checkbox" class="compare-brand" value="LOCAL_MRL" /> LOCAL ASSEMBLY – MRL</label>
+    </div>
+  </div>
 
 <!-- ===============================
   جدول المقارنة
@@ -1455,35 +1474,39 @@ function getRegionAdderSar(loc) {
 }
   
 
-    async function calculateQuote() {
-        const brandKey = document.getElementById('brand').value;
-        const divisor = 1; // لأن الحساب Per Lift
+async function calculateQuote() {
+  const mode = document.querySelector('input[name="quote_mode"]:checked')?.value || 'single';
 
-        const capacity = document.getElementById('capacity').value;
-        const speed = document.getElementById('speed').value;
-        const floors = Number(document.getElementById('floors').value);
-        const liftsCount = Number(document.getElementById('lifts_count').value) || 1;
-        const currency = document.getElementById('currency').value;
-        const vatRate = Number(document.getElementById('vat_rate').value) || 0;
-        const includeVat = document.getElementById('include_vat').checked;
-        const projectLocation = document.getElementById('project_location')?.value || '';
+  const capacity = document.getElementById('capacity').value;
+  const speed = document.getElementById('speed').value;
+  const floors = Number(document.getElementById('floors').value);
+  const liftsCount = Number(document.getElementById('lifts_count').value) || 1;
+  const currency = document.getElementById('currency').value;
+  const vatRate = Number(document.getElementById('vat_rate').value) || 0;
+  const includeVat = document.getElementById('include_vat').checked;
+  const projectLocation = document.getElementById('project_location')?.value || '';
 
-     
-// ✅ إذا المقارنة مفعّلة: احسب الماركات المحددة واعرض جدول المقارنة فقط
-if (document.getElementById('enable_compare').checked) {
-  await calculateComparison({
-    capacity,
-    speed,
-    floors,
-    liftsCount,
-    currency,
-    vatRate,
-    includeVat,
-    projectLocation,
-    cabinDesign: document.getElementById("cabin_design")?.value || "",
-  });
-  return; // مهم: لا نكمل حسبة ماركة واحدة
-}
+  if (!capacity || !speed || !floors || floors < 2 || liftsCount < 1) {
+    alert('يرجى اختيار السعة والسرعة وإدخال عدد أدوار صحيح (٢ فأكثر) وعدد مصاعد واحد فأكثر.');
+    return;
+  }
+
+  // ✅ وضع المقارنة
+  if (mode === 'compare') {
+    await calculateComparison({
+      capacity, speed, floors, liftsCount,
+      currency, vatRate, includeVat, projectLocation,
+      cabinDesign: document.getElementById("cabin_design")?.value || "",
+    });
+    return;
+  }
+
+  // ✅ وضع المفرد
+  const brandKey = document.getElementById('brand').value;
+  if (!brandKey) {
+    alert('يرجى اختيار الماركة للحساب.');
+    return;
+  }
 
 
 
@@ -1877,25 +1900,25 @@ payments: {
             '<div class="hint">ابدأ باختيار الماركة ثم بقية البيانات لحساب عرض السعر.</div>';
 
         // عند تغيير الماركة: تحميل ملف الأسعار وتجهيز السعات
-        document.getElementById('brand').addEventListener('change', async function () {
-            const brandKey = this.value;
-            document.getElementById('capacity').disabled = true;
-            document.getElementById('speed').disabled = true;
+ document.getElementById('brand_ref').addEventListener('change', async function () {
+  const brandKey = this.value;
+  document.getElementById('capacity').disabled = true;
+  document.getElementById('speed').disabled = true;
 
-            if (!brandKey) {
-                currentBrandData = null;
-                document.getElementById('numbers-wrapper').innerHTML =
-                    '<div class="hint">يرجى اختيار الماركة أولاً.</div>';
-                return;
-            }
+  if (!brandKey) {
+    currentBrandData = null;
+    document.getElementById('numbers-wrapper').innerHTML = '<div class="hint">يرجى اختيار الماركة المرجعية أولاً.</div>';
+    return;
+  }
 
-            await loadBrandData(brandKey);
-            if (!currentBrandData) return;
+  await loadBrandData(brandKey);
+  if (!currentBrandData) return;
 
-            fillCapacityOptions();
-            document.getElementById('numbers-wrapper').innerHTML =
-                '<div class="hint">اختر السعة والسرعة ثم أدخل عدد الأدوار واضغط "حساب عرض السعر".</div>';
-        });
+  fillCapacityOptions();
+  document.getElementById('numbers-wrapper').innerHTML =
+    '<div class="hint">اختر السعة والسرعة ثم أدخل عدد الأدوار واضغط "حساب عرض السعر".</div>';
+});
+
 
         // عند اختيار السعة: تعبئة السرعات المتاحة
         document.getElementById('capacity').addEventListener('change', fillSpeedOptions);
@@ -2131,7 +2154,10 @@ offerData.shafts = shaftData;
                 URL.revokeObjectURL(url);
             });
         }
-    })();
+    })
+
+
+        ();
 
     const CURRENT_QUOTE_SELECTION_KEY = "rkl_current_quote_number";
 
@@ -2472,6 +2498,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
