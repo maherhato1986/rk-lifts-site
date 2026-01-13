@@ -1455,12 +1455,16 @@ if (!currentBrandData) {
 
 
         // 2) الشحن + التأمين
-       const shippingInsuranceSar = isLocalAssembly
-    ? 0
-    : (
-        (getShippingUsdPerLiftByQty(liftsCount) * rate) +
-        (factoryUsd * (COST_PARAMS.insurancePercent / 100) * rate)
-      );
+      const shipUsdPerLift = getShippingUsdPerLiftByQty(liftsCount);
+
+const shippingInsuranceSar = isLocalAssembly
+  ? 0
+  : (
+      (shipUsdPerLift * rate) +
+      (factoryUsd * (COST_PARAMS.insurancePercent / 100) * rate)
+    );
+
+console.log("liftsCount=", liftsCount, "shippingUsdPerLift(discounted)=", getShippingUsdPerLiftByQty(liftsCount));
 
 
         // 3) التخليص + النقل الداخلي
@@ -2263,6 +2267,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
