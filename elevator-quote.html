@@ -1418,6 +1418,17 @@ function getShippingMetaByQty(qty) {
   };
 }
 
+function getShippingUsdPerLiftByQty(qty) {
+  const base = COST_PARAMS.shippingUsdPerLift; // 500
+  let discount = 0;
+
+  if (qty >= 10) discount = 0.22;
+  else if (qty >= 6) discount = 0.15;
+  else if (qty >= 3) discount = 0.08;
+
+  const minPerLift = 280; // USD
+  return Math.max(base * (1 - discount), minPerLift);
+}
 
     async function calculateQuote() {
         const brandKey = document.getElementById('brand').value;
@@ -2302,6 +2313,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
