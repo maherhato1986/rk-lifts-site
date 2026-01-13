@@ -8,7 +8,7 @@
   "models": [
     {
       "code": "LA-MRL-320-0.4",
-      "capacityKg": "320-450",
+      "capacityRange": "320-450",
       "speedMps": 0.4,
       "baseFloors": 2,
       "basePriceSar": 19602,
@@ -20,7 +20,7 @@
     },
     {
       "code": "LA-MRL-320-1.0",
-      "capacityKg": "320-450",
+      "capacityRange": "320-450",
       "speedMps": 1.0,
       "baseFloors": 2,
       "basePriceSar": 19844,
