@@ -1202,6 +1202,17 @@ function fillSpeedOptions() {
                     ${both(result.shippingInsurancePerLift, result.shippingInsuranceCost)}
                 </div>
             </div>
+${(!result.shippingDiscountTotalSar || result.shippingDiscountTotalSar <= 0) ? '' : `
+  <div class="number-box">
+    <div class="label">خصم الكمية (تجميع الشحن ${Math.round((result.shippingDiscountRate || 0) * 100)}%)</div>
+    <div class="value">
+      ${both(result.shippingDiscountPerLiftSar, result.shippingDiscountTotalSar)}
+      <div style="margin-top:6px;font-size:11px;color:#6b7280;">
+        الشحن قبل الخصم: ${per(result.shippingBasePerLiftSar)} — بعد الخصم: ${per(result.shippingAfterDiscountPerLiftSar)}
+      </div>
+    </div>
+  </div>
+`}
 
             <div class="number-box">
                 <div class="label">التخليص + النقل الداخلي</div>
@@ -1388,20 +1399,25 @@ function getRegionAdderSar(loc) {
   return 2500;
 }
   
-function getShippingUsdPerLiftByQty(qty) {
-  // الأساس الحالي
+function getShippingMetaByQty(qty) {
   const base = COST_PARAMS.shippingUsdPerLift; // 500
-
-  // سلم خصم واقعي (قابل للتعديل)
   let discount = 0;
-  if (qty >= 10) discount = 0.22;      // 22% خصم
-  else if (qty >= 6) discount = 0.15;  // 15%
-  else if (qty >= 3) discount = 0.08;  // 8%
 
-  // حد أدنى حتى لا يصير رقم غير منطقي
-  const minPerLift = 280; // USD حد أدنى تقديري
-  return Math.max(base * (1 - discount), minPerLift);
+  if (qty >= 10) discount = 0.22;
+  else if (qty >= 6) discount = 0.15;
+  else if (qty >= 3) discount = 0.08;
+
+  const minPerLift = 280;
+  const discounted = Math.max(base * (1 - discount), minPerLift);
+
+  return {
+    baseUsd: base,
+    discountedUsd: discounted,
+    discountRate: discount,
+    discountUsd: Math.max(0, base - discounted)
+  };
 }
+
 
     async function calculateQuote() {
         const brandKey = document.getElementById('brand').value;
@@ -1474,6 +1490,15 @@ const clearanceTransportSar = isLocalAssembly
   ? COST_PARAMS.inlandTransportSar + regionAdder
   : (COST_PARAMS.clearanceSar + COST_PARAMS.inlandTransportSar + regionAdder);
 
+const shipMeta = getShippingMetaByQty(liftsCount);
+
+const shippingBasePerLiftSar = isLocalAssembly ? 0 : (shipMeta.baseUsd * rate);
+const shippingAfterDiscountPerLiftSar = isLocalAssembly ? 0 : (shipMeta.discountedUsd * rate);
+const shippingDiscountPerLiftSar = isLocalAssembly ? 0 : (shipMeta.discountUsd * rate);
+
+const shippingBaseTotalSar = shippingBasePerLiftSar * liftsCount;
+const shippingAfterDiscountTotalSar = shippingAfterDiscountPerLiftSar * liftsCount;
+const shippingDiscountTotalSar = shippingDiscountPerLiftSar * liftsCount;
 
 
         // 4) التركيب + التشغيل
@@ -1574,6 +1599,16 @@ if (isLocalAssembly && window.lastFujiFactorySar) {
             totalBeforeVatPerLift,
             vatAmountPerLift,
             totalWithVatPerLift,
+            shippingDiscountRate: shipMeta.discountRate,
+
+shippingBasePerLiftSar,
+shippingAfterDiscountPerLiftSar,
+shippingDiscountPerLiftSar,
+
+shippingBaseTotalSar,
+shippingAfterDiscountTotalSar,
+shippingDiscountTotalSar,
+
             // الإجمالي لكل المصاعد
             factoryCost: factoryCostTotal,
             shippingInsuranceCost: shippingInsuranceTotal,
@@ -2267,6 +2302,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
