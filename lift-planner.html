@@ -466,8 +466,18 @@ const midY = (yTravelTop + topMargin) + tStop * ((yPitTop - botMargin) - (yTrave
     cwX = x0 + shaftPxW - cwW - marginSide;
   }
 
-  const cwY  = midY - cwH/2;
-  const cabY = midY - cabH/2;
+  // مركز الكابينة حسب الوقفة
+const cabMidY = midY;
+
+// مركز الكونترويت عكس الكابينة داخل نفس منطقة الـ Travel
+// انعكاس حول منتصف منطقة السفر (بين yTravelTop و yPitTop)
+const travelMidY = (yTravelTop + yPitTop) / 2;
+const cwMidY = (2 * travelMidY) - cabMidY;
+
+// Y النهائي لكل عنصر
+const cabY = cabMidY - (cabH / 2);
+const cwY  = cwMidY  - (cwH  / 2);
+
 
   // ===== Rails (Factory style) =====
   // Cabin rails
