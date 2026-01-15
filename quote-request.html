@@ -231,81 +231,6 @@
   box-shadow:0 12px 26px rgba(15,23,42,.35);
 }
 
-        /* ===== Page Layout Enhancements ===== */
-body{
-  padding: 14px;
-}
-
-.container{
-  max-width: 880px;
-  margin: 22px auto;
-  padding: 28px;
-  border-radius: 22px;
-}
-
-/* اجعل مقدمة الصفحة أخف وأقل ارتفاعًا */
-.intro-box{
-  padding: 22px;
-  margin-bottom: 22px;
-  border-radius: 18px;
-}
-
-/* تقليل عرض النص ورفع القراءة */
-.intro-text{
-  max-width: 720px;
-  margin: 0 auto 16px auto;
-}
-
-/* تحسين قائمة الميزات */
-.intro-features{
-  max-width: 720px;
-  gap: 10px;
-}
-
-/* عنوان النموذج الجديد */
-.form-head{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding: 14px 16px;
-  border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  background: #ffffff;
-  margin: 14px 0 18px 0;
-}
-
-.form-head img{
-  width: 38px;
-  height: auto;
-}
-
-.form-head-text h2{
-  margin: 0;
-  font-size: 18px;
-  font-weight: 800;
-  color: var(--primary-color);
-}
-
-.form-sub{
-  font-size: 12px;
-  color:#64748b;
-  margin-top: 2px;
-}
-
-/* اجعل كل جزء من النموذج “كرت” خفيف */
-.section{
-  padding: 18px;
-  border: 1px solid #eef2f7;
-  border-radius: 18px;
-  background: #fff;
-  margin: 16px 0;
-}
-
-/* تحسين ترتيب الليبل مع الحقول */
-label{
-  margin-top: 6px;
-}
-
     </style>
 </head>
 
@@ -341,13 +266,9 @@ label{
 </div>
 
 
-<div class="form-head">
-  <img src="https://rkl.sa/public/images/logo.png" alt="RKL">
-  <div class="form-head-text">
-    <h2>نموذج طلب خدمة</h2>
-    <div class="form-sub">Service Request Form</div>
-  </div>
-</div>
+  <img src="https://rkl.sa/public/images/logo.png" alt="RKL" style="width:40px">
+  نموذج طلب خدمة
+</h2>
 
 <input type="hidden" name="_template" value="box">
 
@@ -355,20 +276,21 @@ label{
 <input type="hidden" id="request_type" name="request_type" value="">
 
 <!-- بيانات العميل -->
-<label data-en="Client Name">اسم العميل</label>
+<div class="section">
+<label>اسم العميل</label>
+<input id="name">
 
 
-<label data-en="Mobile Number (Saudi Arabia only)">
-رقم الجوال (هذه الخدمة متوفره داخل المملكة العربية السعودية فقط)
-</label>
-<label data-en="Email (to receive a copy)">البريد الإلكتروني (حتى يصلك نسخة من الطلب المرسل)</label>
+<label>رقم الجوال (هذه الخدمة متوفره داخل المملكة العربية السعودية فقط)</label>
+<input id="phone" placeholder="05XXXXXXXX" required>
+  <label>البريد الإلكتروني (حتى يصلك نسخة من الطلب المرسل)</label>
 <input id="email" name="email" placeholder="example@email.com" required>
 
 
 
 
 <select id="type" onchange="toggleType()">
-  <label data-en="Request Type">اختر نوع الطلب</label>
+  <option value="">اختر نوع الطلب</option>
   <option value="maintenance">صيانة مصاعد</option>
   <option value="supply">توريد وتركيب مصاعد</option>
   <option value="consult">استشارة فقط</option>
