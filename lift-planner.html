@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>RKL Lift Planner (Plan + Section)</title>
+  <style>
+    :root{
+      --ink:#111827;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --soft:#f8fafc;
+      --card:#ffffff;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; background:var(--soft); color:var(--ink)}
+    header{padding:16px 18px;border-bottom:1px solid var(--line); background:#fff}
+    header h1{margin:0;font-size:18px}
+    header p{margin:6px 0 0;color:var(--muted);font-size:13px}
+
+    .wrap{max-width:1200px;margin:0 auto;padding:16px 18px}
+    .grid{display:grid;grid-template-columns: 360px 1fr; gap:14px}
+    .panel{
+      background:var(--card); border:1px solid var(--line);
+      border-radius:14px; padding:14px;
+      box-shadow:0 6px 18px rgba(17,24,39,.06);
+    }
+    .panel h2{margin:0 0 10px;font-size:15px}
+    .row{display:grid;grid-template-columns: 1fr 1fr; gap:10px}
+    .f{display:flex;flex-direction:column;gap:6px;margin:10px 0}
+    label{font-size:12px;color:var(--muted)}
+    input{
+      padding:10px 10px; border:1px solid var(--line); border-radius:10px;
+      font-size:14px; outline:none; background:#fff
+    }
+    input:focus{border-color:#94a3b8}
+    .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    button{
+      border:1px solid var(--line); background:#fff; border-radius:12px;
+      padding:10px 12px; font-size:13px; cursor:pointer
+    }
+    button:hover{background:#f3f4f6}
+    .note{font-size:12px;color:var(--muted);line-height:1.6;margin-top:10px}
+    .canvas{
+      background:var(--card); border:1px solid var(--line); border-radius:14px;
+      box-shadow:0 6px 18px rgba(17,24,39,.06);
+      overflow:hidden;
+    }
+    .canvas-head{
+      display:flex; justify-content:space-between; align-items:center;
+      padding:12px 14px; border-bottom:1px solid var(--line)
+    }
+    .badge{font-size:12px;color:var(--muted)}
+    .svgs{
+      display:grid; grid-template-columns: 1fr 1fr; gap:0;
+    }
+    .svgbox{
+      border-left:1px solid var(--line);
+      padding:12px;
+    }
+    .svgbox:first-child{border-left:none}
+    .svgtitle{font-size:13px;margin:0 0 8px;color:var(--muted)}
+    .hint{font-size:12px;color:var(--muted);margin-top:8px}
+    @media(max-width:980px){
+      .grid{grid-template-columns:1fr}
+      .svgs{grid-template-columns:1fr}
+      .svgbox{border-left:none;border-top:1px solid var(--line)}
+      .svgbox:first-child{border-top:none}
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>مخطط المصعد — أفقي (Plan) + جانبي (Section)</h1>
+  <p>رسم SVG بسمك جدران + فتحة باب + كابينة + أبعاد. الوحدات: mm</p>
+</header>
+
+<div class="wrap">
+  <div class="grid">
+
+    <!-- Inputs -->
+    <div class="panel">
+      <h2>مدخلات المخطط (mm)</h2>
+
+      <div class="row">
+        <div class="f">
+          <label>عرض البئر الداخلي (Shaft W)</label>
+          <input id="shaftW" type="number" value="2000" min="1200" step="10">
+        </div>
+        <div class="f">
+          <label>عمق البئر الداخلي (Shaft D)</label>
+          <input id="shaftD" type="number" value="1800" min="1200" step="10">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="f">
+          <label>عرض الكابينة (Cabin W)</label>
+          <input id="cabinW" type="number" value="1100" min="700" step="10">
+        </div>
+        <div class="f">
+          <label>عمق الكابينة (Cabin D)</label>
+          <input id="cabinD" type="number" value="1400" min="700" step="10">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="f">
+          <label>عرض فتحة الباب (Door W)</label>
+          <input id="doorW" type="number" value="900" min="600" step="10">
+        </div>
+        <div class="f">
+          <label>سماكة الجدار (Wall thk)</label>
+          <input id="wallT" type="number" value="200" min="100" step="10">
+        </div>
+      </div>
+
+      <hr style="border:none;border-top:1px solid var(--line);margin:12px 0">
+
+      <div class="row">
+        <div class="f">
+          <label>عدد الوقفات (Stops)</label>
+          <input id="stops" type="number" value="10" min="2" step="1">
+        </div>
+        <div class="f">
+          <label>ارتفاع الدور الواحد (Floor height)</label>
+          <input id="floorH" type="number" value="3600" min="2500" step="10">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="f">
+          <label>Pit (عمق الحفرة)</label>
+          <input id="pit" type="number" value="1400" min="800" step="10">
+        </div>
+        <div class="f">
+          <label>OH (Overhead)</label>
+          <input id="oh" type="number" value="4200" min="2500" step="10">
+        </div>
+      </div>
+
+      <div class="btns">
+        <button id="btnDraw" type="button">🔄 تحديث المخطط</button>
+        <button id="btnExportSVG" type="button">⬇️ تصدير SVG</button>
+      </div>
+
+      <div class="note">
+        ✅ ملاحظة: الرسم يستخدم مقياس ثابت داخل الـ SVG (mm → px) ليطلع شكل “مخطط” مع أبعاد وأسهم، وليس مربعات فقط.
+      </div>
+    </div>
+
+    <!-- Output -->
+    <div class="canvas">
+      <div class="canvas-head">
+        <div class="badge" id="badgeInfo">—</div>
+        <div class="badge">Scale: 1px = 5mm (افتراضي)</div>
+      </div>
+
+      <div class="svgs">
+        <div class="svgbox">
+          <p class="svgtitle">Plan View (مخطط أفقي)</p>
+          <svg id="svgPlan" width="100%" viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/svg"></svg>
+          <div class="hint">يعرض البئر + فتحة الباب + الكابينة + خطوط محاور + أبعاد.</div>
+        </div>
+
+        <div class="svgbox">
+          <p class="svgtitle">Section View (مخطط جانبي)</p>
+          <svg id="svgSec" width="100%" viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/svg"></svg>
+          <div class="hint">يعرض Pit + Travel + OH + منصة الكابينة + أبعاد ارتفاعية.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* =======================
+   Helpers
+======================= */
+const NS = "http://www.w3.org/2000/svg";
+function el(name, attrs = {}) {
+  const n = document.createElementNS(NS, name);
+  for (const [k,v] of Object.entries(attrs)) n.setAttribute(k, String(v));
+  return n;
+}
+function clear(svg){ while(svg.firstChild) svg.removeChild(svg.firstChild); }
+function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+
+function dimLine(svg, x1,y1,x2,y2, text, textX, textY){
+  // line
+  svg.appendChild(el('line',{x1,y1,x2,y2, stroke:"#111827", "stroke-width":"1"}));
+  // arrows
+  const a1 = el('path',{d:`M ${x1} ${y1} l 8 -4 l 0 8 z`, fill:"#111827"});
+  const a2 = el('path',{d:`M ${x2} ${y2} l -8 -4 l 0 8 z`, fill:"#111827"});
+  svg.appendChild(a1); svg.appendChild(a2);
+  // text (label)
+  const t = el('text',{x:textX, y:textY, "font-size":"12", fill:"#111827"});
+  t.textContent = text;
+  svg.appendChild(t);
+}
+function centerLine(svg, x1,y1,x2,y2){
+  svg.appendChild(el('line',{x1,y1,x2,y2, stroke:"#6b7280", "stroke-width":"1", "stroke-dasharray":"6 4"}));
+}
+function hatchDefs(svg){
+  const defs = el('defs');
+  const pat = el('pattern',{id:"hatch", patternUnits:"userSpaceOnUse", width:"8", height:"8", patternTransform:"rotate(45)"});
+  pat.appendChild(el('line',{x1:"0",y1:"0",x2:"0",y2:"8", stroke:"#cbd5e1", "stroke-width":"2"}));
+  defs.appendChild(pat);
+
+  const marker = el('marker',{
+    id:"arrow", viewBox:"0 0 10 10", refX:"5", refY:"5",
+    markerWidth:"6", markerHeight:"6", orient:"auto-start-reverse"
+  });
+  marker.appendChild(el('path',{d:"M 0 0 L 10 5 L 0 10 z", fill:"#111827"}));
+  defs.appendChild(marker);
+
+  svg.appendChild(defs);
+}
+
+function exportSVG(svg, filename){
+  const serializer = new XMLSerializer();
+  const source = serializer.serializeToString(svg);
+  const blob = new Blob([source], {type: "image/svg+xml;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+/* =======================
+   Drawing Logic
+======================= */
+function draw(){
+  const shaftW = Number(document.getElementById('shaftW').value);
+  const shaftD = Number(document.getElementById('shaftD').value);
+  const cabinW = Number(document.getElementById('cabinW').value);
+  const cabinD = Number(document.getElementById('cabinD').value);
+  const doorW  = Number(document.getElementById('doorW').value);
+  const wallT  = Number(document.getElementById('wallT').value);
+
+  const stops  = Number(document.getElementById('stops').value);
+  const floorH = Number(document.getElementById('floorH').value);
+  const pit    = Number(document.getElementById('pit').value);
+  const oh     = Number(document.getElementById('oh').value);
+
+  const travel = (Math.max(stops,2)-1) * floorH;
+
+  // basic guards (keep drawing sensible)
+  const cabinW2 = clamp(cabinW, 600, shaftW-200);
+  const cabinD2 = clamp(cabinD, 600, shaftD-200);
+  const doorW2  = clamp(doorW, 600, shaftW-200);
+  const wallT2  = clamp(wallT, 100, 400);
+
+  document.getElementById('badgeInfo').textContent =
+    `Shaft ${shaftW}×${shaftD} | Cabin ${cabinW2}×${cabinD2} | Door ${doorW2} | Travel ${travel} | Pit ${pit} | OH ${oh}`;
+
+  drawPlan(shaftW, shaftD, cabinW2, cabinD2, doorW2, wallT2);
+  drawSection(travel, pit, oh);
+}
+
+function drawPlan(shaftW, shaftD, cabinW, cabinD, doorW, wallT){
+  const svg = document.getElementById('svgPlan');
+  clear(svg);
+  hatchDefs(svg);
+
+  // scale: 1px = 5mm (fixed)
+  const scale = 5;
+
+  // layout box
+  const W = 520, H = 420;
+  const pad = 46;
+
+  // convert mm->px within viewBox
+  const innerW = shaftW / scale;
+  const innerD = shaftD / scale;
+
+  // fit inside viewbox while preserving ratio
+  const maxW = W - pad*2;
+  const maxH = H - pad*2;
+  const f = Math.min(maxW/innerW, maxH/innerD);
+
+  const sW = innerW * f;
+  const sD = innerD * f;
+
+  const x0 = (W - sW)/2;
+  const y0 = (H - sD)/2;
+
+  // wall thickness in px
+  const t = (wallT/scale) * f;
+
+  // outer shaft rect (walls)
+  const outer = el('rect',{x:x0 - t, y:y0 - t, width:sW + 2*t, height:sD + 2*t, fill:"url(#hatch)", stroke:"#111827", "stroke-width":"2"});
+  svg.appendChild(outer);
+
+  // inner opening
+  const inner = el('rect',{x:x0, y:y0, width:sW, height:sD, fill:"#ffffff", stroke:"#111827", "stroke-width":"2"});
+  svg.appendChild(inner);
+
+  // door opening on bottom side (centered)
+  const doorPx = (doorW/scale) * f;
+  const doorX = x0 + (sW - doorPx)/2;
+  const doorY = y0 + sD; // bottom edge
+  // "erase" wall line for door opening effect (draw white line over border)
+  svg.appendChild(el('line',{x1:doorX, y1:doorY, x2:doorX+doorPx, y2:doorY, stroke:"#ffffff", "stroke-width":"6"}));
+  // jamb lines
+  svg.appendChild(el('line',{x1:doorX, y1:doorY-10, x2:doorX, y2:doorY+10, stroke:"#111827", "stroke-width":"2"}));
+  svg.appendChild(el('line',{x1:doorX+doorPx, y1:doorY-10, x2:doorX+doorPx, y2:doorY+10, stroke:"#111827", "stroke-width":"2"}));
+  // door label
+  const dlab = el('text',{x:doorX+doorPx/2, y:doorY+28, "font-size":"12", fill:"#111827", "text-anchor":"middle"});
+  dlab.textContent = `DOOR ${doorW}mm`;
+  svg.appendChild(dlab);
+
+  // cabin centered
+  const cW = (cabinW/scale) * f;
+  const cD = (cabinD/scale) * f;
+  const cx = x0 + (sW - cW)/2;
+  const cy = y0 + (sD - cD)/2;
+  // cabin outline
+  svg.appendChild(el('rect',{x:cx, y:cy, width:cW, height:cD, fill:"#f8fafc", stroke:"#111827", "stroke-width":"2", rx:"6"}));
+  // cabin inner (wall thickness visual)
+  svg.appendChild(el('rect',{x:cx+6, y:cy+6, width:cW-12, height:cD-12, fill:"#ffffff", stroke:"#cbd5e1", "stroke-width":"1", rx:"4"}));
+
+  // center lines
+  centerLine(svg, x0, y0 + sD/2, x0 + sW, y0 + sD/2);
+  centerLine(svg, x0 + sW/2, y0, x0 + sW/2, y0 + sD);
+
+  // dimension lines (overall shaft)
+  // horizontal
+  dimLine(svg, x0, y0-24, x0+sW, y0-24, `${shaftW} mm`, x0 + sW/2 - 24, y0-30);
+  // vertical
+  dimLine(svg, x0-24, y0, x0-24, y0+sD, `${shaftD} mm`, x0-40, y0 + sD/2);
+
+  // title
+  const title = el('text',{x:14,y:18,"font-size":"13",fill:"#111827"});
+  title.textContent = "PLAN VIEW";
+  svg.appendChild(title);
+}
+
+function drawSection(travel, pit, oh){
+  const svg = document.getElementById('svgSec');
+  clear(svg);
+  hatchDefs(svg);
+
+  const W=520, H=420;
+  const pad=52;
+
+  // mm to px (scale fixed)
+  const scale = 10; // 1px=10mm for vertical drawing (better fit)
+  const totalH = pit + travel + oh;
+
+  // fit vertical
+  const usableH = H - pad*2;
+  const f = usableH / (totalH/scale);
+
+  // "shaft" width in view (symbolic)
+  const shaftPxW = 180;
+  const x0 = 120;
+  const yTop = pad;
+  const shaftH = (totalH/scale) * f;
+
+  // outer wall (as section) with hatch
+  const wallT = 18;
+  svg.appendChild(el('rect',{x:x0-wallT, y:yTop, width:shaftPxW+2*wallT, height:shaftH, fill:"url(#hatch)", stroke:"#111827","stroke-width":"2"}));
+  // inner opening
+  svg.appendChild(el('rect',{x:x0, y:yTop, width:shaftPxW, height:shaftH, fill:"#fff", stroke:"#111827","stroke-width":"2"}));
+
+  // mark pit / travel / OH levels
+  const pitH = (pit/scale)*f;
+  const travelH = (travel/scale)*f;
+  const ohH = (oh/scale)*f;
+
+  const yPitTop = yTop + ohH + travelH;      // top of pit region
+  const yTravelTop = yTop + ohH;             // top of travel region
+  const yShaftBottom = yTop + shaftH;
+
+  // pit floor line
+  svg.appendChild(el('line',{x1:x0, y1:yShaftBottom, x2:x0+shaftPxW, y2:yShaftBottom, stroke:"#111827","stroke-width":"2"}));
+  // pit label
+  const p = el('text',{x:x0+shaftPxW+18,y:yShaftBottom-6,"font-size":"12",fill:"#111827"});
+  p.textContent = `PIT ${pit}mm`;
+  svg.appendChild(p);
+
+  // travel bounds line
+  svg.appendChild(el('line',{x1:x0, y1:yPitTop, x2:x0+shaftPxW, y2:yPitTop, stroke:"#cbd5e1","stroke-width":"2"}));
+  // OH bounds line
+  svg.appendChild(el('line',{x1:x0, y1:yTravelTop, x2:x0+shaftPxW, y2:yTravelTop, stroke:"#cbd5e1","stroke-width":"2"}));
+
+  // simple cabin position indicator (mid travel)
+  const cabH = 70;
+  const cabY = yTravelTop + travelH/2 - cabH/2;
+  svg.appendChild(el('rect',{x:x0+26, y:cabY, width:shaftPxW-52, height:cabH, fill:"#f8fafc", stroke:"#111827","stroke-width":"2", rx:"6"}));
+  const ct = el('text',{x:x0+shaftPxW/2, y:cabY+cabH/2+4,"font-size":"12",fill:"#111827","text-anchor":"middle"});
+  ct.textContent = "CABIN";
+  svg.appendChild(ct);
+
+  // dimension on right: total height, travel, pit, oh
+  // total
+  dimLine(svg, x0+shaftPxW+40, yTop, x0+shaftPxW+40, yTop+shaftH, `${totalH} mm`, x0+shaftPxW+52, yTop+shaftH/2);
+  // OH
+  dimLine(svg, x0+shaftPxW+20, yTop, x0+shaftPxW+20, yTravelTop, `${oh} mm`, x0+shaftPxW+28, yTop + ohH/2);
+  // Travel
+  dimLine(svg, x0+shaftPxW+20, yTravelTop, x0+shaftPxW+20, yPitTop, `${travel} mm`, x0+shaftPxW+28, yTravelTop + travelH/2);
+  // Pit
+  dimLine(svg, x0+shaftPxW+20, yPitTop, x0+shaftPxW+20, yShaftBottom, `${pit} mm`, x0+shaftPxW+28, yPitTop + pitH/2);
+
+  // title
+  const title = el('text',{x:14,y:18,"font-size":"13",fill:"#111827"});
+  title.textContent = "SECTION VIEW";
+  svg.appendChild(title);
+}
+
+/* =======================
+   Events
+======================= */
+document.getElementById('btnDraw').addEventListener('click', draw);
+document.getElementById('btnExportSVG').addEventListener('click', () => {
+  // يصدر المخططين كـ SVG منفصلين
+  exportSVG(document.getElementById('svgPlan'), 'lift-plan.svg');
+  exportSVG(document.getElementById('svgSec'), 'lift-section.svg');
+});
+
+// auto draw
+draw();
+</script>
+</body>
+</html>
