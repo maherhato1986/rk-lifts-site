@@ -78,6 +78,13 @@
     <!-- Inputs -->
     <div class="panel">
       <h2>مدخلات المخطط (mm)</h2>
+<div class="f">
+  <label>اختيار العميل</label>
+  <select id="customerSelect">
+    <option value="">— اختر العميل —</option>
+  </select>
+  <div style="font-size:12px;color:#6b7280;margin-top:6px" id="customerInfo">—</div>
+</div>
 
       <div class="f">
         <label>اسم المشروع (Project Name)</label>
@@ -297,6 +304,51 @@ function updateWarnings({shaftW, shaftD, cabinW, cabinD, doorW, pit, oh}){
   pills.push(pill(cabinOK, `Cabin ${cabinW}×${cabinD}mm vs Shaft`));
 
   list.innerHTML = pills.join('');
+}
+
+  const CUSTOMER_STORAGE_KEY = 'rkl_customers';
+const SELECTED_CUSTOMER_KEY = 'rkl_selected_customer';
+
+function loadCustomers(){
+  try { return JSON.parse(localStorage.getItem(CUSTOMER_STORAGE_KEY) || '[]'); }
+  catch { return []; }
+}
+
+function renderCustomerDropdown(){
+  const sel = document.getElementById('customerSelect');
+  if(!sel) return;
+
+  const customers = loadCustomers();
+  sel.innerHTML = `<option value="">— اختر العميل —</option>` +
+    customers.map((c, i) => `<option value="${i}">${(c.customer_name||'—')}</option>`).join('');
+}
+
+function applyCustomer(customer){
+  const info = document.getElementById('customerInfo');
+  const pn = document.getElementById('projectName');
+
+  if(!customer){
+    if(info) info.textContent = '—';
+    return;
+  }
+
+  const name = customer.customer_name || '—';
+  const city = customer.city || '';
+  const mobile = customer.mobile || '';
+  if(info) info.textContent = `العميل: ${name} | المدينة: ${city} | الجوال: ${mobile}`;
+
+  // تعبئة اسم المشروع تلقائياً (تقدر تغيّر الصيغة)
+  if(pn && (!pn.value || pn.value.includes('RKL - MRL Lift Layout'))){
+    pn.value = `MRL Lift Layout - ${name}`;
+  }
+
+  // حفظ اختيار العميل
+  localStorage.setItem(SELECTED_CUSTOMER_KEY, JSON.stringify(customer));
+}
+
+function loadSelectedCustomer(){
+  try { return JSON.parse(localStorage.getItem(SELECTED_CUSTOMER_KEY) || 'null'); }
+  catch { return null; }
 }
 
 /* =======================
@@ -649,6 +701,27 @@ function drawSection(travel, pit, oh, shaftW, cabinW, cwSide, selectedStop, stop
 }
 
 
+renderCustomerDropdown();
+
+// لو جاي من customer-manager وفيه عميل مختار مسبقاً
+const pre = loadSelectedCustomer();
+if(pre){
+  const customers = loadCustomers();
+  const idx = customers.findIndex(c => (c.customer_name||'') === (pre.customer_name||'') && (c.mobile||'') === (pre.mobile||''));
+  const sel = document.getElementById('customerSelect');
+  if(sel && idx >= 0) sel.value = String(idx);
+  applyCustomer(pre);
+}
+
+document.getElementById('customerSelect')?.addEventListener('change', (e) => {
+  const idx = e.target.value;
+  if(idx === ''){
+    applyCustomer(null);
+    return;
+  }
+  const customers = loadCustomers();
+  applyCustomer(customers[Number(idx)]);
+});
 
 /* =======================
    Main draw
