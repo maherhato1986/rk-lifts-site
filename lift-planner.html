@@ -114,6 +114,13 @@
           <input id="wallT" type="number" value="200" min="100" step="10">
         </div>
       </div>
+<div class="f">
+  <label>موقع الكونترويت (CW Side)</label>
+  <select id="cwSide" style="padding:10px;border:1px solid var(--line);border-radius:10px;font-size:14px">
+    <option value="right" selected>يمين</option>
+    <option value="left">يسار</option>
+  </select>
+</div>
 
       <hr style="border:none;border-top:1px solid var(--line);margin:12px 0">
 
@@ -241,6 +248,7 @@ function draw(){
   const cabinD = Number(document.getElementById('cabinD').value);
   const doorW  = Number(document.getElementById('doorW').value);
   const wallT  = Number(document.getElementById('wallT').value);
+const cwSide = document.getElementById('cwSide')?.value || 'right';
 
   const stops  = Number(document.getElementById('stops').value);
   const floorH = Number(document.getElementById('floorH').value);
@@ -259,7 +267,8 @@ function draw(){
     `Shaft ${shaftW}×${shaftD} | Cabin ${cabinW2}×${cabinD2} | Door ${doorW2} | Travel ${travel} | Pit ${pit} | OH ${oh}`;
 
   drawPlan(shaftW, shaftD, cabinW2, cabinD2, doorW2, wallT2);
-  drawSection(travel, pit, oh, shaftW, cabinW2);
+  drawSection(travel, pit, oh, shaftW, cabinW2, cwSide);
+
 
 }
 
@@ -341,7 +350,8 @@ function drawPlan(shaftW, shaftD, cabinW, cabinD, doorW, wallT){
   svg.appendChild(title);
 }
 
-function drawSection(travel, pit, oh, shaftW, cabinW){
+function drawSection(travel, pit, oh, shaftW, cabinW, cwSide){
+
   const svg = document.getElementById('svgSec');
   clear(svg);
   hatchDefs(svg);
@@ -400,81 +410,140 @@ function drawSection(travel, pit, oh, shaftW, cabinW){
   svg.appendChild(el('line',{x1:x0, y1:yPitTop,    x2:x0+shaftPxW, y2:yPitTop,    stroke:"#cbd5e1","stroke-width":"2"}));
   svg.appendChild(el('line',{x1:x0, y1:yBottom,    x2:x0+shaftPxW, y2:yBottom,    stroke:"#111827","stroke-width":"2"}));
 
-  // =========================
-  // MRL ELEMENTS (1:1)
-  // =========================
+// =========================
+// MRL ELEMENTS (1:1) + Side CW (left/right)
+// =========================
 
-  // هوامش داخلية بسيطة
-  const marginSide = Math.max(10, shaftPxW * 0.06);
+// هوامش داخلية
+const marginSide = Math.max(10, shaftPxW * 0.06);
 
-  // عرض الكونترويت رمزي لكن يعتمد على العرض
-  const cwW = clamp(shaftPxW * 0.10, 18, 34);
-  const cwH = clamp(shaftH * 0.18, 70, 120);
-  const cwX = x0 + shaftPxW - cwW - marginSide;
-  const cwY = yTravelTop + travelH_px/2 - cwH/2;
+// أبعاد الكونترويت (رمزية لكنها مرتبطة بالعرض)
+const cwW = clamp(shaftPxW * 0.10, 18, 34);
+const cwH = clamp(shaftH * 0.18, 70, 120);
 
-  svg.appendChild(el('rect',{x:cwX, y:cwY, width:cwW, height:cwH, fill:"#f8fafc", stroke:"#111827","stroke-width":"2", rx:"4"}));
-  const cwt = el('text',{x:cwX+cwW/2, y:cwY+cwH+16, "font-size":"11", fill:"#111827", "text-anchor":"middle"});
-  cwt.textContent = "CW";
-  svg.appendChild(cwt);
+// عرض الكابينة 1:1 (من mm → px مع fit)
+const cabinW_px = (cabinW / mmPerPx) * fit;
+const cabH = clamp(shaftH * 0.16, 70, 110);
 
-  // الكابينة: عرضها 1:1 من cabinW داخل shaftW
-  const cabinW_px = (cabinW/mmPerPx) * fit;
-  const cabH = clamp(shaftH * 0.16, 70, 110);
+// مسافة فصل بين الكابينة والكونترويت
+const gap = 10;
 
-  // نترك مسافة من جهة الكونترويت
-  const maxCabW = shaftPxW - (marginSide*2) - cwW - 10;
-  const cabW = clamp(cabinW_px, 60, maxCabW);
+// أقصى عرض للكابينة بعد حجز مساحة الكونترويت
+const maxCabW = shaftPxW - (marginSide * 2) - cwW - gap;
+const cabW = clamp(cabinW_px, 60, maxCabW);
 
-  const cabX = x0 + marginSide;
-  const cabY = yTravelTop + travelH_px/2 - cabH/2;
+// تموضع رأسي بمنتصف الترافل
+const midY = yTravelTop + (travelH_px / 2);
 
-  svg.appendChild(el('rect',{x:cabX, y:cabY, width:cabW, height:cabH, fill:"#f8fafc", stroke:"#111827","stroke-width":"2", rx:"6"}));
-  const ct = el('text',{x:cabX+cabW/2, y:cabY+cabH/2+4,"font-size":"12",fill:"#111827","text-anchor":"middle"});
-  ct.textContent = "CABIN";
-  svg.appendChild(ct);
+// إحداثيات X حسب جهة الكونترويت (Side)
+let cwX, cabX;
 
-  // ماكينة MRL داخل الـ OH (أعلى البئر)
-  const machW = clamp(shaftPxW * 0.45, 90, 160);
-  const machH = 44;
-  const machX = x0 + marginSide;
-  const machY = yTop + Math.max(14, ohH_px * 0.12);
+if (cwSide === 'left') {
+  // CW يسار، CABIN يمين
+  cwX  = x0 + marginSide;
+  cabX = cwX + cwW + gap;
+} else {
+  // CW يمين، CABIN يسار
+  cabX = x0 + marginSide;
+  cwX  = x0 + shaftPxW - cwW - marginSide;
+}
 
-  svg.appendChild(el('rect',{x:machX, y:machY, width:machW, height:machH, fill:"#ffffff", stroke:"#111827","stroke-width":"2", rx:"6"}));
-  const mt = el('text',{x:machX+machW/2, y:machY+machH/2+4, "font-size":"12", fill:"#111827", "text-anchor":"middle"});
-  mt.textContent = "MRL MACHINE";
-  svg.appendChild(mt);
+// إحداثيات Y
+const cwY  = midY - (cwH / 2);
+const cabY = midY - (cabH / 2);
 
-  // Sheave (بكرة) بجانب الماكينة
-  const shR = 16;
-  const shX = machX + machW + 22;
-  const shY = machY + machH/2;
+// ----- رسم الكونترويت -----
+svg.appendChild(el('rect', {
+  x: cwX, y: cwY, width: cwW, height: cwH,
+  fill: "#f8fafc", stroke: "#111827", "stroke-width": "2", rx: "4"
+}));
 
-  svg.appendChild(el('circle',{cx:shX, cy:shY, r:shR, fill:"#ffffff", stroke:"#111827","stroke-width":"2"}));
-  svg.appendChild(el('circle',{cx:shX, cy:shY, r:4, fill:"#111827"}));
+const cwt = el('text', {
+  x: cwX + cwW / 2, y: cwY + cwH + 16,
+  "font-size": "11", fill: "#111827", "text-anchor": "middle"
+});
+cwt.textContent = "CW";
+svg.appendChild(cwt);
 
-  // حبال (رمزية) للـ CABIN و CW
-  svg.appendChild(el('path',{
-    d:`M ${shX-10} ${shY+shR} L ${cabX+cabW*0.18} ${cabY} L ${cabX+cabW*0.18} ${cabY+cabH}`,
-    fill:"none", stroke:"#111827", "stroke-width":"1.6"
-  }));
-  svg.appendChild(el('path',{
-    d:`M ${shX+10} ${shY+shR} L ${cwX+cwW/2} ${cwY} L ${cwX+cwW/2} ${cwY+cwH}`,
-    fill:"none", stroke:"#111827", "stroke-width":"1.6"
-  }));
+// ----- رسم الكابينة -----
+svg.appendChild(el('rect', {
+  x: cabX, y: cabY, width: cabW, height: cabH,
+  fill: "#f8fafc", stroke: "#111827", "stroke-width": "2", rx: "6"
+}));
 
-  // Controller Panel خارج البئر (يمين)
-  const ctrlW = 62, ctrlH = 70;
-  const ctrlX = x0 + shaftPxW + 20;
-  const ctrlY = yTravelTop + 10;
+const ct = el('text', {
+  x: cabX + cabW / 2, y: cabY + cabH / 2 + 4,
+  "font-size": "12", fill: "#111827", "text-anchor": "middle"
+});
+ct.textContent = "CABIN";
+svg.appendChild(ct);
 
-  svg.appendChild(el('rect',{x:ctrlX, y:ctrlY, width:ctrlW, height:ctrlH, fill:"#ffffff", stroke:"#111827","stroke-width":"2", rx:"6"}));
-  const k1 = el('text',{x:ctrlX+ctrlW/2, y:ctrlY+28, "font-size":"11", fill:"#111827", "text-anchor":"middle"});
-  k1.textContent = "CTRL";
-  svg.appendChild(k1);
-  const k2 = el('text',{x:ctrlX+ctrlW/2, y:ctrlY+46, "font-size":"10", fill:"#6b7280", "text-anchor":"middle"});
-  k2.textContent = "Panel";
-  svg.appendChild(k2);
+// ----- ماكينة MRL داخل الـ OH -----
+const machW = clamp(shaftPxW * 0.45, 90, 160);
+const machH = 44;
+const machX = x0 + marginSide;
+const machY = yTop + Math.max(14, ohH_px * 0.12);
+
+svg.appendChild(el('rect', {
+  x: machX, y: machY, width: machW, height: machH,
+  fill: "#ffffff", stroke: "#111827", "stroke-width": "2", rx: "6"
+}));
+
+const mt = el('text', {
+  x: machX + machW / 2, y: machY + machH / 2 + 4,
+  "font-size": "12", fill: "#111827", "text-anchor": "middle"
+});
+mt.textContent = "MRL MACHINE";
+svg.appendChild(mt);
+
+// ----- Sheave -----
+const shR = 16;
+const shX = machX + machW + 22;
+const shY = machY + machH / 2;
+
+svg.appendChild(el('circle', { cx: shX, cy: shY, r: shR, fill: "#ffffff", stroke: "#111827", "stroke-width": "2" }));
+svg.appendChild(el('circle', { cx: shX, cy: shY, r: 4, fill: "#111827" }));
+
+// ----- Ropes (إلى الكابينة وإلى CW) -----
+const cwCenterX = cwX + (cwW / 2);
+const cabRopeX  = cabX + (cabW * 0.18);
+
+// Rope إلى الكابينة
+svg.appendChild(el('path', {
+  d: `M ${shX - 10} ${shY + shR} L ${cabRopeX} ${cabY} L ${cabRopeX} ${cabY + cabH}`,
+  fill: "none", stroke: "#111827", "stroke-width": "1.6"
+}));
+
+// Rope إلى الكونترويت
+svg.appendChild(el('path', {
+  d: `M ${shX + 10} ${shY + shR} L ${cwCenterX} ${cwY} L ${cwCenterX} ${cwY + cwH}`,
+  fill: "none", stroke: "#111827", "stroke-width": "1.6"
+}));
+
+// ----- Controller Panel خارج البئر (يمين) -----
+const ctrlW = 62, ctrlH = 70;
+const ctrlX = x0 + shaftPxW + 20;
+const ctrlY = yTravelTop + 10;
+
+svg.appendChild(el('rect', {
+  x: ctrlX, y: ctrlY, width: ctrlW, height: ctrlH,
+  fill: "#ffffff", stroke: "#111827", "stroke-width": "2", rx: "6"
+}));
+
+const k1 = el('text', {
+  x: ctrlX + ctrlW / 2, y: ctrlY + 28,
+  "font-size": "11", fill: "#111827", "text-anchor": "middle"
+});
+k1.textContent = "CTRL";
+svg.appendChild(k1);
+
+const k2 = el('text', {
+  x: ctrlX + ctrlW / 2, y: ctrlY + 46,
+  "font-size": "10", fill: "#6b7280", "text-anchor": "middle"
+});
+k2.textContent = "Panel";
+svg.appendChild(k2);
+
 
   // =========================
   // DIMENSIONS
