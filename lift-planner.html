@@ -273,7 +273,7 @@ const cwSide = document.getElementById('cwSide')?.value || 'right';
 
   drawPlan(shaftW, shaftD, cabinW2, cabinD2, doorW2, wallT2);
 drawSection(travel, pit, oh, shaftW, cabinW2, cwSide);
-document.getElementById('btnExportPDF').addEventListener('click', openA4PrintPDF);
+
 
 
 }
@@ -730,8 +730,6 @@ document.getElementById('btnExportSVG').addEventListener('click', () => {
 
 // auto draw
 draw();
-</script>
-
   function openA4PrintPDF(){
   const projectName = (document.getElementById('projectName')?.value || 'Lift Layout').trim();
 
@@ -918,12 +916,163 @@ draw();
   w.document.close();
 }
 
-// حماية نصية بسيطة
+/* =======================
+   PDF Print
+======================= */
 function escapeHtml(s){
   return String(s ?? '').replace(/[&<>"']/g, m => ({
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
   }[m]));
 }
+
+function openA4PrintPDF(){
+  const projectName = (document.getElementById('projectName')?.value || 'Lift Layout').trim();
+
+  const shaftW = document.getElementById('shaftW')?.value || '';
+  const shaftD = document.getElementById('shaftD')?.value || '';
+  const cabinW = document.getElementById('cabinW')?.value || '';
+  const cabinD = document.getElementById('cabinD')?.value || '';
+  const doorW  = document.getElementById('doorW')?.value || '';
+  const pit    = document.getElementById('pit')?.value || '';
+  const oh     = document.getElementById('oh')?.value || '';
+  const stops  = document.getElementById('stops')?.value || '';
+  const floorH = document.getElementById('floorH')?.value || '';
+
+  const planSVG = document.getElementById('svgPlan');
+  const secSVG  = document.getElementById('svgSec');
+
+  if(!planSVG || !secSVG){
+    alert('لم يتم العثور على مخططات SVG');
+    return;
+  }
+
+  const planMarkup = planSVG.outerHTML;
+  const secMarkup  = secSVG.outerHTML;
+
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-GB');
+
+  const w = window.open('', '_blank');
+  if(!w){
+    alert('المتصفح منع فتح نافذة جديدة. فعّل Popups.');
+    return;
+  }
+
+  w.document.open();
+  w.document.write(`
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Print A4 - ${escapeHtml(projectName)}</title>
+  <style>
+    *{ box-sizing:border-box; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body{ margin:0; font-family: Arial, system-ui, sans-serif; color:#111827; }
+    @page{ size:A4; margin:10mm; }
+
+    .page{
+      width:190mm; height:277mm;
+      padding:10mm;
+      position:relative;
+      border:1.2px solid #111827;
+    }
+
+    .hdr{
+      display:flex; justify-content:space-between; gap:10mm;
+      border-bottom:1px solid #e5e7eb; padding-bottom:6mm;
+    }
+    .hdr .left{ width:60%; }
+    .hdr .right{ width:40%; text-align:left; direction:ltr; }
+
+    .title{ font-size:16px; font-weight:700; margin:0 0 3mm; }
+    .sub{ font-size:11px; color:#374151; margin:0; line-height:1.6; }
+    .meta{ font-size:11px; margin-top:2mm; line-height:1.6; }
+    .meta b{ font-weight:700; }
+
+    .grid{
+      display:grid; grid-template-columns:1fr 1fr;
+      gap:6mm; margin-top:8mm;
+    }
+    .card{ border:1px solid #e5e7eb; padding:4mm; border-radius:4mm; }
+    .card h3{ margin:0 0 3mm; font-size:12px; }
+    .card svg{ width:100%; height:auto; display:block; }
+
+    .ftr{
+      position:absolute; bottom:6mm; left:10mm; right:10mm;
+      display:flex; justify-content:space-between;
+      border-top:1px solid #e5e7eb; padding-top:4mm;
+      font-size:10px; color:#6b7280;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="hdr">
+      <div class="left">
+        <p class="title">${escapeHtml(projectName)}</p>
+        <p class="sub">MRL Lift Layout — (Plan + Section) — PDF A4</p>
+        <div class="meta">
+          <div><b>Date:</b> ${escapeHtml(dateStr)}</div>
+          <div><b>Stops:</b> ${escapeHtml(stops)} | <b>Floor H:</b> ${escapeHtml(floorH)} mm</div>
+          <div><b>Shaft:</b> ${escapeHtml(shaftW)}×${escapeHtml(shaftD)} mm | <b>Cabin:</b> ${escapeHtml(cabinW)}×${escapeHtml(cabinD)} mm</div>
+          <div><b>Door:</b> ${escapeHtml(doorW)} mm | <b>Pit:</b> ${escapeHtml(pit)} mm | <b>OH:</b> ${escapeHtml(oh)} mm</div>
+        </div>
+      </div>
+
+      <div class="right">
+        <div style="font-size:12px;font-weight:700;">RKL Lifts & Escalators</div>
+        <div style="font-size:10px;color:#6b7280;margin-top:2mm;">
+          Layout Sheet (A4)<br/>Generated from Web Planner
+        </div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h3>PLAN VIEW</h3>
+        ${planMarkup}
+      </div>
+      <div class="card">
+        <h3>SECTION VIEW (MRL)</h3>
+        ${secMarkup}
+      </div>
+    </div>
+
+    <div class="ftr">
+      <div>RKL • Lift Planner</div>
+      <div>Page 1 / 1</div>
+    </div>
+  </div>
+
+  <script>
+    window.onload = () => { window.focus(); window.print(); };
+  <\/script>
+</body>
+</html>
+  `);
+  w.document.close();
+}
+
+/* =======================
+   Events
+======================= */
+document.getElementById('btnDraw').addEventListener('click', draw);
+
+document.getElementById('btnExportSVG').addEventListener('click', () => {
+  exportSVG(document.getElementById('svgPlan'), 'lift-plan.svg');
+  exportSVG(document.getElementById('svgSec'), 'lift-section.svg');
+});
+
+document.getElementById('btnExportPDF').addEventListener('click', openA4PrintPDF);
+
+// auto draw (مرة واحدة)
+draw();
+
+
+  
+</script>
+
 
   
 </body>
