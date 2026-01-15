@@ -170,6 +170,10 @@
         ✅ PDF: A4 مع إطار + Watermark (logo) + Ref تلقائي + QR (إذا مكتبة QR موجودة)
       </div>
     </div>
+<div id="warnBox" style="margin-top:10px;padding:10px;border:1px solid #e5e7eb;border-radius:12px;background:#fff">
+  <div style="font-size:12px;color:#6b7280;margin-bottom:6px">Checks</div>
+  <div id="warnList" style="display:flex;gap:8px;flex-wrap:wrap;font-size:12px"></div>
+</div>
 
     <!-- Output -->
     <div class="canvas">
@@ -267,6 +271,33 @@ function generateRklRef(){
   const rnd = pad(Math.floor(Math.random()*1000), 3);
   return `RKL-MRL-${y}${m}${day}-${hh}${mm}${ss}-${rnd}`;
 }
+function updateWarnings({shaftW, shaftD, cabinW, cabinD, doorW, pit, oh}){
+  const list = document.getElementById('warnList');
+  if(!list) return;
+
+  const pills = [];
+  const pill = (ok, text) => `
+    <span style="
+      padding:6px 10px;border-radius:999px;border:1px solid #e5e7eb;
+      background:${ok ? '#ecfdf5' : '#fff7ed'};
+      color:${ok ? '#065f46' : '#9a3412'};
+    ">${ok ? '✅' : '⚠️'} ${text}</span>
+  `;
+
+  // حدود منطقية (قابلة للتعديل)
+  const pitOK = pit >= 1200;
+  const ohOK  = oh  >= 3800;
+
+  const doorOK  = doorW <= (shaftW - 200);
+  const cabinOK = (cabinW <= (shaftW - 200)) && (cabinD <= (shaftD - 200));
+
+  pills.push(pill(pitOK, `Pit ${pit}mm`));
+  pills.push(pill(ohOK,  `OH ${oh}mm`));
+  pills.push(pill(doorOK, `Door ${doorW}mm vs ShaftW`));
+  pills.push(pill(cabinOK, `Cabin ${cabinW}×${cabinD}mm vs Shaft`));
+
+  list.innerHTML = pills.join('');
+}
 
 /* =======================
    Draw: Plan (Rear CW)
@@ -359,8 +390,7 @@ function drawPlan(shaftW, shaftD, cabinW, cabinD, doorW, wallT){
 /* =======================
    Draw: Section (MRL + Side CW + Rails + Buffers + Governor)
 ======================= */
-function drawSection(travel, pit, oh, shaftW, cabinW, cwSide, selectedStop, stops){
-
+function drawSection(travel, pit, oh, shaftW, cabinW, cwSide, selectedStop, stops, floorH){
   const svg = document.getElementById('svgSec');
   clear(svg);
   hatchDefs(svg);
@@ -368,14 +398,14 @@ function drawSection(travel, pit, oh, shaftW, cabinW, cwSide, selectedStop, stop
   const W = 520, H = 420;
   const pad = 46;
 
-  // ===== Factory line weights =====
-  const ST_WALL = 2.6;     // shaft wall
-  const ST_OBJ  = 2.0;     // cabin/cw/machine
-  const ST_DIM  = 1.0;     // dimensions
-  const ST_THIN = 1.2;     // ropes/rails
+  // Factory line weights
+  const ST_WALL = 2.6;
+  const ST_OBJ  = 2.0;
+  const ST_DIM  = 1.0;
+  const ST_THIN = 1.2;
   const DASH_RAIL = "7 5";
 
-  // ===== Scale / Fit =====
+  // Scale / Fit
   const mmPerPx = 10;
   const totalH = pit + travel + oh;
 
@@ -385,33 +415,30 @@ function drawSection(travel, pit, oh, shaftW, cabinW, cwSide, selectedStop, stop
   const usableW = W - pad*2;
   const usableH = H - pad*2;
 
-  // حد أدنى لعرض الشافت بصريًا حتى ما يصير “نحيف”
   const minShaftPxW = 210;
 
-  const fit = Math.min(usableW / shaftW_raw, usableH / totalH_raw);
-  let shaftPxW = shaftW_raw * fit;
-  const shaftPxH = totalH_raw * fit;
+  const fitBase = Math.min(usableW / shaftW_raw, usableH / totalH_raw);
+  let shaftPxW = shaftW_raw * fitBase;
+  const shaftPxH = totalH_raw * fitBase;
 
-  // enforce min width (Factory readability)
   const widenFactor = (shaftPxW < minShaftPxW) ? (minShaftPxW / shaftPxW) : 1;
   shaftPxW *= widenFactor;
 
   const x0 = (W - shaftPxW)/2;
   const yTop = pad;
 
-  // رمزي للجدار
   const wallT = 18;
 
-  // ===== Zones =====
-  const pitH_px    = (pit/mmPerPx) * fit;
-  const travelH_px = (travel/mmPerPx) * fit;
-  const ohH_px     = (oh/mmPerPx) * fit;
+  // Zones
+  const pitH_px    = (pit/mmPerPx) * fitBase;
+  const travelH_px = (travel/mmPerPx) * fitBase;
+  const ohH_px     = (oh/mmPerPx) * fitBase;
 
   const yTravelTop = yTop + ohH_px;
   const yPitTop    = yTravelTop + travelH_px;
   const yBottom    = yTop + shaftPxH;
 
-  // ===== Shaft walls =====
+  // Shaft walls
   svg.appendChild(el('rect',{
     x:x0-wallT, y:yTop, width:shaftPxW+2*wallT, height:shaftPxH,
     fill:"url(#hatch)", stroke:"#111827", "stroke-width":ST_WALL
@@ -421,41 +448,78 @@ function drawSection(travel, pit, oh, shaftW, cabinW, cwSide, selectedStop, stop
     fill:"#fff", stroke:"#111827", "stroke-width":ST_WALL
   }));
 
-  // zone separators
+  // Zone separators
   svg.appendChild(el('line',{x1:x0,y1:yTravelTop,x2:x0+shaftPxW,y2:yTravelTop,stroke:"#cbd5e1","stroke-width":"2"}));
   svg.appendChild(el('line',{x1:x0,y1:yPitTop,x2:x0+shaftPxW,y2:yPitTop,stroke:"#cbd5e1","stroke-width":"2"}));
   svg.appendChild(el('line',{x1:x0,y1:yBottom,x2:x0+shaftPxW,y2:yBottom,stroke:"#111827","stroke-width":ST_WALL}));
 
-  // ===== Layout inside shaft =====
+  /* =====================================================
+     (A) FLOOR LEVELS + Highlight selected stop
+  ===================================================== */
+  const sStops = Math.max(2, Number(stops || 2));
+  const sStop  = Math.max(1, Math.min(sStops, Number(selectedStop || Math.ceil(sStops/2))));
+
+  // floor step in px (داخل travel)
+  const floorStep_px = (Number(floorH || 0) / mmPerPx) * fitBase;
+  // travel drawn height should equal (stops-1)*floorStep
+  // نرسم خطوط الأدوار من أعلى travel إلى أسفله
+  for(let i=0; i<sStops; i++){
+    const yLevel = yTravelTop + i * floorStep_px;
+
+    // داخل حدود Travel فقط
+    if(yLevel < yTravelTop-1 || yLevel > yPitTop+1) continue;
+
+    const isSel = (i+1) === sStop;
+
+    // highlight band (خفيف)
+    if(isSel){
+      svg.appendChild(el('rect',{
+        x:x0+1, y:yLevel-8, width:shaftPxW-2, height:16,
+        fill:"#f1f5f9", stroke:"none", opacity:"0.75"
+      }));
+    }
+
+    // level line
+    svg.appendChild(el('line',{
+      x1:x0, y1:yLevel, x2:x0+shaftPxW, y2:yLevel,
+      stroke: isSel ? "#111827" : "#cbd5e1",
+      "stroke-width": isSel ? 1.6 : 1
+    }));
+
+    // label left
+    const label = el('text',{
+      x:x0-10, y:yLevel+4,
+      "font-size":"10",
+      fill: isSel ? "#111827" : "#6b7280",
+      "text-anchor":"end"
+    });
+    // L0 أسفل، L(n) أعلى حسب تفضيلك — هنا: L0 عند أسفل travel
+    const L = (sStops-1) - i;
+    label.textContent = `L${L}`;
+    svg.appendChild(label);
+  }
+
+  /* =====================================================
+     (B) CABIN POSITION BY SELECTED STOP
+  ===================================================== */
+  const tStop = (sStop - 1) / (sStops - 1);
+  const topMargin = 28;
+  const botMargin = 34;
+
+  const cabMidY = (yTravelTop + topMargin) + tStop * ((yPitTop - botMargin) - (yTravelTop + topMargin));
+
+  // Layout inside shaft
   const marginSide = Math.max(12, shaftPxW*0.06);
   const gap = 14;
 
   const cwW = clamp(shaftPxW*0.10, 18, 34);
   const cwH = clamp(shaftPxH*0.18, 70, 120);
 
-  const cabinW_px = (cabinW/mmPerPx)*fit;
+  const cabinW_px = (cabinW/mmPerPx)*fitBase;
   const cabH = clamp(shaftPxH*0.16, 70, 110);
 
   const maxCabW = shaftPxW - (marginSide*2) - cwW - gap;
   const cabW = clamp(cabinW_px, 70, maxCabW);
-
- // ===== Cabin position by selected stop =====
-// selectedStop: 1..stops
-// top landing = stop 1 (near yTravelTop)
-// bottom landing = stop stops (near yPitTop)
-const sStops = Math.max(2, Number(stops || 2));
-const sStop  = Math.max(1, Math.min(sStops, Number(selectedStop || Math.ceil(sStops/2))));
-
-// نسبة النزول من أعلى الرحلة إلى أسفلها
-const tStop = (sStop - 1) / (sStops - 1);
-
-// نترك هوامش بسيطة حتى لا تلمس الكابينة خطوط التقسيم
-const topMargin = 28;
-const botMargin = 34;
-
-// مركز الكابينة يتحرك داخل منطقة الـ Travel
-const midY = (yTravelTop + topMargin) + tStop * ((yPitTop - botMargin) - (yTravelTop + topMargin));
-
 
   let cwX, cabX;
   if(cwSide === 'left'){
@@ -466,128 +530,95 @@ const midY = (yTravelTop + topMargin) + tStop * ((yPitTop - botMargin) - (yTrave
     cwX = x0 + shaftPxW - cwW - marginSide;
   }
 
-  // مركز الكابينة حسب الوقفة
-const cabMidY = midY;
+  // CW opposite cabin (realistic)
+  const travelMidY = (yTravelTop + yPitTop) / 2;
+  const cwMidY = (2 * travelMidY) - cabMidY;
 
-// مركز الكونترويت عكس الكابينة داخل نفس منطقة الـ Travel
-// انعكاس حول منتصف منطقة السفر (بين yTravelTop و yPitTop)
-const travelMidY = (yTravelTop + yPitTop) / 2;
-const cwMidY = (2 * travelMidY) - cabMidY;
+  let cabY = cabMidY - cabH/2;
+  let cwY  = cwMidY - cwH/2;
 
-// Y النهائي لكل عنصر
-const cabY = cabMidY - (cabH / 2);
-const cwY  = cwMidY  - (cwH  / 2);
+  // clamp CW inside travel
+  const cwTopLimit = yTravelTop + 18;
+  const cwBotLimit = yPitTop - 18;
+  cwY = clamp(cwY, cwTopLimit, cwBotLimit - cwH);
 
-
-  // ===== Rails (Factory style) =====
-  // Cabin rails
+  // rails
   const cabRailL = cabX - 8;
   const cabRailR = cabX + cabW + 8;
   svg.appendChild(el('line',{x1:cabRailL,y1:yTravelTop+6,x2:cabRailL,y2:yBottom-6,stroke:"#6b7280","stroke-width":ST_THIN,"stroke-dasharray":DASH_RAIL}));
   svg.appendChild(el('line',{x1:cabRailR,y1:yTravelTop+6,x2:cabRailR,y2:yBottom-6,stroke:"#6b7280","stroke-width":ST_THIN,"stroke-dasharray":DASH_RAIL}));
 
-  // CW rail (single)
   const cwRailX = cwX + cwW/2;
   svg.appendChild(el('line',{x1:cwRailX,y1:yTravelTop+6,x2:cwRailX,y2:yBottom-6,stroke:"#6b7280","stroke-width":ST_THIN,"stroke-dasharray":DASH_RAIL}));
 
-  // ===== Cabin + CW =====
+  // Cabin + CW
   svg.appendChild(el('rect',{x:cabX,y:cabY,width:cabW,height:cabH,fill:"#f8fafc",stroke:"#111827","stroke-width":ST_OBJ,rx:"6"}));
-  const cabLab = el('text',{x:cabX+cabW/2,y:cabY+cabH+16,"font-size":"11",fill:"#111827","text-anchor":"middle"});
-  cabLab.textContent="CABIN";
-  svg.appendChild(cabLab);
-
   svg.appendChild(el('rect',{x:cwX,y:cwY,width:cwW,height:cwH,fill:"#f8fafc",stroke:"#111827","stroke-width":ST_OBJ,rx:"4"}));
-  const cwLab = el('text',{x:cwX+cwW/2,y:cwY+cwH+16,"font-size":"11",fill:"#111827","text-anchor":"middle"});
-  cwLab.textContent="CW";
-  svg.appendChild(cwLab);
 
-  // ===== Buffers (pit) =====
+  // Buffers (pit)
   const bufW = 28, bufH = 18;
   const bufTopY = yBottom - 26;
-
-  // Cabin buffer
   const cabBufX = cabX + cabW/2 - bufW/2;
+  const cwBufX  = cwX + cwW/2  - bufW/2;
   svg.appendChild(el('rect',{x:cabBufX,y:bufTopY,width:bufW,height:bufH,fill:"#fff",stroke:"#111827","stroke-width":ST_OBJ,rx:"4"}));
+  svg.appendChild(el('rect',{x:cwBufX, y:bufTopY,width:bufW,height:bufH,fill:"#fff",stroke:"#111827","stroke-width":ST_OBJ,rx:"4"}));
 
-  // CW buffer
-  const cwBufX = cwX + cwW/2 - bufW/2;
-  svg.appendChild(el('rect',{x:cwBufX,y:bufTopY,width:bufW,height:bufH,fill:"#fff",stroke:"#111827","stroke-width":ST_OBJ,rx:"4"}));
-
-  // ===== Machine + Sheave (OH) =====
+  // Machine + Sheave (OH)
   const machW = clamp(shaftPxW*0.42, 110, 170);
   const machH = 42;
   const machX = x0 + marginSide;
   const machY = yTop + Math.max(14, ohH_px*0.12);
 
   svg.appendChild(el('rect',{x:machX,y:machY,width:machW,height:machH,fill:"#fff",stroke:"#111827","stroke-width":ST_OBJ,rx:"6"}));
-  const mtxt = el('text',{x:machX+machW/2,y:machY+machH/2+4,"font-size":"11",fill:"#111827","text-anchor":"middle"});
-  mtxt.textContent="MRL MACHINE";
-  svg.appendChild(mtxt);
 
   const shR = 15;
   const shX = machX + machW + 22;
   const shY = machY + machH/2;
-
   svg.appendChild(el('circle',{cx:shX,cy:shY,r:shR,fill:"#fff",stroke:"#111827","stroke-width":ST_OBJ}));
   svg.appendChild(el('circle',{cx:shX,cy:shY,r:3.5,fill:"#111827"}));
 
-  // short rope lead then vertical bundle (Factory ropes)
+  // Ropes bundle (vertical, clean)
   const ropeCount = 4;
   const ropeGap = 4;
 
-  const cabRopeAnchorX = cabX + cabW*0.20;
-  const cwRopeAnchorX  = cwX + cwW/2;
+  const cabRopeX = cabX + cabW*0.20;
+  const cwRopeX  = cwX + cwW/2;
 
   for(let i=0;i<ropeCount;i++){
     const off = (i - (ropeCount-1)/2) * ropeGap;
 
     // to cabin
     svg.appendChild(el('path',{
-      d:`M ${shX-8+off} ${shY+shR} L ${cabRopeAnchorX+off} ${shY+shR+16} L ${cabRopeAnchorX+off} ${cabY+cabH}`,
+      d:`M ${shX-8+off} ${shY+shR} L ${cabRopeX+off} ${shY+shR+16} L ${cabRopeX+off} ${cabY+cabH}`,
       fill:"none", stroke:"#111827", "stroke-width":ST_THIN
     }));
 
     // to CW
     svg.appendChild(el('path',{
-      d:`M ${shX+8+off} ${shY+shR} L ${cwRopeAnchorX+off} ${shY+shR+16} L ${cwRopeAnchorX+off} ${cwY+cwH}`,
+      d:`M ${shX+8+off} ${shY+shR} L ${cwRopeX+off} ${shY+shR+16} L ${cwRopeX+off} ${cwY+cwH}`,
       fill:"none", stroke:"#111827", "stroke-width":ST_THIN
     }));
   }
 
-  // ===== Governor (OH right) + dashed rope =====
+  // Governor (OH right)
   const govR = 13;
   const govX = x0 + shaftPxW - marginSide - 14;
   const govY = yTop + Math.max(18, ohH_px*0.20);
-
   svg.appendChild(el('circle',{cx:govX,cy:govY,r:govR,fill:"#fff",stroke:"#111827","stroke-width":ST_OBJ}));
   svg.appendChild(el('circle',{cx:govX,cy:govY,r:3,fill:"#111827"}));
-  const gtxt = el('text',{x:govX,y:govY-govR-8,"font-size":"10",fill:"#6b7280","text-anchor":"middle"});
-  gtxt.textContent="GOV";
-  svg.appendChild(gtxt);
+  svg.appendChild(el('line',{x1:govX,y1:govY+govR,x2:govX,y2:yBottom-6,stroke:"#111827","stroke-width":"1.1","stroke-dasharray":"4 4"}));
 
-  svg.appendChild(el('line',{
-    x1:govX, y1:govY+govR,
-    x2:govX, y2:yBottom-6,
-    stroke:"#111827", "stroke-width":"1.1", "stroke-dasharray":"4 4"
-  }));
-
-  // ===== Controller outside =====
+  // Controller outside
   const ctrlW=66, ctrlH=76;
   const ctrlX = x0 + shaftPxW + 18;
   const ctrlY = yTravelTop + 12;
-
   svg.appendChild(el('rect',{x:ctrlX,y:ctrlY,width:ctrlW,height:ctrlH,fill:"#fff",stroke:"#111827","stroke-width":ST_OBJ,rx:"6"}));
-  const k1 = el('text',{x:ctrlX+ctrlW/2,y:ctrlY+30,"font-size":"11",fill:"#111827","text-anchor":"middle"});
-  k1.textContent="CTRL";
-  svg.appendChild(k1);
-  const k2 = el('text',{x:ctrlX+ctrlW/2,y:ctrlY+50,"font-size":"10",fill:"#6b7280","text-anchor":"middle"});
-  k2.textContent="Panel";
-  svg.appendChild(k2);
 
-  // ===== Dimensions =====
+  /* =====================================================
+     (C) DIMENSIONS
+  ===================================================== */
   const dx1 = x0 + shaftPxW + 96;
   const dx2 = x0 + shaftPxW + 120;
-
   dimLine(svg, dx2, yTop, dx2, yTop+shaftPxH, `${totalH} mm`, dx2+12, yTop+shaftPxH/2);
   dimLine(svg, dx1, yTop, dx1, yTravelTop, `${oh} mm`, dx1+10, yTop+ohH_px/2);
   dimLine(svg, dx1, yTravelTop, dx1, yPitTop, `${travel} mm`, dx1+10, yTravelTop+travelH_px/2);
@@ -601,15 +632,22 @@ const cwY  = cwMidY  - (cwH  / 2);
   wtxt.textContent = `SHAFT W = ${shaftW} mm`;
   svg.appendChild(wtxt);
 
-  // Labels
+  /* =====================================================
+     (D) TITLE + LEGEND (Professional)
+  ===================================================== */
   const title = el('text',{x:14,y:18,"font-size":"13",fill:"#111827"});
-  title.textContent = "SECTION VIEW (FACTORY STYLE • MRL • SIDE CW)";
+  title.textContent = `SECTION VIEW (FACTORY • MRL)  |  Stop: ${sStop}/${sStops}`;
   svg.appendChild(title);
 
-  const z1 = el('text',{x:x0+8,y:yTop+16,"font-size":"11",fill:"#6b7280"}); z1.textContent="OH"; svg.appendChild(z1);
-  const z2 = el('text',{x:x0+8,y:yTravelTop+16,"font-size":"11",fill:"#6b7280"}); z2.textContent="TRAVEL"; svg.appendChild(z2);
-  const z3 = el('text',{x:x0+8,y:yPitTop+16,"font-size":"11",fill:"#6b7280"}); z3.textContent="PIT"; svg.appendChild(z3);
+  // Legend block at bottom-left inside viewbox
+  const legX = 14, legY = 388;
+  svg.appendChild(el('rect',{x:legX,y:legY,width:240,height:26,fill:"#fff",stroke:"#e5e7eb","stroke-width":"1",rx:"8"}));
+
+  const leg = el('text',{x:legX+10,y:legY+17,"font-size":"10",fill:"#6b7280"});
+  leg.textContent = "Legend: Cabin | Counterweight | MRL Machine | Governor | Controller";
+  svg.appendChild(leg);
 }
+
 
 
 /* =======================
@@ -638,6 +676,7 @@ if (slider) {
 }
 const selectedStop = Number(slider?.value || Math.ceil(stops/2));
 
+
   const floorH = Number(document.getElementById('floorH').value);
   const pit    = Number(document.getElementById('pit').value);
   const oh     = Number(document.getElementById('oh').value);
@@ -654,9 +693,16 @@ const selectedStop = Number(slider?.value || Math.ceil(stops/2));
     `Shaft ${shaftW}×${shaftD} | Cabin ${cabinW2}×${cabinD2} | Door ${doorW2} | Travel ${travel} | Pit ${pit} | OH ${oh} | Section CW ${cwSide}`;
 
   drawPlan(shaftW, shaftD, cabinW2, cabinD2, doorW2, wallT2);
-  drawSection(travel, pit, oh, shaftW, cabinW2, cwSide, selectedStop, stops);
+drawSection(travel, pit, oh, shaftW, cabinW2, cwSide, selectedStop, stops, floorH);
+
 
 }
+updateWarnings({
+  shaftW, shaftD,
+  cabinW: cabinW2, cabinD: cabinD2,
+  doorW: doorW2,
+  pit, oh
+});
 
 /* =======================
    PDF A4 (Watermark + Ref + QR if available)
