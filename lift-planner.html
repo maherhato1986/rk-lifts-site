@@ -302,53 +302,117 @@ function drawPlan(shaftW, shaftD, cabinW, cabinD, doorW, wallT){
   // wall thickness in px
   const t = (wallT/scale) * f;
 
-  // outer shaft rect (walls)
-  const outer = el('rect',{x:x0 - t, y:y0 - t, width:sW + 2*t, height:sD + 2*t, fill:"url(#hatch)", stroke:"#111827", "stroke-width":"2"});
-  svg.appendChild(outer);
+  // OUTER (walls with hatch)
+  svg.appendChild(el('rect',{
+    x:x0 - t, y:y0 - t, width:sW + 2*t, height:sD + 2*t,
+    fill:"url(#hatch)", stroke:"#111827", "stroke-width":"2"
+  }));
 
-  // inner opening
-  const inner = el('rect',{x:x0, y:y0, width:sW, height:sD, fill:"#ffffff", stroke:"#111827", "stroke-width":"2"});
-  svg.appendChild(inner);
+  // INNER opening
+  svg.appendChild(el('rect',{
+    x:x0, y:y0, width:sW, height:sD,
+    fill:"#ffffff", stroke:"#111827", "stroke-width":"2"
+  }));
 
-  // door opening on bottom side (centered)
+  /* =========================
+     DOOR opening (bottom side)
+  ========================= */
   const doorPx = (doorW/scale) * f;
   const doorX = x0 + (sW - doorPx)/2;
-  const doorY = y0 + sD; // bottom edge
-  // "erase" wall line for door opening effect (draw white line over border)
+  const doorY = y0 + sD;
+
+  // erase wall line for opening
   svg.appendChild(el('line',{x1:doorX, y1:doorY, x2:doorX+doorPx, y2:doorY, stroke:"#ffffff", "stroke-width":"6"}));
-  // jamb lines
+
+  // jambs
   svg.appendChild(el('line',{x1:doorX, y1:doorY-10, x2:doorX, y2:doorY+10, stroke:"#111827", "stroke-width":"2"}));
   svg.appendChild(el('line',{x1:doorX+doorPx, y1:doorY-10, x2:doorX+doorPx, y2:doorY+10, stroke:"#111827", "stroke-width":"2"}));
-  // door label
+
   const dlab = el('text',{x:doorX+doorPx/2, y:doorY+28, "font-size":"12", fill:"#111827", "text-anchor":"middle"});
   dlab.textContent = `DOOR ${doorW}mm`;
   svg.appendChild(dlab);
 
-  // cabin centered
+  /* =========================
+     CABIN centered
+  ========================= */
   const cW = (cabinW/scale) * f;
   const cD = (cabinD/scale) * f;
   const cx = x0 + (sW - cW)/2;
   const cy = y0 + (sD - cD)/2;
-  // cabin outline
+
+  // cabin
   svg.appendChild(el('rect',{x:cx, y:cy, width:cW, height:cD, fill:"#f8fafc", stroke:"#111827", "stroke-width":"2", rx:"6"}));
-  // cabin inner (wall thickness visual)
   svg.appendChild(el('rect',{x:cx+6, y:cy+6, width:cW-12, height:cD-12, fill:"#ffffff", stroke:"#cbd5e1", "stroke-width":"1", rx:"4"}));
 
-  // center lines
+  /* =========================
+     REAR COUNTERWEIGHT (Top side)
+     - placed behind cabin near the rear wall
+  ========================= */
+  // rear clearance zone near top wall
+  const rearMargin = Math.max(10, sD * 0.06);
+
+  // CW width ~ 12% of shaft width, depth ~ 10% of shaft depth (symbolic)
+  const cwW = clamp(sW * 0.12, 22, 44);
+  const cwD = clamp(sD * 0.10, 18, 36);
+
+  // Put CW at top (rear) centered with cabin width area
+  const cwX = x0 + (sW - cwW)/2;
+  const cwY = y0 + rearMargin;
+
+  svg.appendChild(el('rect',{
+    x:cwX, y:cwY, width:cwW, height:cwD,
+    fill:"#f8fafc", stroke:"#111827", "stroke-width":"2", rx:"4"
+  }));
+
+  const cwt = el('text',{
+    x:cwX+cwW/2, y:cwY-6,
+    "font-size":"11", fill:"#111827", "text-anchor":"middle"
+  });
+  cwt.textContent = "CW (REAR)";
+  svg.appendChild(cwt);
+
+  /* =========================
+     RAILS (Plan)
+  ========================= */
+  // Cabin rails: left/right of cabin
+  const railStroke = 1.4;
+  const railDash = "6 4";
+
+  const cabRailL = cx - 8;
+  const cabRailR = cx + cW + 8;
+
+  svg.appendChild(el('line',{x1:cabRailL, y1:y0, x2:cabRailL, y2:y0+sD, stroke:"#6b7280","stroke-width":railStroke,"stroke-dasharray":railDash}));
+  svg.appendChild(el('line',{x1:cabRailR, y1:y0, x2:cabRailR, y2:y0+sD, stroke:"#6b7280","stroke-width":railStroke,"stroke-dasharray":railDash}));
+
+  // CW rails: small pair around CW
+  const cwRailL = cwX - 6;
+  const cwRailR = cwX + cwW + 6;
+
+  svg.appendChild(el('line',{x1:cwRailL, y1:y0, x2:cwRailL, y2:y0+sD*0.45, stroke:"#6b7280","stroke-width":railStroke,"stroke-dasharray":railDash}));
+  svg.appendChild(el('line',{x1:cwRailR, y1:y0, x2:cwRailR, y2:y0+sD*0.45, stroke:"#6b7280","stroke-width":railStroke,"stroke-dasharray":railDash}));
+
+  /* =========================
+     CENTER LINES
+  ========================= */
   centerLine(svg, x0, y0 + sD/2, x0 + sW, y0 + sD/2);
   centerLine(svg, x0 + sW/2, y0, x0 + sW/2, y0 + sD);
 
-  // dimension lines (overall shaft)
+  /* =========================
+     DIMENSIONS (overall shaft)
+  ========================= */
   // horizontal
   dimLine(svg, x0, y0-24, x0+sW, y0-24, `${shaftW} mm`, x0 + sW/2 - 24, y0-30);
   // vertical
   dimLine(svg, x0-24, y0, x0-24, y0+sD, `${shaftD} mm`, x0-40, y0 + sD/2);
 
-  // title
+  /* =========================
+     TITLE
+  ========================= */
   const title = el('text',{x:14,y:18,"font-size":"13",fill:"#111827"});
-  title.textContent = "PLAN VIEW";
+  title.textContent = "PLAN VIEW (REAR CW)";
   svg.appendChild(title);
 }
+
 
 function drawSection(travel, pit, oh, shaftW, cabinW, cwSide){
   const svg = document.getElementById('svgSec');
