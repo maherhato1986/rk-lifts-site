@@ -115,12 +115,13 @@
         </div>
       </div>
 <div class="f">
-  <label>موقع الكونترويت (CW Side)</label>
+  <label>موقع الكونترويت في المقطع (CW Side)</label>
   <select id="cwSide" style="padding:10px;border:1px solid var(--line);border-radius:10px;font-size:14px">
     <option value="right" selected>يمين</option>
     <option value="left">يسار</option>
   </select>
 </div>
+
 
       <hr style="border:none;border-top:1px solid var(--line);margin:12px 0">
 
@@ -267,7 +268,7 @@ const cwSide = document.getElementById('cwSide')?.value || 'right';
     `Shaft ${shaftW}×${shaftD} | Cabin ${cabinW2}×${cabinD2} | Door ${doorW2} | Travel ${travel} | Pit ${pit} | OH ${oh}`;
 
   drawPlan(shaftW, shaftD, cabinW2, cabinD2, doorW2, wallT2);
-  drawSection(travel, pit, oh, shaftW, cabinW2, cwSide);
+drawSection(travel, pit, oh, shaftW, cabinW2, cwSide);
 
 
 }
