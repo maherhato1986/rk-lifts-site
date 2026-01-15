@@ -370,10 +370,7 @@ function drawSection(travel, pit, oh, shaftW, cabinW, cwSide){
   const usableW = W - pad * 2;
   const usableH = H - pad * 2;
 
-  const fit = Math.min(
-    usableW / shaftW_px_raw,
-    usableH / totalH_px_raw
-  );
+  const fit = Math.min(usableW / shaftW_px_raw, usableH / totalH_px_raw);
 
   const shaftPxW = shaftW_px_raw * fit;
   const shaftPxH = totalH_px_raw * fit;
@@ -388,23 +385,17 @@ function drawSection(travel, pit, oh, shaftW, cabinW, cwSide){
      SHAFT WALLS
   ====================== */
   svg.appendChild(el('rect',{
-    x: x0 - wallT,
-    y: yTop,
-    width: shaftPxW + wallT * 2,
-    height: shaftPxH,
+    x: x0 - wallT, y: yTop,
+    width: shaftPxW + wallT * 2, height: shaftPxH,
     fill: "url(#hatch)",
-    stroke: "#111827",
-    "stroke-width": "2"
+    stroke: "#111827", "stroke-width": "2"
   }));
 
   svg.appendChild(el('rect',{
-    x: x0,
-    y: yTop,
-    width: shaftPxW,
-    height: shaftPxH,
+    x: x0, y: yTop,
+    width: shaftPxW, height: shaftPxH,
     fill: "#ffffff",
-    stroke: "#111827",
-    "stroke-width": "2"
+    stroke: "#111827", "stroke-width": "2"
   }));
 
   /* ======================
@@ -414,9 +405,9 @@ function drawSection(travel, pit, oh, shaftW, cabinW, cwSide){
   const travelH_px = (travel / mmPerPx) * fit;
   const ohH_px     = (oh / mmPerPx) * fit;
 
-  const yTravelTop = yTop + ohH_px;
-  const yPitTop    = yTravelTop + travelH_px;
-  const yBottom    = yTop + shaftPxH;
+  const yTravelTop = yTop + ohH_px;          // نهاية OH
+  const yPitTop    = yTravelTop + travelH_px;// نهاية Travel / بداية Pit
+  const yBottom    = yTop + shaftPxH;        // أرضية Pit
 
   // خطوط الفصل
   svg.appendChild(el('line',{x1:x0,y1:yTravelTop,x2:x0+shaftPxW,y2:yTravelTop,stroke:"#cbd5e1","stroke-width":"2"}));
@@ -424,7 +415,7 @@ function drawSection(travel, pit, oh, shaftW, cabinW, cwSide){
   svg.appendChild(el('line',{x1:x0,y1:yBottom,   x2:x0+shaftPxW,y2:yBottom,   stroke:"#111827","stroke-width":"2"}));
 
   /* ======================
-     MRL ELEMENTS (1:1)
+     MRL ELEMENTS (1:1) + Side CW
   ====================== */
   const marginSide = Math.max(10, shaftPxW * 0.06);
   const gap = 10;
@@ -454,12 +445,36 @@ function drawSection(travel, pit, oh, shaftW, cabinW, cwSide){
   const cwY  = midY - cwH / 2;
   const cabY = midY - cabH / 2;
 
+  /* ======================
+     RAILS (Cabin + CW)
+  ====================== */
+  // Rails سماكتها بسيطة + متقطعة خفيفة
+  const railStroke = 1.6;
+  const railDash = "7 5";
+
+  // Cabin rails: يمين ويسار الكابينة
+  const cabRailL = cabX - 6;
+  const cabRailR = cabX + cabW + 6;
+  svg.appendChild(el('line',{x1:cabRailL, y1:yTravelTop+6, x2:cabRailL, y2:yBottom-6, stroke:"#6b7280","stroke-width":railStroke,"stroke-dasharray":railDash}));
+  svg.appendChild(el('line',{x1:cabRailR, y1:yTravelTop+6, x2:cabRailR, y2:yBottom-6, stroke:"#6b7280","stroke-width":railStroke,"stroke-dasharray":railDash}));
+
+  // CW rail: خط واحد على منتصف الكونترويت
+  const cwRailX = cwX + cwW/2;
+  svg.appendChild(el('line',{x1:cwRailX, y1:yTravelTop+6, x2:cwRailX, y2:yBottom-6, stroke:"#6b7280","stroke-width":railStroke,"stroke-dasharray":railDash}));
+
+  // Labels للـ Rails (اختياري بسيط)
+  const rlab = el('text',{x:x0+8, y:yTravelTop+32, "font-size":"10", fill:"#6b7280"});
+  rlab.textContent = "Rails";
+  svg.appendChild(rlab);
+
+  /* ======================
+     DRAW CW + CABIN
+  ====================== */
   // Counterweight
   svg.appendChild(el('rect',{
     x:cwX,y:cwY,width:cwW,height:cwH,
     fill:"#f8fafc",stroke:"#111827","stroke-width":"2",rx:"4"
   }));
-
   const cwt = el('text',{
     x:cwX+cwW/2,y:cwY+cwH+16,
     "font-size":"11",fill:"#111827","text-anchor":"middle"
@@ -472,13 +487,60 @@ function drawSection(travel, pit, oh, shaftW, cabinW, cwSide){
     x:cabX,y:cabY,width:cabW,height:cabH,
     fill:"#f8fafc",stroke:"#111827","stroke-width":"2",rx:"6"
   }));
-
   const ct = el('text',{
     x:cabX+cabW/2,y:cabY+cabH/2+4,
     "font-size":"12",fill:"#111827","text-anchor":"middle"
   });
   ct.textContent="CABIN";
   svg.appendChild(ct);
+
+  /* ======================
+     BUFFERS (in PIT)
+  ====================== */
+  // نرسم Buffer للكابينة + Buffer للكونترويت داخل الـ pit
+  // (رمزي لكن بمكانه الصحيح تحت العناصر)
+  const bufW = 26, bufH = 18;
+  const pitFloorY = yBottom;          // أرضية pit
+  const bufTopY = pitFloorY - 24;     // مسافة فوق الأرض
+
+  // Cabin buffer (وسط الكابينة)
+  const cabBufX = cabX + cabW/2 - bufW/2;
+  svg.appendChild(el('rect',{
+    x:cabBufX, y:bufTopY, width:bufW, height:bufH,
+    fill:"#ffffff", stroke:"#111827", "stroke-width":"2", rx:"4"
+  }));
+  const b1 = el('text',{x:cabBufX+bufW/2, y:bufTopY-6, "font-size":"10", fill:"#6b7280", "text-anchor":"middle"});
+  b1.textContent="Buffer";
+  svg.appendChild(b1);
+
+  // CW buffer (تحت الكونترويت)
+  const cwBufX = cwX + cwW/2 - bufW/2;
+  svg.appendChild(el('rect',{
+    x:cwBufX, y:bufTopY, width:bufW, height:bufH,
+    fill:"#ffffff", stroke:"#111827", "stroke-width":"2", rx:"4"
+  }));
+
+  /* ======================
+     GOVERNOR (Symbolic) in OH
+  ====================== */
+  // Governor sheave + خط rope نزولاً بجانب البئر
+  const govR = 14;
+  const govX = x0 + shaftPxW - marginSide - 20;
+  const govY = yTop + Math.max(16, ohH_px * 0.20);
+
+  svg.appendChild(el('circle',{cx:govX, cy:govY, r:govR, fill:"#fff", stroke:"#111827","stroke-width":"2"}));
+  svg.appendChild(el('circle',{cx:govX, cy:govY, r:3, fill:"#111827"}));
+
+  const gtxt = el('text',{x:govX, y:govY-govR-8, "font-size":"10", fill:"#6b7280", "text-anchor":"middle"});
+  gtxt.textContent = "GOV";
+  svg.appendChild(gtxt);
+
+  // Governor rope line (رمزي) نزولاً إلى pit
+  svg.appendChild(el('line',{
+    x1:govX, y1:govY+govR,
+    x2:govX, y2:yBottom-6,
+    stroke:"#111827", "stroke-width":"1.2", "stroke-dasharray":"4 4"
+  }));
 
   /* ======================
      MRL MACHINE + SHEAVE
@@ -492,7 +554,6 @@ function drawSection(travel, pit, oh, shaftW, cabinW, cwSide){
     x:machX,y:machY,width:machW,height:machH,
     fill:"#ffffff",stroke:"#111827","stroke-width":"2",rx:"6"
   }));
-
   const mt = el('text',{
     x:machX+machW/2,y:machY+machH/2+4,
     "font-size":"12",fill:"#111827","text-anchor":"middle"
@@ -576,13 +637,14 @@ function drawSection(travel, pit, oh, shaftW, cabinW, cwSide){
      LABELS
   ====================== */
   const t1 = el('text',{x:14,y:18,"font-size":"13",fill:"#111827"});
-  t1.textContent="SECTION VIEW (MRL • 1:1 • SIDE CW)";
+  t1.textContent="SECTION VIEW (MRL • 1:1 • Rails • Buffers • Governor)";
   svg.appendChild(t1);
 
   const z1 = el('text',{x:x0+8,y:yTop+16,"font-size":"11",fill:"#6b7280"}); z1.textContent="OH"; svg.appendChild(z1);
   const z2 = el('text',{x:x0+8,y:yTravelTop+16,"font-size":"11",fill:"#6b7280"}); z2.textContent="TRAVEL"; svg.appendChild(z2);
   const z3 = el('text',{x:x0+8,y:yPitTop+16,"font-size":"11",fill:"#6b7280"}); z3.textContent="PIT"; svg.appendChild(z3);
 }
+
 
 
 
