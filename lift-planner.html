@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>RKL Lift Planner (Plan + Section)</title>
+  <title>RKL Lift Planner — MRL (Plan + Section)</title>
   <style>
     :root{
       --ink:#111827;
@@ -29,11 +29,11 @@
     .row{display:grid;grid-template-columns: 1fr 1fr; gap:10px}
     .f{display:flex;flex-direction:column;gap:6px;margin:10px 0}
     label{font-size:12px;color:var(--muted)}
-    input{
+    input, select{
       padding:10px 10px; border:1px solid var(--line); border-radius:10px;
       font-size:14px; outline:none; background:#fff
     }
-    input:focus{border-color:#94a3b8}
+    input:focus, select:focus{border-color:#94a3b8}
     .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
     button{
       border:1px solid var(--line); background:#fff; border-radius:12px;
@@ -41,6 +41,7 @@
     }
     button:hover{background:#f3f4f6}
     .note{font-size:12px;color:var(--muted);line-height:1.6;margin-top:10px}
+
     .canvas{
       background:var(--card); border:1px solid var(--line); border-radius:14px;
       box-shadow:0 6px 18px rgba(17,24,39,.06);
@@ -51,13 +52,8 @@
       padding:12px 14px; border-bottom:1px solid var(--line)
     }
     .badge{font-size:12px;color:var(--muted)}
-    .svgs{
-      display:grid; grid-template-columns: 1fr 1fr; gap:0;
-    }
-    .svgbox{
-      border-left:1px solid var(--line);
-      padding:12px;
-    }
+    .svgs{display:grid; grid-template-columns: 1fr 1fr; gap:0}
+    .svgbox{border-left:1px solid var(--line); padding:12px}
     .svgbox:first-child{border-left:none}
     .svgtitle{font-size:13px;margin:0 0 8px;color:var(--muted)}
     .hint{font-size:12px;color:var(--muted);margin-top:8px}
@@ -69,10 +65,11 @@
     }
   </style>
 </head>
+
 <body>
 <header>
-  <h1>مخطط المصعد — أفقي (Plan) + جانبي (Section)</h1>
-  <p>رسم SVG بسمك جدران + فتحة باب + كابينة + أبعاد. الوحدات: mm</p>
+  <h1>مخطط المصعد — MRL (Plan + Section)</h1>
+  <p>SVG مخطط هندسي: Walls + Door + Cabin + Rear CW (Plan) + Side CW (Section) + Rails + Buffers + Governor + تصدير SVG/PDF</p>
 </header>
 
 <div class="wrap">
@@ -81,6 +78,11 @@
     <!-- Inputs -->
     <div class="panel">
       <h2>مدخلات المخطط (mm)</h2>
+
+      <div class="f">
+        <label>اسم المشروع (Project Name)</label>
+        <input id="projectName" type="text" value="RKL - MRL Lift Layout">
+      </div>
 
       <div class="row">
         <div class="f">
@@ -114,14 +116,14 @@
           <input id="wallT" type="number" value="200" min="100" step="10">
         </div>
       </div>
-<div class="f">
-  <label>موقع الكونترويت في المقطع (CW Side)</label>
-  <select id="cwSide" style="padding:10px;border:1px solid var(--line);border-radius:10px;font-size:14px">
-    <option value="right" selected>يمين</option>
-    <option value="left">يسار</option>
-  </select>
-</div>
 
+      <div class="f">
+        <label>موقع الكونترويت في المقطع (CW Side - Section)</label>
+        <select id="cwSide">
+          <option value="right" selected>يمين</option>
+          <option value="left">يسار</option>
+        </select>
+      </div>
 
       <hr style="border:none;border-top:1px solid var(--line);margin:12px 0">
 
@@ -146,18 +148,17 @@
           <input id="oh" type="number" value="4200" min="2500" step="10">
         </div>
       </div>
-<div class="f">
-  <label>اسم المشروع (Project Name)</label>
-  <input id="projectName" type="text" value="RKL - MRL Lift Layout">
-</div>
-<div class="btns">
-  <button id="btnDraw" type="button">🔄 تحديث المخطط</button>
-  <button id="btnExportSVG" type="button">⬇️ تصدير SVG</button>
-  <button id="btnExportPDF" type="button">🧾 تصدير PDF A4</button>
-</div>
+
+      <div class="btns">
+        <button id="btnDraw" type="button">🔄 تحديث المخطط</button>
+        <button id="btnExportSVG" type="button">⬇️ تصدير SVG</button>
+        <button id="btnExportPDF" type="button">🧾 تصدير PDF A4</button>
+      </div>
 
       <div class="note">
-        ✅ ملاحظة: الرسم يستخدم مقياس ثابت داخل الـ SVG (mm → px) ليطلع شكل “مخطط” مع أبعاد وأسهم، وليس مربعات فقط.
+        ✅ Plan: الكونترويت خلفي Rear-Center<br>
+        ✅ Section: الكونترويت جانبي يمين/يسار + Rails + Buffers + Governor + MRL Machine داخل OH<br>
+        ✅ PDF: A4 مع إطار + Watermark (logo) + Ref تلقائي + QR (إذا مكتبة QR موجودة)
       </div>
     </div>
 
@@ -165,20 +166,20 @@
     <div class="canvas">
       <div class="canvas-head">
         <div class="badge" id="badgeInfo">—</div>
-        <div class="badge">Scale: 1px = 5mm (افتراضي)</div>
+        <div class="badge">Plan scale: 1px=5mm | Section scale fitted</div>
       </div>
 
       <div class="svgs">
         <div class="svgbox">
-          <p class="svgtitle">Plan View (مخطط أفقي)</p>
+          <p class="svgtitle">Plan View (Rear CW)</p>
           <svg id="svgPlan" width="100%" viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/svg"></svg>
-          <div class="hint">يعرض البئر + فتحة الباب + الكابينة + خطوط محاور + أبعاد.</div>
+          <div class="hint">Walls + Door + Cabin + Rear CW + Rails + Dimensions</div>
         </div>
 
         <div class="svgbox">
-          <p class="svgtitle">Section View (مخطط جانبي)</p>
+          <p class="svgtitle">Section View (MRL + Side CW)</p>
           <svg id="svgSec" width="100%" viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/svg"></svg>
-          <div class="hint">يعرض Pit + Travel + OH + منصة الكابينة + أبعاد ارتفاعية.</div>
+          <div class="hint">OH/Travel/Pit + MRL Machine + Sheave + Ropes + Side CW + Rails + Buffers + Governor</div>
         </div>
       </div>
     </div>
@@ -199,33 +200,29 @@ function el(name, attrs = {}) {
 function clear(svg){ while(svg.firstChild) svg.removeChild(svg.firstChild); }
 function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
 
+function centerLine(svg, x1,y1,x2,y2){
+  svg.appendChild(el('line',{x1,y1,x2,y2, stroke:"#6b7280", "stroke-width":"1", "stroke-dasharray":"6 4"}));
+}
+
 function dimLine(svg, x1,y1,x2,y2, text, textX, textY){
-  // line
   svg.appendChild(el('line',{x1,y1,x2,y2, stroke:"#111827", "stroke-width":"1"}));
-  // arrows
   const a1 = el('path',{d:`M ${x1} ${y1} l 8 -4 l 0 8 z`, fill:"#111827"});
   const a2 = el('path',{d:`M ${x2} ${y2} l -8 -4 l 0 8 z`, fill:"#111827"});
   svg.appendChild(a1); svg.appendChild(a2);
-  // text (label)
+
   const t = el('text',{x:textX, y:textY, "font-size":"12", fill:"#111827"});
   t.textContent = text;
   svg.appendChild(t);
 }
-function centerLine(svg, x1,y1,x2,y2){
-  svg.appendChild(el('line',{x1,y1,x2,y2, stroke:"#6b7280", "stroke-width":"1", "stroke-dasharray":"6 4"}));
-}
+
 function hatchDefs(svg){
   const defs = el('defs');
-  const pat = el('pattern',{id:"hatch", patternUnits:"userSpaceOnUse", width:"8", height:"8", patternTransform:"rotate(45)"});
+
+  const pat = el('pattern',{
+    id:"hatch", patternUnits:"userSpaceOnUse", width:"8", height:"8", patternTransform:"rotate(45)"
+  });
   pat.appendChild(el('line',{x1:"0",y1:"0",x2:"0",y2:"8", stroke:"#cbd5e1", "stroke-width":"2"}));
   defs.appendChild(pat);
-
-  const marker = el('marker',{
-    id:"arrow", viewBox:"0 0 10 10", refX:"5", refY:"5",
-    markerWidth:"6", markerHeight:"6", orient:"auto-start-reverse"
-  });
-  marker.appendChild(el('path',{d:"M 0 0 L 10 5 L 0 10 z", fill:"#111827"}));
-  defs.appendChild(marker);
 
   svg.appendChild(defs);
 }
@@ -243,58 +240,40 @@ function exportSVG(svg, filename){
   URL.revokeObjectURL(url);
 }
 
-/* =======================
-   Drawing Logic
-======================= */
-function draw(){
-  const shaftW = Number(document.getElementById('shaftW').value);
-  const shaftD = Number(document.getElementById('shaftD').value);
-  const cabinW = Number(document.getElementById('cabinW').value);
-  const cabinD = Number(document.getElementById('cabinD').value);
-  const doorW  = Number(document.getElementById('doorW').value);
-  const wallT  = Number(document.getElementById('wallT').value);
-const cwSide = document.getElementById('cwSide')?.value || 'right';
-
-  const stops  = Number(document.getElementById('stops').value);
-  const floorH = Number(document.getElementById('floorH').value);
-  const pit    = Number(document.getElementById('pit').value);
-  const oh     = Number(document.getElementById('oh').value);
-
-  const travel = (Math.max(stops,2)-1) * floorH;
-
-  // basic guards (keep drawing sensible)
-  const cabinW2 = clamp(cabinW, 600, shaftW-200);
-  const cabinD2 = clamp(cabinD, 600, shaftD-200);
-  const doorW2  = clamp(doorW, 600, shaftW-200);
-  const wallT2  = clamp(wallT, 100, 400);
-
-  document.getElementById('badgeInfo').textContent =
-    `Shaft ${shaftW}×${shaftD} | Cabin ${cabinW2}×${cabinD2} | Door ${doorW2} | Travel ${travel} | Pit ${pit} | OH ${oh}`;
-
-  drawPlan(shaftW, shaftD, cabinW2, cabinD2, doorW2, wallT2);
-drawSection(travel, pit, oh, shaftW, cabinW2, cwSide);
-
-
-
+function escapeHtml(s){
+  return String(s ?? '').replace(/[&<>"']/g, m => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
+  }[m]));
 }
 
+function generateRklRef(){
+  const d = new Date();
+  const pad = (n, w=2) => String(n).padStart(w,'0');
+  const y = d.getFullYear();
+  const m = pad(d.getMonth()+1);
+  const day = pad(d.getDate());
+  const hh = pad(d.getHours());
+  const mm = pad(d.getMinutes());
+  const ss = pad(d.getSeconds());
+  const rnd = pad(Math.floor(Math.random()*1000), 3);
+  return `RKL-MRL-${y}${m}${day}-${hh}${mm}${ss}-${rnd}`;
+}
+
+/* =======================
+   Draw: Plan (Rear CW)
+======================= */
 function drawPlan(shaftW, shaftD, cabinW, cabinD, doorW, wallT){
   const svg = document.getElementById('svgPlan');
   clear(svg);
   hatchDefs(svg);
 
-  // scale: 1px = 5mm (fixed)
-  const scale = 5;
-
-  // layout box
+  const scale = 5; // 1px=5mm
   const W = 520, H = 420;
   const pad = 46;
 
-  // convert mm->px within viewBox
   const innerW = shaftW / scale;
   const innerD = shaftD / scale;
 
-  // fit inside viewbox while preserving ratio
   const maxW = W - pad*2;
   const maxH = H - pad*2;
   const f = Math.min(maxW/innerW, maxH/innerD);
@@ -305,409 +284,237 @@ function drawPlan(shaftW, shaftD, cabinW, cabinD, doorW, wallT){
   const x0 = (W - sW)/2;
   const y0 = (H - sD)/2;
 
-  // wall thickness in px
   const t = (wallT/scale) * f;
 
-  // OUTER (walls with hatch)
-  svg.appendChild(el('rect',{
-    x:x0 - t, y:y0 - t, width:sW + 2*t, height:sD + 2*t,
-    fill:"url(#hatch)", stroke:"#111827", "stroke-width":"2"
-  }));
+  // walls
+  svg.appendChild(el('rect',{x:x0 - t, y:y0 - t, width:sW + 2*t, height:sD + 2*t, fill:"url(#hatch)", stroke:"#111827", "stroke-width":"2"}));
+  svg.appendChild(el('rect',{x:x0, y:y0, width:sW, height:sD, fill:"#fff", stroke:"#111827", "stroke-width":"2"}));
 
-  // INNER opening
-  svg.appendChild(el('rect',{
-    x:x0, y:y0, width:sW, height:sD,
-    fill:"#ffffff", stroke:"#111827", "stroke-width":"2"
-  }));
-
-  /* =========================
-     DOOR opening (bottom side)
-  ========================= */
+  // door opening bottom
   const doorPx = (doorW/scale) * f;
   const doorX = x0 + (sW - doorPx)/2;
   const doorY = y0 + sD;
-
-  // erase wall line for opening
-  svg.appendChild(el('line',{x1:doorX, y1:doorY, x2:doorX+doorPx, y2:doorY, stroke:"#ffffff", "stroke-width":"6"}));
-
-  // jambs
+  svg.appendChild(el('line',{x1:doorX, y1:doorY, x2:doorX+doorPx, y2:doorY, stroke:"#fff", "stroke-width":"6"}));
   svg.appendChild(el('line',{x1:doorX, y1:doorY-10, x2:doorX, y2:doorY+10, stroke:"#111827", "stroke-width":"2"}));
   svg.appendChild(el('line',{x1:doorX+doorPx, y1:doorY-10, x2:doorX+doorPx, y2:doorY+10, stroke:"#111827", "stroke-width":"2"}));
-
   const dlab = el('text',{x:doorX+doorPx/2, y:doorY+28, "font-size":"12", fill:"#111827", "text-anchor":"middle"});
   dlab.textContent = `DOOR ${doorW}mm`;
   svg.appendChild(dlab);
 
-  /* =========================
-     CABIN centered
-  ========================= */
+  // cabin centered
   const cW = (cabinW/scale) * f;
   const cD = (cabinD/scale) * f;
   const cx = x0 + (sW - cW)/2;
   const cy = y0 + (sD - cD)/2;
 
-  // cabin
   svg.appendChild(el('rect',{x:cx, y:cy, width:cW, height:cD, fill:"#f8fafc", stroke:"#111827", "stroke-width":"2", rx:"6"}));
-  svg.appendChild(el('rect',{x:cx+6, y:cy+6, width:cW-12, height:cD-12, fill:"#ffffff", stroke:"#cbd5e1", "stroke-width":"1", rx:"4"}));
+  svg.appendChild(el('rect',{x:cx+6, y:cy+6, width:cW-12, height:cD-12, fill:"#fff", stroke:"#cbd5e1", "stroke-width":"1", rx:"4"}));
 
-  /* =========================
-     REAR COUNTERWEIGHT (Top side)
-     - placed behind cabin near the rear wall
-  ========================= */
-  // rear clearance zone near top wall
+  // Rear CW (top side)
   const rearMargin = Math.max(10, sD * 0.06);
-
-  // CW width ~ 12% of shaft width, depth ~ 10% of shaft depth (symbolic)
-  const cwW = clamp(sW * 0.12, 22, 44);
-  const cwD = clamp(sD * 0.10, 18, 36);
-
-  // Put CW at top (rear) centered with cabin width area
-  const cwX = x0 + (sW - cwW)/2;
+  const cwWpx = clamp(sW * 0.12, 22, 44);
+  const cwDpx = clamp(sD * 0.10, 18, 36);
+  const cwX = x0 + (sW - cwWpx)/2;
   const cwY = y0 + rearMargin;
 
-  svg.appendChild(el('rect',{
-    x:cwX, y:cwY, width:cwW, height:cwD,
-    fill:"#f8fafc", stroke:"#111827", "stroke-width":"2", rx:"4"
-  }));
-
-  const cwt = el('text',{
-    x:cwX+cwW/2, y:cwY-6,
-    "font-size":"11", fill:"#111827", "text-anchor":"middle"
-  });
+  svg.appendChild(el('rect',{x:cwX, y:cwY, width:cwWpx, height:cwDpx, fill:"#f8fafc", stroke:"#111827", "stroke-width":"2", rx:"4"}));
+  const cwt = el('text',{x:cwX+cwWpx/2, y:cwY-6, "font-size":"11", fill:"#111827", "text-anchor":"middle"});
   cwt.textContent = "CW (REAR)";
   svg.appendChild(cwt);
 
-  /* =========================
-     RAILS (Plan)
-  ========================= */
-  // Cabin rails: left/right of cabin
-  const railStroke = 1.4;
-  const railDash = "6 4";
-
+  // rails
+  const railStroke = 1.4, railDash = "6 4";
   const cabRailL = cx - 8;
   const cabRailR = cx + cW + 8;
-
   svg.appendChild(el('line',{x1:cabRailL, y1:y0, x2:cabRailL, y2:y0+sD, stroke:"#6b7280","stroke-width":railStroke,"stroke-dasharray":railDash}));
   svg.appendChild(el('line',{x1:cabRailR, y1:y0, x2:cabRailR, y2:y0+sD, stroke:"#6b7280","stroke-width":railStroke,"stroke-dasharray":railDash}));
 
-  // CW rails: small pair around CW
   const cwRailL = cwX - 6;
-  const cwRailR = cwX + cwW + 6;
-
+  const cwRailR = cwX + cwWpx + 6;
   svg.appendChild(el('line',{x1:cwRailL, y1:y0, x2:cwRailL, y2:y0+sD*0.45, stroke:"#6b7280","stroke-width":railStroke,"stroke-dasharray":railDash}));
   svg.appendChild(el('line',{x1:cwRailR, y1:y0, x2:cwRailR, y2:y0+sD*0.45, stroke:"#6b7280","stroke-width":railStroke,"stroke-dasharray":railDash}));
 
-  /* =========================
-     CENTER LINES
-  ========================= */
+  // center lines
   centerLine(svg, x0, y0 + sD/2, x0 + sW, y0 + sD/2);
   centerLine(svg, x0 + sW/2, y0, x0 + sW/2, y0 + sD);
 
-  /* =========================
-     DIMENSIONS (overall shaft)
-  ========================= */
-  // horizontal
+  // dimensions
   dimLine(svg, x0, y0-24, x0+sW, y0-24, `${shaftW} mm`, x0 + sW/2 - 24, y0-30);
-  // vertical
   dimLine(svg, x0-24, y0, x0-24, y0+sD, `${shaftD} mm`, x0-40, y0 + sD/2);
 
-  /* =========================
-     TITLE
-  ========================= */
   const title = el('text',{x:14,y:18,"font-size":"13",fill:"#111827"});
   title.textContent = "PLAN VIEW (REAR CW)";
   svg.appendChild(title);
 }
 
-
+/* =======================
+   Draw: Section (MRL + Side CW + Rails + Buffers + Governor)
+======================= */
 function drawSection(travel, pit, oh, shaftW, cabinW, cwSide){
   const svg = document.getElementById('svgSec');
   clear(svg);
   hatchDefs(svg);
 
-  const W = 520, H = 420;
-  const pad = 52;
+  const W=520, H=420;
+  const pad=52;
 
-  // مقياس الرسم
   const mmPerPx = 10;
-
   const totalH = pit + travel + oh;
 
-  // mm → px (قبل الـ fit)
   const shaftW_px_raw = shaftW / mmPerPx;
   const totalH_px_raw = totalH / mmPerPx;
 
-  const usableW = W - pad * 2;
-  const usableH = H - pad * 2;
+  const usableW = W - pad*2;
+  const usableH = H - pad*2;
 
-  const fit = Math.min(usableW / shaftW_px_raw, usableH / totalH_px_raw);
+  const fit = Math.min(usableW/shaftW_px_raw, usableH/totalH_px_raw);
 
   const shaftPxW = shaftW_px_raw * fit;
   const shaftPxH = totalH_px_raw * fit;
 
-  const x0 = (W - shaftPxW) / 2;
+  const x0 = (W - shaftPxW)/2;
   const yTop = pad;
 
-  // سماكة الجدار (رمزية)
   const wallT = 18;
 
-  /* ======================
-     SHAFT WALLS
-  ====================== */
-  svg.appendChild(el('rect',{
-    x: x0 - wallT, y: yTop,
-    width: shaftPxW + wallT * 2, height: shaftPxH,
-    fill: "url(#hatch)",
-    stroke: "#111827", "stroke-width": "2"
-  }));
+  // walls
+  svg.appendChild(el('rect',{x:x0-wallT,y:yTop,width:shaftPxW+2*wallT,height:shaftPxH,fill:"url(#hatch)",stroke:"#111827","stroke-width":"2"}));
+  svg.appendChild(el('rect',{x:x0,y:yTop,width:shaftPxW,height:shaftPxH,fill:"#fff",stroke:"#111827","stroke-width":"2"}));
 
-  svg.appendChild(el('rect',{
-    x: x0, y: yTop,
-    width: shaftPxW, height: shaftPxH,
-    fill: "#ffffff",
-    stroke: "#111827", "stroke-width": "2"
-  }));
+  const pitH_px    = (pit/mmPerPx)*fit;
+  const travelH_px = (travel/mmPerPx)*fit;
+  const ohH_px     = (oh/mmPerPx)*fit;
 
-  /* ======================
-     ZONES
-  ====================== */
-  const pitH_px    = (pit / mmPerPx) * fit;
-  const travelH_px = (travel / mmPerPx) * fit;
-  const ohH_px     = (oh / mmPerPx) * fit;
+  const yTravelTop = yTop + ohH_px;
+  const yPitTop    = yTravelTop + travelH_px;
+  const yBottom    = yTop + shaftPxH;
 
-  const yTravelTop = yTop + ohH_px;          // نهاية OH
-  const yPitTop    = yTravelTop + travelH_px;// نهاية Travel / بداية Pit
-  const yBottom    = yTop + shaftPxH;        // أرضية Pit
-
-  // خطوط الفصل
+  // zone lines
   svg.appendChild(el('line',{x1:x0,y1:yTravelTop,x2:x0+shaftPxW,y2:yTravelTop,stroke:"#cbd5e1","stroke-width":"2"}));
-  svg.appendChild(el('line',{x1:x0,y1:yPitTop,   x2:x0+shaftPxW,y2:yPitTop,   stroke:"#cbd5e1","stroke-width":"2"}));
-  svg.appendChild(el('line',{x1:x0,y1:yBottom,   x2:x0+shaftPxW,y2:yBottom,   stroke:"#111827","stroke-width":"2"}));
+  svg.appendChild(el('line',{x1:x0,y1:yPitTop,x2:x0+shaftPxW,y2:yPitTop,stroke:"#cbd5e1","stroke-width":"2"}));
+  svg.appendChild(el('line',{x1:x0,y1:yBottom,x2:x0+shaftPxW,y2:yBottom,stroke:"#111827","stroke-width":"2"}));
 
-  /* ======================
-     MRL ELEMENTS (1:1) + Side CW
-  ====================== */
-  const marginSide = Math.max(10, shaftPxW * 0.06);
+  // geometry
+  const marginSide = Math.max(10, shaftPxW*0.06);
   const gap = 10;
 
-  // Counterweight
-  const cwW = clamp(shaftPxW * 0.10, 18, 34);
-  const cwH = clamp(shaftPxH * 0.18, 70, 120);
+  const cwW = clamp(shaftPxW*0.10, 18, 34);
+  const cwH = clamp(shaftPxH*0.18, 70, 120);
 
-  // Cabin
-  const cabinW_px = (cabinW / mmPerPx) * fit;
-  const cabH = clamp(shaftPxH * 0.16, 70, 110);
-
-  const maxCabW = shaftPxW - (marginSide * 2) - cwW - gap;
+  const cabinW_px = (cabinW/mmPerPx)*fit;
+  const cabH = clamp(shaftPxH*0.16, 70, 110);
+  const maxCabW = shaftPxW - (marginSide*2) - cwW - gap;
   const cabW = clamp(cabinW_px, 60, maxCabW);
 
-  const midY = yTravelTop + travelH_px / 2;
+  const midY = yTravelTop + travelH_px/2;
 
   let cwX, cabX;
-  if (cwSide === 'left') {
-    cwX  = x0 + marginSide;
+  if(cwSide === 'left'){
+    cwX = x0 + marginSide;
     cabX = cwX + cwW + gap;
-  } else {
+  }else{
     cabX = x0 + marginSide;
-    cwX  = x0 + shaftPxW - cwW - marginSide;
+    cwX = x0 + shaftPxW - cwW - marginSide;
   }
+  const cwY = midY - cwH/2;
+  const cabY = midY - cabH/2;
 
-  const cwY  = midY - cwH / 2;
-  const cabY = midY - cabH / 2;
-
-  /* ======================
-     RAILS (Cabin + CW)
-  ====================== */
-  // Rails سماكتها بسيطة + متقطعة خفيفة
-  const railStroke = 1.6;
-  const railDash = "7 5";
-
-  // Cabin rails: يمين ويسار الكابينة
+  // rails
+  const railStroke = 1.6, railDash="7 5";
   const cabRailL = cabX - 6;
   const cabRailR = cabX + cabW + 6;
-  svg.appendChild(el('line',{x1:cabRailL, y1:yTravelTop+6, x2:cabRailL, y2:yBottom-6, stroke:"#6b7280","stroke-width":railStroke,"stroke-dasharray":railDash}));
-  svg.appendChild(el('line',{x1:cabRailR, y1:yTravelTop+6, x2:cabRailR, y2:yBottom-6, stroke:"#6b7280","stroke-width":railStroke,"stroke-dasharray":railDash}));
-
-  // CW rail: خط واحد على منتصف الكونترويت
+  svg.appendChild(el('line',{x1:cabRailL,y1:yTravelTop+6,x2:cabRailL,y2:yBottom-6,stroke:"#6b7280","stroke-width":railStroke,"stroke-dasharray":railDash}));
+  svg.appendChild(el('line',{x1:cabRailR,y1:yTravelTop+6,x2:cabRailR,y2:yBottom-6,stroke:"#6b7280","stroke-width":railStroke,"stroke-dasharray":railDash}));
   const cwRailX = cwX + cwW/2;
-  svg.appendChild(el('line',{x1:cwRailX, y1:yTravelTop+6, x2:cwRailX, y2:yBottom-6, stroke:"#6b7280","stroke-width":railStroke,"stroke-dasharray":railDash}));
+  svg.appendChild(el('line',{x1:cwRailX,y1:yTravelTop+6,x2:cwRailX,y2:yBottom-6,stroke:"#6b7280","stroke-width":railStroke,"stroke-dasharray":railDash}));
 
-  // Labels للـ Rails (اختياري بسيط)
-  const rlab = el('text',{x:x0+8, y:yTravelTop+32, "font-size":"10", fill:"#6b7280"});
-  rlab.textContent = "Rails";
-  svg.appendChild(rlab);
-
-  /* ======================
-     DRAW CW + CABIN
-  ====================== */
-  // Counterweight
-  svg.appendChild(el('rect',{
-    x:cwX,y:cwY,width:cwW,height:cwH,
-    fill:"#f8fafc",stroke:"#111827","stroke-width":"2",rx:"4"
-  }));
-  const cwt = el('text',{
-    x:cwX+cwW/2,y:cwY+cwH+16,
-    "font-size":"11",fill:"#111827","text-anchor":"middle"
-  });
+  // cabin + cw
+  svg.appendChild(el('rect',{x:cwX,y:cwY,width:cwW,height:cwH,fill:"#f8fafc",stroke:"#111827","stroke-width":"2",rx:"4"}));
+  const cwt = el('text',{x:cwX+cwW/2,y:cwY+cwH+16,"font-size":"11",fill:"#111827","text-anchor":"middle"});
   cwt.textContent="CW";
   svg.appendChild(cwt);
 
-  // Cabin
-  svg.appendChild(el('rect',{
-    x:cabX,y:cabY,width:cabW,height:cabH,
-    fill:"#f8fafc",stroke:"#111827","stroke-width":"2",rx:"6"
-  }));
-  const ct = el('text',{
-    x:cabX+cabW/2,y:cabY+cabH/2+4,
-    "font-size":"12",fill:"#111827","text-anchor":"middle"
-  });
+  svg.appendChild(el('rect',{x:cabX,y:cabY,width:cabW,height:cabH,fill:"#f8fafc",stroke:"#111827","stroke-width":"2",rx:"6"}));
+  const ct = el('text',{x:cabX+cabW/2,y:cabY+cabH/2+4,"font-size":"12",fill:"#111827","text-anchor":"middle"});
   ct.textContent="CABIN";
   svg.appendChild(ct);
 
-  /* ======================
-     BUFFERS (in PIT)
-  ====================== */
-  // نرسم Buffer للكابينة + Buffer للكونترويت داخل الـ pit
-  // (رمزي لكن بمكانه الصحيح تحت العناصر)
-  const bufW = 26, bufH = 18;
-  const pitFloorY = yBottom;          // أرضية pit
-  const bufTopY = pitFloorY - 24;     // مسافة فوق الأرض
-
-  // Cabin buffer (وسط الكابينة)
+  // buffers in pit
+  const bufW=26, bufH=18;
+  const bufTopY = yBottom - 24;
   const cabBufX = cabX + cabW/2 - bufW/2;
-  svg.appendChild(el('rect',{
-    x:cabBufX, y:bufTopY, width:bufW, height:bufH,
-    fill:"#ffffff", stroke:"#111827", "stroke-width":"2", rx:"4"
-  }));
-  const b1 = el('text',{x:cabBufX+bufW/2, y:bufTopY-6, "font-size":"10", fill:"#6b7280", "text-anchor":"middle"});
-  b1.textContent="Buffer";
-  svg.appendChild(b1);
+  svg.appendChild(el('rect',{x:cabBufX,y:bufTopY,width:bufW,height:bufH,fill:"#fff",stroke:"#111827","stroke-width":"2",rx:"4"}));
+  const btxt = el('text',{x:cabBufX+bufW/2,y:bufTopY-6,"font-size":"10",fill:"#6b7280","text-anchor":"middle"});
+  btxt.textContent="Buffer";
+  svg.appendChild(btxt);
 
-  // CW buffer (تحت الكونترويت)
   const cwBufX = cwX + cwW/2 - bufW/2;
-  svg.appendChild(el('rect',{
-    x:cwBufX, y:bufTopY, width:bufW, height:bufH,
-    fill:"#ffffff", stroke:"#111827", "stroke-width":"2", rx:"4"
-  }));
+  svg.appendChild(el('rect',{x:cwBufX,y:bufTopY,width:bufW,height:bufH,fill:"#fff",stroke:"#111827","stroke-width":"2",rx:"4"}));
 
-  /* ======================
-     GOVERNOR (Symbolic) in OH
-  ====================== */
-  // Governor sheave + خط rope نزولاً بجانب البئر
-  const govR = 14;
+  // governor (symbolic) in OH
+  const govR=14;
   const govX = x0 + shaftPxW - marginSide - 20;
-  const govY = yTop + Math.max(16, ohH_px * 0.20);
-
-  svg.appendChild(el('circle',{cx:govX, cy:govY, r:govR, fill:"#fff", stroke:"#111827","stroke-width":"2"}));
-  svg.appendChild(el('circle',{cx:govX, cy:govY, r:3, fill:"#111827"}));
-
-  const gtxt = el('text',{x:govX, y:govY-govR-8, "font-size":"10", fill:"#6b7280", "text-anchor":"middle"});
-  gtxt.textContent = "GOV";
+  const govY = yTop + Math.max(16, ohH_px*0.20);
+  svg.appendChild(el('circle',{cx:govX,cy:govY,r:govR,fill:"#fff",stroke:"#111827","stroke-width":"2"}));
+  svg.appendChild(el('circle',{cx:govX,cy:govY,r:3,fill:"#111827"}));
+  const gtxt = el('text',{x:govX,y:govY-govR-8,"font-size":"10",fill:"#6b7280","text-anchor":"middle"});
+  gtxt.textContent="GOV";
   svg.appendChild(gtxt);
+  svg.appendChild(el('line',{x1:govX,y1:govY+govR,x2:govX,y2:yBottom-6,stroke:"#111827","stroke-width":"1.2","stroke-dasharray":"4 4"}));
 
-  // Governor rope line (رمزي) نزولاً إلى pit
-  svg.appendChild(el('line',{
-    x1:govX, y1:govY+govR,
-    x2:govX, y2:yBottom-6,
-    stroke:"#111827", "stroke-width":"1.2", "stroke-dasharray":"4 4"
-  }));
-
-  /* ======================
-     MRL MACHINE + SHEAVE
-  ====================== */
-  const machW = clamp(shaftPxW * 0.45, 90, 160);
+  // MRL machine + sheave
+  const machW = clamp(shaftPxW*0.45, 90, 160);
   const machH = 44;
   const machX = x0 + marginSide;
-  const machY = yTop + Math.max(14, ohH_px * 0.12);
-
-  svg.appendChild(el('rect',{
-    x:machX,y:machY,width:machW,height:machH,
-    fill:"#ffffff",stroke:"#111827","stroke-width":"2",rx:"6"
-  }));
-  const mt = el('text',{
-    x:machX+machW/2,y:machY+machH/2+4,
-    "font-size":"12",fill:"#111827","text-anchor":"middle"
-  });
+  const machY = yTop + Math.max(14, ohH_px*0.12);
+  svg.appendChild(el('rect',{x:machX,y:machY,width:machW,height:machH,fill:"#fff",stroke:"#111827","stroke-width":"2",rx:"6"}));
+  const mt = el('text',{x:machX+machW/2,y:machY+machH/2+4,"font-size":"12",fill:"#111827","text-anchor":"middle"});
   mt.textContent="MRL MACHINE";
   svg.appendChild(mt);
 
-  const shR = 16;
+  const shR=16;
   const shX = machX + machW + 22;
-  const shY = machY + machH / 2;
-
+  const shY = machY + machH/2;
   svg.appendChild(el('circle',{cx:shX,cy:shY,r:shR,fill:"#fff",stroke:"#111827","stroke-width":"2"}));
   svg.appendChild(el('circle',{cx:shX,cy:shY,r:4,fill:"#111827"}));
 
-  /* ======================
-     ROPES (1:1)
-  ====================== */
-  const cwCenterX = cwX + cwW / 2;
-  const cabRopeX  = cabX + cabW * 0.18;
+  // ropes (1:1 symbolic)
+  const cwCenterX = cwX + cwW/2;
+  const cabRopeX  = cabX + cabW*0.18;
+  svg.appendChild(el('path',{d:`M ${shX-10} ${shY+shR} L ${cabRopeX} ${cabY} L ${cabRopeX} ${cabY+cabH}`,fill:"none",stroke:"#111827","stroke-width":"1.6"}));
+  svg.appendChild(el('path',{d:`M ${shX+10} ${shY+shR} L ${cwCenterX} ${cwY} L ${cwCenterX} ${cwY+cwH}`,fill:"none",stroke:"#111827","stroke-width":"1.6"}));
 
-  svg.appendChild(el('path',{
-    d:`M ${shX-10} ${shY+shR} L ${cabRopeX} ${cabY} L ${cabRopeX} ${cabY+cabH}`,
-    fill:"none",stroke:"#111827","stroke-width":"1.6"
-  }));
-
-  svg.appendChild(el('path',{
-    d:`M ${shX+10} ${shY+shR} L ${cwCenterX} ${cwY} L ${cwCenterX} ${cwY+cwH}`,
-    fill:"none",stroke:"#111827","stroke-width":"1.6"
-  }));
-
-  /* ======================
-     CONTROLLER
-  ====================== */
-  const ctrlW = 62, ctrlH = 70;
+  // controller (outside right)
+  const ctrlW=62, ctrlH=70;
   const ctrlX = x0 + shaftPxW + 20;
   const ctrlY = yTravelTop + 10;
-
-  svg.appendChild(el('rect',{
-    x:ctrlX,y:ctrlY,width:ctrlW,height:ctrlH,
-    fill:"#ffffff",stroke:"#111827","stroke-width":"2",rx:"6"
-  }));
-
-  const k1 = el('text',{
-    x:ctrlX+ctrlW/2,y:ctrlY+28,
-    "font-size":"11",fill:"#111827","text-anchor":"middle"
-  });
+  svg.appendChild(el('rect',{x:ctrlX,y:ctrlY,width:ctrlW,height:ctrlH,fill:"#fff",stroke:"#111827","stroke-width":"2",rx:"6"}));
+  const k1 = el('text',{x:ctrlX+ctrlW/2,y:ctrlY+28,"font-size":"11",fill:"#111827","text-anchor":"middle"});
   k1.textContent="CTRL";
   svg.appendChild(k1);
-
-  const k2 = el('text',{
-    x:ctrlX+ctrlW/2,y:ctrlY+46,
-    "font-size":"10",fill:"#6b7280","text-anchor":"middle"
-  });
+  const k2 = el('text',{x:ctrlX+ctrlW/2,y:ctrlY+46,"font-size":"10",fill:"#6b7280","text-anchor":"middle"});
   k2.textContent="Panel";
   svg.appendChild(k2);
 
-  /* ======================
-     DIMENSIONS
-  ====================== */
+  // dimensions
   const dx1 = x0 + shaftPxW + 96;
   const dx2 = x0 + shaftPxW + 120;
-
-  dimLine(svg, dx2, yTop,       dx2, yTop+shaftPxH, `${totalH} mm`, dx2+12, yTop+shaftPxH/2);
-  dimLine(svg, dx1, yTop,       dx1, yTravelTop,    `${oh} mm`,     dx1+10, yTop+ohH_px/2);
-  dimLine(svg, dx1, yTravelTop, dx1, yPitTop,       `${travel} mm`, dx1+10, yTravelTop+travelH_px/2);
-  dimLine(svg, dx1, yPitTop,    dx1, yBottom,       `${pit} mm`,    dx1+10, yPitTop+pitH_px/2);
+  dimLine(svg, dx2, yTop, dx2, yTop+shaftPxH, `${totalH} mm`, dx2+12, yTop+shaftPxH/2);
+  dimLine(svg, dx1, yTop, dx1, yTravelTop, `${oh} mm`, dx1+10, yTop+ohH_px/2);
+  dimLine(svg, dx1, yTravelTop, dx1, yPitTop, `${travel} mm`, dx1+10, yTravelTop+travelH_px/2);
+  dimLine(svg, dx1, yPitTop, dx1, yBottom, `${pit} mm`, dx1+10, yPitTop+pitH_px/2);
 
   const yDim = yTop + shaftPxH + 26;
   svg.appendChild(el('line',{x1:x0,y1:yDim,x2:x0+shaftPxW,y2:yDim,stroke:"#111827","stroke-width":"1"}));
   svg.appendChild(el('path',{d:`M ${x0} ${yDim} l 8 -4 l 0 8 z`, fill:"#111827"}));
   svg.appendChild(el('path',{d:`M ${x0+shaftPxW} ${yDim} l -8 -4 l 0 8 z`, fill:"#111827"}));
-
-  const wtxt = el('text',{
-    x:x0+shaftPxW/2,y:yDim-6,
-    "font-size":"12",fill:"#111827","text-anchor":"middle"
-  });
+  const wtxt = el('text',{x:x0+shaftPxW/2,y:yDim-6,"font-size":"12",fill:"#111827","text-anchor":"middle"});
   wtxt.textContent = `SHAFT W = ${shaftW} mm`;
   svg.appendChild(wtxt);
 
-  /* ======================
-     LABELS
-  ====================== */
+  // labels
   const t1 = el('text',{x:14,y:18,"font-size":"13",fill:"#111827"});
-  t1.textContent="SECTION VIEW (MRL • 1:1 • Rails • Buffers • Governor)";
+  t1.textContent="SECTION VIEW (MRL • Side CW • Rails • Buffers • Governor)";
   svg.appendChild(t1);
 
   const z1 = el('text',{x:x0+8,y:yTop+16,"font-size":"11",fill:"#6b7280"}); z1.textContent="OH"; svg.appendChild(z1);
@@ -715,23 +522,47 @@ function drawSection(travel, pit, oh, shaftW, cabinW, cwSide){
   const z3 = el('text',{x:x0+8,y:yPitTop+16,"font-size":"11",fill:"#6b7280"}); z3.textContent="PIT"; svg.appendChild(z3);
 }
 
+/* =======================
+   Main draw
+======================= */
+function draw(){
+  const shaftW = Number(document.getElementById('shaftW').value);
+  const shaftD = Number(document.getElementById('shaftD').value);
+  const cabinW = Number(document.getElementById('cabinW').value);
+  const cabinD = Number(document.getElementById('cabinD').value);
+  const doorW  = Number(document.getElementById('doorW').value);
+  const wallT  = Number(document.getElementById('wallT').value);
+  const cwSide = document.getElementById('cwSide')?.value || 'right';
 
+  const stops  = Number(document.getElementById('stops').value);
+  const floorH = Number(document.getElementById('floorH').value);
+  const pit    = Number(document.getElementById('pit').value);
+  const oh     = Number(document.getElementById('oh').value);
 
+  const travel = (Math.max(stops,2)-1) * floorH;
+
+  // guards
+  const cabinW2 = clamp(cabinW, 600, shaftW-200);
+  const cabinD2 = clamp(cabinD, 600, shaftD-200);
+  const doorW2  = clamp(doorW, 600, shaftW-200);
+  const wallT2  = clamp(wallT, 100, 400);
+
+  document.getElementById('badgeInfo').textContent =
+    `Shaft ${shaftW}×${shaftD} | Cabin ${cabinW2}×${cabinD2} | Door ${doorW2} | Travel ${travel} | Pit ${pit} | OH ${oh} | Section CW ${cwSide}`;
+
+  drawPlan(shaftW, shaftD, cabinW2, cabinD2, doorW2, wallT2);
+  drawSection(travel, pit, oh, shaftW, cabinW2, cwSide);
+}
 
 /* =======================
-   Events
+   PDF A4 (Watermark + Ref + QR if available)
+   Requirements:
+   - Logo: /images/logo.png (change if needed)
+   - QR lib (optional but recommended): /js/qrcode.min.js
 ======================= */
-document.getElementById('btnDraw').addEventListener('click', draw);
-document.getElementById('btnExportSVG').addEventListener('click', () => {
-  // يصدر المخططين كـ SVG منفصلين
-  exportSVG(document.getElementById('svgPlan'), 'lift-plan.svg');
-  exportSVG(document.getElementById('svgSec'), 'lift-section.svg');
-});
-
-// auto draw
-draw();
-  function openA4PrintPDF(){
+function openA4PrintPDF(){
   const projectName = (document.getElementById('projectName')?.value || 'Lift Layout').trim();
+  const refNo = generateRklRef();
 
   const shaftW = document.getElementById('shaftW')?.value || '';
   const shaftD = document.getElementById('shaftD')?.value || '';
@@ -745,212 +576,20 @@ draw();
 
   const planSVG = document.getElementById('svgPlan');
   const secSVG  = document.getElementById('svgSec');
-
   if(!planSVG || !secSVG){
     alert('لم يتم العثور على مخططات SVG');
     return;
   }
 
-  // ننسخ الـ SVG كما هو (Inline) حتى يطبع بدون مشاكل
   const planMarkup = planSVG.outerHTML;
   const secMarkup  = secSVG.outerHTML;
 
-  // تاريخ اليوم (اختياري)
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-GB'); // dd/mm/yyyy
 
-  const w = window.open('', '_blank');
-  if(!w){
-    alert('المتصفح منع فتح نافذة جديدة. فعّل Popups.');
-    return;
-  }
-
-  w.document.open();
-  w.document.write(`
-<!doctype html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Print A4 - ${escapeHtml(projectName)}</title>
-  <style>
-    /* ====== A4 Print Setup ====== */
-    *{ box-sizing:border-box; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-    body{ margin:0; font-family: Arial, system-ui, sans-serif; color:#111827; }
-
-    @page{ size:A4; margin:10mm; }
-
-    .page{
-      width: 190mm;          /* 210 - 2*10 */
-      height: 277mm;         /* 297 - 2*10 */
-      padding: 10mm;
-      position: relative;
-      border: 1.2px solid #111827;   /* إطار الصفحة */
-    }
-
-    .hdr{
-      display:flex; align-items:flex-start; justify-content:space-between;
-      gap:10mm; border-bottom:1px solid #e5e7eb; padding-bottom:6mm;
-    }
-    .hdr .left{ width: 60%; }
-    .hdr .right{ width: 40%; text-align:left; direction:ltr; }
-
-    .title{
-      font-size:16px; font-weight:700; margin:0 0 3mm;
-    }
-    .sub{
-      font-size:11px; color:#374151; margin:0;
-      line-height:1.6;
-    }
-    .meta{
-      font-size:11px; color:#111827; margin-top:2mm; line-height:1.6;
-    }
-    .meta b{ font-weight:700; }
-
-    .grid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6mm;
-      margin-top: 8mm;
-    }
-
-    .card{
-      border:1px solid #e5e7eb;
-      padding:4mm;
-      border-radius:4mm;
-    }
-    .card h3{
-      margin:0 0 3mm;
-      font-size:12px;
-      color:#111827;
-    }
-
-    /* نجبر الـ SVG يملأ البطاقة بشكل مناسب */
-    .card svg{
-      width: 100%;
-      height: auto;
-      display:block;
-    }
-
-    /* مقياس رسم (Scale bar) */
-    .scale{
-      margin-top:6mm;
-      display:flex; align-items:center; gap:4mm;
-      font-size:11px; color:#374151;
-    }
-    .bar{
-      width:60mm; height:4mm; border:1px solid #111827;
-      background: linear-gradient(90deg, #111827 0 50%, #ffffff 50% 100%);
-    }
-
-    .ftr{
-      position:absolute; bottom:6mm; left:10mm; right:10mm;
-      display:flex; justify-content:space-between; align-items:center;
-      border-top:1px solid #e5e7eb; padding-top:4mm;
-      font-size:10px; color:#6b7280;
-    }
-
-    /* إخفاء أي أزرار/عناصر غير مطلوبة */
-    .no-print{ display:none !important; }
-  </style>
-</head>
-<body>
-  <div class="page">
-
-    <div class="hdr">
-      <div class="left">
-        <p class="title">${escapeHtml(projectName)}</p>
-        <p class="sub">
-          مخطط مصعد MRL — (Plan + Section) — تصدير للطباعة بصيغة PDF.
-        </p>
-        <div class="meta">
-          <div><b>Date:</b> ${escapeHtml(dateStr)}</div>
-          <div><b>Stops:</b> ${escapeHtml(stops)} | <b>Floor H:</b> ${escapeHtml(floorH)} mm</div>
-          <div><b>Shaft:</b> ${escapeHtml(shaftW)}×${escapeHtml(shaftD)} mm | <b>Cabin:</b> ${escapeHtml(cabinW)}×${escapeHtml(cabinD)} mm</div>
-          <div><b>Door:</b> ${escapeHtml(doorW)} mm | <b>Pit:</b> ${escapeHtml(pit)} mm | <b>OH:</b> ${escapeHtml(oh)} mm</div>
-        </div>
-      </div>
-
-      <div class="right">
-        <div style="font-size:12px;font-weight:700;">RKL Lifts & Escalators</div>
-        <div style="font-size:10px;color:#6b7280;margin-top:2mm;">
-          Layout Sheet (A4)<br/>
-          Generated from Web Planner
-        </div>
-      </div>
-    </div>
-
-    <div class="grid">
-      <div class="card">
-        <h3>PLAN VIEW</h3>
-        ${planMarkup}
-      </div>
-
-      <div class="card">
-        <h3>SECTION VIEW (MRL)</h3>
-        ${secMarkup}
-      </div>
-    </div>
-
-    <div class="scale">
-      <div class="bar"></div>
-      <div>Scale (symbolic): output fits A4 page</div>
-    </div>
-
-    <div class="ftr">
-      <div>RKL • Lift Planner</div>
-      <div>Page 1 / 1</div>
-    </div>
-  </div>
-
-  <script>
-    // اطبع مباشرة
-    window.onload = () => {
-      window.focus();
-      window.print();
-    };
-  </script>
-</body>
-</html>
-  `);
-  w.document.close();
-}
-
-/* =======================
-   PDF Print
-======================= */
-function escapeHtml(s){
-  return String(s ?? '').replace(/[&<>"']/g, m => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
-  }[m]));
-}
-
-function openA4PrintPDF(){
-  const projectName = (document.getElementById('projectName')?.value || 'Lift Layout').trim();
-
-  const shaftW = document.getElementById('shaftW')?.value || '';
-  const shaftD = document.getElementById('shaftD')?.value || '';
-  const cabinW = document.getElementById('cabinW')?.value || '';
-  const cabinD = document.getElementById('cabinD')?.value || '';
-  const doorW  = document.getElementById('doorW')?.value || '';
-  const pit    = document.getElementById('pit')?.value || '';
-  const oh     = document.getElementById('oh')?.value || '';
-  const stops  = document.getElementById('stops')?.value || '';
-  const floorH = document.getElementById('floorH')?.value || '';
-
-  const planSVG = document.getElementById('svgPlan');
-  const secSVG  = document.getElementById('svgSec');
-
-  if(!planSVG || !secSVG){
-    alert('لم يتم العثور على مخططات SVG');
-    return;
-  }
-
-  const planMarkup = planSVG.outerHTML;
-  const secMarkup  = secSVG.outerHTML;
-
-  const now = new Date();
-  const dateStr = now.toLocaleDateString('en-GB');
+  const logoPath = "/images/logo.png";         // غيّره إذا شعارك بمسار مختلف
+  const qrLibPath = "/js/qrcode.min.js";       // ضع مكتبة QR هنا (مستحسن)
+  const requestUrl = `${location.origin}/quote-request.html?ref=${encodeURIComponent(refNo)}&project=${encodeURIComponent(projectName)}`;
 
   const w = window.open('', '_blank');
   if(!w){
@@ -976,77 +615,174 @@ function openA4PrintPDF(){
       padding:10mm;
       position:relative;
       border:1.2px solid #111827;
+      overflow:hidden;
+      background:#fff;
     }
 
-    .hdr{
-      display:flex; justify-content:space-between; gap:10mm;
-      border-bottom:1px solid #e5e7eb; padding-bottom:6mm;
+    /* Watermark */
+    .watermark{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      pointer-events:none;
+      opacity:0.06;
+      z-index:0;
     }
-    .hdr .left{ width:60%; }
-    .hdr .right{ width:40%; text-align:left; direction:ltr; }
+    .watermark img{
+      width:140mm;
+      height:auto;
+      filter:grayscale(100%);
+    }
+
+    .content{ position:relative; z-index:1; }
+
+    .hdr{
+      display:flex; align-items:flex-start; justify-content:space-between;
+      gap:10mm; border-bottom:1px solid #e5e7eb; padding-bottom:6mm;
+    }
+    .hdr .left{ width:64%; }
+    .hdr .right{ width:36%; text-align:left; direction:ltr; }
 
     .title{ font-size:16px; font-weight:700; margin:0 0 3mm; }
     .sub{ font-size:11px; color:#374151; margin:0; line-height:1.6; }
-    .meta{ font-size:11px; margin-top:2mm; line-height:1.6; }
+    .meta{ font-size:11px; color:#111827; margin-top:2mm; line-height:1.65; }
     .meta b{ font-weight:700; }
 
-    .grid{
-      display:grid; grid-template-columns:1fr 1fr;
-      gap:6mm; margin-top:8mm;
+    .refbox{
+      margin-top:3mm;
+      border:1px solid #111827;
+      border-radius:4mm;
+      padding:3mm;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:4mm;
+      background:#fff;
     }
-    .card{ border:1px solid #e5e7eb; padding:4mm; border-radius:4mm; }
+    .refbox .ref{ font-size:11px; line-height:1.5; }
+    .refbox .ref .big{ font-size:12px; font-weight:700; letter-spacing:0.2px; }
+    .qrwrap{
+      width:26mm; height:26mm;
+      border:1px solid #111827;
+      border-radius:3mm;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:2mm;
+      background:#fff;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6mm;
+      margin-top: 8mm;
+    }
+    .card{
+      border:1px solid #e5e7eb;
+      padding:4mm;
+      border-radius:4mm;
+      background:#fff;
+    }
     .card h3{ margin:0 0 3mm; font-size:12px; }
     .card svg{ width:100%; height:auto; display:block; }
 
     .ftr{
       position:absolute; bottom:6mm; left:10mm; right:10mm;
-      display:flex; justify-content:space-between;
+      display:flex; justify-content:space-between; align-items:center;
       border-top:1px solid #e5e7eb; padding-top:4mm;
       font-size:10px; color:#6b7280;
+      z-index:1;
+      background:transparent;
     }
+
+    .logoTop img{ width:24mm; height:auto; }
   </style>
 </head>
 <body>
   <div class="page">
-    <div class="hdr">
-      <div class="left">
-        <p class="title">${escapeHtml(projectName)}</p>
-        <p class="sub">MRL Lift Layout — (Plan + Section) — PDF A4</p>
-        <div class="meta">
-          <div><b>Date:</b> ${escapeHtml(dateStr)}</div>
-          <div><b>Stops:</b> ${escapeHtml(stops)} | <b>Floor H:</b> ${escapeHtml(floorH)} mm</div>
-          <div><b>Shaft:</b> ${escapeHtml(shaftW)}×${escapeHtml(shaftD)} mm | <b>Cabin:</b> ${escapeHtml(cabinW)}×${escapeHtml(cabinD)} mm</div>
-          <div><b>Door:</b> ${escapeHtml(doorW)} mm | <b>Pit:</b> ${escapeHtml(pit)} mm | <b>OH:</b> ${escapeHtml(oh)} mm</div>
-        </div>
-      </div>
-
-      <div class="right">
-        <div style="font-size:12px;font-weight:700;">RKL Lifts & Escalators</div>
-        <div style="font-size:10px;color:#6b7280;margin-top:2mm;">
-          Layout Sheet (A4)<br/>Generated from Web Planner
-        </div>
-      </div>
+    <div class="watermark">
+      <img src="${logoPath}" alt="Watermark Logo" onerror="this.style.display='none'">
     </div>
 
-    <div class="grid">
-      <div class="card">
-        <h3>PLAN VIEW</h3>
-        ${planMarkup}
+    <div class="content">
+      <div class="hdr">
+        <div class="left">
+          <p class="title">${escapeHtml(projectName)}</p>
+          <p class="sub">MRL Lift Layout — (Plan + Section) — A4 PDF Output</p>
+
+          <div class="meta">
+            <div><b>Date:</b> ${escapeHtml(dateStr)} &nbsp;&nbsp; <b>Ref:</b> ${escapeHtml(refNo)}</div>
+            <div><b>Stops:</b> ${escapeHtml(stops)} | <b>Floor H:</b> ${escapeHtml(floorH)} mm</div>
+            <div><b>Shaft:</b> ${escapeHtml(shaftW)}×${escapeHtml(shaftD)} mm | <b>Cabin:</b> ${escapeHtml(cabinW)}×${escapeHtml(cabinD)} mm</div>
+            <div><b>Door:</b> ${escapeHtml(doorW)} mm | <b>Pit:</b> ${escapeHtml(pit)} mm | <b>OH:</b> ${escapeHtml(oh)} mm</div>
+          </div>
+
+          <div class="refbox">
+            <div class="ref">
+              <div>Reference No.</div>
+              <div class="big">${escapeHtml(refNo)}</div>
+              <div style="color:#6b7280;font-size:10px;margin-top:1mm;">QR opens request link</div>
+            </div>
+            <div class="qrwrap">
+              <div id="qr"></div>
+            </div>
+          </div>
+
+          <div style="font-size:10px;color:#6b7280;margin-top:2mm;direction:ltr">
+            ${escapeHtml(requestUrl)}
+          </div>
+        </div>
+
+        <div class="right">
+          <div class="logoTop">
+            <img src="${logoPath}" alt="RKL Logo" onerror="this.style.display='none'">
+          </div>
+          <div style="font-size:12px;font-weight:700;">RKL Lifts & Escalators</div>
+          <div style="font-size:10px;color:#6b7280;margin-top:2mm;">
+            Layout Sheet (A4)<br/>
+            Generated from Web Planner
+          </div>
+        </div>
       </div>
-      <div class="card">
-        <h3>SECTION VIEW (MRL)</h3>
-        ${secMarkup}
+
+      <div class="grid">
+        <div class="card">
+          <h3>PLAN VIEW</h3>
+          ${planMarkup}
+        </div>
+
+        <div class="card">
+          <h3>SECTION VIEW (MRL)</h3>
+          ${secMarkup}
+        </div>
       </div>
     </div>
 
     <div class="ftr">
-      <div>RKL • Lift Planner</div>
+      <div>Ref: ${escapeHtml(refNo)}</div>
       <div>Page 1 / 1</div>
     </div>
   </div>
 
+  <script src="${qrLibPath}"><\/script>
   <script>
-    window.onload = () => { window.focus(); window.print(); };
+    (function(){
+      const url = ${JSON.stringify(requestUrl)};
+      const el = document.getElementById('qr');
+
+      // إذا مكتبة QR موجودة، نولّد QR موثوق 100%
+      if(window.QRCode && el){
+        new QRCode(el, { text:url, width:96, height:96, correctLevel: QRCode.CorrectLevel.M });
+      }else{
+        // fallback: إذا ما في مكتبة
+        el.innerHTML = '<div style="font-size:9px;line-height:1.3;text-align:center">QR lib missing<br/>/js/qrcode.min.js</div>';
+      }
+
+      window.onload = () => { window.focus(); window.print(); };
+    })();
   <\/script>
 </body>
 </html>
@@ -1055,7 +791,7 @@ function openA4PrintPDF(){
 }
 
 /* =======================
-   Events
+   Events (bind once)
 ======================= */
 document.getElementById('btnDraw').addEventListener('click', draw);
 
@@ -1066,14 +802,8 @@ document.getElementById('btnExportSVG').addEventListener('click', () => {
 
 document.getElementById('btnExportPDF').addEventListener('click', openA4PrintPDF);
 
-// auto draw (مرة واحدة)
+// init
 draw();
-
-
-  
 </script>
-
-
-  
 </body>
 </html>
