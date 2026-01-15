@@ -174,7 +174,8 @@
       <div class="note">
         ✅ Plan: الكونترويت خلفي Rear-Center<br>
         ✅ Section: الكونترويت جانبي يمين/يسار + Rails + Buffers + Governor + MRL Machine داخل OH<br>
-        ✅ PDF: A4 مع إطار + Watermark (logo) + Ref تلقائي + QR (إذا مكتبة QR موجودة)
+        ✅ PDF: A4 مع إطار + Watermark (logo) + Reference No تلقائي
+
       </div>
     </div>
 <div id="warnBox" style="margin-top:10px;padding:10px;border:1px solid #e5e7eb;border-radius:12px;background:#fff">
@@ -812,7 +813,7 @@ function openA4PrintPDF(){
 
   const logoPath = "/images/logo.png";         // غيّره إذا شعارك بمسار مختلف
       // ضع مكتبة QR هنا (مستحسن)
-  const requestUrl = `${location.origin}/quote-request.html?ref=${encodeURIComponent(refNo)}&project=${encodeURIComponent(projectName)}`;
+ 
 
   const w = window.open('', '_blank');
   if(!w){
@@ -947,14 +948,11 @@ function openA4PrintPDF(){
             <div class="ref">
               <div>Reference No.</div>
               <div class="big">${escapeHtml(refNo)}</div>
-              <div style="color:#6b7280;font-size:10px;margin-top:1mm;">QR opens request link</div>
+              
             </div>
            
           </div>
 
-          <div style="font-size:10px;color:#6b7280;margin-top:2mm;direction:ltr">
-            ${escapeHtml(requestUrl)}
-          </div>
         </div>
 
         <div class="right">
