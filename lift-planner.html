@@ -809,15 +809,13 @@ function openA4PrintPDF(){
   const secMarkup  = secSVG.outerHTML;
 
   const now = new Date();
-  const dateStr = now.toLocaleDateString('en-GB'); // dd/mm/yyyy
+  const dateStr = now.toLocaleDateString('en-GB');
 
-  const logoPath = "/images/logo.png";         // غيّره إذا شعارك بمسار مختلف
-      // ضع مكتبة QR هنا (مستحسن)
- 
+  const logoPath = "/images/logo.png"; // عدّل المسار إذا لزم
 
   const w = window.open('', '_blank');
   if(!w){
-    alert('المتصفح منع فتح نافذة جديدة. فعّل Popups.');
+    alert('المتصفح منع فتح نافذة جديدة للطباعة (Popup Blocker). فعّل Popups ثم جرّب مرة ثانية.');
     return;
   }
 
@@ -843,22 +841,12 @@ function openA4PrintPDF(){
       background:#fff;
     }
 
-    /* Watermark */
     .watermark{
-      position:absolute;
-      inset:0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      pointer-events:none;
-      opacity:0.06;
-      z-index:0;
+      position:absolute; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      pointer-events:none; opacity:0.06; z-index:0;
     }
-    .watermark img{
-      width:140mm;
-      height:auto;
-      filter:grayscale(100%);
-    }
+    .watermark img{ width:140mm; height:auto; filter:grayscale(100%); }
 
     .content{ position:relative; z-index:1; }
 
@@ -879,24 +867,10 @@ function openA4PrintPDF(){
       border:1px solid #111827;
       border-radius:4mm;
       padding:3mm;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:4mm;
       background:#fff;
+      width:fit-content;
     }
-    .refbox .ref{ font-size:11px; line-height:1.5; }
-    .refbox .ref .big{ font-size:12px; font-weight:700; letter-spacing:0.2px; }
-    .qrwrap{
-      width:26mm; height:26mm;
-      border:1px solid #111827;
-      border-radius:3mm;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:2mm;
-      background:#fff;
-    }
+    .refbox .big{ font-size:12px; font-weight:700; letter-spacing:.2px; }
 
     .grid{
       display:grid;
@@ -919,16 +893,14 @@ function openA4PrintPDF(){
       border-top:1px solid #e5e7eb; padding-top:4mm;
       font-size:10px; color:#6b7280;
       z-index:1;
-      background:transparent;
     }
-
     .logoTop img{ width:24mm; height:auto; }
   </style>
 </head>
 <body>
   <div class="page">
     <div class="watermark">
-      <img src="${logoPath}" alt="Watermark Logo" onerror="this.style.display='none'">
+      <img src="${logoPath}" alt="Watermark" onerror="this.style.display='none'">
     </div>
 
     <div class="content">
@@ -945,14 +917,9 @@ function openA4PrintPDF(){
           </div>
 
           <div class="refbox">
-            <div class="ref">
-              <div>Reference No.</div>
-              <div class="big">${escapeHtml(refNo)}</div>
-              
-            </div>
-           
+            <div>Reference No.</div>
+            <div class="big">${escapeHtml(refNo)}</div>
           </div>
-
         </div>
 
         <div class="right">
@@ -961,8 +928,7 @@ function openA4PrintPDF(){
           </div>
           <div style="font-size:12px;font-weight:700;">RKL Lifts & Escalators</div>
           <div style="font-size:10px;color:#6b7280;margin-top:2mm;">
-            Layout Sheet (A4)<br/>
-            Generated from Web Planner
+            Layout Sheet (A4)<br/>Generated from Web Planner
           </div>
         </div>
       </div>
@@ -972,7 +938,6 @@ function openA4PrintPDF(){
           <h3>PLAN VIEW</h3>
           ${planMarkup}
         </div>
-
         <div class="card">
           <h3>SECTION VIEW (MRL)</h3>
           ${secMarkup}
@@ -985,20 +950,16 @@ function openA4PrintPDF(){
       <div>Page 1 / 1</div>
     </div>
   </div>
-<script>
-  window.onload = () => {
-    window.focus();
-    window.print();
-  };
-</script>
 
- 
-
+  <script>
+    window.onload = () => { window.focus(); window.print(); };
+  <\/script>
 </body>
 </html>
   `);
   w.document.close();
 }
+
 
 /* =======================
    Events (bind once)
