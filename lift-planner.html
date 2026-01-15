@@ -696,13 +696,13 @@ const selectedStop = Number(slider?.value || Math.ceil(stops/2));
 drawSection(travel, pit, oh, shaftW, cabinW2, cwSide, selectedStop, stops, floorH);
 
 
+  updateWarnings({
+    shaftW, shaftD,
+    cabinW: cabinW2, cabinD: cabinD2,
+    doorW: doorW2,
+    pit, oh
+  });
 }
-updateWarnings({
-  shaftW, shaftD,
-  cabinW: cabinW2, cabinD: cabinD2,
-  doorW: doorW2,
-  pit, oh
-});
 
 /* =======================
    PDF A4 (Watermark + Ref + QR if available)
