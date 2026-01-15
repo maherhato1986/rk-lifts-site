@@ -459,6 +459,12 @@ input, select, textarea, button {
             data-action="quote">
      عرض سعر - عقود التوريد والتركيب 
     </button>
+    <button class="btn btn-secondary btn-sm"
+        data-index="${index}"
+        data-action="lift_plan">
+  مخطط مصاعد للعميل
+</button>
+
   </td>
 `;
 
@@ -573,6 +579,11 @@ input, select, textarea, button {
       // تم حذف / من بداية الرابط ليعمل الملف من المجلد مباشرة
       window.location.href = 'elevator-quote.html';
     }
+      // مخطط المصاعد (Lift Planner)
+if(action === 'lift_plan'){
+  window.location.href = 'lift-planner.html';
+}
+
 });
 
 
@@ -655,6 +666,7 @@ input, select, textarea, button {
     // عند تحميل الصفحة لأول مرة: عرض العملاء الموجودين (إن وجدوا)
     renderTable();
 </script>
+
 
 
 
