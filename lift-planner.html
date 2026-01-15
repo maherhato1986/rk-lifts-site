@@ -349,69 +349,121 @@ function drawSection(travel, pit, oh){
   const pad=52;
 
   // mm to px (scale fixed)
-  const scale = 10; // 1px=10mm for vertical drawing (better fit)
+  const scale = 10; // 1px=10mm
   const totalH = pit + travel + oh;
 
   // fit vertical
   const usableH = H - pad*2;
   const f = usableH / (totalH/scale);
 
-  // "shaft" width in view (symbolic)
-  const shaftPxW = 180;
-  const x0 = 120;
+  // section proportions
+  const shaftPxW = 210;   // section width in px (symbolic)
+  const x0 = 110;
   const yTop = pad;
   const shaftH = (totalH/scale) * f;
 
-  // outer wall (as section) with hatch
+  // walls
   const wallT = 18;
   svg.appendChild(el('rect',{x:x0-wallT, y:yTop, width:shaftPxW+2*wallT, height:shaftH, fill:"url(#hatch)", stroke:"#111827","stroke-width":"2"}));
-  // inner opening
   svg.appendChild(el('rect',{x:x0, y:yTop, width:shaftPxW, height:shaftH, fill:"#fff", stroke:"#111827","stroke-width":"2"}));
 
-  // mark pit / travel / OH levels
-  const pitH = (pit/scale)*f;
+  // zones
+  const pitH    = (pit/scale)*f;
   const travelH = (travel/scale)*f;
-  const ohH = (oh/scale)*f;
+  const ohH     = (oh/scale)*f;
 
-  const yPitTop = yTop + ohH + travelH;      // top of pit region
-  const yTravelTop = yTop + ohH;             // top of travel region
-  const yShaftBottom = yTop + shaftH;
+  const yTravelTop   = yTop + ohH;           // bottom of OH
+  const yPitTop      = yTop + ohH + travelH; // bottom of travel / top of pit
+  const yBottom      = yTop + shaftH;
 
-  // pit floor line
-  svg.appendChild(el('line',{x1:x0, y1:yShaftBottom, x2:x0+shaftPxW, y2:yShaftBottom, stroke:"#111827","stroke-width":"2"}));
-  // pit label
-  const p = el('text',{x:x0+shaftPxW+18,y:yShaftBottom-6,"font-size":"12",fill:"#111827"});
-  p.textContent = `PIT ${pit}mm`;
-  svg.appendChild(p);
-
-  // travel bounds line
-  svg.appendChild(el('line',{x1:x0, y1:yPitTop, x2:x0+shaftPxW, y2:yPitTop, stroke:"#cbd5e1","stroke-width":"2"}));
-  // OH bounds line
+  // helper lines
   svg.appendChild(el('line',{x1:x0, y1:yTravelTop, x2:x0+shaftPxW, y2:yTravelTop, stroke:"#cbd5e1","stroke-width":"2"}));
+  svg.appendChild(el('line',{x1:x0, y1:yPitTop, x2:x0+shaftPxW, y2:yPitTop, stroke:"#cbd5e1","stroke-width":"2"}));
+  svg.appendChild(el('line',{x1:x0, y1:yBottom, x2:x0+shaftPxW, y2:yBottom, stroke:"#111827","stroke-width":"2"}));
 
-  // simple cabin position indicator (mid travel)
-  const cabH = 70;
+  // ---------- MRL Elements ----------
+  // Counterweight (right side)
+  const cwW = 26, cwH = 86;
+  const cwX = x0 + shaftPxW - cwW - 14;
+  const cwY = yTravelTop + travelH/2 - cwH/2;
+  svg.appendChild(el('rect',{x:cwX, y:cwY, width:cwW, height:cwH, fill:"#f8fafc", stroke:"#111827","stroke-width":"2", rx:"4"}));
+  const cwt = el('text',{x:cwX+cwW/2, y:cwY+cwH+16, "font-size":"11", fill:"#111827", "text-anchor":"middle"});
+  cwt.textContent = "CW";
+  svg.appendChild(cwt);
+
+  // Cabin (mid travel)
+  const cabW = shaftPxW - 90;
+  const cabH = 78;
+  const cabX = x0 + 30;
   const cabY = yTravelTop + travelH/2 - cabH/2;
-  svg.appendChild(el('rect',{x:x0+26, y:cabY, width:shaftPxW-52, height:cabH, fill:"#f8fafc", stroke:"#111827","stroke-width":"2", rx:"6"}));
-  const ct = el('text',{x:x0+shaftPxW/2, y:cabY+cabH/2+4,"font-size":"12",fill:"#111827","text-anchor":"middle"});
+  svg.appendChild(el('rect',{x:cabX, y:cabY, width:cabW, height:cabH, fill:"#f8fafc", stroke:"#111827","stroke-width":"2", rx:"6"}));
+  const ct = el('text',{x:cabX+cabW/2, y:cabY+cabH/2+4,"font-size":"12",fill:"#111827","text-anchor":"middle"});
   ct.textContent = "CABIN";
   svg.appendChild(ct);
 
-  // dimension on right: total height, travel, pit, oh
-  // total
-  dimLine(svg, x0+shaftPxW+40, yTop, x0+shaftPxW+40, yTop+shaftH, `${totalH} mm`, x0+shaftPxW+52, yTop+shaftH/2);
-  // OH
-  dimLine(svg, x0+shaftPxW+20, yTop, x0+shaftPxW+20, yTravelTop, `${oh} mm`, x0+shaftPxW+28, yTop + ohH/2);
-  // Travel
-  dimLine(svg, x0+shaftPxW+20, yTravelTop, x0+shaftPxW+20, yPitTop, `${travel} mm`, x0+shaftPxW+28, yTravelTop + travelH/2);
-  // Pit
-  dimLine(svg, x0+shaftPxW+20, yPitTop, x0+shaftPxW+20, yShaftBottom, `${pit} mm`, x0+shaftPxW+28, yPitTop + pitH/2);
+  // Machine in OH (MRL)
+  const machW = 110, machH = 44;
+  const machX = x0 + 34;
+  const machY = yTop + 22;
+  svg.appendChild(el('rect',{x:machX, y:machY, width:machW, height:machH, fill:"#ffffff", stroke:"#111827","stroke-width":"2", rx:"6"}));
+  const mt = el('text',{x:machX+machW/2, y:machY+machH/2+4, "font-size":"12", fill:"#111827", "text-anchor":"middle"});
+  mt.textContent = "MRL MACHINE";
+  svg.appendChild(mt);
+
+  // Sheave (pulley)
+  const shX = machX + machW + 18;
+  const shY = machY + machH/2;
+  svg.appendChild(el('circle',{cx:shX, cy:shY, r:16, fill:"#ffffff", stroke:"#111827","stroke-width":"2"}));
+  svg.appendChild(el('circle',{cx:shX, cy:shY, r:4, fill:"#111827"}));
+
+  // Ropes (symbolic lines)
+  const rope1 = el('path',{d:`M ${shX-10} ${shY+16} L ${cabX+18} ${cabY} L ${cabX+18} ${cabY+cabH}`, fill:"none", stroke:"#111827", "stroke-width":"1.6"});
+  const rope2 = el('path',{d:`M ${shX+10} ${shY+16} L ${cwX+cwW/2} ${cwY} L ${cwX+cwW/2} ${cwY+cwH}`, fill:"none", stroke:"#111827", "stroke-width":"1.6"});
+  svg.appendChild(rope1);
+  svg.appendChild(rope2);
+
+  // Controller (symbolic) near top landing (right side outside shaft)
+  const ctrlW = 62, ctrlH = 70;
+  const ctrlX = x0 + shaftPxW + 20;
+  const ctrlY = yTop + ohH + 10;
+  svg.appendChild(el('rect',{x:ctrlX, y:ctrlY, width:ctrlW, height:ctrlH, fill:"#ffffff", stroke:"#111827","stroke-width":"2", rx:"6"}));
+  const k1 = el('text',{x:ctrlX+ctrlW/2, y:ctrlY+28, "font-size":"11", fill:"#111827", "text-anchor":"middle"});
+  k1.textContent = "CTRL";
+  svg.appendChild(k1);
+  const k2 = el('text',{x:ctrlX+ctrlW/2, y:ctrlY+46, "font-size":"10", fill:"#6b7280", "text-anchor":"middle"});
+  k2.textContent = "Panel";
+  svg.appendChild(k2);
+
+  // Label "MRL (No Machine Room)"
+  const lbl = el('text',{x:14,y:38,"font-size":"12",fill:"#6b7280"});
+  lbl.textContent = "MRL: No Machine Room (Machine in OH)";
+  svg.appendChild(lbl);
+
+  // ---------- Dimensions (right side) ----------
+  dimLine(svg, x0+shaftPxW+120, yTop, x0+shaftPxW+120, yTop+shaftH, `${totalH} mm`, x0+shaftPxW+132, yTop+shaftH/2);
+  dimLine(svg, x0+shaftPxW+96, yTop, x0+shaftPxW+96, yTravelTop, `${oh} mm`, x0+shaftPxW+104, yTop + ohH/2);
+  dimLine(svg, x0+shaftPxW+96, yTravelTop, x0+shaftPxW+96, yPitTop, `${travel} mm`, x0+shaftPxW+104, yTravelTop + travelH/2);
+  dimLine(svg, x0+shaftPxW+96, yPitTop, x0+shaftPxW+96, yBottom, `${pit} mm`, x0+shaftPxW+104, yPitTop + pitH/2);
+
+  // zone labels
+  const z1 = el('text',{x:x0+8, y:yTop+16, "font-size":"11", fill:"#6b7280"});
+  z1.textContent = "OH";
+  svg.appendChild(z1);
+
+  const z2 = el('text',{x:x0+8, y:yTravelTop+16, "font-size":"11", fill:"#6b7280"});
+  z2.textContent = "TRAVEL";
+  svg.appendChild(z2);
+
+  const z3 = el('text',{x:x0+8, y:yPitTop+16, "font-size":"11", fill:"#6b7280"});
+  z3.textContent = "PIT";
+  svg.appendChild(z3);
 
   // title
   const title = el('text',{x:14,y:18,"font-size":"13",fill:"#111827"});
-  title.textContent = "SECTION VIEW";
+  title.textContent = "SECTION VIEW (MRL)";
   svg.appendChild(title);
 }
+
 
 /* =======================
    Events
