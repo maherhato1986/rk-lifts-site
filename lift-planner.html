@@ -811,7 +811,7 @@ function openA4PrintPDF(){
   const dateStr = now.toLocaleDateString('en-GB'); // dd/mm/yyyy
 
   const logoPath = "/images/logo.png";         // غيّره إذا شعارك بمسار مختلف
-  const qrLibPath = "/js/qrcode.min.js";       // ضع مكتبة QR هنا (مستحسن)
+      // ضع مكتبة QR هنا (مستحسن)
   const requestUrl = `${location.origin}/quote-request.html?ref=${encodeURIComponent(refNo)}&project=${encodeURIComponent(projectName)}`;
 
   const w = window.open('', '_blank');
@@ -949,9 +949,7 @@ function openA4PrintPDF(){
               <div class="big">${escapeHtml(refNo)}</div>
               <div style="color:#6b7280;font-size:10px;margin-top:1mm;">QR opens request link</div>
             </div>
-            <div class="qrwrap">
-              <div id="qr"></div>
-            </div>
+           
           </div>
 
           <div style="font-size:10px;color:#6b7280;margin-top:2mm;direction:ltr">
@@ -989,24 +987,15 @@ function openA4PrintPDF(){
       <div>Page 1 / 1</div>
     </div>
   </div>
+<script>
+  window.onload = () => {
+    window.focus();
+    window.print();
+  };
+</script>
 
-  <script src="${qrLibPath}"><\/script>
-  <script>
-    (function(){
-      const url = ${JSON.stringify(requestUrl)};
-      const el = document.getElementById('qr');
+ 
 
-      // إذا مكتبة QR موجودة، نولّد QR موثوق 100%
-      if(window.QRCode && el){
-        new QRCode(el, { text:url, width:96, height:96, correctLevel: QRCode.CorrectLevel.M });
-      }else{
-        // fallback: إذا ما في مكتبة
-        el.innerHTML = '<div style="font-size:9px;line-height:1.3;text-align:center">QR lib missing<br/>/js/qrcode.min.js</div>';
-      }
-
-      window.onload = () => { window.focus(); window.print(); };
-    })();
-  <\/script>
 </body>
 </html>
   `);
