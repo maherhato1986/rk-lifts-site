@@ -788,15 +788,33 @@ function openA4PrintPDF(){
   const projectName = (document.getElementById('projectName')?.value || 'Lift Layout').trim();
   const refNo = generateRklRef();
 
-  const shaftW = document.getElementById('shaftW')?.value || '';
-  const shaftD = document.getElementById('shaftD')?.value || '';
-  const cabinW = document.getElementById('cabinW')?.value || '';
-  const cabinD = document.getElementById('cabinD')?.value || '';
-  const doorW  = document.getElementById('doorW')?.value || '';
-  const pit    = document.getElementById('pit')?.value || '';
-  const oh     = document.getElementById('oh')?.value || '';
-  const stops  = document.getElementById('stops')?.value || '';
-  const floorH = document.getElementById('floorH')?.value || '';
+  // Customer (optional)
+  let customerLine = '';
+  try{
+    const c = JSON.parse(localStorage.getItem('rkl_selected_customer') || 'null');
+    if(c && (c.customer_name || c.mobile || c.city)){
+      const name = c.customer_name || '—';
+      const city = c.city || '—';
+      const mobile = c.mobile || '—';
+      customerLine = `${name} | ${city} | ${mobile}`;
+    }
+  }catch(e){}
+
+  const shaftW = Number(document.getElementById('shaftW')?.value || 0);
+  const shaftD = Number(document.getElementById('shaftD')?.value || 0);
+  const cabinW = Number(document.getElementById('cabinW')?.value || 0);
+  const cabinD = Number(document.getElementById('cabinD')?.value || 0);
+  const doorW  = Number(document.getElementById('doorW')?.value || 0);
+  const pit    = Number(document.getElementById('pit')?.value || 0);
+  const oh     = Number(document.getElementById('oh')?.value || 0);
+  const stops  = Number(document.getElementById('stops')?.value || 2);
+  const floorH = Number(document.getElementById('floorH')?.value || 0);
+
+  const cwSide = document.getElementById('cwSide')?.value || 'right';
+  const selectedStop = Number(document.getElementById('stopPos')?.value || Math.ceil(stops/2));
+
+  const travel = (Math.max(stops,2)-1) * floorH;
+  const totalH = pit + travel + oh;
 
   const planSVG = document.getElementById('svgPlan');
   const secSVG  = document.getElementById('svgSec');
@@ -805,19 +823,46 @@ function openA4PrintPDF(){
     return;
   }
 
+  // نسخة مختصرة (Page 1)
   const planMarkup = planSVG.outerHTML;
-  const secMarkup  = secSVG.outerHTML;
+  const secMarkupSmall  = secSVG.outerHTML;
+
+  // نسخة مكبرة للـ Section (Page 2)
+  // نستخدم نفس الـ SVG لكن نكبره داخل CSS (بدون تعديل الرسم)
+  const secMarkupBig = secSVG.outerHTML;
+
+  // timeline of floors for Page 2
+  const levels = [];
+  const sStops = Math.max(2, stops);
+  for(let i=0;i<sStops;i++){
+    // L0 أسفل - L(n) أعلى (نفس منطقك)
+    const L = (sStops - 1) - i;
+    const isSel = (i+1) === selectedStop;
+    levels.push({ label:`L${L}`, isSel });
+  }
 
   const now = new Date();
-  const dateStr = now.toLocaleDateString('en-GB');
+  const dateStr = now.toLocaleDateString('en-GB'); // dd/mm/yyyy
+  const timeStr = now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
 
-  const logoPath = "/images/logo.png"; // عدّل المسار إذا لزم
+  const logoPath = "/images/logo.png"; // عدّل إذا لزم
 
   const w = window.open('', '_blank');
   if(!w){
-    alert('المتصفح منع فتح نافذة جديدة للطباعة (Popup Blocker). فعّل Popups ثم جرّب مرة ثانية.');
+    alert('المتصفح منع فتح نافذة جديدة للطباعة (Popup Blocker). فعّل Popups لموقعك ثم جرّب مرة ثانية.');
     return;
   }
+
+  // HTML helper
+  const levelRowsHtml = levels.map(l => `
+    <div class="lvl ${l.isSel ? 'sel':''}">
+      <div class="tag">${l.label}</div>
+      <div class="door">
+        <span class="tick"></span>
+        <span class="txt">Door opening</span>
+      </div>
+    </div>
+  `).join('');
 
   w.document.open();
   w.document.write(`
@@ -826,7 +871,7 @@ function openA4PrintPDF(){
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Print A4 - ${escapeHtml(projectName)}</title>
+  <title>Lift Layout PDF - ${escapeHtml(projectName)}</title>
   <style>
     *{ box-sizing:border-box; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
     body{ margin:0; font-family: Arial, system-ui, sans-serif; color:#111827; }
@@ -840,11 +885,15 @@ function openA4PrintPDF(){
       overflow:hidden;
       background:#fff;
     }
+    .page-break{ page-break-before: always; }
 
+    /* Watermark */
     .watermark{
       position:absolute; inset:0;
       display:flex; align-items:center; justify-content:center;
-      pointer-events:none; opacity:0.06; z-index:0;
+      pointer-events:none;
+      opacity:0.05;
+      z-index:0;
     }
     .watermark img{ width:140mm; height:auto; filter:grayscale(100%); }
 
@@ -854,25 +903,26 @@ function openA4PrintPDF(){
       display:flex; align-items:flex-start; justify-content:space-between;
       gap:10mm; border-bottom:1px solid #e5e7eb; padding-bottom:6mm;
     }
-    .hdr .left{ width:64%; }
-    .hdr .right{ width:36%; text-align:left; direction:ltr; }
+    .hdr .left{ width:66%; }
+    .hdr .right{ width:34%; text-align:left; direction:ltr; }
 
-    .title{ font-size:16px; font-weight:700; margin:0 0 3mm; }
+    .title{ font-size:16px; font-weight:700; margin:0 0 2mm; }
     .sub{ font-size:11px; color:#374151; margin:0; line-height:1.6; }
-    .meta{ font-size:11px; color:#111827; margin-top:2mm; line-height:1.65; }
+
+    .meta{ font-size:11px; margin-top:2mm; line-height:1.65; }
     .meta b{ font-weight:700; }
 
     .refbox{
       margin-top:3mm;
       border:1px solid #111827;
       border-radius:4mm;
-      padding:3mm;
+      padding:3mm 4mm;
+      display:inline-block;
       background:#fff;
-      width:fit-content;
     }
     .refbox .big{ font-size:12px; font-weight:700; letter-spacing:.2px; }
 
-    .grid{
+    .grid2{
       display:grid;
       grid-template-columns: 1fr 1fr;
       gap: 6mm;
@@ -883,21 +933,98 @@ function openA4PrintPDF(){
       padding:4mm;
       border-radius:4mm;
       background:#fff;
+      min-height: 96mm;
     }
     .card h3{ margin:0 0 3mm; font-size:12px; }
     .card svg{ width:100%; height:auto; display:block; }
 
+    .summary{
+      margin-top:6mm;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:6mm;
+    }
+    .box{
+      border:1px solid #e5e7eb;
+      padding:4mm;
+      border-radius:4mm;
+      background:#fff;
+    }
+    .box h4{ margin:0 0 2mm; font-size:12px; }
+    .box p{ margin:0; font-size:10.8px; line-height:1.65; color:#111827; }
+    .muted{ color:#6b7280; }
+
+    /* Page 2 layout */
+    .gridPage2{
+      display:grid;
+      grid-template-columns: 1.4fr 0.6fr;
+      gap:6mm;
+      margin-top: 8mm;
+      align-items:start;
+    }
+    .sectionBig{
+      border:1px solid #e5e7eb;
+      border-radius:4mm;
+      padding:4mm;
+      background:#fff;
+    }
+    .sectionBig h3{ margin:0 0 3mm; font-size:12px; }
+    .sectionBig svg{ width:100%; height:auto; display:block; transform: scale(1.22); transform-origin: top center; }
+
+    .sidePanel{
+      border:1px solid #e5e7eb;
+      border-radius:4mm;
+      padding:4mm;
+      background:#fff;
+    }
+    .sidePanel h3{ margin:0 0 3mm; font-size:12px; }
+    .levels{ display:flex; flex-direction:column; gap:2mm; margin-top:2mm; }
+
+    .lvl{
+      border:1px solid #e5e7eb;
+      border-radius:3mm;
+      padding:2.4mm 2.6mm;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      background:#fff;
+      font-size:10.5px;
+    }
+    .lvl.sel{
+      border-color:#111827;
+      background:#f1f5f9;
+    }
+    .tag{ font-weight:700; }
+    .door{ display:flex; align-items:center; gap:2mm; color:#374151; }
+    .tick{ width:10px; height:10px; border:1px solid #111827; display:inline-block; border-radius:2px; }
+    .lvl.sel .tick{ background:#111827; }
+
+    .notes{
+      margin-top:4mm;
+      border-top:1px solid #e5e7eb;
+      padding-top:3mm;
+      font-size:10.5px;
+      line-height:1.65;
+      color:#111827;
+    }
+    .notes ul{ margin:2mm 0 0; padding:0 16px 0 0; }
+    .notes li{ margin:1mm 0; }
+
     .ftr{
       position:absolute; bottom:6mm; left:10mm; right:10mm;
       display:flex; justify-content:space-between; align-items:center;
-      border-top:1px solid #e5e7eb; padding-top:4mm;
+      border-top:1px solid #e5e7eb; padding-top:3mm;
       font-size:10px; color:#6b7280;
       z-index:1;
     }
     .logoTop img{ width:24mm; height:auto; }
+
+    .tiny{ font-size:10px; color:#6b7280; }
   </style>
 </head>
 <body>
+
+  <!-- ==================== PAGE 1: SUMMARY SHEET ==================== -->
   <div class="page">
     <div class="watermark">
       <img src="${logoPath}" alt="Watermark" onerror="this.style.display='none'">
@@ -907,17 +1034,18 @@ function openA4PrintPDF(){
       <div class="hdr">
         <div class="left">
           <p class="title">${escapeHtml(projectName)}</p>
-          <p class="sub">MRL Lift Layout — (Plan + Section) — A4 PDF Output</p>
+          <p class="sub">ملخص مخطط المصعد (MRL) — Plan & Section — Summary Sheet</p>
 
           <div class="meta">
-            <div><b>Date:</b> ${escapeHtml(dateStr)} &nbsp;&nbsp; <b>Ref:</b> ${escapeHtml(refNo)}</div>
+            <div><b>التاريخ:</b> ${escapeHtml(dateStr)} <span class="muted">(${escapeHtml(timeStr)})</span> &nbsp;&nbsp; <b>Ref:</b> ${escapeHtml(refNo)}</div>
+            ${customerLine ? `<div><b>العميل:</b> ${escapeHtml(customerLine)}</div>` : ``}
             <div><b>Stops:</b> ${escapeHtml(stops)} | <b>Floor H:</b> ${escapeHtml(floorH)} mm</div>
             <div><b>Shaft:</b> ${escapeHtml(shaftW)}×${escapeHtml(shaftD)} mm | <b>Cabin:</b> ${escapeHtml(cabinW)}×${escapeHtml(cabinD)} mm</div>
             <div><b>Door:</b> ${escapeHtml(doorW)} mm | <b>Pit:</b> ${escapeHtml(pit)} mm | <b>OH:</b> ${escapeHtml(oh)} mm</div>
           </div>
 
           <div class="refbox">
-            <div>Reference No.</div>
+            <div class="tiny">Reference No.</div>
             <div class="big">${escapeHtml(refNo)}</div>
           </div>
         </div>
@@ -927,27 +1055,115 @@ function openA4PrintPDF(){
             <img src="${logoPath}" alt="RKL Logo" onerror="this.style.display='none'">
           </div>
           <div style="font-size:12px;font-weight:700;">RKL Lifts & Escalators</div>
-          <div style="font-size:10px;color:#6b7280;margin-top:2mm;">
+          <div class="tiny" style="margin-top:2mm;">
             Layout Sheet (A4)<br/>Generated from Web Planner
           </div>
         </div>
       </div>
 
-      <div class="grid">
+      <div class="grid2">
         <div class="card">
-          <h3>PLAN VIEW</h3>
+          <h3>SECTION VIEW (MRL) — Overview</h3>
+          ${secMarkupSmall}
+        </div>
+        <div class="card">
+          <h3>PLAN VIEW — Rear CW</h3>
           ${planMarkup}
         </div>
-        <div class="card">
-          <h3>SECTION VIEW (MRL)</h3>
-          ${secMarkup}
+      </div>
+
+      <div class="summary">
+        <div class="box">
+          <h4>شرح مهني (Arabic)</h4>
+          <p>
+            هذا المخطط يوضح التكوين العام لمصعد كهربائي من نوع MRL (بدون غرفة ماكينة).
+            تم عرض المخطط الأفقي (Plan) والمقطع (Section) للتأكيد على أبعاد البئر، فتحة الباب، تموضع الكابينة والكونترويت،
+            إضافةً إلى Pit و OH والارتفاع الكلي للرحلة.
+          </p>
+          <p class="muted" style="margin-top:2mm;">
+            ملاحظة: هذا ملخص (Overview). التفاصيل الكاملة للمقطع والفتحات على الأدوار موضحة في الصفحة الثانية.
+          </p>
+        </div>
+
+        <div class="box">
+          <h4>Professional Notes (English)</h4>
+          <p>
+            This sheet provides an overview layout for an MRL elevator (no machine room), including Plan and Section.
+            It confirms shaft/cabin/door dimensions, counterweight arrangement, and key vertical parameters (Pit, Travel, OH).
+          </p>
+          <p class="muted" style="margin-top:2mm;">
+            Full-height section and landing/door schedule are provided on Page 2.
+          </p>
         </div>
       </div>
+
     </div>
 
     <div class="ftr">
       <div>Ref: ${escapeHtml(refNo)}</div>
-      <div>Page 1 / 1</div>
+      <div>Page 1 / 2</div>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 2: DETAILED SECTION ==================== -->
+  <div class="page page-break">
+    <div class="watermark">
+      <img src="${logoPath}" alt="Watermark" onerror="this.style.display='none'">
+    </div>
+
+    <div class="content">
+      <div class="hdr">
+        <div class="left">
+          <p class="title">Detailed Section — Full Height</p>
+          <p class="sub">مقطع تفصيلي بطول أكبر + جدول الأدوار وفتحات الأبواب</p>
+
+          <div class="meta">
+            <div><b>Ref:</b> ${escapeHtml(refNo)} &nbsp;&nbsp; <b>Section CW Side:</b> ${escapeHtml(cwSide)}</div>
+            <div><b>Total Height:</b> ${escapeHtml(totalH)} mm | <b>Travel:</b> ${escapeHtml(travel)} mm</div>
+            <div><b>Selected Stop:</b> ${escapeHtml(selectedStop)} / ${escapeHtml(stops)}</div>
+          </div>
+        </div>
+
+        <div class="right">
+          <div style="font-size:12px;font-weight:700;">RKL Lifts & Escalators</div>
+          <div class="tiny" style="margin-top:2mm;">Detailed Section Sheet (A4)</div>
+        </div>
+      </div>
+
+      <div class="gridPage2">
+        <div class="sectionBig">
+          <h3>SECTION VIEW (MRL) — Enlarged</h3>
+          ${secMarkupBig}
+        </div>
+
+        <div class="sidePanel">
+          <h3>Door Openings by Level</h3>
+          <div class="tiny">Typical landing door opening shown at each level (highlight = selected stop).</div>
+
+          <div class="levels">
+            ${levelRowsHtml}
+          </div>
+
+          <div class="notes">
+            <b>ملاحظات تنفيذية:</b>
+            <ul>
+              <li>المقطع هنا للعرض الهندسي (Illustrative) ويحتاج اعتماد نهائي حسب المصنع/الاستشاري.</li>
+              <li>فتحات الأبواب في هذا الجدول “نموذجية” لكل دور، ويمكن تخصيصها (Front/Side) عند الحاجة.</li>
+              <li>يُنصح بمراجعة قيم Pit و OH مقابل متطلبات الكود/الجهة المشرفة قبل الاعتماد.</li>
+            </ul>
+
+            <div class="tiny" style="margin-top:2mm;">
+              Notes: This drawing is for layout coordination; final shop drawings shall be issued by manufacturer/consultant.
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="ftr">
+      <div>Ref: ${escapeHtml(refNo)}</div>
+      <div>Page 2 / 2</div>
     </div>
   </div>
 
@@ -957,8 +1173,10 @@ function openA4PrintPDF(){
 </body>
 </html>
   `);
+
   w.document.close();
 }
+
 
 
 /* =======================
