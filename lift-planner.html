@@ -493,8 +493,21 @@ function drawSection(travel, pit, oh, shaftW, cabinW){
   const yDim = yTop + shaftH + 26;
   svg.appendChild(el('line',{x1:x0, y1:yDim, x2:x0+shaftPxW, y2:yDim, stroke:"#111827","stroke-width":"1"}));
   // أسهم
-  svg.appendChild(el('path',{d:`M ${x0} ${yDim} l 8 -4 l 0 8 z`, fill:"#111827"}));
-  svg.appendChild(el('path',{d:`M ${x0+shaftPxW} ${yDim} l -8 -4 l 0 8 z`, fill:"#111827"}));
+const ropeCount = 4;
+for(let i=0;i<ropeCount;i++){
+  const offset = (i - (ropeCount-1)/2) * 4;
+
+  svg.appendChild(el('path',{
+    d:`M ${shX-10+offset} ${shY+shR} L ${cabX+cabW*0.18+offset} ${cabY} L ${cabX+cabW*0.18+offset} ${cabY+cabH}`,
+    fill:"none", stroke:"#111827", "stroke-width":"1.3"
+  }));
+
+  svg.appendChild(el('path',{
+    d:`M ${shX+10+offset} ${shY+shR} L ${cwX+cwW/2+offset} ${cwY} L ${cwX+cwW/2+offset} ${cwY+cwH}`,
+    fill:"none", stroke:"#111827", "stroke-width":"1.3"
+  }));
+}
+;
   // النص
   const wtxt = el('text',{x:x0+shaftPxW/2, y:yDim-6, "font-size":"12", fill:"#111827", "text-anchor":"middle"});
   wtxt.textContent = `SHAFT W = ${shaftW} mm`;
