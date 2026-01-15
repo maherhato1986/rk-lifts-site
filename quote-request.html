@@ -202,6 +202,35 @@
             .grid-half { grid-template-columns: 1fr; }
             .container { padding: 20px; }
         }
+        .summary-btn{
+  width:100%;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color:#fff;
+  border:none;
+  padding:18px 20px;
+  border-radius:16px;
+  font-size:17px;
+  font-weight:700;
+  cursor:pointer;
+  box-shadow:0 8px 20px rgba(15,23,42,.25);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+  transition:.3s ease;
+}
+
+.summary-btn span{
+  font-size:13px;
+  font-weight:500;
+  color:#cbd5f5;
+}
+
+.summary-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 12px 26px rgba(15,23,42,.35);
+}
+
     </style>
 </head>
 
@@ -537,12 +566,13 @@
 </div>
 
 
-
-
-<!-- ملخص -->
-<div class="section">
-<button type="button" onclick="showSummary()">
-📋 عرض ملخص الطلب
+<button
+  type="button"
+  class="summary-btn"
+  onclick="showSummary()"
+>
+  📋 عرض ملخص الطلب  
+  <span>Preview Request Summary</span>
 </button>
 
 <div id="summaryBox" class="summary hidden"></div>
@@ -751,21 +781,17 @@ function buildFullSummary() {
 if (reqType === "supply") {
   detailsHtml = `
     <b>🏗️ تفاصيل التوريد:</b><br>
-    <b>اسم المشروع:</b> ${v("project")}<br>
-    <b>مدينة المشروع:</b> ${vn("city_supply")}<br>
-    <b>نوع المبنى:</b> ${vn("building_type_supply")}<br>
-    <b>نوع المصعد:</b> ${vn("elevator_usage_supply")}<br>
-    <b>عدد المصاعد:</b> ${vn("lifts_count_supply")}<br>
-    <b>عدد الوقفات:</b> ${vn("stops_count_supply")}<br>
-    <b>الحمولة (كجم):</b> ${vn("capacity_supply")}<br>
-    <b>السرعة (م/ث):</b> ${vn("speed_supply")}<br>
-    <b>النظام:</b> ${vn("system_supply")}<br>
-    <b>نوع الباب:</b> ${vn("door_type_supply")}<br>
-    <b>الفتحات:</b> ${vn("openings_supply")}<br>
-    <b>الكهرباء:</b> ${vn("power_supply")}<br>
-    <b>أبعاد البئر:</b> ${vn("shaft_w")} × ${vn("shaft_d")} mm<br>
-    <b>PIT:</b> ${vn("pit_mm")} mm — <b>OH:</b> ${vn("oh_mm")} mm<br>
-    <b>ملاحظات:</b><br>${vn("supply_notes")}
+    <b>اسم المشروع (Project Name):</b> ${v("project")}<br>
+<b>المدينة (City):</b> ${vn("city_supply")}<br>
+<b>نوع المبنى (Building Type):</b> ${vn("building_type_supply")}<br>
+<b>نوع المصعد (Elevator Type):</b> ${vn("elevator_usage_supply")}<br>
+<b>عدد المصاعد (No. of Elevators):</b> ${vn("lifts_count_supply")}<br>
+<b>عدد الوقفات (Stops):</b> ${vn("stops_count_supply")}<br>
+<b>الحمولة (Capacity – kg):</b> ${vn("capacity_supply")}<br>
+<b>السرعة (Speed – m/s):</b> ${vn("speed_supply")}<br>
+<b>النظام (System):</b> ${vn("system_supply")}<br>
+<b>نوع الباب (Door Type):</b> ${vn("door_type_supply")}<br>
+<b>الملاحظات (Notes):</b><br>${vn("supply_notes")}
   `;
 
   detailsText =
@@ -816,16 +842,16 @@ if (reqType === "supply") {
 
       detailsHtml = `
         <b>🧾 تفاصيل الصيانة (لا يوجد عقد):</b><br>
-        <b>نوع الخدمة:</b> ${serviceType}<br>
+       <b>نوع الخدمة (Service Type):</b> ${serviceType}<br>
         ${visitsHtml}
-        <b>عدد المصاعد:</b> ${vn("lifts_count")}<br>
-        <b>عدد الوقفات:</b> ${vn("stops_count")}<br>
-        <b>الحمولة (كجم):</b> ${vn("capacity")}<br>
-        <b>نوع المبنى:</b> ${vn("building_type")}<br>
-        <b>نوع المصاعد:</b> ${vn("lift_brand")}<br>
-        <b>حالة المصعد:</b> ${vn("lift_condition")}<br>
-        <b>العمر التقريبي:</b> ${vn("lift_age")}<br>
-        <b>ملاحظات:</b><br>${vn("description_no_contract")}
+       <b>عدد المصاعد (No. of Elevators):</b> ${vn("lifts_count")}<br>
+<b>عدد الوقفات (Stops):</b> ${vn("stops_count")}<br>
+<b>الحمولة (Capacity – kg):</b> ${vn("capacity")}<br>
+<b>نوع المبنى (Building Type):</b> ${vn("building_type")}<br>
+<b>نوع المصاعد (Elevator Brand):</b> ${vn("lift_brand")}<br>
+<b>حالة المصعد (Elevator Status):</b> ${vn("lift_condition")}<br>
+<b>العمر التقريبي (Approx. Age):</b> ${vn("lift_age")}<br>
+<b>ملاحظات (Notes):</b><br>${vn("description_no_contract")}
       `;
       detailsText =
 `تفاصيل الصيانة (لا يوجد عقد):
@@ -843,12 +869,12 @@ ${visitsText}- عدد المصاعد: ${vn("lifts_count")}
 
   const headerHtml = `
     <b>🧑‍💼 بيانات العميل:</b><br>
-    <b>الاسم:</b> ${v("name")}<br>
-    <b>الجوال:</b> ${v("phone")}<br>
-    <b>البريد:</b> ${v("email")}<br>
-    <b>نوع الطلب:</b> ${typeLabel}<br>
+    <b>الاسم (Client Name):</b> ${v("name")}<br>
+<b>رقم الجوال (Mobile):</b> ${v("phone")}<br>
+<b>البريد الإلكتروني (Email):</b> ${v("email")}<br>
+<b>نوع الطلب (Request Type):</b> ${typeLabel}<br>
     <b>هل يوجد عقد؟</b> ${reqType === "maintenance" ? (hasContract === "yes" ? "نعم" : hasContract === "no" ? "لا" : "—") : "—"}<br>
-    <b>الموقع:</b> ${location}<br><br>
+  <b>الموقع (Location):</b> ${location}<br><br>
   `;
 
   const headerText =
