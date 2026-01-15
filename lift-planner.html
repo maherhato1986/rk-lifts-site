@@ -137,6 +137,15 @@
           <input id="floorH" type="number" value="3600" min="2500" step="10">
         </div>
       </div>
+<div class="f">
+  <label>الوقفة المعروضة في المقطع (Selected Stop)</label>
+  <input id="stopPos" type="range" min="1" max="10" value="5" step="1">
+  <div style="display:flex;justify-content:space-between;font-size:12px;color:#6b7280">
+    <span>1</span>
+    <span id="stopPosLabel">5</span>
+    <span id="stopPosMax">10</span>
+  </div>
+</div>
 
       <div class="row">
         <div class="f">
@@ -350,7 +359,8 @@ function drawPlan(shaftW, shaftD, cabinW, cabinD, doorW, wallT){
 /* =======================
    Draw: Section (MRL + Side CW + Rails + Buffers + Governor)
 ======================= */
-function drawSection(travel, pit, oh, shaftW, cabinW, cwSide){
+function drawSection(travel, pit, oh, shaftW, cabinW, cwSide, selectedStop, stops){
+
   const svg = document.getElementById('svgSec');
   clear(svg);
   hatchDefs(svg);
@@ -429,7 +439,23 @@ function drawSection(travel, pit, oh, shaftW, cabinW, cwSide){
   const maxCabW = shaftPxW - (marginSide*2) - cwW - gap;
   const cabW = clamp(cabinW_px, 70, maxCabW);
 
-  const midY = yTravelTop + travelH_px/2;
+ // ===== Cabin position by selected stop =====
+// selectedStop: 1..stops
+// top landing = stop 1 (near yTravelTop)
+// bottom landing = stop stops (near yPitTop)
+const sStops = Math.max(2, Number(stops || 2));
+const sStop  = Math.max(1, Math.min(sStops, Number(selectedStop || Math.ceil(sStops/2))));
+
+// نسبة النزول من أعلى الرحلة إلى أسفلها
+const tStop = (sStop - 1) / (sStops - 1);
+
+// نترك هوامش بسيطة حتى لا تلمس الكابينة خطوط التقسيم
+const topMargin = 28;
+const botMargin = 34;
+
+// مركز الكابينة يتحرك داخل منطقة الـ Travel
+const midY = (yTravelTop + topMargin) + tStop * ((yPitTop - botMargin) - (yTravelTop + topMargin));
+
 
   let cwX, cabX;
   if(cwSide === 'left'){
@@ -589,6 +615,19 @@ function draw(){
   const cwSide = document.getElementById('cwSide')?.value || 'right';
 
   const stops  = Number(document.getElementById('stops').value);
+  // ضبط السلايدر حسب عدد الوقفات
+const slider = document.getElementById('stopPos');
+const stopLbl = document.getElementById('stopPosLabel');
+const stopMax = document.getElementById('stopPosMax');
+
+if (slider) {
+  slider.max = String(Math.max(2, stops));
+  if (Number(slider.value) > Number(slider.max)) slider.value = slider.max;
+  if (stopLbl) stopLbl.textContent = slider.value;
+  if (stopMax) stopMax.textContent = slider.max;
+}
+const selectedStop = Number(slider?.value || Math.ceil(stops/2));
+
   const floorH = Number(document.getElementById('floorH').value);
   const pit    = Number(document.getElementById('pit').value);
   const oh     = Number(document.getElementById('oh').value);
@@ -605,7 +644,8 @@ function draw(){
     `Shaft ${shaftW}×${shaftD} | Cabin ${cabinW2}×${cabinD2} | Door ${doorW2} | Travel ${travel} | Pit ${pit} | OH ${oh} | Section CW ${cwSide}`;
 
   drawPlan(shaftW, shaftD, cabinW2, cabinD2, doorW2, wallT2);
-  drawSection(travel, pit, oh, shaftW, cabinW2, cwSide);
+  drawSection(travel, pit, oh, shaftW, cabinW2, cwSide, selectedStop, stops);
+
 }
 
 /* =======================
@@ -852,6 +892,12 @@ document.getElementById('btnDraw').addEventListener('click', draw);
 document.getElementById('btnExportSVG').addEventListener('click', () => {
   exportSVG(document.getElementById('svgPlan'), 'lift-plan.svg');
   exportSVG(document.getElementById('svgSec'), 'lift-section.svg');
+});
+document.getElementById('stopPos')?.addEventListener('input', () => {
+  const lbl = document.getElementById('stopPosLabel');
+  const slider = document.getElementById('stopPos');
+  if (lbl && slider) lbl.textContent = slider.value;
+  draw();
 });
 
 document.getElementById('btnExportPDF').addEventListener('click', openA4PrintPDF);
