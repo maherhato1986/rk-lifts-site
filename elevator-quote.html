@@ -723,12 +723,13 @@
    RKL Password Gate (Client-Side)
    ملاحظة: هذه حماية واجهة وليست حماية أمنية كاملة.
 ========================= */
+/* =========================
+   RKL Pricing Password Gate (Client-Side)
+   ملاحظة: حماية واجهة فقط وليست حماية أمنية حقيقية.
+========================= */
 (function () {
-  const LOCK_KEY = "rkl_quote_unlock_until";
-  const UNLOCK_HOURS = 10; // مدة فتح الجلسة بالساعات
-
-  // ✅ غيّر كلمة المرور هنا
-  const PASSWORD = "Mahato@1986"; 
+  const PASS_TOTAL_ONLY = "Mahato@1986"; // ✅ يعرض الإجمالي فقط
+  const PASS_FULL       = "EMANi@1986";  // ✅ يعرض كل النتائج
 
   const lockEl = document.getElementById("rklLock");
   const passEl = document.getElementById("rklPass");
@@ -736,21 +737,19 @@
   const enterBtn = document.getElementById("rklEnterBtn");
   const clearBtn = document.getElementById("rklClearBtn");
 
-  function isUnlocked() {
-    const until = Number(localStorage.getItem(LOCK_KEY) || 0);
-    return Date.now() < until;
-  }
+  let resolveFn = null;
 
-  function lock() {
+  function openLock() {
     if (!lockEl) return;
     lockEl.style.display = "flex";
     lockEl.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
+    if (msgEl) msgEl.textContent = "";
+    if (passEl) passEl.value = "";
     setTimeout(() => passEl?.focus(), 50);
   }
 
-  function unlock() {
-    localStorage.setItem(LOCK_KEY, String(Date.now() + UNLOCK_HOURS * 60 * 60 * 1000));
+  function closeLock() {
     if (!lockEl) return;
     lockEl.style.display = "none";
     lockEl.setAttribute("aria-hidden", "true");
@@ -761,17 +760,32 @@
     if (msgEl) msgEl.textContent = text || "";
   }
 
+  function decideMode(pw) {
+    if (pw === PASS_TOTAL_ONLY) return "totalOnly";
+    if (pw === PASS_FULL) return "full";
+    return null;
+  }
+
   function tryLogin() {
     const v = (passEl?.value || "").trim();
     if (!v) return showError("يرجى إدخال كلمة المرور.");
-    if (v !== PASSWORD) return showError("كلمة المرور غير صحيحة.");
+
+    const mode = decideMode(v);
+    if (!mode) return showError("كلمة المرور غير صحيحة.");
+
     showError("");
-    if (passEl) passEl.value = "";
-    unlock();
+    closeLock();
+
+    if (typeof resolveFn === "function") {
+      const r = resolveFn;
+      resolveFn = null;
+      r(mode);
+    }
   }
 
-  // أحداث
+  // أحداث الأزرار
   enterBtn?.addEventListener("click", tryLogin);
+
   clearBtn?.addEventListener("click", () => {
     if (passEl) passEl.value = "";
     showError("");
@@ -780,19 +794,25 @@
 
   passEl?.addEventListener("keydown", (e) => {
     if (e.key === "Enter") tryLogin();
+    if (e.key === "Escape") {
+      closeLock();
+      if (typeof resolveFn === "function") {
+        const r = resolveFn;
+        resolveFn = null;
+        r(null);
+      }
+    }
   });
 
-  // تشغيل القفل عند تحميل الصفحة
-  window.addEventListener("load", () => {
-    if (!isUnlocked()) lock();
-  });
-
-  // (اختياري) دالة تسجيل خروج من الكونسول:
-  window.RKL_LOCK_LOGOUT = function () {
-    localStorage.removeItem(LOCK_KEY);
-    location.reload();
+  // ✅ دالة عامة تُستدعى عند الضغط على زر الحساب
+  window.RKL_REQUEST_PRICING_MODE = function () {
+    return new Promise((resolve) => {
+      resolveFn = resolve;
+      openLock();
+    });
   };
 })();
+
 
     // ======================= ثوابت الحسبة (يمكن تعديلها لاحقًا) =======================
 const COST_PARAMS = {
@@ -1179,111 +1199,110 @@ function fillSpeedOptions() {
             : `${v} SAR`;
     }
 
-    function generateNumbersView(result, model, currency) {
-        const wrapper = document.getElementById('numbers-wrapper');
+ function generateNumbersView(result, model, currency, mode) {
+  const wrapper = document.getElementById('numbers-wrapper');
 
-        const per = (v) => formatCurrency(v, currency);
-        const both = (perLift, total) =>
-            `${per(perLift)} <span style="font-size:11px;color:#6b7280;">/ لكل مصعد</span><br>` +
-            `${per(total)} <span style="font-size:11px;color:#6b7280;">إجمالي (${result.liftsCount})</span>`;
+  const per = (v) => formatCurrency(v, currency);
+  const both = (perLift, total) =>
+    `${per(perLift)} <span style="font-size:11px;color:#6b7280;">/ لكل مصعد</span><br>` +
+    `${per(total)} <span style="font-size:11px;color:#6b7280;">إجمالي (${result.liftsCount})</span>`;
 
-        wrapper.innerHTML = `
-        <div class="numbers-grid">
-            <div class="number-box">
-                <div class="label">سعر المصنع (FOB)</div>
-                <div class="value">
-                    ${both(result.factoryCostPerLift, result.factoryCost)}
-                </div>
+  // ✅ وضع "الإجمالي فقط"
+  if (mode === "totalOnly") {
+    wrapper.innerHTML = `
+      <div class="numbers-grid">
+        <div class="number-box" style="border:2px solid #059669;">
+          <div class="label">الإجمالي ${result.includeVat ? 'شامل الضريبة' : 'بدون الضريبة'}</div>
+          <div class="value">${both(result.totalWithVatPerLift, result.totalWithVat)}</div>
+        </div>
+      </div>
+
+      <div style="margin-top: 10px; font-size: 12px; color:#6b7280;">
+        <span class="badge">${BRAND_SOURCES[result.brandKey].label}</span>
+        عدد المصاعد: ${result.liftsCount} – سعة ${model.capacityKg} kg – سرعة ${model.speedMps} m/s – عدد الأدوار: ${result.floors}.
+      </div>
+    `;
+    return;
+  }
+
+  // ✅ الوضع الكامل (كما هو عندك)
+  wrapper.innerHTML = `
+    <div class="numbers-grid">
+      <div class="number-box">
+        <div class="label">سعر المصنع (FOB)</div>
+        <div class="value">${both(result.factoryCostPerLift, result.factoryCost)}</div>
+      </div>
+
+      <div class="number-box">
+        <div class="label">الشحن + التأمين</div>
+        <div class="value">${both(result.shippingInsurancePerLift, result.shippingInsuranceCost)}</div>
+      </div>
+
+      ${(!result.shippingDiscountTotalSar || result.shippingDiscountTotalSar <= 0) ? '' : `
+        <div class="number-box">
+          <div class="label">خصم الكمية (تجميع الشحن ${Math.round((result.shippingDiscountRate || 0) * 100)}%)</div>
+          <div class="value">
+            ${both(result.shippingDiscountPerLiftSar, result.shippingDiscountTotalSar)}
+            <div style="margin-top:6px;font-size:11px;color:#6b7280;">
+              الشحن قبل الخصم: ${per(result.shippingBasePerLiftSar)} — بعد الخصم: ${per(result.shippingAfterDiscountPerLiftSar)}
             </div>
+          </div>
+        </div>
+      `}
 
-            <div class="number-box">
-                <div class="label">الشحن + التأمين</div>
-                <div class="value">
-                    ${both(result.shippingInsurancePerLift, result.shippingInsuranceCost)}
-                </div>
-            </div>
-${(!result.shippingDiscountTotalSar || result.shippingDiscountTotalSar <= 0) ? '' : `
-  <div class="number-box">
-    <div class="label">خصم الكمية (تجميع الشحن ${Math.round((result.shippingDiscountRate || 0) * 100)}%)</div>
-    <div class="value">
-      ${both(result.shippingDiscountPerLiftSar, result.shippingDiscountTotalSar)}
-      <div style="margin-top:6px;font-size:11px;color:#6b7280;">
-        الشحن قبل الخصم: ${per(result.shippingBasePerLiftSar)} — بعد الخصم: ${per(result.shippingAfterDiscountPerLiftSar)}
+      <div class="number-box">
+        <div class="label">التخليص + النقل الداخلي</div>
+        <div class="value">${both(result.clearanceTransportPerLift, result.clearanceTransportCost)}</div>
+      </div>
+
+      <div class="number-box">
+        <div class="label">التركيب + التشغيل</div>
+        <div class="value">${both(result.installationCommissioningPerLift, result.installationCommissioningCost)}</div>
+      </div>
+
+      <div class="number-box">
+        <div class="label">تشطيب الكابينة</div>
+        <div class="value">${both(result.cabinExtraPerLift || 0, result.cabinExtraTotal || 0)}</div>
+      </div>
+
+      <div class="number-box">
+        <div class="label">مصاريف تشغيل (${result.overheadPercent}%)</div>
+        <div class="value">${both(result.overheadPerLift, result.overheadCost)}</div>
+      </div>
+
+      <div class="number-box">
+        <div class="label">التكلفة الكلية قبل الربح</div>
+        <div class="value">${both(result.costBeforeProfitPerLift, result.costBeforeProfit)}</div>
+      </div>
+
+      <div class="number-box">
+        <div class="label">هامش الربح (${result.profitPercent}%)</div>
+        <div class="value">${both(result.profitPerLift, result.profitAmount)}</div>
+      </div>
+
+      <div class="number-box">
+        <div class="label">سعر البيع قبل الضريبة</div>
+        <div class="value">${both(result.totalBeforeVatPerLift, result.totalBeforeVat)}</div>
+      </div>
+
+      <div class="number-box">
+        <div class="label">قيمة الضريبة (${result.vatRate}%)</div>
+        <div class="value">${both(result.vatAmountPerLift, result.vatAmount)}</div>
+      </div>
+
+      <div class="number-box">
+        <div class="label">الإجمالي ${result.includeVat ? 'شامل الضريبة' : 'بدون الضريبة'}</div>
+        <div class="value">${both(result.totalWithVatPerLift, result.totalWithVat)}</div>
       </div>
     </div>
-  </div>
-`}
 
-            <div class="number-box">
-                <div class="label">التخليص + النقل الداخلي</div>
-                <div class="value">
-                    ${both(result.clearanceTransportPerLift, result.clearanceTransportCost)}
-                </div>
-            </div>
+    <div style="margin-top: 10px; font-size: 12px; color:#6b7280;">
+      <span class="badge">${BRAND_SOURCES[result.brandKey].label}</span>
+      عدد المصاعد: ${result.liftsCount} – سعة ${model.capacityKg} kg – سرعة ${model.speedMps} m/s – عدد الأدوار: ${result.floors} (الأساسي ${model.baseFloors} دور).
+    </div>
+  `;
+}
 
-            <div class="number-box">
-                <div class="label">التركيب + التشغيل</div>
-                <div class="value">
-                    ${both(result.installationCommissioningPerLift, result.installationCommissioningCost)}
-                </div>
-            </div>
-            <div class="number-box">
-  <div class="label">تشطيب الكابينة</div>
-  <div class="value">
-    ${both(result.cabinExtraPerLift || 0, result.cabinExtraTotal || 0)}
-  </div>
-</div>
-
-
-            <div class="number-box">
-                <div class="label">مصاريف تشغيل (${result.overheadPercent}%)</div>
-                <div class="value">
-                    ${both(result.overheadPerLift, result.overheadCost)}
-                </div>
-            </div>
-
-            <div class="number-box">
-                <div class="label">التكلفة الكلية قبل الربح</div>
-                <div class="value">
-                    ${both(result.costBeforeProfitPerLift, result.costBeforeProfit)}
-                </div>
-            </div>
-
-            <div class="number-box">
-                <div class="label">هامش الربح (${result.profitPercent}%)</div>
-                <div class="value">
-                    ${both(result.profitPerLift, result.profitAmount)}
-                </div>
-            </div>
-
-            <div class="number-box">
-                <div class="label">سعر البيع قبل الضريبة</div>
-                <div class="value">
-                    ${both(result.totalBeforeVatPerLift, result.totalBeforeVat)}
-                </div>
-            </div>
-
-            <div class="number-box">
-                <div class="label">قيمة الضريبة (${result.vatRate}%)</div>
-                <div class="value">
-                    ${both(result.vatAmountPerLift, result.vatAmount)}
-                </div>
-            </div>
-
-            <div class="number-box">
-                <div class="label">الإجمالي ${result.includeVat ? 'شامل الضريبة' : 'بدون الضريبة'}</div>
-                <div class="value">
-                    ${both(result.totalWithVatPerLift, result.totalWithVat)}
-                </div>
-            </div>
-        </div>
-
-        <div style="margin-top: 10px; font-size: 12px; color:#6b7280;">
-            <span class="badge">${BRAND_SOURCES[result.brandKey].label}</span>
-            عدد المصاعد: ${result.liftsCount} – سعة ${model.capacityKg} kg – سرعة ${model.speedMps} m/s – عدد الأدوار: ${result.floors} (الأساسي ${model.baseFloors} دور).
-        </div>
-    `;
-    }
 
     function generateQuoteText(result, model, currency) {
         const manualCustomerName = document.getElementById('customer_name').value.trim();
@@ -1639,7 +1658,8 @@ cabinExtraTotal: cabinExtraCost * liftsCount,
             profitPercent: profitPercent
         };
 
-        generateNumbersView(result, model, currency);
+        generateNumbersView(result, model, currency, window.__rklPricingMode || "full");
+
         generateQuoteText(result, model, currency);
       
 
@@ -1884,7 +1904,13 @@ payments: {
         document.getElementById('capacity').addEventListener('change', fillSpeedOptions);
 
         // زر حساب عرض السعر
-        document.getElementById('calc-btn').addEventListener('click', calculateQuote);
+        document.getElementById('calc-btn').addEventListener('click', async () => {
+  const mode = await window.RKL_REQUEST_PRICING_MODE();
+  if (!mode) return; // المستخدم أغلق النافذة أو كلمة مرور خطأ
+  window.__rklPricingMode = mode; // "totalOnly" أو "full"
+  await calculateQuote();
+});
+
 
         // زر إعادة التعيين
         document.getElementById('reset-btn').addEventListener('click', function () {
@@ -2313,6 +2339,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
