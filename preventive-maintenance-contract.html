@@ -1831,8 +1831,7 @@ projectLocation,
 }
 
 
-
- function openSupplyOfferPrint(contract) {
+function openSupplyOfferPrint(contract) {
   if (!contract || contract.serviceType !== 'supply_install') {
     alert('❌ هذا ليس عرض توريد / تركيب / تشغيل');
     return;
@@ -1840,179 +1839,397 @@ projectLocation,
 
   const w = window.open('', '_blank');
 
+  // =========================
+  // بيانات التحويل البنكي (RKL) - ثابتة
+  // =========================
+  const bankName   = 'البنك الأهلي السعودي (SNB)';
+  const beneficiary = 'آر كي ال RKL للمصاعد والسلالم الكهربائية';
+  const customerNo = '7023357804';
+  const accountNo  = '01400005531406';
+  const iban       = 'SA1710000001400005531406';
+
+  // =========================
+  // بيانات العرض
+  // =========================
+  const customer = contract.customer || {};
+  const refNo = contract.id || '—';
+  const projectName = contract.projectName || '—';
+  const projectLocation = contract.projectLocation || '—';
+  const execDate = contract.date || (contract.supplyDetails?.date || '—');
+
+  const supply = contract.supplyDetails || {};
+  const pricing = contract.pricing || {};
+
+  const supplyTypeLabelMap = {
+    supply: 'توريد فقط',
+    supply_install: 'توريد + تركيب',
+    supply_install_commission: 'توريد + تركيب + تشغيل',
+    commission_only: 'تشغيل بدون قطع غيار'
+  };
+
+  const opModeLabelMap = {
+    first_time: 'تشغيل لأول مرة',
+    reset: 'إعادة ضبط / إعادة برمجة'
+  };
+
+  const supplyTypeText = supplyTypeLabelMap[supply.type] || '—';
+  const opModeText = supply.operationMode ? (opModeLabelMap[supply.operationMode] || '—') : '—';
+
+  const money = (n) => (Number(n || 0)).toFixed(2);
+
+  // إجبار أرقام (حتى لو كانت محفوظة كنص)
+  const material = Number(supply.material || 0);
+  const labor    = Number(supply.labor || 0);
+  const subtotal = Number(pricing.subtotal ?? (material + labor));
+  const vat      = Number(pricing.vat ?? (subtotal * 0.15));
+  const total    = Number(pricing.total ?? (subtotal + vat));
+
+  // خيارات إضافية
+  const options = [];
+  if (supply.type === 'commission_only' && supply.operationMode) {
+    options.push(`نوع التشغيل: ${opModeText}`);
+  }
+  if (supply.includeCommissioning) options.push('يشمل برمجة / تشغيل النظام');
+  if (supply.excludeFutureMaintenance) options.push('لا يشمل صيانة مستقبلية');
+
+  const description = (supply.description || '—').trim();
+  const lifts = contract.lifts || '—';
+
   w.document.write(`
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>عرض سعر ${contract.id}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>عرض سعر ${refNo}</title>
+
 <style>
-@page {
-  size: A4;
-  margin: 18mm 16mm 20mm 16mm;
+*{ -webkit-print-color-adjust: exact; print-color-adjust: exact; box-sizing:border-box; }
+@page{ size:A4; margin:15mm; }
+
+:root{
+  --ink:#111827;
+  --muted:#6b7280;
+  --line:#e5e7eb;
+  --soft:#f8fafc;
+  --brand:#0f766e;
 }
 
-body {
-  font-family: "Cairo", Arial, sans-serif;
-  color: #111;
-  -webkit-print-color-adjust: exact;
-  print-color-adjust: exact;
+body{
+  margin:0;
+  font-family:"Cairo","Tajawal",Arial,sans-serif;
+  font-size:14px;
+  color:var(--ink);
+  background:#fff;
+  line-height:1.7;
 }
 
-.print-container {
-  border: 2px solid #0f766e;
-  padding: 18px 22px;
-  min-height: 95vh;
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:url('/public/images/logo.png') center center / 360px no-repeat;
+  opacity:0.04;
+  z-index:-1;
 }
 
-/* ===== HEADER ===== */
-.print-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 2px solid #0f766e;
-  padding-bottom: 12px;
-  margin-bottom: 18px;
+.page{
+  outline:1.5px solid var(--brand);
+  outline-offset:-8px;
+  padding:16px 18px 22px;
 }
 
-.print-header img {
-  width: 70px;
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:2px solid var(--brand);
+  padding-bottom:10px;
+  gap:12px;
 }
 
-.company-info {
-  text-align: center;
-  flex: 1;
+.header img{ width:46px; height:auto; }
+
+.header h1{
+  margin:0;
+  color:var(--brand);
+  font-size:18.5px;
+  font-weight:900;
+  text-align:center;
+  flex:1;
 }
 
-.company-info h1 {
-  margin: 0;
-  font-size: 20px;
-  color: #0f766e;
-  font-weight: 800;
+.small{
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.35;
+  text-align:left;
+  direction:ltr;
+  min-width:190px;
 }
 
-.company-info p {
-  margin: 2px 0;
-  font-size: 11.5px;
+.meta{
+  margin-top:14px;
+  background:var(--soft);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:12px 14px;
+  font-size:13.5px;
 }
 
-/* ===== META ===== */
-.meta {
-  margin-bottom: 16px;
-  font-size: 13px;
+.meta-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px 16px;
 }
 
-.meta b {
-  color: #0f766e;
+.meta b{ color:var(--brand); }
+
+.section{
+  margin-top:14px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:12px 14px;
+  background:#fff;
 }
 
-/* ===== TABLE ===== */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-  font-size: 13.5px;
+.section h3{
+  margin:0 0 10px 0;
+  color:var(--brand);
+  font-size:15px;
+  font-weight:900;
+  border-bottom:1px solid var(--line);
+  padding-bottom:8px;
 }
 
-th {
-  background: #0f766e;
-  color: #fff;
-  padding: 10px;
-  border: 1px solid #0f766e;
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13.5px;
 }
 
-td {
-  padding: 9px;
-  border: 1px solid #d1d5db;
+th,td{
+  border:1px solid var(--line);
+  padding:9px 10px;
+  vertical-align:top;
 }
 
-tbody tr:nth-child(even) {
-  background: #f9fafb;
+thead th{
+  background:var(--brand);
+  color:#fff;
+  font-weight:800;
 }
 
-/* ===== SUMMARY ===== */
-.summary {
-  margin-top: 18px;
-  border: 1px solid #0f766e;
-  border-radius: 10px;
-  padding: 14px 16px;
-  background: #f0fdfa;
+tbody tr:nth-child(even){ background:#f9fafb; }
+
+.money{
+  text-align:left;
+  direction:ltr;
+  font-weight:800;
 }
 
-.summary div {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 6px;
-  font-size: 14px;
+.summary{
+  background:#f0fdfa;
+  border:1px solid #99f6e4;
 }
 
-.summary .total {
-  font-size: 16px;
-  font-weight: 800;
-  color: #0f766e;
+.summary .row{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding:6px 0;
+  border-bottom:1px dashed var(--line);
+}
+.summary .row:last-child{ border-bottom:none; }
+.summary .total{
+  font-size:15.5px;
+  color:var(--brand);
+  font-weight:900;
 }
 
-/* ===== FOOTER ===== */
-.print-footer {
-  position: fixed;
-  bottom: 10mm;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: 10.5px;
-  color: #6b7280;
+.note{
+  color:var(--muted);
+  font-size:12.5px;
+  margin-top:8px;
 }
 
-/* ===== WATERMARK ===== */
-body::before {
-  content: "";
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width: 380px;
-  height: 380px;
-  background: url('/public/images/logo.png') no-repeat center;
-  background-size: contain;
-  opacity: 0.04;
-  transform: translate(-50%, -50%);
-  z-index: -1;
+.footer{
+  margin-top:14px;
+  text-align:center;
+  font-size:11.5px;
+  color:var(--muted);
+  line-height:1.5;
 }
 
+.print-actions{
+  margin-top:12px;
+  text-align:center;
+}
+
+button{
+  background:var(--brand);
+  color:#fff;
+  border:none;
+  padding:10px 14px;
+  border-radius:10px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+@media print{
+  .print-actions{ display:none; }
+}
 </style>
 </head>
+
 <body>
+  <div class="page">
 
-<h1>عرض سعر توريد وتركيب وتشغيل قطع غيار</h1>
+    <!-- Header -->
+    <div class="header">
+      <img src="/public/images/logo.png" alt="RKL">
+      <h1>عرض سعر توريد وتركيب وتشغيل قطع غيار</h1>
+      <div class="small">
+        RKL Elevators & Escalators<br>
+        CR: 1010709355<br>
+        VAT: 302250422600003
+      </div>
+    </div>
 
-<p><b>رقم العرض:</b> ${contract.id}</p>
-<p><b>العميل:</b> ${contract.customer.customer_name}</p>
-<p><b>اسم المشروع:</b> ${contract.projectName}</p>
-<p><b>موقع المشروع:</b> ${contract.projectLocation}</p>
-<p><b>تاريخ التنفيذ:</b> ${contract.date}</p>
+    <!-- Meta -->
+    <div class="meta">
+      <div class="meta-grid">
+        <div><b>رقم العرض:</b> ${refNo}</div>
+        <div><b>تاريخ التنفيذ:</b> ${execDate}</div>
 
-<table>
-<tr><th>البند</th><th>القيمة (ريال)</th></tr>
-<tr><td>قيمة التوريد</td><td>${contract.supplyDetails.material.toFixed(2)}</td></tr>
-<tr><td>قيمة التركيب / التشغيل</td><td>${contract.supplyDetails.labor.toFixed(2)}</td></tr>
-<tr><td>الإجمالي قبل الضريبة</td><td>${contract.pricing.subtotal.toFixed(2)}</td></tr>
-<tr><td>الضريبة (15%)</td><td>${contract.pricing.vat.toFixed(2)}</td></tr>
-<tr>
-  <td class="total">الإجمالي شامل الضريبة</td>
-  <td class="total">${contract.pricing.total.toFixed(2)}</td>
-</tr>
-</table>
+        <div><b>العميل:</b> ${(customer.customer_name || customer.name || '—')}</div>
+        <div><b>عدد المصاعد:</b> ${lifts}</div>
 
-<h3>ملاحظات</h3>
-<p>${contract.supplyDetails.description || '—'}</p>
+        <div><b>اسم المشروع:</b> ${projectName}</div>
+        <div><b>موقع المشروع:</b> ${projectLocation}</div>
 
-<br>
-<button onclick="window.print()">🖨️ طباعة</button>
+        <div><b>نوع العمل:</b> ${supplyTypeText}</div>
+        <div><b>حالة المصعد:</b> ${(supply.stopped === 'yes') ? 'متوقف' : 'غير متوقف'}</div>
+      </div>
+    </div>
 
+    <!-- Scope / Description -->
+    <div class="section">
+      <h3>نطاق العمل ووصف القطع</h3>
+      <div style="white-space:pre-wrap">${description}</div>
+
+      ${options.length ? `
+        <div class="note" style="margin-top:10px">
+          <b style="color:var(--brand)">خيارات ضمن العرض:</b><br>
+          ${options.map(x => `- ${x}`).join('<br>')}
+        </div>
+      ` : ``}
+    </div>
+
+    <!-- Items Table -->
+    <div class="section">
+      <h3>التفاصيل المالية (بنود العرض)</h3>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:6%">#</th>
+            <th style="width:34%">البند</th>
+            <th>الوصف</th>
+            <th style="width:14%">القيمة (ريال)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>قيمة التوريد</td>
+            <td>توريد قطع الغيار حسب الوصف أعلاه</td>
+            <td class="money">${money(material)}</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>قيمة التركيب / التشغيل</td>
+            <td>أعمال التركيب، التوصيل، البرمجة/التشغيل (حسب نوع العمل)</td>
+            <td class="money">${money(labor)}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Summary -->
+    <div class="section summary">
+      <h3>ملخص الإجمالي</h3>
+      <div class="row"><span>الإجمالي قبل الضريبة</span><span class="money">${money(subtotal)}</span></div>
+      <div class="row"><span>ضريبة القيمة المضافة (15%)</span><span class="money">${money(vat)}</span></div>
+      <div class="row total"><span>الإجمالي شامل الضريبة</span><span class="money">${money(total)}</span></div>
+
+      <div class="note">
+        * جميع الأسعار أعلاه بالريال السعودي وتشمل ضريبة القيمة المضافة 15% حسب الأنظمة.
+      </div>
+    </div>
+
+    <!-- Terms -->
+    <div class="section">
+      <h3>الشروط والأحكام</h3>
+      <table>
+        <tbody>
+          <tr>
+            <th style="width:28%">شروط الدفع</th>
+            <td>يبدأ التنفيذ بعد اعتماد العرض واستلام التحويل/الدفعة وإرسال إشعار السداد.</td>
+          </tr>
+          <tr>
+            <th>مدة التنفيذ</th>
+            <td>حسب توفر القطع وجدولة الفريق الفني بالموقع (يتم تأكيدها بعد التعميد).</td>
+          </tr>
+          <tr>
+            <th>الضمان</th>
+            <td>ضمان على القطع ضد عيوب التصنيع حسب سياسة المورد، وعلى أعمال التركيب وفق نطاق العمل.</td>
+          </tr>
+          <tr>
+            <th>الاستثناءات</th>
+            <td>لا يشمل العرض أي أعمال مدنية/تمديدات كهربائية إضافية غير متوفرة بالموقع، إلا بعرض مستقل.</td>
+          </tr>
+          <tr>
+            <th>حدود المسؤولية</th>
+            <td>لا تتحمل المؤسسة الأعطال الناتجة عن سوء الاستخدام، العبث، التحميل الزائد، انقطاع الكهرباء، أو تدخل أطراف غير معتمدة.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Bank Details -->
+    <div class="section">
+      <h3>بيانات التحويل البنكي</h3>
+      <table>
+        <tr><th style="width:30%">البنك</th><td>${bankName}</td></tr>
+        <tr><th>اسم المستفيد</th><td>${beneficiary}</td></tr>
+        <tr><th>رقم العميل</th><td class="money">${customerNo}</td></tr>
+        <tr><th>رقم الحساب</th><td class="money">${accountNo}</td></tr>
+        <tr><th>الآيبان</th><td class="money"><b>${iban}</b></td></tr>
+      </table>
+      <div class="note">
+        * يُرجى إرسال إشعار التحويل مع رقم العرض لضمان سرعة التفعيل والجدولة.
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      مؤسسة آر كي ال RKL للمصاعد والسلالم الكهربائية<br>
+      السجل التجاري: 1010709355 – الرقم الضريبي: 302250422600003<br>
+      الرياض – السليمانية | هاتف: 0114774021 | البريد: admin@rk-lifts.com
+    </div>
+
+    <div class="print-actions">
+      <button onclick="window.print()">🖨️ طباعة عرض السعر</button>
+    </div>
+
+  </div>
 </body>
 </html>
-`);
+  `);
+
   w.document.close();
 }
+
 
 
 
