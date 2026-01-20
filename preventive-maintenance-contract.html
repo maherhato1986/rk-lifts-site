@@ -479,6 +479,15 @@ button {
         <option value="panoramic">بانورامي</option>
       </select>
     </div>
+<div>
+  <label>اسم المشروع</label>
+  <input id="projectName" type="text" placeholder="مثال: مشروع العجييمي القابضة - الدمام">
+</div>
+
+<div>
+  <label>موقع المشروع</label>
+  <input id="projectLocation" type="text" placeholder="مثال: الدمام - حي ... / رابط خرائط">
+</div>
 
     <div>
       <label>ماركة المصعد</label>
@@ -958,6 +967,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const lifts = document.getElementById('lifts').value;
 const brandSelect = document.getElementById('brandSelect').value;
 const brandOther  = document.getElementById('brandOther')?.value || '';
+const projectName     = (document.getElementById('projectName')?.value || '—').trim();
+const projectLocation = (document.getElementById('projectLocation')?.value || '—').trim();
 
 let brand = '';
 
@@ -1004,6 +1015,8 @@ const ar = `
 من نوع (${brand})، تخدم مبنى (${buildingType}) الكائن في مدينة (${city})،
 وحيث إن الطرف الأول جهة متخصصة ومرخصة في أعمال صيانة المصاعد والسلالم الكهربائية،
 فقد اتفق الطرفان – وهما بكامل أهليتهما الشرعية والنظامية – على ما يلي:
+اسم المشروع: (${projectName})
+موقع المشروع: (${projectLocation})
 
 ### المادة (1): نطاق العقد
 يلتزم الطرف الأول بتقديم خدمات الصيانة الوقائية الدورية للمصاعد المشمولة بالعقد، وفقًا للمعايير الفنية المعتمدة وأنظمة السلامة المعمول بها في المملكة العربية السعودية.
@@ -1119,6 +1132,8 @@ Customer Name: ${customer.customer_name}
 Mobile No.: ${mobile}  
 Address: ${address}  
 Hereinafter referred to as the “Second Party”
+Project Name: (${projectName})
+Project Location: (${projectLocation})
 
 ### Preamble:
 Whereas the Second Party desires to engage the First Party for annual preventive maintenance services for (${lifts}) passenger elevator(s),
@@ -1595,6 +1610,7 @@ function saveContract() {
 
   const serviceType = document.getElementById('serviceType')?.value || 'annual';
 
+
   /* =========================
      بيانات مشتركة
   ========================= */
@@ -1605,8 +1621,15 @@ function saveContract() {
   if (!lifts || !capacity || !floors) {
     alert('⚠️ يرجى تعبئة بيانات المصاعد الأساسية (عدد المصاعد، الحمولة، الطوابق)');
     return;
+  
   }
+const projectName     = (document.getElementById('projectName')?.value || '').trim();
+const projectLocation = (document.getElementById('projectLocation')?.value || '').trim();
 
+if(!projectName || !projectLocation){
+  alert('⚠️ يرجى تعبئة (اسم المشروع + موقع المشروع)');
+  return;
+}
   /* =========================
      تحقق حسب نوع الخدمة
   ========================= */
@@ -1694,6 +1717,8 @@ function saveContract() {
       serviceType,
       customer,
       lifts,
+      projectName,
+projectLocation,
 
       total: Number(calc.total || 0).toFixed(2) + ' ريال',
 
@@ -2105,6 +2130,9 @@ td,th{
     <div class="header-meta">
       <div><b>رقم العقد:</b><br>${contract.id}</div>
       <div><b>تاريخ العقد:</b><br>${contract.date}</div>
+      <div><b>اسم المشروع:</b><br>${contract.projectName || '—'}</div>
+<div><b>موقع المشروع:</b><br>${contract.projectLocation || '—'}</div>
+
     </div>
 
   </div>
@@ -2158,6 +2186,9 @@ function openAnnualContractOfferPrint(contract){
   const customer = contract.customer || {};
   const refNo = contract.id || '—';
   const date  = contract.date || '—';
+  const projectName = contract.projectName || '—';
+const projectLocation = contract.projectLocation || '—';
+
 
   // ✅ نقرأ نطاق الصيانة من نفس العقد (إن وُجد)
   // لأن قيم getElementById قد تعكس آخر اختيار في الصفحة وليس إعدادات العقد المحفوظ
@@ -2368,6 +2399,9 @@ th{
       <div><b>العميل:</b> ${customer.customer_name || '—'}</div>
       <div><b>رقم العرض:</b> ${refNo}</div>
       <div><b>تاريخ العرض:</b> ${date}</div>
+      <b>اسم المشروع:</b> ${projectName}<br>
+<b>موقع المشروع:</b> ${projectLocation}<br>
+
     </div>
 
     <!-- ✅ ملخص المصاعد (بدون عرض بيانات تفصيلية) -->
