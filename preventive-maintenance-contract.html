@@ -850,6 +850,28 @@ button {
     </table>
   </div>
 </div>
+<!-- جدول توريد وتركيب وتشغيل -->
+<h4 style="margin:18px 0 10px;color:#0f766e">
+  ج) توريد وتركيب وتشغيل قطع غيار
+</h4>
+
+<div class="table-wrap">
+  <table border="1" width="100%" cellpadding="8" style="border-collapse:collapse">
+    <thead style="background:#f3f4f6">
+      <tr>
+        <th>#</th>
+        <th>رقم العرض</th>
+        <th>العميل</th>
+        <th>اسم المشروع</th>
+        <th>نوع العمل</th>
+        <th>القيمة الإجمالية</th>
+        <th>تاريخ التنفيذ</th>
+        <th>إجراءات</th>
+      </tr>
+    </thead>
+    <tbody id="supplyInstallTable"></tbody>
+  </table>
+</div>
 
 
 <script>
@@ -1810,7 +1832,77 @@ projectLocation,
 
 
 
- 
+ function openSupplyOfferPrint(contract) {
+  if (!contract || contract.serviceType !== 'supply_install') {
+    alert('❌ هذا ليس عرض توريد / تركيب / تشغيل');
+    return;
+  }
+
+  const w = window.open('', '_blank');
+
+  w.document.write(`
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>عرض سعر ${contract.id}</title>
+<style>
+body{
+  font-family:Cairo,Arial;
+  padding:30px;
+  color:#111;
+}
+h1{color:#0f766e;text-align:center}
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:20px;
+}
+td,th{
+  border:1px solid #ccc;
+  padding:10px;
+}
+th{background:#f3f4f6}
+.total{
+  font-weight:800;
+  color:#0f766e;
+}
+</style>
+</head>
+<body>
+
+<h1>عرض سعر توريد وتركيب وتشغيل قطع غيار</h1>
+
+<p><b>رقم العرض:</b> ${contract.id}</p>
+<p><b>العميل:</b> ${contract.customer.customer_name}</p>
+<p><b>اسم المشروع:</b> ${contract.projectName}</p>
+<p><b>موقع المشروع:</b> ${contract.projectLocation}</p>
+<p><b>تاريخ التنفيذ:</b> ${contract.date}</p>
+
+<table>
+<tr><th>البند</th><th>القيمة (ريال)</th></tr>
+<tr><td>قيمة التوريد</td><td>${contract.supplyDetails.material.toFixed(2)}</td></tr>
+<tr><td>قيمة التركيب / التشغيل</td><td>${contract.supplyDetails.labor.toFixed(2)}</td></tr>
+<tr><td>الإجمالي قبل الضريبة</td><td>${contract.pricing.subtotal.toFixed(2)}</td></tr>
+<tr><td>الضريبة (15%)</td><td>${contract.pricing.vat.toFixed(2)}</td></tr>
+<tr>
+  <td class="total">الإجمالي شامل الضريبة</td>
+  <td class="total">${contract.pricing.total.toFixed(2)}</td>
+</tr>
+</table>
+
+<h3>ملاحظات</h3>
+<p>${contract.supplyDetails.description || '—'}</p>
+
+<br>
+<button onclick="window.print()">🖨️ طباعة</button>
+
+</body>
+</html>
+`);
+  w.document.close();
+}
+
 
 
 function openPrintView(contract){
@@ -2576,19 +2668,26 @@ function getBrandValue(){
 function renderContractsTable(){
   const annualTbody = document.getElementById('annualContractsTable');
   const onceTbody   = document.getElementById('onceVisitsTable');
-  if (!annualTbody || !onceTbody) return;
+  const supplyTbody = document.getElementById('supplyInstallTable'); // ✅ جديد
 
+  if (!annualTbody || !onceTbody) return;
+  // supplyTbody اختياري (لو ما أضفته ما نوقف)
+  
   const items = JSON.parse(localStorage.getItem('rkl_maintenance_contracts') || '[]');
 
   annualTbody.innerHTML = '';
-  onceTbody.innerHTML = '';
+  onceTbody.innerHTML   = '';
+  if(supplyTbody) supplyTbody.innerHTML = '';
 
   let annualIndex = 0;
-  let onceIndex = 0;
+  let onceIndex   = 0;
+  let supplyIndex = 0;
 
   items.forEach((c, i) => {
 
+    // =======================
     // اسم العميل (يدعم Object أو نص قديم)
+    // =======================
     let customerName = '—';
     let customerCity = '';
     if (typeof c.customer === 'object' && c.customer !== null) {
@@ -2600,10 +2699,9 @@ function renderContractsTable(){
 
     const serviceType = c.serviceType || 'annual';
 
-    // =======================
-    // (أ) العقود السنوية فقط
-    // شرطنا هنا: annual + فيه content (يعني عقد فعلي)
-    // =======================
+    // =========================================================
+    // (أ) العقود السنوية (annual + content = عقد فعلي)
+    // =========================================================
     if(serviceType === 'annual' && c.content){
       annualIndex++;
 
@@ -2619,23 +2717,23 @@ function renderContractsTable(){
         <td>${c.total || '—'}</td>
         <td>${c.lang || '—'}</td>
         <td>${c.date || '—'}</td>
-      <td>
-  <button type="button" class="print-annual" data-index="${i}">طباعة العقد</button>
+        <td>
+          <button type="button" class="print-annual" data-index="${i}">
+            طباعة العقد
+          </button>
 
-  <!-- ✅ زر عرض السعر داخل جدول (أ) -->
-  <button type="button" class="print-annual-offer" data-index="${i}">
-    🖨️ طباعة عرض سعر العقد
-  </button>
-</td>
-
+          <button type="button" class="print-annual-offer" data-index="${i}">
+            🖨️ طباعة عرض سعر العقد
+          </button>
+        </td>
       `;
       annualTbody.appendChild(row);
       return;
     }
 
-    // =======================
+    // =========================================================
     // (ب) الزيارات لمرة واحدة
-    // =======================
+    // =========================================================
     if(serviceType === 'once'){
       onceIndex++;
 
@@ -2657,60 +2755,107 @@ function renderContractsTable(){
         <td>${c.total || '—'}</td>
         <td>${c.date || '—'}</td>
         <td>${vtLabel}</td>
-     <td>
-  <button type="button" class="print-once-offer" data-index="${i}">
-    🖨️ طباعة عرض السعر زياره
-  </button>
+        <td>
+          <button type="button" class="print-once-offer" data-index="${i}">
+            🖨️ طباعة عرض السعر زياره
+          </button>
 
-  <button type="button" class="print-once-report" data-index="${i}">
-    🧾 طباعة التقرير زياره
-  </button>
-</td>
-
+          <button type="button" class="print-once-report" data-index="${i}">
+            🧾 طباعة التقرير زياره
+          </button>
+        </td>
       `;
       onceTbody.appendChild(row);
       return;
     }
 
-    // إذا عندك بيانات قديمة annual بدون content، تجاهلها أو لاحقاً نرتّبها
+    // =========================================================
+    // (ج) توريد + تركيب + تشغيل قطع غيار
+    // =========================================================
+    if(serviceType === 'supply_install'){
+      if(!supplyTbody) return; // لو جدول (ج) غير موجود بالـ HTML
+
+      supplyIndex++;
+
+      const supplyType = c.supplyDetails?.type || '—';
+      const supplyTypeLabel =
+        supplyType === 'supply'                   ? 'توريد فقط' :
+        supplyType === 'supply_install'           ? 'توريد + تركيب' :
+        supplyType === 'supply_install_commission'? 'توريد + تركيب + تشغيل' :
+        supplyType === 'commission_only'          ? 'تشغيل بدون قطع غيار' : '—';
+
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${supplyIndex}</td>
+        <td>${c.id || '—'}</td>
+        <td>
+          <strong>${customerName}</strong>
+          <div style="font-size:12px;color:#6b7280">${customerCity}</div>
+        </td>
+        <td>${c.projectName || '—'}</td>
+        <td>${supplyTypeLabel}</td>
+        <td>${c.total || '—'}</td>
+        <td>${c.date || '—'}</td>
+        <td>
+          <button type="button" class="print-supply-offer" data-index="${i}">
+            🖨️ طباعة عرض السعر (توريد/تركيب/تشغيل)
+          </button>
+        </td>
+      `;
+      supplyTbody.appendChild(row);
+      return;
+    }
+
+    // غير ذلك: بيانات قديمة/غير معروفة → تجاهل
   });
 
-  // ربط أزرار الطباعة للعقود السنوية
+  // =========================
+  // ربط أزرار الطباعة
+  // =========================
+
+  // (أ) طباعة العقد السنوي
   document.querySelectorAll('.print-annual').forEach(btn => {
     btn.onclick = function(){
       const idx = Number(this.getAttribute('data-index'));
-      openPrintView(items[idx]); // نفس الطباعة الحالية
+      openPrintView(items[idx]);
     };
   });
-document.querySelectorAll('.print-annual-offer').forEach(btn => {
-  btn.onclick = function(){
-    const idx = Number(this.getAttribute('data-index'));
-    openAnnualContractOfferPrint(items[idx]);
-  };
-});
 
+  // (أ) طباعة عرض سعر العقد السنوي
+  document.querySelectorAll('.print-annual-offer').forEach(btn => {
+    btn.onclick = function(){
+      const idx = Number(this.getAttribute('data-index'));
+      openAnnualContractOfferPrint(items[idx]);
+    };
+  });
 
-  // ربط أزرار طباعة عرض سعر الزيارة
-// ✅ عرض سعر الزيارة (قالب رسمي مستقل)
-document.querySelectorAll('.print-once-offer').forEach(btn => {
-  btn.onclick = function(){
-    const idx = Number(this.getAttribute('data-index'));
-    openOnceVisitOfferPrint(items[idx]);
-  };
-});
+  // (ب) عرض سعر الزيارة
+  document.querySelectorAll('.print-once-offer').forEach(btn => {
+    btn.onclick = function(){
+      const idx = Number(this.getAttribute('data-index'));
+      openOnceVisitOfferPrint(items[idx]);
+    };
+  });
 
-// ✅ تقرير الزيارة (قالب رسمي مستقل)
-document.querySelectorAll('.print-once-report').forEach(btn => {
-  btn.onclick = function(){
-    const idx = Number(this.getAttribute('data-index'));
-    openOnceVisitReportPrint(items[idx]);
-  };
-});
+  // (ب) تقرير الزيارة
+  document.querySelectorAll('.print-once-report').forEach(btn => {
+    btn.onclick = function(){
+      const idx = Number(this.getAttribute('data-index'));
+      openOnceVisitReportPrint(items[idx]);
+    };
+  });
 
+  // (ج) طباعة عرض سعر التوريد/التركيب/التشغيل
+  document.querySelectorAll('.print-supply-offer').forEach(btn => {
+    btn.onclick = function(){
+      const idx = Number(this.getAttribute('data-index'));
+      openSupplyOfferPrint(items[idx]); // ✅ لازم تكون الدالة موجودة عندك
+    };
+  });
 }
 
-
 document.addEventListener('DOMContentLoaded', renderContractsTable);
+
 
 
 function reviewContract(){
