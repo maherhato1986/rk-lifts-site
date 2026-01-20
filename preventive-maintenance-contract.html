@@ -533,12 +533,12 @@ button {
 
   <div class="grid">
     <div>
-      <label>اختر نوع الخدمة</label>
-      <select id="serviceType" onchange="toggleServiceType()">
-        <option value="annual" selected>عقد صيانة وقائية سنوي</option>
-        <option value="once">زيارة لمرة واحدة</option>
-      </select>
-    </div>
+   <select id="serviceType" onchange="toggleServiceType()">
+  <option value="annual" selected>عقد صيانة وقائية سنوي</option>
+  <option value="once">زيارة لمرة واحدة</option>
+  <option value="supply_install">توريد + تركيب + تشغيل قطع غيار</option>
+</select>
+
 
     <div>
       <label>ملاحظة</label>
@@ -698,6 +698,73 @@ button {
 
   </div>
 
+</div>
+<div id="supplyInstallBox" style="display:none">
+
+  <div class="section">
+    <h3>رابعاً: توريد وتركيب وتشغيل قطع غيار</h3>
+
+    <div class="grid">
+
+      <div>
+        <label>نوع العمل</label>
+        <select id="supplyType">
+          <option value="">-- اختر --</option>
+          <option value="supply">توريد فقط</option>
+          <option value="supply_install">توريد + تركيب</option>
+          <option value="supply_install_commission">توريد + تركيب + تشغيل</option>
+        </select>
+      </div>
+
+      <div>
+        <label>تاريخ التنفيذ المتوقع</label>
+        <input type="date" id="supplyDate">
+      </div>
+
+      <div>
+        <label>هل المصعد متوقف؟</label>
+        <select id="supplyStopped">
+          <option value="no">لا</option>
+          <option value="yes">نعم</option>
+        </select>
+      </div>
+
+      <div style="grid-column:1/-1">
+        <label>وصف قطع الغيار المطلوبة</label>
+        <textarea id="supplyDescription"
+          placeholder="مثال: انفيرتر – كرت كنترول – أزرار – شاشات – بطاريات..."></textarea>
+      </div>
+
+      <div>
+        <label>قيمة التوريد (قبل الضريبة)</label>
+        <input id="supplyMaterialPrice" type="number" min="0">
+      </div>
+
+      <div>
+        <label>قيمة التركيب والتشغيل (قبل الضريبة)</label>
+        <input id="supplyLaborPrice" type="number" min="0">
+      </div>
+
+      <!-- ✅ الإضافات -->
+      <div style="grid-column:1/-1">
+        <label>خيارات إضافية</label>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;
+          border:1px solid #e5e7eb;padding:12px;border-radius:10px;background:#fff">
+          
+          <label style="display:flex;gap:8px;align-items:center">
+            <input type="checkbox" id="includeCommissioning">
+            يشمل برمجة / تشغيل النظام
+          </label>
+
+          <label style="display:flex;gap:8px;align-items:center">
+            <input type="checkbox" id="excludeFutureMaintenance" checked>
+            لا يشمل صيانة مستقبلية
+          </label>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>
 
 
@@ -1320,9 +1387,12 @@ function recomputeFromManual(){
 }
 
 function previewPricing(){
+
   const serviceType = document.getElementById('serviceType')?.value || 'annual';
 
-  // ✅ تأكد من الحقول الأساسية
+  /* =========================
+     تحقق من بيانات المصاعد الأساسية
+  ========================= */
   const baseRequired = ['lifts','capacity','floors'];
   for(const id of baseRequired){
     const el = document.getElementById(id);
@@ -1332,8 +1402,11 @@ function previewPricing(){
     }
   }
 
-  // ✅ سنوي: يتطلب (لغة + تاريخ)
+  /* =========================
+     1️⃣ عقد صيانة سنوي
+  ========================= */
   if(serviceType === 'annual'){
+
     const annualRequired = ['lang','contractDate'];
     for(const id of annualRequired){
       const el = document.getElementById(id);
@@ -1347,9 +1420,75 @@ function previewPricing(){
     window.manualPricePerLift = null;
     window.finalCalcOverride = calc;
     paintPreviewAnnual(calc, false);
+  }
 
-  } else {
-    // ✅ زيارة: يتطلب متطلبات الزيارة
+  /* =========================
+     2️⃣ توريد + تركيب + تشغيل
+  ========================= */
+  else if(serviceType === 'supply_install'){
+
+    const required = [
+      'supplyType',
+      'supplyDate',
+      'supplyDescription',
+      'supplyMaterialPrice'
+    ];
+
+    for(const id of required){
+      const el = document.getElementById(id);
+      if(!el || !el.value){
+        alert('⚠️ يرجى تعبئة جميع بيانات التوريد والتركيب');
+        return;
+      }
+    }
+
+    const material = Number(document.getElementById('supplyMaterialPrice').value || 0);
+    const labor    = Number(document.getElementById('supplyLaborPrice').value || 0);
+
+    const subtotal = material + labor;
+    const vat      = subtotal * 0.15;
+    const total    = subtotal + vat;
+
+    const options = [];
+    if(document.getElementById('includeCommissioning')?.checked)
+      options.push('يشمل برمجة / تشغيل النظام');
+    if(document.getElementById('excludeFutureMaintenance')?.checked)
+      options.push('لا يشمل صيانة مستقبلية');
+
+    document.getElementById('reviewBox').innerHTML = `
+      <div class="contract-summary">
+        <h4>معاينة عرض سعر (توريد وتركيب)</h4>
+        <table>
+          <tr><td class="label">قيمة التوريد</td><td class="value">${material.toFixed(2)} ريال</td></tr>
+          <tr><td class="label">قيمة التركيب</td><td class="value">${labor.toFixed(2)} ريال</td></tr>
+          <tr><td class="label">الإجمالي قبل الضريبة</td><td class="value">${subtotal.toFixed(2)} ريال</td></tr>
+          <tr><td class="label">الضريبة (15%)</td><td class="value">${vat.toFixed(2)} ريال</td></tr>
+          <tr>
+            <td class="label total">الإجمالي شامل الضريبة</td>
+            <td class="value total">${total.toFixed(2)} ريال</td>
+          </tr>
+        </table>
+        <p style="margin-top:10px"><b>الخيارات:</b><br>${options.join('<br>') || '—'}</p>
+      </div>
+    `;
+
+    window.finalCalcOverride = {
+      mode: 'supply_install',
+      subtotal,
+      vat,
+      total,
+      material,
+      labor,
+      options,
+      isManual: true
+    };
+  }
+
+  /* =========================
+     3️⃣ زيارة لمرة واحدة
+  ========================= */
+  else if(serviceType === 'once'){
+
     const onceRequired = ['onceVisitType','onceDate','onceIssue','oncePrice'];
     for(const id of onceRequired){
       const el = document.getElementById(id);
@@ -1360,11 +1499,10 @@ function previewPricing(){
     }
 
     const subtotal = Number(document.getElementById('oncePrice').value || 0);
-    const vat = subtotal * 0.15;
-    const total = subtotal + vat;
+    const vat      = subtotal * 0.15;
+    const total    = subtotal + vat;
 
-    const box = document.getElementById('reviewBox');
-    box.innerHTML = `
+    document.getElementById('reviewBox').innerHTML = `
       <div class="contract-summary">
         <h4>معاينة عرض سعر (زيارة لمرة واحدة)</h4>
         <table>
@@ -1378,22 +1516,27 @@ function previewPricing(){
     `;
 
     window.finalCalcOverride = {
-      pricePerLift: 0,
-      lifts: Number(document.getElementById('lifts').value || 0),
-      zone: '—',
+      mode: 'once',
       subtotal,
       vat,
       total,
-      isManual: true,
-      mode: 'once'
+      isManual: true
     };
   }
 
-  // ✅ إظهار صندوق المعاينة + زر الحفظ
+  /* =========================
+     إظهار المعاينة وزر الحفظ
+  ========================= */
   document.getElementById('reviewSection').style.display = 'block';
+
   const btn = document.getElementById('saveBtn');
   btn.style.display = 'inline-block';
-  btn.textContent = (serviceType === 'once') ? '💾 حفظ الزيارة في السجل' : '💾 اعتماد وحفظ العقد';
+  btn.textContent =
+    serviceType === 'once'
+      ? '💾 حفظ الزيارة في السجل'
+      : serviceType === 'supply_install'
+        ? '💾 حفظ عرض التوريد والتركيب'
+        : '💾 اعتماد وحفظ العقد';
 }
 
 
@@ -1405,25 +1548,33 @@ function saveContract() {
 
   const serviceType = document.getElementById('serviceType')?.value || 'annual';
 
-  // حقول مشتركة
-  const lifts = document.getElementById('lifts').value;
+  /* =========================
+     بيانات مشتركة
+  ========================= */
+  const lifts    = document.getElementById('lifts').value;
   const capacity = document.getElementById('capacity').value;
-  const floors = document.getElementById('floors').value;
+  const floors   = document.getElementById('floors').value;
 
   if (!lifts || !capacity || !floors) {
     alert('⚠️ يرجى تعبئة بيانات المصاعد الأساسية (عدد المصاعد، الحمولة، الطوابق)');
     return;
   }
 
-  // تحقق حسب النوع
+  /* =========================
+     تحقق حسب نوع الخدمة
+  ========================= */
   if (serviceType === 'annual') {
+
     const lang = document.getElementById('lang').value;
     const date = document.getElementById('contractDate').value;
+
     if (!lang || !date) {
       alert('⚠️ يرجى تعبئة (اللغة + تاريخ العقد) للعقد السنوي');
       return;
     }
-  } else {
+
+  } else if (serviceType === 'once') {
+
     const onceRequired = ['onceVisitType','onceDate','onceIssue','oncePrice'];
     for (const id of onceRequired) {
       if (!document.getElementById(id).value) {
@@ -1431,18 +1582,46 @@ function saveContract() {
         return;
       }
     }
+
+  } else if (serviceType === 'supply_install') {
+
+    const supplyRequired = [
+      'supplyType',
+      'supplyDate',
+      'supplyDescription',
+      'supplyMaterialPrice'
+    ];
+
+    for (const id of supplyRequired) {
+      if (!document.getElementById(id).value) {
+        alert('⚠️ يرجى تعبئة جميع بيانات التوريد والتركيب');
+        return;
+      }
+    }
   }
 
+  /* =========================
+     الحفظ
+  ========================= */
   try {
+
     const calc = window.finalCalcOverride || calculateTotal();
 
     const contract = {
-      id: (serviceType === 'once' ? 'VIS-' : 'PMC-') + Date.now(),
+      id: (
+        serviceType === 'once'
+          ? 'VIS-'
+          : serviceType === 'supply_install'
+            ? 'SUP-'
+            : 'PMC-'
+      ) + Date.now(),
+
       serviceType,
       customer,
       lifts,
 
       total: calc.total.toFixed(2) + ' ريال',
+
       pricing: {
         zone: calc.zone || '—',
         pricePerLift: Number(calc.pricePerLift || 0),
@@ -1452,10 +1631,22 @@ function saveContract() {
         isManual: !!calc.isManual
       },
 
-      // بيانات إضافية حسب النوع
-      lang: (serviceType === 'annual') ? document.getElementById('lang').value : 'ar',
-      date: (serviceType === 'annual') ? document.getElementById('contractDate').value : document.getElementById('onceDate').value,
+      /* =========================
+         بيانات حسب نوع الخدمة
+      ========================= */
 
+      // عقد سنوي
+      lang: (serviceType === 'annual')
+        ? document.getElementById('lang').value
+        : 'ar',
+
+      date: (serviceType === 'annual')
+        ? document.getElementById('contractDate').value
+        : serviceType === 'once'
+          ? document.getElementById('onceDate').value
+          : document.getElementById('supplyDate').value,
+
+      // زيارة لمرة واحدة
       onceDetails: (serviceType === 'once') ? {
         visitType: document.getElementById('onceVisitType').value,
         visitDate: document.getElementById('onceDate').value,
@@ -1465,21 +1656,43 @@ function saveContract() {
         priceBeforeVat: Number(document.getElementById('oncePrice').value || 0)
       } : null,
 
-      // خليه فقط للسنوي
-      content: (serviceType === 'annual') ? generateFullContractText() : ''
+      // توريد + تركيب + تشغيل
+      supplyDetails: (serviceType === 'supply_install') ? {
+        type: document.getElementById('supplyType').value,
+        date: document.getElementById('supplyDate').value,
+        stopped: document.getElementById('supplyStopped').value,
+        description: document.getElementById('supplyDescription').value,
+        material: Number(document.getElementById('supplyMaterialPrice').value || 0),
+        labor: Number(document.getElementById('supplyLaborPrice').value || 0),
+        includeCommissioning: document.getElementById('includeCommissioning').checked,
+        excludeFutureMaintenance: document.getElementById('excludeFutureMaintenance').checked
+      } : null,
+
+      // محتوى العقد (فقط للعقد السنوي)
+      content: (serviceType === 'annual')
+        ? generateFullContractText()
+        : ''
     };
 
-    const contracts = JSON.parse(localStorage.getItem('rkl_maintenance_contracts') || '[]');
+    const contracts = JSON.parse(
+      localStorage.getItem('rkl_maintenance_contracts') || '[]'
+    );
+
     contracts.push(contract);
-    localStorage.setItem('rkl_maintenance_contracts', JSON.stringify(contracts));
+    localStorage.setItem(
+      'rkl_maintenance_contracts',
+      JSON.stringify(contracts)
+    );
 
     renderContractsTable();
     alert('✅ تم الحفظ بنجاح وإضافته للسجل');
+
   } catch (error) {
     console.error(error);
     alert('❌ حدث خطأ أثناء الحفظ: ' + error.message);
   }
 }
+
 
  
 
@@ -2459,20 +2672,26 @@ th{ background:var(--soft); width:35%; }
 
 
 <script>
-  function toggleServiceType(){
-  const type = document.getElementById('serviceType')?.value || 'annual';
+function toggleServiceType(){
+  const type = document.getElementById('serviceType').value;
 
-  document.getElementById('annualBox').style.display = (type === 'annual') ? 'block' : 'none';
-  document.getElementById('onceBox').style.display   = (type === 'once') ? 'block' : 'none';
+  document.getElementById('annualBox').style.display = 'none';
+  document.getElementById('onceBox').style.display = 'none';
+  document.getElementById('supplyInstallBox').style.display = 'none';
 
-  // إخفاء المعاينة وزر الحفظ عند تغيير النوع (عشان ما يصير تضارب)
-  document.getElementById('reviewSection').style.display = 'none';
-  document.getElementById('saveBtn').style.display = 'none';
+  if(type === 'annual'){
+    document.getElementById('annualBox').style.display = 'block';
+  }
 
-  // تصفير أي override سابق
-  window.manualPricePerLift = null;
-  window.finalCalcOverride = null;
+  if(type === 'once'){
+    document.getElementById('onceBox').style.display = 'block';
+  }
+
+  if(type === 'supply_install'){
+    document.getElementById('supplyInstallBox').style.display = 'block';
+  }
 }
+
 
 document.addEventListener('DOMContentLoaded', () => {
   toggleServiceType();
