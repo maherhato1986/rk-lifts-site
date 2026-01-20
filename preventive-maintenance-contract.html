@@ -1625,7 +1625,8 @@ function saveContract() {
 
     const onceRequired = ['onceVisitType','onceDate','onceIssue','oncePrice'];
     for (const id of onceRequired) {
-      if (!document.getElementById(id).value) {
+      const el = document.getElementById(id);
+      if (!el || !el.value) {
         alert('⚠️ يرجى تعبئة متطلبات الزيارة (نوع الزيارة، التاريخ، الوصف، سعر الزيارة)');
         return;
       }
@@ -1634,8 +1635,8 @@ function saveContract() {
   } 
   else if (serviceType === 'supply_install') {
 
-    const supplyType = document.getElementById('supplyType').value;
-    const supplyDate = document.getElementById('supplyDate').value;
+    const supplyType = document.getElementById('supplyType')?.value || '';
+    const supplyDate = document.getElementById('supplyDate')?.value || '';
 
     if (!supplyType || !supplyDate) {
       alert('⚠️ يرجى تعبئة نوع العمل وتاريخ التنفيذ');
@@ -1644,21 +1645,30 @@ function saveContract() {
 
     /* تشغيل بدون قطع */
     if (supplyType === 'commission_only') {
-      if (!document.getElementById('operationMode').value) {
+      const op = document.getElementById('operationMode')?.value || '';
+      if (!op) {
         alert('⚠️ يرجى تحديد هل التشغيل لأول مرة أم إعادة ضبط');
         return;
       }
     } 
     /* توريد / تركيب */
     else {
-      const supplyRequired = ['supplyDescription','supplyMaterialPrice'];
-      for (const id of supplyRequired) {
-        if (!document.getElementById(id).value) {
-          alert('⚠️ يرجى تعبئة وصف العمل وقيمة التوريد');
-          return;
-        }
+      const desc = document.getElementById('supplyDescription')?.value || '';
+      const mat  = document.getElementById('supplyMaterialPrice')?.value || '';
+
+      if (!desc || !mat) {
+        alert('⚠️ يرجى تعبئة وصف العمل وقيمة التوريد');
+        return;
       }
     }
+  }
+
+  /* =========================
+     ✅ تأكيد وجود معاينة/حسبة قبل الحفظ
+  ========================= */
+  if (!window.finalCalcOverride || !window.finalCalcOverride.total) {
+    alert('⚠️ يرجى الضغط على زر (📊 عرض الحسبة) قبل الحفظ');
+    return;
   }
 
   /* =========================
@@ -1667,6 +1677,10 @@ function saveContract() {
   try {
 
     const calc = window.finalCalcOverride || calculateTotal();
+
+    const supplyTypeNow = (serviceType === 'supply_install')
+      ? (document.getElementById('supplyType')?.value || '')
+      : '';
 
     const contract = {
       id: (
@@ -1681,7 +1695,7 @@ function saveContract() {
       customer,
       lifts,
 
-      total: calc.total.toFixed(2) + ' ريال',
+      total: Number(calc.total || 0).toFixed(2) + ' ريال',
 
       pricing: {
         zone: calc.zone || '—',
@@ -1719,11 +1733,11 @@ function saveContract() {
 
       // توريد / تركيب / تشغيل
       supplyDetails: (serviceType === 'supply_install') ? {
-        type: document.getElementById('supplyType').value,
+        type: supplyTypeNow,
 
         operationMode:
-          document.getElementById('supplyType').value === 'commission_only'
-            ? document.getElementById('operationMode').value
+          supplyTypeNow === 'commission_only'
+            ? (document.getElementById('operationMode')?.value || null)
             : null,
 
         date: document.getElementById('supplyDate').value,
@@ -1731,7 +1745,7 @@ function saveContract() {
         description: document.getElementById('supplyDescription').value,
 
         material:
-          document.getElementById('supplyType').value === 'commission_only'
+          supplyTypeNow === 'commission_only'
             ? 0
             : Number(document.getElementById('supplyMaterialPrice').value || 0),
 
