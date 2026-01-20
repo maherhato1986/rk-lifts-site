@@ -2154,30 +2154,61 @@ function openAnnualContractOfferPrint(contract){
     return;
   }
 
-  const calc = contract.pricing;
+  const calc = contract.pricing || {};
   const customer = contract.customer || {};
-  const refNo = contract.id;
-  const date  = contract.date;
+  const refNo = contract.id || '—';
+  const date  = contract.date || '—';
+
+  // ✅ نقرأ نطاق الصيانة من نفس العقد (إن وُجد)
+  // لأن قيم getElementById قد تعكس آخر اختيار في الصفحة وليس إعدادات العقد المحفوظ
+  const savedVisits    = contract.visits || null;
+  const savedEmergency = contract.emergency || null;
+  const savedSpare     = contract.spareParts || null;
+  const savedTraining  = contract.training || null;
+
+  // ✅ لو غير محفوظين داخل العقد، نرجع لواجهة الصفحة كخيار احتياطي
+  const visitsVal =
+    savedVisits ||
+    (document.getElementById('visits')?.value || 'monthly');
+
+  const emergencyVal =
+    savedEmergency ||
+    (document.getElementById('emergency')?.value || 'normal');
+
+  const sparePartsVal =
+    savedSpare ||
+    (document.getElementById('spareParts')?.value || 'excluded');
+
+  const trainingVal =
+    savedTraining ||
+    (document.getElementById('training')?.value || 'no');
 
   const visits =
-    document.getElementById('visits')?.value === 'monthly'
+    visitsVal === 'monthly'
       ? '12 زيارة (زيارة شهرية)'
       : '6 زيارات (كل شهرين)';
 
   const emergency =
-    document.getElementById('emergency')?.value === 'extended'
+    emergencyVal === 'extended'
       ? 'خدمة طوارئ خارج أوقات الدوام'
       : 'خدمة طوارئ خلال أوقات الدوام';
 
   const spareParts =
-    document.getElementById('spareParts')?.value === 'included'
+    sparePartsVal === 'included'
       ? 'قطع الغيار مشمولة (بعرض خاص)'
       : 'قطع الغيار غير مشمولة';
 
   const training =
-    document.getElementById('training')?.value === 'yes'
+    trainingVal === 'yes'
       ? 'يشمل تدريب إنقاذ محتجزين'
       : 'لا يشمل تدريب';
+
+  const money = (n) => (Number(n || 0)).toFixed(2);
+
+  // ✅ إجبار القيم (حتى لو كانت محفوظة كنص)
+  const subtotalNum = Number(calc.subtotal || 0);
+  const vatNum      = Number(calc.vat || 0);
+  const totalNum    = Number(calc.total || 0);
 
   const w = window.open('', '_blank');
 
@@ -2186,126 +2217,223 @@ function openAnnualContractOfferPrint(contract){
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>عرض سعر عقد صيانة وقائية سنوي</title>
 
 <style>
-@page{size:A4;margin:15mm}
-body{
-  font-family:"Cairo","Tajawal",Arial;
-  font-size:14px;
-  color:#111;
+*{ -webkit-print-color-adjust: exact; print-color-adjust: exact; box-sizing:border-box; }
+@page{ size:A4; margin:15mm; }
+
+:root{
+  --ink:#111827;
+  --muted:#6b7280;
+  --line:#e5e7eb;
+  --soft:#f8fafc;
+  --brand:#0f766e;
 }
+
+body{
+  margin:0;
+  font-family:"Cairo","Tajawal",Arial,sans-serif;
+  font-size:14px;
+  color:var(--ink);
+  background:#fff;
+  line-height:1.7;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:url('/public/images/logo.png') center center / 360px no-repeat;
+  opacity:0.04;
+  z-index:-1;
+}
+
+.page{
+  outline:1.5px solid var(--brand);
+  outline-offset:-8px;
+  padding:16px 18px 22px;
+}
+
 .header{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  border-bottom:2px solid #0f766e;
+  border-bottom:2px solid var(--brand);
   padding-bottom:10px;
+  gap:12px;
 }
-.header img{width:45px}
-.header h1{margin:0;color:#0f766e;font-size:20px}
 
-.section{margin-top:22px}
+.header img{ width:46px; height:auto; }
+.header h1{
+  margin:0;
+  color:var(--brand);
+  font-size:20px;
+  font-weight:900;
+  text-align:center;
+  flex:1;
+}
+
+.meta{
+  margin-top:14px;
+  background:var(--soft);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:12px 14px;
+  font-size:13.5px;
+}
+
+.section{ margin-top:18px; }
 .section h3{
-  margin-bottom:10px;
-  color:#0f766e;
-  border-bottom:1px solid #e5e7eb;
+  margin:0 0 10px 0;
+  color:var(--brand);
+  border-bottom:1px solid var(--line);
   padding-bottom:6px;
+  font-size:15.5px;
+  font-weight:900;
 }
 
 table{
   width:100%;
   border-collapse:collapse;
   margin-top:10px;
+  table-layout:fixed;
 }
+
 td,th{
-  border:1px solid #e5e7eb;
-  padding:8px;
+  border:1px solid var(--line);
+  padding:9px 10px;
+  vertical-align:top;
 }
-th{background:#f0fdfa}
+
+th{
+  background:#f0fdfa;
+  font-weight:800;
+}
+
+.money{ direction:ltr; text-align:left; font-weight:800; }
+.total{ color:var(--brand); font-weight:900; }
+
+.note{
+  background:#ecfeff;
+  border:1px dashed var(--brand);
+  border-radius:12px;
+  padding:12px 14px;
+  font-size:13.5px;
+}
 
 .footer{
-  margin-top:40px;
+  margin-top:22px;
   text-align:center;
   font-size:12px;
-  color:#555;
+  color:var(--muted);
+  border-top:1px solid var(--line);
+  padding-top:10px;
+}
+
+.print-actions{
+  margin:18px 0 0;
+  text-align:center;
+}
+
+.print-actions button{
+  background:var(--brand);
+  color:#fff;
+  border:none;
+  padding:10px 16px;
+  border-radius:10px;
+  font-size:14px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+@media print{
+  .print-actions{ display:none !important; }
+  .page{ outline:none; padding:0; }
 }
 </style>
 </head>
 
 <body>
+  <div class="page">
 
-<div class="header">
-  <img src="/public/images/logo.png">
-  <h1>عرض سعر عقد صيانة وقائية سنوي</h1>
-</div>
+    <div class="header">
+      <img src="/public/images/logo.png" alt="RKL">
+      <h1>عرض سعر عقد صيانة وقائية سنوي</h1>
+      <div style="width:46px"></div>
+    </div>
 
-<div class="section">
-  <b>العميل:</b> ${customer.customer_name || '—'}<br>
-  <b>رقم العرض:</b> ${refNo}<br>
-  <b>تاريخ العرض:</b> ${date}
-</div>
+    <div class="meta">
+      <div><b>العميل:</b> ${customer.customer_name || '—'}</div>
+      <div><b>رقم العرض:</b> ${refNo}</div>
+      <div><b>تاريخ العرض:</b> ${date}</div>
+    </div>
 
-<div class="section">
-  <h3>تفاصيل المصاعد</h3>
-  <table>
-    <tr>
-      <th>عدد المصاعد</th>
-      <th>نوع الخدمة</th>
-      <th>مدة العقد</th>
-    </tr>
-    <tr>
-      <td>${contract.lifts}</td>
-      <td>صيانة وقائية سنوية</td>
-      <td>سنة واحدة</td>
-    </tr>
-  </table>
-</div>
+    <!-- ✅ ملخص المصاعد (بدون عرض بيانات تفصيلية) -->
+    <div class="section">
+      <h3>ملخص المشروع</h3>
+      <table>
+        <tr>
+          <th>عدد المصاعد</th>
+          <th>نوع الخدمة</th>
+          <th>مدة العقد</th>
+        </tr>
+        <tr>
+          <td>${contract.lifts || '—'}</td>
+          <td>صيانة وقائية سنوية</td>
+          <td>سنة واحدة</td>
+        </tr>
+      </table>
+    </div>
 
-<div class="section">
-  <h3>نطاق الصيانة المشمولة</h3>
-  <table>
-    <tr><th>البند</th><th>التفاصيل</th></tr>
-    <tr><td>عدد الزيارات</td><td>${visits}</td></tr>
-    <tr><td>خدمة الطوارئ</td><td>${emergency}</td></tr>
-    <tr><td>قطع الغيار</td><td>${spareParts}</td></tr>
-    <tr><td>التدريب</td><td>${training}</td></tr>
-  </table>
-</div>
+    <div class="section">
+      <h3>نطاق الصيانة المشمولة</h3>
+      <table>
+        <tr><th style="width:30%">البند</th><th>التفاصيل</th></tr>
+        <tr><td>عدد الزيارات</td><td>${visits}</td></tr>
+        <tr><td>خدمة الطوارئ</td><td>${emergency}</td></tr>
+        <tr><td>قطع الغيار</td><td>${spareParts}</td></tr>
+        <tr><td>التدريب</td><td>${training}</td></tr>
+      </table>
+    </div>
 
-<div class="section">
-  <h3>الملخص المالي</h3>
-  <table>
-    <tr>
-      <th>القيمة قبل الضريبة</th>
-      <th>ضريبة 15%</th>
-      <th>الإجمالي شامل الضريبة</th>
-    </tr>
-    <tr>
-      <td>${calc.subtotal.toFixed(2)} ريال</td>
-      <td>${calc.vat.toFixed(2)} ريال</td>
-      <td><b>${calc.total.toFixed(2)} ريال</b></td>
-    </tr>
-  </table>
-</div>
+    <div class="section">
+      <h3>الملخص المالي</h3>
+      <table>
+        <tr>
+          <th>القيمة قبل الضريبة</th>
+          <th>ضريبة 15%</th>
+          <th>الإجمالي شامل الضريبة</th>
+        </tr>
+        <tr>
+          <td class="money">${money(subtotalNum)} SAR</td>
+          <td class="money">${money(vatNum)} SAR</td>
+          <td class="money total"><b>${money(totalNum)} SAR</b></td>
+        </tr>
+      </table>
+    </div>
 
-<div class="section">
-  <h3>ملاحظات وشروط</h3>
-  <p>
-    هذا العرض خاص بعقد صيانة وقائية سنوي، ولا يشمل قطع الغيار
-    إلا بعرض سعر مستقل ومعتمد.  
-    جميع الزيارات تُحتسب ضمن العقد حتى في حال توقف المصعد.
-  </p>
-</div>
+    <div class="section">
+      <h3>ملاحظات وشروط</h3>
+      <div class="note">
+        <div>1) هذا العرض خاص بعقد صيانة وقائية سنوي، وقطع الغيار غير مشمولة ما لم يتم اعتماد عرض سعر مستقل.</div>
+        <div>2) تُحتسب الزيارات ضمن العقد حتى في حال توقف المصعد أو الحاجة لقطع غيار.</div>
+        <div>3) ضريبة القيمة المضافة 15% مشمولة ضمن الإجمالي.</div>
+      </div>
+    </div>
 
-<div class="footer">
-  مؤسسة آر كي ال RKL للمصاعد والسلالم الكهربائية<br>
-  س.ت: 1010709355 – الرقم الضريبي: 302250422600003
-</div>
+    <div class="footer">
+      مؤسسة آر كي ال RKL للمصاعد والسلالم الكهربائية<br>
+      السجل التجاري: 1010709355 – الرقم الضريبي: 302250422600003<br>
+      الرياض – السليمانية | هاتف: 0114774021 | البريد: admin@rk-lifts.com
+    </div>
 
-<br>
-<button onclick="window.print()">🖨️ طباعة عرض السعر</button>
+    <div class="print-actions">
+      <button onclick="window.print()">🖨️ طباعة عرض السعر</button>
+    </div>
 
+  </div>
 </body>
 </html>
   `);
