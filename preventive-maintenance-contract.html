@@ -708,13 +708,23 @@ button {
 
       <div>
         <label>نوع العمل</label>
-        <select id="supplyType">
-          <option value="">-- اختر --</option>
-          <option value="supply">توريد فقط</option>
-          <option value="supply_install">توريد + تركيب</option>
-          <option value="supply_install_commission">توريد + تركيب + تشغيل</option>
-        </select>
+      <select id="supplyType" onchange="toggleOperationMode()">
+  <option value="">-- اختر --</option>
+  <option value="supply">توريد فقط</option>
+  <option value="supply_install">توريد + تركيب</option>
+  <option value="supply_install_commission">توريد + تركيب + تشغيل</option>
+  <option value="commission_only">تشغيل بدون قطع غيار</option>
+</select>
+
       </div>
+<div id="operationModeBox" style="display:none">
+  <label>نوع التشغيل</label>
+  <select id="operationMode">
+    <option value="">-- اختر --</option>
+    <option value="first_time">تشغيل لأول مرة</option>
+    <option value="reset">إعادة ضبط / إعادة برمجة</option>
+  </select>
+</div>
 
       <div>
         <label>تاريخ التنفيذ المتوقع</label>
@@ -1423,44 +1433,79 @@ function previewPricing(){
   }
 
   /* =========================
-     2️⃣ توريد + تركيب + تشغيل
+     2️⃣ توريد / تركيب / تشغيل
   ========================= */
   else if(serviceType === 'supply_install'){
 
-    const required = [
-      'supplyType',
-      'supplyDate',
-      'supplyDescription',
-      'supplyMaterialPrice'
-    ];
+    const supplyType = document.getElementById('supplyType').value;
+    const supplyDate = document.getElementById('supplyDate').value;
 
-    for(const id of required){
-      const el = document.getElementById(id);
-      if(!el || !el.value){
-        alert('⚠️ يرجى تعبئة جميع بيانات التوريد والتركيب');
+    if(!supplyType || !supplyDate){
+      alert('⚠️ يرجى تعبئة نوع العمل وتاريخ التنفيذ');
+      return;
+    }
+
+    /* تشغيل بدون قطع */
+    if(supplyType === 'commission_only'){
+      if(!document.getElementById('operationMode').value){
+        alert('⚠️ يرجى تحديد هل التشغيل لأول مرة أم إعادة ضبط');
+        return;
+      }
+    } 
+    /* توريد أو تركيب */
+    else {
+      if(!document.getElementById('supplyDescription').value ||
+         !document.getElementById('supplyMaterialPrice').value){
+        alert('⚠️ يرجى تعبئة وصف العمل وقيمة التوريد');
         return;
       }
     }
 
-    const material = Number(document.getElementById('supplyMaterialPrice').value || 0);
-    const labor    = Number(document.getElementById('supplyLaborPrice').value || 0);
+    /* =========================
+       الحساب
+    ========================= */
+    let material = 0;
+    let labor    = 0;
+
+    if(supplyType !== 'commission_only'){
+      material = Number(document.getElementById('supplyMaterialPrice').value || 0);
+    }
+
+    labor = Number(document.getElementById('supplyLaborPrice').value || 0);
 
     const subtotal = material + labor;
     const vat      = subtotal * 0.15;
     const total    = subtotal + vat;
 
+    /* =========================
+       الخيارات
+    ========================= */
     const options = [];
+
+    if(supplyType === 'commission_only'){
+      const mode =
+        document.getElementById('operationMode').value === 'first_time'
+          ? 'تشغيل لأول مرة'
+          : 'إعادة ضبط / إعادة برمجة';
+
+      options.push(`🔧 نوع التشغيل: ${mode}`);
+    }
+
     if(document.getElementById('includeCommissioning')?.checked)
       options.push('يشمل برمجة / تشغيل النظام');
+
     if(document.getElementById('excludeFutureMaintenance')?.checked)
       options.push('لا يشمل صيانة مستقبلية');
 
+    /* =========================
+       المعاينة
+    ========================= */
     document.getElementById('reviewBox').innerHTML = `
       <div class="contract-summary">
-        <h4>معاينة عرض سعر (توريد وتركيب)</h4>
+        <h4>معاينة عرض سعر (توريد / تشغيل)</h4>
         <table>
           <tr><td class="label">قيمة التوريد</td><td class="value">${material.toFixed(2)} ريال</td></tr>
-          <tr><td class="label">قيمة التركيب</td><td class="value">${labor.toFixed(2)} ريال</td></tr>
+          <tr><td class="label">قيمة التركيب / التشغيل</td><td class="value">${labor.toFixed(2)} ريال</td></tr>
           <tr><td class="label">الإجمالي قبل الضريبة</td><td class="value">${subtotal.toFixed(2)} ريال</td></tr>
           <tr><td class="label">الضريبة (15%)</td><td class="value">${vat.toFixed(2)} ريال</td></tr>
           <tr>
@@ -1474,11 +1519,12 @@ function previewPricing(){
 
     window.finalCalcOverride = {
       mode: 'supply_install',
+      supplyType,
+      material,
+      labor,
       subtotal,
       vat,
       total,
-      material,
-      labor,
       options,
       isManual: true
     };
@@ -1535,9 +1581,10 @@ function previewPricing(){
     serviceType === 'once'
       ? '💾 حفظ الزيارة في السجل'
       : serviceType === 'supply_install'
-        ? '💾 حفظ عرض التوريد والتركيب'
+        ? '💾 حفظ عرض التوريد / التشغيل'
         : '💾 اعتماد وحفظ العقد';
 }
+
 
 
 function saveContract() {
@@ -1573,7 +1620,8 @@ function saveContract() {
       return;
     }
 
-  } else if (serviceType === 'once') {
+  } 
+  else if (serviceType === 'once') {
 
     const onceRequired = ['onceVisitType','onceDate','onceIssue','oncePrice'];
     for (const id of onceRequired) {
@@ -1583,19 +1631,32 @@ function saveContract() {
       }
     }
 
-  } else if (serviceType === 'supply_install') {
+  } 
+  else if (serviceType === 'supply_install') {
 
-    const supplyRequired = [
-      'supplyType',
-      'supplyDate',
-      'supplyDescription',
-      'supplyMaterialPrice'
-    ];
+    const supplyType = document.getElementById('supplyType').value;
+    const supplyDate = document.getElementById('supplyDate').value;
 
-    for (const id of supplyRequired) {
-      if (!document.getElementById(id).value) {
-        alert('⚠️ يرجى تعبئة جميع بيانات التوريد والتركيب');
+    if (!supplyType || !supplyDate) {
+      alert('⚠️ يرجى تعبئة نوع العمل وتاريخ التنفيذ');
+      return;
+    }
+
+    /* تشغيل بدون قطع */
+    if (supplyType === 'commission_only') {
+      if (!document.getElementById('operationMode').value) {
+        alert('⚠️ يرجى تحديد هل التشغيل لأول مرة أم إعادة ضبط');
         return;
+      }
+    } 
+    /* توريد / تركيب */
+    else {
+      const supplyRequired = ['supplyDescription','supplyMaterialPrice'];
+      for (const id of supplyRequired) {
+        if (!document.getElementById(id).value) {
+          alert('⚠️ يرجى تعبئة وصف العمل وقيمة التوريد');
+          return;
+        }
       }
     }
   }
@@ -1656,16 +1717,31 @@ function saveContract() {
         priceBeforeVat: Number(document.getElementById('oncePrice').value || 0)
       } : null,
 
-      // توريد + تركيب + تشغيل
+      // توريد / تركيب / تشغيل
       supplyDetails: (serviceType === 'supply_install') ? {
         type: document.getElementById('supplyType').value,
+
+        operationMode:
+          document.getElementById('supplyType').value === 'commission_only'
+            ? document.getElementById('operationMode').value
+            : null,
+
         date: document.getElementById('supplyDate').value,
         stopped: document.getElementById('supplyStopped').value,
         description: document.getElementById('supplyDescription').value,
-        material: Number(document.getElementById('supplyMaterialPrice').value || 0),
+
+        material:
+          document.getElementById('supplyType').value === 'commission_only'
+            ? 0
+            : Number(document.getElementById('supplyMaterialPrice').value || 0),
+
         labor: Number(document.getElementById('supplyLaborPrice').value || 0),
-        includeCommissioning: document.getElementById('includeCommissioning').checked,
-        excludeFutureMaintenance: document.getElementById('excludeFutureMaintenance').checked
+
+        includeCommissioning:
+          document.getElementById('includeCommissioning')?.checked || false,
+
+        excludeFutureMaintenance:
+          document.getElementById('excludeFutureMaintenance')?.checked || false
       } : null,
 
       // محتوى العقد (فقط للعقد السنوي)
@@ -1692,6 +1768,7 @@ function saveContract() {
     alert('❌ حدث خطأ أثناء الحفظ: ' + error.message);
   }
 }
+
 
 
  
@@ -2782,6 +2859,17 @@ function printOfferFromPreview(){
 
   const offerId = 'Q-' + Date.now();
   const w = window.open('', '_blank');
+function toggleOperationMode(){
+  const type = document.getElementById('supplyType')?.value;
+  const box  = document.getElementById('operationModeBox');
+
+  if(type === 'commission_only'){
+    box.style.display = 'block';
+  } else {
+    box.style.display = 'none';
+    document.getElementById('operationMode').value = '';
+  }
+}
 
 </script>
 
