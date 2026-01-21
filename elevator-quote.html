@@ -1096,100 +1096,103 @@ const BRAND_SOURCES = {
         return data;
     }
 
-    function fillCapacityOptions() {
-        const capacitySelect = document.getElementById('capacity');
-        const speedSelect = document.getElementById('speed');
+function fillCapacityOptions() {
+  const capacitySelect = document.getElementById('capacity');
+  const speedSelect = document.getElementById('speed');
 
-        capacitySelect.innerHTML = '<option value="">اختر السعة...</option>';
-        speedSelect.innerHTML = '<option value="">اختر السرعة...</option>';
-        speedSelect.disabled = true;
+  capacitySelect.innerHTML = '<option value="">اختر السعة...</option>';
+  speedSelect.innerHTML = '<option value="">اختر السرعة...</option>';
+  speedSelect.disabled = true;
 
-        if (!currentBrandData || !currentBrandData.models) {
-            capacitySelect.disabled = true;
-            return;
-        }
+  if (!currentBrandData || !Array.isArray(currentBrandData.models)) {
+    capacitySelect.disabled = true;
+    return;
+  }
 
-        const capacities = Array.from(
-            new Set(currentBrandData.models.map(m => m.capacityKg))
-        );
+  // ✅ يدعم capacityKg أو capacityRange
+  const capacities = Array.from(new Set(
+    currentBrandData.models
+      .map(m => (m.capacityKg || m.capacityRange || '').toString().trim())
+      .filter(Boolean)
+  ));
 
-        capacities.forEach(cap => {
-            const opt = document.createElement('option');
-            opt.value = cap;
-            opt.textContent = cap + ' kg';
-            capacitySelect.appendChild(opt);
-        });
+  capacities.forEach(cap => {
+    const opt = document.createElement('option');
+    opt.value = cap;
+    opt.textContent = cap.includes('-') ? `${cap} kg` : `${cap} kg`;
+    capacitySelect.appendChild(opt);
+  });
 
-        capacitySelect.disabled = false;
-    }
+  capacitySelect.disabled = false;
+}
 
 function fillSpeedOptions() {
-    const capacitySelect = document.getElementById('capacity');
-    const speedSelect = document.getElementById('speed');
+  const capacitySelect = document.getElementById('capacity');
+  const speedSelect = document.getElementById('speed');
 
-    const selectedCapacity = capacitySelect.value;
-    speedSelect.innerHTML = '<option value="">اختر السرعة...</option>';
+  const selectedCapacity = (capacitySelect.value || '').trim();
+  speedSelect.innerHTML = '<option value="">اختر السرعة...</option>';
 
-    if (!currentBrandData || !selectedCapacity) {
-        speedSelect.disabled = true;
-        return;
-    }
+  if (!currentBrandData || !selectedCapacity) {
+    speedSelect.disabled = true;
+    return;
+  }
 
-    let minCap = null;
-    let maxCap = null;
+  let minCap = null;
+  let maxCap = null;
 
-    // ✅ إذا كانت السعة Range مثل "320-450"
-    if (selectedCapacity.includes('-')) {
-        [minCap, maxCap] = selectedCapacity.split('-').map(Number);
-    }
+  if (selectedCapacity.includes('-')) {
+    [minCap, maxCap] = selectedCapacity.split('-').map(Number);
+  }
 
-    const speeds = Array.from(
-        new Set(
-            currentBrandData.models
-                .filter(m => {
-                    // ✅ model بسعة مفردة
-                    if (!m.capacityKg.includes('-')) {
-                        if (minCap !== null) {
-                            return (
-                                Number(m.capacityKg) >= minCap &&
-                                Number(m.capacityKg) <= maxCap
-                            );
-                        }
-                        return m.capacityKg === selectedCapacity;
-                    }
+  const speeds = Array.from(new Set(
+    currentBrandData.models
+      .filter(m => {
+        const capKey = (m.capacityKg || m.capacityRange || '').toString().trim();
+        if (!capKey) return false;
 
-                    // ✅ model بسعة Range
-                    const [mMin, mMax] = m.capacityKg.split('-').map(Number);
-                    if (minCap !== null) {
-                        return (
-                            mMin <= maxCap &&
-                            mMax >= minCap
-                        );
-                    }
-                    return m.capacityKg === selectedCapacity;
-                })
-                .map(m => m.speedMps)
-        )
-    ).sort((a, b) => a - b);
+        // إذا اختيار المستخدم Range
+        if (minCap !== null) {
+          if (capKey.includes('-')) {
+            const [mMin, mMax] = capKey.split('-').map(Number);
+            return (mMin <= maxCap && mMax >= minCap);
+          } else {
+            const n = Number(capKey);
+            return (n >= minCap && n <= maxCap);
+          }
+        }
 
-    speeds.forEach(sp => {
-        const opt = document.createElement('option');
-        opt.value = sp;
-        opt.textContent = sp + ' m/s';
-        speedSelect.appendChild(opt);
-    });
+        // اختيار المستخدم قيمة مفردة
+        return capKey === selectedCapacity;
+      })
+      .map(m => Number(m.speedMps))
+      .filter(v => !Number.isNaN(v))
+  )).sort((a,b)=>a-b);
 
-    speedSelect.disabled = speeds.length === 0;
+  speeds.forEach(sp => {
+    const opt = document.createElement('option');
+    opt.value = sp;
+    opt.textContent = `${sp} m/s`;
+    speedSelect.appendChild(opt);
+  });
+
+  speedSelect.disabled = speeds.length === 0;
 }
 
 
 
-    function findModel(capacity, speed) {
-        if (!currentBrandData || !currentBrandData.models) return null;
-        return currentBrandData.models.find(
-            m => m.capacityKg === capacity && Number(m.speedMps) === Number(speed)
-        );
-    }
+function findModel(capacity, speed) {
+  if (!currentBrandData || !Array.isArray(currentBrandData.models)) return null;
+
+  const cap = (capacity || '').toString().trim();
+  const spd = Number(speed);
+
+  return currentBrandData.models.find(m => {
+    const capKey = (m.capacityKg || m.capacityRange || '').toString().trim();
+    return capKey === cap && Number(m.speedMps) === spd;
+  }) || null;
+}
+
 
     function formatCurrency(value, currency) {
         if (isNaN(value)) return '-';
@@ -1449,275 +1452,278 @@ function getShippingUsdPerLiftByQty(qty) {
   return Math.max(base * (1 - discount), minPerLift);
 }
 
-    async function calculateQuote() {
-        const brandKey = document.getElementById('brand').value;
-        const divisor = 1; // لأن الحساب Per Lift
+async function calculateQuote() {
+  const brandKey = document.getElementById('brand').value;
+  const divisor = 1; // لأن الحساب Per Lift
 
-        const capacity = document.getElementById('capacity').value;
-        const speed = document.getElementById('speed').value;
-        const floors = Number(document.getElementById('floors').value);
-        const liftsCount = Number(document.getElementById('lifts_count').value) || 1;
-        const currency = document.getElementById('currency').value;
-        const vatRate = Number(document.getElementById('vat_rate').value) || 0;
-        const includeVat = document.getElementById('include_vat').checked;
-        const projectLocation = document.getElementById('project_location')?.value || '';
+  const capacity = document.getElementById('capacity').value;
+  const speed = document.getElementById('speed').value;
+  const floors = Number(document.getElementById('floors').value);
+  const liftsCount = Number(document.getElementById('lifts_count').value) || 1;
+  const currency = document.getElementById('currency').value;
+  const vatRate = Number(document.getElementById('vat_rate').value) || 0;
+  const includeVat = document.getElementById('include_vat').checked;
+  const projectLocation = document.getElementById('project_location')?.value || '';
 
+  if (!brandKey || !capacity || !speed || !floors || floors < 2 || liftsCount < 1) {
+    alert('يرجى اختيار الماركة والسعة والسرعة وإدخال عدد أدوار صحيح (٢ فأكثر) وعدد مصاعد واحد فأكثر.');
+    return;
+  }
 
-
-
-
-        if (!brandKey || !capacity || !speed || !floors || floors < 2 || liftsCount < 1) {
-            alert('يرجى اختيار الماركة والسعة والسرعة وإدخال عدد أدوار صحيح (٢ فأكثر) وعدد مصاعد واحد فأكثر.');
-            return;
-        }
-
-        if (!currentBrandData) {
+  if (!currentBrandData) {
     await loadBrandData(brandKey);
-}
+  }
 
-if (!currentBrandData) {
+  if (!currentBrandData) {
     console.log("❌ لم يتم تحميل بيانات الماركة");
     return;
-}
+  }
 
-        const model = findModel(capacity, speed);
-        if (!model) {
-            alert('لم يتم العثور على توليفة مطابقة لهذه السعة والسرعة في ملف الأسعار.');
-            return;
-        }
+  const model = findModel(capacity, speed);
+  if (!model) {
+    alert('لم يتم العثور على توليفة مطابقة لهذه السعة والسرعة في ملف الأسعار.');
+    return;
+  }
 
-        const rate = currentBrandData.exchangeRateToSAR || 1;
-        const isLocalAssembly = (brandKey === 'LOCAL_MRL');
+  const rate = Number(currentBrandData.exchangeRateToSAR || 1);
+  const isLocalAssembly = (brandKey === 'LOCAL_MRL');
 
+  // =========================
+  // ✅ Fix 1: extra floors safe
+  // =========================
+  const baseFloorsSafe = Number(model.baseFloors || 2);
+  const extraFloors = Math.max(0, floors - baseFloorsSafe);
 
-        // عدد الأدوار الإضافية عن سعر المصنع
-        const extraFloors = Math.max(0, floors - model.baseFloors);
+  // =========================
+  // ✅ Fix 2: normalize factory prices (USD or SAR)
+  // =========================
+  const baseSar =
+    (Number(model.basePriceSar) > 0)
+      ? Number(model.basePriceSar)
+      : (Number(model.basePriceUsd) > 0 ? Number(model.basePriceUsd) * rate : NaN);
 
-        // 1) سعر المصنع بالدولار + الزيادة لكل دور إضافي
-        const factoryUsd = model.basePriceUsd + (model.extraPerFloorUsd * extraFloors);
+  const extraSar =
+    (Number(model.extraPerFloorSar) > 0)
+      ? Number(model.extraPerFloorSar)
+      : (Number(model.extraPerFloorUsd) > 0 ? Number(model.extraPerFloorUsd) * rate : 0);
 
-        // تحويل لسعودي
-        let factorySar = factoryUsd * rate;
+  if (Number.isNaN(baseSar)) {
+    alert('ملف أسعار التجميع المحلي يحتوي موديل بدون basePriceSar أو basePriceUsd بشكل صحيح.');
+    return;
+  }
 
+  // ✅ سعر المصنع بالريال
+  let factorySar = baseSar + (extraSar * extraFloors);
 
-        // 2) الشحن + التأمين
-      const shipUsdPerLift = getShippingUsdPerLiftByQty(liftsCount);
+  // ✅ نحتاج قيمة USD للتأمين (إن لم تتوفر نحسبها من SAR)
+  const factoryUsd =
+    (Number(model.basePriceUsd) > 0)
+      ? (Number(model.basePriceUsd) + (Number(model.extraPerFloorUsd || 0) * extraFloors))
+      : (factorySar / rate);
 
-const shippingInsuranceSar = isLocalAssembly
-  ? 0
-  : (
-      (shipUsdPerLift * rate) +
-      (factoryUsd * (COST_PARAMS.insurancePercent / 100) * rate)
+  // 2) الشحن + التأمين
+  const shipUsdPerLift = getShippingUsdPerLiftByQty(liftsCount);
+
+  const shippingInsuranceSar = isLocalAssembly
+    ? 0
+    : (
+        (shipUsdPerLift * rate) +
+        (factoryUsd * (COST_PARAMS.insurancePercent / 100) * rate)
+      );
+
+  console.log("liftsCount=", liftsCount, "shippingUsdPerLift(discounted)=", getShippingUsdPerLiftByQty(liftsCount));
+
+  // 3) التخليص + النقل الداخلي
+  const regionAdder = getRegionAdderSar(projectLocation);
+
+  const clearanceTransportSar = isLocalAssembly
+    ? (COST_PARAMS.inlandTransportSar + regionAdder)
+    : (COST_PARAMS.clearanceSar + COST_PARAMS.inlandTransportSar + regionAdder);
+
+  const shipMeta = getShippingMetaByQty(liftsCount);
+
+  const shippingBasePerLiftSar = isLocalAssembly ? 0 : (shipMeta.baseUsd * rate);
+  const shippingAfterDiscountPerLiftSar = isLocalAssembly ? 0 : (shipMeta.discountedUsd * rate);
+  const shippingDiscountPerLiftSar = isLocalAssembly ? 0 : (shipMeta.discountUsd * rate);
+
+  const shippingBaseTotalSar = shippingBasePerLiftSar * liftsCount;
+  const shippingAfterDiscountTotalSar = shippingAfterDiscountPerLiftSar * liftsCount;
+  const shippingDiscountTotalSar = shippingDiscountPerLiftSar * liftsCount;
+
+  // 4) التركيب + التشغيل
+  const installationCommissioningSar = COST_PARAMS.installationSar + COST_PARAMS.commissioningSar;
+
+  // 5) التكلفة المباشرة قبل مصاريف التشغيل
+  const directCostSar =
+    factorySar +
+    shippingInsuranceSar +
+    clearanceTransportSar +
+    installationCommissioningSar;
+
+  const cabinDesign = document.getElementById("cabin_design").value;
+  const cabinExtraCost = CABIN_DESIGN_ADDITIONAL[cabinDesign] || 0;
+
+  const directCostSarFinal = directCostSar + cabinExtraCost;
+
+  const factoryCostPerLift = factorySar / divisor;
+
+  // حفظ سعر FUJI للمقارنة
+  const profitPercent =
+    brandKey === 'VERTILIFT_MRL'
+      ? COST_PARAMS.profitPercent + 3
+      : COST_PARAMS.profitPercent;
+
+  // ✅ بعد حساب factorySar (مقارنة التجميع المحلي مع FUJI ±5%)
+  if (isLocalAssembly && window.lastFujiFactorySar) {
+    const maxDiff = window.lastFujiFactorySar * 0.05;
+    factorySar = Math.min(
+      Math.max(factorySar, window.lastFujiFactorySar - maxDiff),
+      window.lastFujiFactorySar + maxDiff
     );
+  }
 
-console.log("liftsCount=", liftsCount, "shippingUsdPerLift(discounted)=", getShippingUsdPerLiftByQty(liftsCount));
+  // 6) مصاريف التشغيل
+  const overheadSar = directCostSarFinal * (COST_PARAMS.overheadPercent / 100);
 
+  // 7) تكلفة قبل الربح
+  const costBeforeProfitSar = directCostSarFinal + overheadSar;
 
-        // 3) التخليص + النقل الداخلي
-    const regionAdder = getRegionAdderSar(projectLocation);
+  // 8) هامش الربح
+  const profitSar = costBeforeProfitSar * (profitPercent / 100);
 
-const clearanceTransportSar = isLocalAssembly
-  ? COST_PARAMS.inlandTransportSar + regionAdder
-  : (COST_PARAMS.clearanceSar + COST_PARAMS.inlandTransportSar + regionAdder);
+  // 9) سعر البيع قبل الضريبة
+  const totalBeforeVatSar = costBeforeProfitSar + profitSar;
 
-const shipMeta = getShippingMetaByQty(liftsCount);
+  const shippingInsurancePerLift = shippingInsuranceSar / divisor;
+  const clearanceTransportPerLift = clearanceTransportSar / divisor;
+  const installationCommissioningPerLift = installationCommissioningSar / divisor;
+  const overheadPerLift = overheadSar / divisor;
+  const costBeforeProfitPerLift = costBeforeProfitSar / divisor;
+  const profitPerLift = profitSar / divisor;
+  const totalBeforeVatPerLift = totalBeforeVatSar / divisor;
 
-const shippingBasePerLiftSar = isLocalAssembly ? 0 : (shipMeta.baseUsd * rate);
-const shippingAfterDiscountPerLiftSar = isLocalAssembly ? 0 : (shipMeta.discountedUsd * rate);
-const shippingDiscountPerLiftSar = isLocalAssembly ? 0 : (shipMeta.discountUsd * rate);
+  const vatAmountPerLift = totalBeforeVatPerLift * (vatRate / 100);
+  const totalWithVatPerLift = includeVat
+    ? totalBeforeVatPerLift + vatAmountPerLift
+    : totalBeforeVatPerLift;
 
-const shippingBaseTotalSar = shippingBasePerLiftSar * liftsCount;
-const shippingAfterDiscountTotalSar = shippingAfterDiscountPerLiftSar * liftsCount;
-const shippingDiscountTotalSar = shippingDiscountPerLiftSar * liftsCount;
+  // مجاميع لعدد المصاعد
+  const factoryCostTotal = factoryCostPerLift * liftsCount;
+  const shippingInsuranceTotal = shippingInsurancePerLift * liftsCount;
+  const clearanceTransportTotal = clearanceTransportPerLift * liftsCount;
+  const installationCommissioningTotal = installationCommissioningPerLift * liftsCount;
+  const overheadTotal = overheadPerLift * liftsCount;
+  const costBeforeProfitTotal = costBeforeProfitPerLift * liftsCount;
+  const profitTotal = profitPerLift * liftsCount;
+  const totalBeforeVatTotal = totalBeforeVatPerLift * liftsCount;
+  const vatAmountTotal = vatAmountPerLift * liftsCount;
+  const totalWithVatTotal = totalWithVatPerLift * liftsCount;
 
+  const result = {
+    brandKey,
+    floors,
+    liftsCount,
 
-        // 4) التركيب + التشغيل
-        const installationCommissioningSar = COST_PARAMS.installationSar + COST_PARAMS.commissioningSar;
+    // للمصعد الواحد
+    factoryCostPerLift,
+    shippingInsurancePerLift,
+    clearanceTransportPerLift,
+    installationCommissioningPerLift,
+    overheadPerLift,
+    costBeforeProfitPerLift,
+    profitPerLift,
+    totalBeforeVatPerLift,
+    vatAmountPerLift,
+    totalWithVatPerLift,
 
-        // 5) التكلفة المباشرة قبل مصاريف التشغيل
-        const directCostSar =
-            factorySar +
-            shippingInsuranceSar +
-            clearanceTransportSar +
-            installationCommissioningSar;
-        const cabinDesign = document.getElementById("cabin_design").value;
-const cabinExtraCost = CABIN_DESIGN_ADDITIONAL[cabinDesign] || 0;
-       
+    shippingDiscountRate: shipMeta.discountRate,
 
+    shippingBasePerLiftSar,
+    shippingAfterDiscountPerLiftSar,
+    shippingDiscountPerLiftSar,
 
-const directCostSarFinal = directCostSar + cabinExtraCost;
+    shippingBaseTotalSar,
+    shippingAfterDiscountTotalSar,
+    shippingDiscountTotalSar,
 
-     
+    // الإجمالي لكل المصاعد
+    factoryCost: factoryCostTotal,
+    shippingInsuranceCost: shippingInsuranceTotal,
+    clearanceTransportCost: clearanceTransportTotal,
+    installationCommissioningCost: installationCommissioningTotal,
+    overheadCost: overheadTotal,
+    costBeforeProfit: costBeforeProfitTotal,
+    profitAmount: profitTotal,
+    totalBeforeVat: totalBeforeVatTotal,
 
-const factoryCostPerLift = factorySar / divisor;
+    vatRate,
+    vatAmount: vatAmountTotal,
+    totalWithVat: totalWithVatTotal,
+    includeVat,
 
+    overheadPercent: COST_PARAMS.overheadPercent,
 
-// حفظ سعر FUJI للمقارنة
-const profitPercent =
-  brandKey === 'VERTILIFT_MRL'
-    ? COST_PARAMS.profitPercent + 3
-    : COST_PARAMS.profitPercent;
+    cabinExtraPerLift: cabinExtraCost,
+    cabinExtraTotal: cabinExtraCost * liftsCount,
 
+    profitPercent: profitPercent
+  };
 
+  // ✅ اجبار LOCAL_MRL على عرض كامل
+  const mode = (brandKey === "LOCAL_MRL") ? "full" : (window.__rklPricingMode || "full");
+  generateNumbersView(result, model, currency, mode);
 
-// بعد حساب factorySar
-if (isLocalAssembly && window.lastFujiFactorySar) {
-  const maxDiff = window.lastFujiFactorySar * 0.05;
-  factorySar = Math.min(
-    Math.max(factorySar, window.lastFujiFactorySar - maxDiff),
-    window.lastFujiFactorySar + maxDiff
-  );
-}
+  generateQuoteText(result, model, currency);
 
+  // حفظ لقطة من هذا العرض لاستخدامها عند الضغط على "حفظ عرض السعر"
+  const manualCustomerName = document.getElementById('customer_name').value.trim();
+  const projectName = document.getElementById('project_name').value.trim();
 
-        // 6) مصاريف التشغيل
-        const overheadSar = directCostSarFinal * (COST_PARAMS.overheadPercent / 100);
+  const finalCustomerName =
+    (selectedCustomer?.customer_name || manualCustomerName || 'العميل الكريم').trim();
 
+  const brandLabel = BRAND_SOURCES[brandKey]?.label || brandKey;
 
+  // ✅ استخراج المقاسات من جدول المصاعد
+  const shaftRows = document.querySelectorAll("#shaft-table tbody tr");
+  const shaftsSummary = [];
 
-        // 7) تكلفة قبل الربح
-        const costBeforeProfitSar = directCostSarFinal + overheadSar;
-
-
-        // 8) هامش الربح
-        const profitSar = costBeforeProfitSar * (profitPercent / 100);
-
-
-        // 9) سعر البيع قبل الضريبة
-        const totalBeforeVatSar = costBeforeProfitSar + profitSar;
-
-       
-
-       
-        const shippingInsurancePerLift = shippingInsuranceSar / divisor;
-        const clearanceTransportPerLift = clearanceTransportSar / divisor;
-        const installationCommissioningPerLift = installationCommissioningSar / divisor;
-        const overheadPerLift = overheadSar / divisor;
-        const costBeforeProfitPerLift = costBeforeProfitSar / divisor;
-        const profitPerLift = profitSar / divisor;
-        const totalBeforeVatPerLift = totalBeforeVatSar / divisor;
-
-        const vatAmountPerLift = totalBeforeVatPerLift * (vatRate / 100);
-        const totalWithVatPerLift = includeVat
-            ? totalBeforeVatPerLift + vatAmountPerLift
-            : totalBeforeVatPerLift;
-
-        // مجاميع لعدد المصاعد
-        const factoryCostTotal = factoryCostPerLift * liftsCount;
-        const shippingInsuranceTotal = shippingInsurancePerLift * liftsCount;
-        const clearanceTransportTotal = clearanceTransportPerLift * liftsCount;
-        const installationCommissioningTotal = installationCommissioningPerLift * liftsCount;
-        const overheadTotal = overheadPerLift * liftsCount;
-        const costBeforeProfitTotal = costBeforeProfitPerLift * liftsCount;
-        const profitTotal = profitPerLift * liftsCount;
-        const totalBeforeVatTotal = totalBeforeVatPerLift * liftsCount;
-        const vatAmountTotal = vatAmountPerLift * liftsCount;
-        const totalWithVatTotal = totalWithVatPerLift * liftsCount;
-
-        const result = {
-            brandKey,
-            floors,
-            liftsCount,
-            // للمصعد الواحد
-            factoryCostPerLift,
-            shippingInsurancePerLift,
-            clearanceTransportPerLift,
-            installationCommissioningPerLift,
-            overheadPerLift,
-            costBeforeProfitPerLift,
-            profitPerLift,
-            totalBeforeVatPerLift,
-            vatAmountPerLift,
-            totalWithVatPerLift,
-            shippingDiscountRate: shipMeta.discountRate,
-
-shippingBasePerLiftSar,
-shippingAfterDiscountPerLiftSar,
-shippingDiscountPerLiftSar,
-
-shippingBaseTotalSar,
-shippingAfterDiscountTotalSar,
-shippingDiscountTotalSar,
-
-            // الإجمالي لكل المصاعد
-            factoryCost: factoryCostTotal,
-            shippingInsuranceCost: shippingInsuranceTotal,
-            clearanceTransportCost: clearanceTransportTotal,
-            installationCommissioningCost: installationCommissioningTotal,
-            overheadCost: overheadTotal,
-            costBeforeProfit: costBeforeProfitTotal,
-            profitAmount: profitTotal,
-            totalBeforeVat: totalBeforeVatTotal,
-            vatRate,
-            vatAmount: vatAmountTotal,
-            totalWithVat: totalWithVatTotal,
-            includeVat,
-            overheadPercent: COST_PARAMS.overheadPercent,
-             cabinExtraPerLift: cabinExtraCost,
-cabinExtraTotal: cabinExtraCost * liftsCount,
-            profitPercent: profitPercent
-        };
-
-        const mode = (brandKey === "LOCAL_MRL") ? "full" : (window.__rklPricingMode || "full");
-generateNumbersView(result, model, currency, mode);
-
-
-        generateQuoteText(result, model, currency);
-      
-
-
-                // حفظ لقطة من هذا العرض لاستخدامها عند الضغط على "حفظ عرض السعر"
-        const manualCustomerName = document.getElementById('customer_name').value.trim();
-        const projectName = document.getElementById('project_name').value.trim();
-
-        const finalCustomerName =
-            (selectedCustomer?.customer_name || manualCustomerName || 'العميل الكريم').trim();
-
-        const brandLabel = BRAND_SOURCES[brandKey]?.label || brandKey;
-
-// ✅ استخراج المقاسات من جدول المصاعد
-const shaftRows = document.querySelectorAll("#shaft-table tbody tr");
-const shaftsSummary = [];
-
-shaftRows.forEach((row, index) => {
+  shaftRows.forEach((row, index) => {
     const shaft = row.querySelector(".shaft-select")?.value || "";
     const cabin = row.querySelector(".cabin-cell")?.innerText || "";
-    const door  = row.querySelector(".door-cell")?.innerText || "";
+    const door = row.querySelector(".door-cell")?.innerText || "";
 
     if (shaft || cabin || door) {
-        shaftsSummary.push(
-            `مصعد ${index + 1}: بئر ${shaft} | كابين ${cabin} | باب ${door}`
-        );
+      shaftsSummary.push(`مصعد ${index + 1}: بئر ${shaft} | كابين ${cabin} | باب ${door}`);
     }
-});
-        
-const quoteNumber = `RKL-${new Date().getFullYear()}-${Date.now().toString().slice(-5)}`;
+  });
 
-// ============================================
-// ✅ تجميع المقاسات بالتفصيل لكل مصعد
-// ============================================
-const selectedCabin = [];
-const selectedShaft = [];
-const selectedDoor  = [];
-const selectedPit   = [];
-const selectedOH    = [];
+  const quoteNumber = `RKL-${new Date().getFullYear()}-${Date.now().toString().slice(-5)}`;
 
-shaftRows.forEach((row) => {
+  // ============================================
+  // ✅ تجميع المقاسات بالتفصيل لكل مصعد
+  // ============================================
+  const selectedCabin = [];
+  const selectedShaft = [];
+  const selectedDoor = [];
+  const selectedPit = [];
+  const selectedOH = [];
+
+  shaftRows.forEach((row) => {
     const shaft = row.querySelector(".shaft-select")?.value || '';
     const cabin = row.querySelector(".cabin-cell")?.innerText || '';
-    const door  = row.querySelector(".door-cell")?.innerText || '';
-    const pit   = row.querySelector(".pit-cell")?.innerText || '';
-    const oh    = row.querySelector(".oh-cell")?.innerText || '';
+    const door = row.querySelector(".door-cell")?.innerText || '';
+    const pit = row.querySelector(".pit-cell")?.innerText || '';
+    const oh = row.querySelector(".oh-cell")?.innerText || '';
 
     if (cabin) selectedCabin.push(cabin);
     if (shaft) selectedShaft.push(shaft);
-    if (door)  selectedDoor.push(door);
-    if (pit)   selectedPit.push(pit);
-    if (oh)    selectedOH.push(oh);
-});
-        
-        
-lastQuoteSnapshot = {
+    if (door) selectedDoor.push(door);
+    if (pit) selectedPit.push(pit);
+    if (oh) selectedOH.push(oh);
+  });
+
+  lastQuoteSnapshot = {
     quoteNumber,
 
     /* =========================
@@ -1726,7 +1732,7 @@ lastQuoteSnapshot = {
     timestamp: new Date().toISOString(),
     customerName: finalCustomerName || '',
     projectName: projectName || '',
-      projectLocation: projectLocation || '',
+    projectLocation: projectLocation || '',
 
     brandKey,
     brandLabel,
@@ -1735,7 +1741,7 @@ lastQuoteSnapshot = {
     speed: speed ? (speed + ' m/s') : '',
     floors: floors || '',
     floorHeight: document.getElementById('floorHeight')?.value || '',
-travelHeight: document.getElementById('travelHeight')?.value || '',
+    travelHeight: document.getElementById('travelHeight')?.value || '',
     liftsCount: liftsCount || 1,
 
     /* =========================
@@ -1746,9 +1752,9 @@ travelHeight: document.getElementById('travelHeight')?.value || '',
     // تظهر في Page 3 + Page 4
     cabinSize: Array.isArray(selectedCabin) ? selectedCabin.join(' | ') : (selectedCabin || ''),
     shaftSize: Array.isArray(selectedShaft) ? selectedShaft.join(' | ') : (selectedShaft || ''),
-    doors:     Array.isArray(selectedDoor)  ? selectedDoor.join(' | ')  : (selectedDoor || ''),
-    pit:       Array.isArray(selectedPit)   ? selectedPit.join(' | ')   : (selectedPit || ''),
-    oh:        Array.isArray(selectedOH)    ? selectedOH.join(' | ')    : (selectedOH || ''),
+    doors: Array.isArray(selectedDoor) ? selectedDoor.join(' | ') : (selectedDoor || ''),
+    pit: Array.isArray(selectedPit) ? selectedPit.join(' | ') : (selectedPit || ''),
+    oh: Array.isArray(selectedOH) ? selectedOH.join(' | ') : (selectedOH || ''),
 
     /* =========================
        3) التشطيب
@@ -1767,38 +1773,20 @@ travelHeight: document.getElementById('travelHeight')?.value || '',
     ========================= */
     totalWithVat: result?.totalWithVat || 0,
 
+    pricePerUnit: liftsCount && result?.totalWithVat
+      ? (result.totalWithVat / liftsCount)
+      : (result?.totalWithVat || 0),
 
+    currency: currency || 'SAR',
+    vatRate: vatRate || 15,
+    includeVat: includeVat === true,
 
-
-pricePerUnit: liftsCount && result?.totalWithVat
-    ? (result.totalWithVat / liftsCount)
-    : (result?.totalWithVat || 0),
-
-currency: currency || 'SAR',
-
-// نسبة الضريبة كنسبة مئوية (15 = 15%)
-vatRate: vatRate || 15,
-
-includeVat: includeVat === true,
-
-payments: {
-    advance50: result?.totalWithVat
-        ? (result.totalWithVat * 0.50)
-        : 0,
-
-    mechanical25: result?.totalWithVat
-        ? (result.totalWithVat * 0.25)
-        : 0,
-
-    electrical20: result?.totalWithVat
-        ? (result.totalWithVat * 0.20)
-        : 0,
-
-    handover5: result?.totalWithVat
-        ? (result.totalWithVat * 0.05)
-        : 0
-},
-
+    payments: {
+      advance50: result?.totalWithVat ? (result.totalWithVat * 0.50) : 0,
+      mechanical25: result?.totalWithVat ? (result.totalWithVat * 0.25) : 0,
+      electrical20: result?.totalWithVat ? (result.totalWithVat * 0.20) : 0,
+      handover5: result?.totalWithVat ? (result.totalWithVat * 0.05) : 0
+    },
 
     /* =========================
        6) بيانات العميل الموسعة
@@ -1807,28 +1795,27 @@ payments: {
     preferredContact: selectedCustomer?.preferred_contact || '',
 
     customerDetails: selectedCustomer ? {
-        customer_type: selectedCustomer.customer_type || '',
-        contact_person: selectedCustomer.contact_person || '',
-        id_number: selectedCustomer.id_number || '',
-        cr_number: selectedCustomer.cr_number || '',
-        tax_number: selectedCustomer.tax_number || '',
-        city: selectedCustomer.city || '',
-        district: selectedCustomer.district || '',
-        street: selectedCustomer.street || '',
-        building_no: selectedCustomer.building_no || '',
-        postal_code: selectedCustomer.postal_code || '',
-        full_address: selectedCustomer.full_address || '',
-        mobile: selectedCustomer.mobile || '',
-        phone: selectedCustomer.phone || '',
-        email: selectedCustomer.email || '',
-        preferred_contact: selectedCustomer.preferred_contact || '',
-        notes: selectedCustomer.notes || '',
+      customer_type: selectedCustomer.customer_type || '',
+      contact_person: selectedCustomer.contact_person || '',
+      id_number: selectedCustomer.id_number || '',
+      cr_number: selectedCustomer.cr_number || '',
+      tax_number: selectedCustomer.tax_number || '',
+      city: selectedCustomer.city || '',
+      district: selectedCustomer.district || '',
+      street: selectedCustomer.street || '',
+      building_no: selectedCustomer.building_no || '',
+      postal_code: selectedCustomer.postal_code || '',
+      full_address: selectedCustomer.full_address || '',
+      mobile: selectedCustomer.mobile || '',
+      phone: selectedCustomer.phone || '',
+      email: selectedCustomer.email || '',
+      preferred_contact: selectedCustomer.preferred_contact || '',
+      notes: selectedCustomer.notes || '',
     } : {}
-};
+  };
+}
 
 
-
-    }
 
     // ========================== تهيئة الأحداث عند تحميل الصفحة ==========================
        // ========================== تهيئة الأحداث عند تحميل الصفحة ==========================
@@ -2341,6 +2328,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
