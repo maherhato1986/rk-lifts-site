@@ -1658,7 +1658,9 @@ cabinExtraTotal: cabinExtraCost * liftsCount,
             profitPercent: profitPercent
         };
 
-        generateNumbersView(result, model, currency, window.__rklPricingMode || "full");
+        const mode = (brandKey === "LOCAL_MRL") ? "full" : (window.__rklPricingMode || "full");
+generateNumbersView(result, model, currency, mode);
+
 
         generateQuoteText(result, model, currency);
       
@@ -2339,6 +2341,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
