@@ -2610,22 +2610,56 @@ function openAnnualContractOfferPrint(contract){
     return;
   }
 
-  const calc = contract.pricing || {};
+  const calc     = contract.pricing || {};
   const customer = contract.customer || {};
-  const refNo = contract.id || '—';
-  const date  = contract.date || '—';
-  const projectName = contract.projectName || '—';
-const projectLocation = contract.projectLocation || '—';
+  const refNo    = contract.id || '—';
+  const date     = contract.date || '—';
 
+  // ✅ بيانات المشروع
+  const projectName     = contract.projectName || '—';
+  const projectLocation = contract.projectLocation || '—';
 
-  // ✅ نقرأ نطاق الصيانة من نفس العقد (إن وُجد)
-  // لأن قيم getElementById قد تعكس آخر اختيار في الصفحة وليس إعدادات العقد المحفوظ
+  // ✅ بيانات المصاعد (ثانياً) — من العقد (الجديد) أو fallback
+  const elevatorType = contract.elevatorType || '';
+  const brandSelect  = contract.brandSelect  || '';
+  const brandOther   = contract.brandOther   || '';
+  const capacityVal  = contract.capacity     || '';
+  const floorsVal    = contract.floors       || '';
+  const buildingVal  = contract.building     || '';
+
+  const elevatorTypeMap = {
+    passenger: 'ركاب',
+    service: 'خدمة',
+    panoramic: 'بانورامي'
+  };
+
+  const buildingMap = {
+    private: 'خاص',
+    government: 'حكومي'
+  };
+
+  const capacityMap = {
+    "3000":"150 – 320",
+    "3500":"350 – 550",
+    "4000":"600 – 900",
+    "4500":"901 – 1100",
+    "5000":"1101 – 1500",
+    "5500":"1501 – 1750"
+  };
+
+  const brand =
+    (brandSelect === 'Other')
+      ? (brandOther || '—')
+      : (brandSelect || '—');
+
+  const capacityText = capacityVal ? (capacityMap[String(capacityVal)] || capacityVal) : '—';
+
+  // ✅ نطاق الصيانة (من العقد إن وُجد / أو من الصفحة كخيار احتياطي)
   const savedVisits    = contract.visits || null;
   const savedEmergency = contract.emergency || null;
   const savedSpare     = contract.spareParts || null;
   const savedTraining  = contract.training || null;
 
-  // ✅ لو غير محفوظين داخل العقد، نرجع لواجهة الصفحة كخيار احتياطي
   const visitsVal =
     savedVisits ||
     (document.getElementById('visits')?.value || 'monthly');
@@ -2649,7 +2683,7 @@ const projectLocation = contract.projectLocation || '—';
 
   const emergency =
     emergencyVal === 'extended'
-      ? 'خدمة طوارئ خارج أوقات الدوام'
+      ? 'خدمة طوارئ خارج أوقات الدوام (إضافي)'
       : 'خدمة طوارئ خلال أوقات الدوام';
 
   const spareParts =
@@ -2659,34 +2693,30 @@ const projectLocation = contract.projectLocation || '—';
 
   const training =
     trainingVal === 'yes'
-      ? 'يشمل تدريب إنقاذ محتجزين'
+      ? 'يشمل تدريب إنقاذ المحتجزين (1–2 موظف)'
       : 'لا يشمل تدريب';
 
+  // ✅ أرقام مالية (قد تكون محفوظة كنص)
   const money = (n) => (Number(n || 0)).toFixed(2);
-
-  // ✅ إجبار القيم (حتى لو كانت محفوظة كنص)
   const subtotalNum = Number(calc.subtotal || 0);
   const vatNum      = Number(calc.vat || 0);
   const totalNum    = Number(calc.total || 0);
 
+  // ✅ بيانات التحويل البنكي (RKL) — ثابتة
+  const bankName    = 'البنك الأهلي السعودي (SNB)';
+  const beneficiary = 'آر كي ال RKL للمصاعد والسلالم الكهربائية';
+  const customerNo  = '7023357804';
+  const accountNo   = '01400005531406';
+  const iban        = 'SA1710000001400005531406';
+
   const w = window.open('', '_blank');
-  // =========================
-// بيانات التحويل البنكي (RKL) - ثابتة
-// =========================
-const bankName   = 'البنك الأهلي السعودي (SNB)';
-const beneficiary = 'آر كي ال RKL للمصاعد والسلالم الكهربائية';
-const customerNo = '7023357804';
-const accountNo  = '01400005531406';
-const iban       = 'SA1710000001400005531406';
 
-
-  w.document.write(`
-<!DOCTYPE html>
+  w.document.write(`<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>عرض سعر عقد صيانة وقائية سنوي</title>
+<title>عرض سعر عقد صيانة وقائية سنوي - ${refNo}</title>
 
 <style>
 *{ -webkit-print-color-adjust: exact; print-color-adjust: exact; box-sizing:border-box; }
@@ -2706,7 +2736,7 @@ body{
   font-size:14px;
   color:var(--ink);
   background:#fff;
-  line-height:1.7;
+  line-height:1.75;
 }
 
 body::before{
@@ -2734,10 +2764,11 @@ body::before{
 }
 
 .header img{ width:46px; height:auto; }
+
 .header h1{
   margin:0;
   color:var(--brand);
-  font-size:20px;
+  font-size:18.5px;
   font-weight:900;
   text-align:center;
   flex:1;
@@ -2752,73 +2783,107 @@ body::before{
   font-size:13.5px;
 }
 
-.section{ margin-top:18px; }
+.meta-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px 16px;
+}
+
+.meta b{ color:var(--brand); }
+
+.section{
+  margin-top:14px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:12px 14px;
+  background:#fff;
+}
+
 .section h3{
   margin:0 0 10px 0;
   color:var(--brand);
-  border-bottom:1px solid var(--line);
-  padding-bottom:6px;
-  font-size:15.5px;
+  font-size:15px;
   font-weight:900;
+  border-bottom:1px solid var(--line);
+  padding-bottom:8px;
 }
 
 table{
   width:100%;
   border-collapse:collapse;
-  margin-top:10px;
-  table-layout:fixed;
+  font-size:13.5px;
 }
 
-td,th{
+th,td{
   border:1px solid var(--line);
   padding:9px 10px;
   vertical-align:top;
 }
 
-th{
-  background:#f0fdfa;
+thead th{
+  background:var(--brand);
+  color:#fff;
   font-weight:800;
 }
 
-.money{ direction:ltr; text-align:left; font-weight:800; }
-.total{ color:var(--brand); font-weight:900; }
+tbody tr:nth-child(even){ background:#f9fafb; }
+
+.money{
+  text-align:left;
+  direction:ltr;
+  font-weight:800;
+}
+
+.summary{
+  background:#f0fdfa;
+  border:1px solid #99f6e4;
+}
+
+.summary .row{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding:6px 0;
+  border-bottom:1px dashed var(--line);
+}
+.summary .row:last-child{ border-bottom:none; }
+.summary .total{
+  font-size:15.5px;
+  color:var(--brand);
+  font-weight:900;
+}
 
 .note{
-  background:#ecfeff;
-  border:1px dashed var(--brand);
-  border-radius:12px;
-  padding:12px 14px;
-  font-size:13.5px;
+  color:var(--muted);
+  font-size:12.5px;
+  margin-top:8px;
 }
 
 .footer{
-  margin-top:22px;
+  margin-top:14px;
   text-align:center;
-  font-size:12px;
+  font-size:11.5px;
   color:var(--muted);
-  border-top:1px solid var(--line);
-  padding-top:10px;
+  line-height:1.5;
 }
 
 .print-actions{
-  margin:18px 0 0;
+  margin-top:12px;
   text-align:center;
 }
 
-.print-actions button{
+button{
   background:var(--brand);
   color:#fff;
   border:none;
-  padding:10px 16px;
+  padding:10px 14px;
   border-radius:10px;
-  font-size:14px;
   font-weight:800;
   cursor:pointer;
 }
 
 @media print{
-  .print-actions{ display:none !important; }
-  .page{ outline:none; padding:0; }
+  .print-actions{ display:none; }
 }
 </style>
 </head>
@@ -2833,138 +2898,136 @@ th{
     </div>
 
     <div class="meta">
-      <div><b>العميل:</b> ${customer.customer_name || '—'}</div>
-      <div><b>رقم العرض:</b> ${refNo}</div>
-      <div><b>تاريخ العرض:</b> ${date}</div>
-      <b>اسم المشروع:</b> ${projectName}<br>
-<b>موقع المشروع:</b> ${projectLocation}<br>
+      <div class="meta-grid">
+        <div><b>العميل:</b> ${(customer.customer_name || customer.name || '—')}</div>
+        <div><b>رقم العرض:</b> ${refNo}</div>
 
+        <div><b>تاريخ العرض:</b> ${date}</div>
+        <div><b>نوع الخدمة:</b> صيانة وقائية سنوية</div>
+
+        <div><b>اسم المشروع:</b> ${projectName}</div>
+        <div><b>موقع المشروع:</b> ${projectLocation}</div>
+      </div>
     </div>
 
-    <!-- ✅ ملخص المصاعد (بدون عرض بيانات تفصيلية) -->
+    <!-- ✅ ثانياً: بيانات المصاعد (تفصيلي) -->
     <div class="section">
-      <h3>ملخص المشروع</h3>
+      <h3>ثانياً: بيانات المصاعد</h3>
       <table>
-        <tr>
-          <th>عدد المصاعد</th>
-          <th>نوع الخدمة</th>
-          <th>مدة العقد</th>
-        </tr>
-        <tr>
-          <td>${contract.lifts || '—'}</td>
-          <td>صيانة وقائية سنوية</td>
-          <td>سنة واحدة</td>
-        </tr>
+        <tbody>
+          <tr>
+            <th style="width:28%">عدد المصاعد</th>
+            <td>${contract.lifts || '—'}</td>
+            <th style="width:28%">نوع المصعد</th>
+            <td>${elevatorType ? (elevatorTypeMap[elevatorType] || elevatorType) : '—'}</td>
+          </tr>
+          <tr>
+            <th>ماركة المصعد</th>
+            <td>${brand}</td>
+            <th>حمولة المصعد</th>
+            <td>${capacityText}</td>
+          </tr>
+          <tr>
+            <th>عدد الطوابق</th>
+            <td>${floorsVal || '—'}</td>
+            <th>نوع المبنى</th>
+            <td>${buildingVal ? (buildingMap[buildingVal] || buildingVal) : '—'}</td>
+          </tr>
+        </tbody>
       </table>
+
+      <div class="note">* في حال كانت بعض الحقول غير متوفرة داخل العقود القديمة، سيتم عرض (—). احفظ عقد جديد لتظهر كامل البيانات.</div>
     </div>
 
+    <!-- نطاق الصيانة -->
     <div class="section">
       <h3>نطاق الصيانة المشمولة</h3>
       <table>
-        <tr><th style="width:30%">البند</th><th>التفاصيل</th></tr>
-        <tr><td>عدد الزيارات</td><td>${visits}</td></tr>
-        <tr><td>خدمة الطوارئ</td><td>${emergency}</td></tr>
-        <tr><td>قطع الغيار</td><td>${spareParts}</td></tr>
-        <tr><td>التدريب</td><td>${training}</td></tr>
+        <tbody>
+          <tr><th style="width:30%">عدد الزيارات</th><td>${visits}</td></tr>
+          <tr><th>خدمة الطوارئ</th><td>${emergency}</td></tr>
+          <tr><th>قطع الغيار</th><td>${spareParts}</td></tr>
+          <tr><th>التدريب</th><td>${training}</td></tr>
+        </tbody>
       </table>
     </div>
 
+    <!-- ملخص مالي -->
     <div class="section">
       <h3>الملخص المالي</h3>
       <table>
-        <tr>
-          <th>القيمة قبل الضريبة</th>
-          <th>ضريبة 15%</th>
-          <th>الإجمالي شامل الضريبة</th>
-        </tr>
-        <tr>
-          <td class="money">${money(subtotalNum)} SAR</td>
-          <td class="money">${money(vatNum)} SAR</td>
-          <td class="money total"><b>${money(totalNum)} SAR</b></td>
-        </tr>
+        <thead>
+          <tr>
+            <th>القيمة قبل الضريبة</th>
+            <th>ضريبة 15%</th>
+            <th>الإجمالي شامل الضريبة</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="money">${money(subtotalNum)} SAR</td>
+            <td class="money">${money(vatNum)} SAR</td>
+            <td class="money"><b>${money(totalNum)} SAR</b></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="note">* جميع الأسعار بالريال السعودي وتشمل ضريبة القيمة المضافة 15% حسب الأنظمة.</div>
+    </div>
+
+    <!-- ✅ طريقة السداد والتحويل -->
+    <div class="section">
+      <h3>طريقة السداد والتحويل البنكي</h3>
+      <table>
+        <tbody>
+          <tr><th style="width:30%">شروط الدفع</th><td><b>100% دفعة مقدمة</b> عند اعتماد العرض/إصدار أمر الشراء، ويبدأ التنفيذ والجدولة بعد استلام التحويل وإشعار السداد.</td></tr>
+          <tr><th>البنك</th><td>${bankName}</td></tr>
+          <tr><th>اسم المستفيد</th><td>${beneficiary}</td></tr>
+          <tr><th>رقم العميل</th><td>${customerNo}</td></tr>
+          <tr><th>رقم الحساب</th><td>${accountNo}</td></tr>
+          <tr><th>الآيبان</th><td style="direction:ltr;text-align:left"><b>${iban}</b></td></tr>
+        </tbody>
       </table>
     </div>
 
- <div class="section">
-  <h3>الشروط والأحكام</h3>
-
-  <table>
-    <tr><th style="width:30%">البند</th><th>التفاصيل</th></tr>
-
-    <tr>
-      <td>صلاحية العرض</td>
-      <td>هذا العرض صالح لمدة <b>7 أيام</b> من تاريخ الإصدار، وقد تتغير الأسعار بعد ذلك.</td>
-    </tr>
-
-    <tr>
-      <td>نطاق الخدمة</td>
-      <td>يشمل العقد <b>الصيانة الوقائية الدورية</b> حسب عدد الزيارات المحددة أعلاه، ويشمل المواد التشغيلية (زيوت/شحوم/تنظيف) حسب الحاجة.</td>
-    </tr>
-
-    <tr>
-      <td>قطع الغيار</td>
-      <td>قطع الغيار <b>غير مشمولة</b> في هذا العرض، ويتم تقديم عرض سعر مستقل لأي قطع مطلوبة بعد التشخيص.</td>
-    </tr>
-
-    <tr>
-      <td>احتساب الزيارات</td>
-      <td>تُحتسب الزيارة ضمن العقد حتى لو كان المصعد متوقفًا أو تبين وجود عطل يتطلب قطع غيار أو أعمال إضافية خارج نطاق العقد.</td>
-    </tr>
-
-    <tr>
-      <td>الاستجابة للطوارئ</td>
-      <td>الاستجابة حسب طبيعة البلاغ وموقع المشروع، وخارج أوقات الدوام تكون الخدمة حسب الخيار المحدد في نطاق الصيانة.</td>
-    </tr>
-
-    <tr>
-      <td>التأخير/تعذر الوصول</td>
-      <td>في حال عدم توفر تصريح دخول/مفتاح غرفة الماكينة/تعذر الوصول للمصعد عند حضور الفريق، تُسجل الزيارة كزيارة منفذة ويعاد الجدولة برسوم إن لزم.</td>
-    </tr>
-
-    <tr>
-      <td>مسؤولية العميل</td>
-      <td>يلتزم العميل بتوفير بيئة عمل آمنة، وتصاريح الدخول، وتوفير مصدر كهرباء مستقر، وعدم السماح بتدخل جهات غير معتمدة أثناء سريان العقد.</td>
-    </tr>
-
-    <tr>
-      <td>حدود المسؤولية</td>
-      <td>لا تتحمل المؤسسة الأعطال الناتجة عن سوء الاستخدام، العبث، التحميل الزائد، انقطاع الكهرباء، أو تدخل أطراف غير معتمدة.</td>
-    </tr>
-
-    <tr>
-      <td>الضريبة</td>
-      <td>جميع الأسعار المذكورة شاملة <b>ضريبة القيمة المضافة 15%</b> حسب الأنظمة.</td>
-    </tr>
-
-    <tr>
-      <td>بدء الخدمة</td>
-      <td>يتم تفعيل وجدولة الزيارات بعد <b>اعتماد العرض</b> واستلام <b>دفعة/تحويل</b> حسب الاتفاق وإرسال إشعار السداد.</td>
-    </tr>
-  </table>
-
-  <div style="margin-top:10px;font-size:12.5px;color:#6b7280">
-    * عند اعتماد العرض، يتم إصدار العقد النهائي بنفس رقم العرض، وتوثيق جدول الزيارات وبيانات المشروع.
-  </div>
-</div>
-
-      <div class="section">
-  <h3>بيانات التحويل البنكي</h3>
-  <table>
-    <tr><th style="width:30%">البنك</th><td>${bankName}</td></tr>
-    <tr><th>اسم المستفيد</th><td>${beneficiary}</td></tr>
-    <tr><th>رقم العميل</th><td class="money">${customerNo}</td></tr>
-    <tr><th>رقم الحساب</th><td class="money">${accountNo}</td></tr>
-    <tr><th>الآيبان</th><td class="money"><b>${iban}</b></td></tr>
-  </table>
-  <div style="margin-top:10px;font-size:12.5px;color:#6b7280">
-    * يُرجى إرسال إشعار التحويل مع رقم العرض لضمان سرعة التفعيل والجدولة.
-  </div>
-</div>
-
+    <!-- ✅ شروط وأحكام (موسّعة) -->
+    <div class="section">
+      <h3>الشروط والأحكام</h3>
+      <table>
+        <tbody>
+          <tr>
+            <th style="width:30%">سريان العرض</th>
+            <td>ساري لمدة (15) يومًا من تاريخ الإصدار ما لم يتم التعميد خلال المدة.</td>
+          </tr>
+          <tr>
+            <th>بدء الخدمة</th>
+            <td>تبدأ الخدمة بعد اعتماد العرض واستلام الدفعة وإصدار جدول الزيارات وفق نطاق العقد.</td>
+          </tr>
+          <tr>
+            <th>احتساب الزيارة</th>
+            <td>تُحسب الزيارة ضمن جدول الصيانة حتى في حال كان المصعد متوقفًا أو احتاج قطع غيار/أعمال إضافية غير مشمولة.</td>
+          </tr>
+          <tr>
+            <th>الاستثناءات</th>
+            <td>لا يشمل العقد توريد أو استبدال قطع الغيار وأي أعمال مدنية/كهربائية إضافية غير متوفرة بالموقع، وتُسعّر بعرض مستقل.</td>
+          </tr>
+          <tr>
+            <th>حدود المسؤولية</th>
+            <td>لا تتحمل المؤسسة الأعطال الناتجة عن سوء الاستخدام، العبث، التحميل الزائد، انقطاع الكهرباء، أو تدخل أطراف غير معتمدة.</td>
+          </tr>
+          <tr>
+            <th>التزامات العميل</th>
+            <td>توفير بيئة عمل آمنة، وتمكين فريقنا من الوصول لغرفة المكائن/الكنترول، وتوفير مصدر كهرباء مستقر أثناء الفحص.</td>
+          </tr>
+          <tr>
+            <th>الضريبة</th>
+            <td>ضريبة القيمة المضافة 15% محتسبة ضمن الإجمالي أعلاه وفق الأنظمة المعمول بها.</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
     <div class="footer">
-      مؤسسة آر كي ال RKL للمصاعد والسلالم الكهربائية<br>
+      آر كي ال RKL للمصاعد والسلالم الكهربائية<br>
       السجل التجاري: 1010709355 – الرقم الضريبي: 302250422600003<br>
       الرياض – السليمانية | هاتف: 0114774021 | البريد: admin@rk-lifts.com
     </div>
@@ -2975,11 +3038,11 @@ th{
 
   </div>
 </body>
-</html>
-  `);
+</html>`);
 
   w.document.close();
 }
+
 
 
   
