@@ -1726,6 +1726,10 @@ if(!projectName || !projectLocation){
     const supplyTypeNow = (serviceType === 'supply_install')
       ? (document.getElementById('supplyType')?.value || '')
       : '';
+const elevatorType = document.getElementById('elevatorType')?.value || '';
+const brandSelect  = document.getElementById('brandSelect')?.value || '';
+const brandOther   = document.getElementById('brandOther')?.value || '';
+const building     = document.getElementById('building')?.value || '';
 
     const contract = {
       id: (
@@ -1741,6 +1745,14 @@ if(!projectName || !projectLocation){
       lifts,
       projectName,
 projectLocation,
+     
+elevatorType,
+brandSelect,
+brandOther,
+capacity,
+floors,
+building,
+
 
       total: Number(calc.total || 0).toFixed(2) + ' ريال',
 
