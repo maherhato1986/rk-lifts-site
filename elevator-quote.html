@@ -1724,95 +1724,108 @@ async function calculateQuote() {
   });
 
   lastQuoteSnapshot = {
-    quoteNumber,
+  quoteNumber,
 
-    /* =========================
-       1) بيانات عامة
-    ========================= */
-    timestamp: new Date().toISOString(),
-    customerName: finalCustomerName || '',
-    projectName: projectName || '',
-    projectLocation: projectLocation || '',
+  /* =========================
+     1) بيانات عامة
+  ========================= */
+  timestamp: new Date().toISOString(),
+  customerName: finalCustomerName || '',
+  projectName: projectName || '',
+  projectLocation: projectLocation || '',
 
-    brandKey,
-    brandLabel,
+  brandKey,
+  brandLabel,
 
-    capacity: capacity ? (capacity + ' kg') : '',
-    speed: speed ? (speed + ' m/s') : '',
-    floors: floors || '',
-    floorHeight: document.getElementById('floorHeight')?.value || '',
-    travelHeight: document.getElementById('travelHeight')?.value || '',
-    liftsCount: liftsCount || 1,
+  capacity: capacity ? (capacity + ' kg') : '',
+  speed: speed ? (speed + ' m/s') : '',
+  floors: floors || '',
+  floorHeight: document.getElementById('floorHeight')?.value || '',
+  travelHeight: document.getElementById('travelHeight')?.value || '',
+  liftsCount: liftsCount || 1,
 
-    /* =========================
-       2) المقاسات – (مطابق لواجهة العرض)
-    ========================= */
-    shaftsSummary: shaftsSummary || '',
+  /* =========================
+     2) المقاسات – (مطابق لواجهة العرض)
+  ========================= */
+  shaftsSummary: shaftsSummary || '',
 
-    // تظهر في Page 3 + Page 4
-    cabinSize: Array.isArray(selectedCabin) ? selectedCabin.join(' | ') : (selectedCabin || ''),
-    shaftSize: Array.isArray(selectedShaft) ? selectedShaft.join(' | ') : (selectedShaft || ''),
-    doors: Array.isArray(selectedDoor) ? selectedDoor.join(' | ') : (selectedDoor || ''),
-    pit: Array.isArray(selectedPit) ? selectedPit.join(' | ') : (selectedPit || ''),
-    oh: Array.isArray(selectedOH) ? selectedOH.join(' | ') : (selectedOH || ''),
+  // تظهر في Page 3 + Page 4
+  cabinSize: Array.isArray(selectedCabin) ? selectedCabin.join(' | ') : (selectedCabin || ''),
+  shaftSize: Array.isArray(selectedShaft) ? selectedShaft.join(' | ') : (selectedShaft || ''),
+  doors:     Array.isArray(selectedDoor)  ? selectedDoor.join(' | ')  : (selectedDoor || ''),
+  pit:       Array.isArray(selectedPit)   ? selectedPit.join(' | ')   : (selectedPit || ''),
+  oh:        Array.isArray(selectedOH)    ? selectedOH.join(' | ')    : (selectedOH || ''),
 
-    /* =========================
-       3) التشطيب
-    ========================= */
-    cabinDesign: document.getElementById("cabin_design")?.value || 'Standard',
-    floorFinish: document.getElementById("floor_finish")?.value || 'Standard',
+  /* =========================
+     3) التشطيب
+  ========================= */
+  cabinDesign: document.getElementById("cabin_design")?.value || 'Standard',
+  floorFinish: document.getElementById("floor_finish")?.value || 'Standard',
 
-    /* =========================
-       4) مواصفات فنية
-    ========================= */
-    machineType: model?.machineType || 'MRL – Traction',
-    stops: floors || '',
+  /* =========================
+     4) مواصفات فنية
+  ========================= */
+  machineType: model?.machineType || 'MRL – Traction',
+  stops: floors || '',
 
-    /* =========================
-       5) السعر
-    ========================= */
-    totalWithVat: result?.totalWithVat || 0,
+  /* =========================
+     5) السعر
+     ✅ تمت إضافة القيم المطلوبة للطباعة الصحيحة (سعر الوحدة + الإجماليات)
+  ========================= */
+  // إجمالي شامل الضريبة
+  totalWithVat: Number(result?.totalWithVat || 0),
 
-    pricePerUnit: liftsCount && result?.totalWithVat
-      ? (result.totalWithVat / liftsCount)
-      : (result?.totalWithVat || 0),
+  // ✅ إجمالي قبل الضريبة + الضريبة (مطلوبة لجدول 7-1)
+  totalBeforeVat: Number(result?.totalBeforeVat || 0),
+  vatAmount: Number(result?.vatAmount || 0),
 
-    currency: currency || 'SAR',
-    vatRate: vatRate || 15,
-    includeVat: includeVat === true,
+  // ✅ سعر الوحدة (شامل)
+  pricePerUnit: (liftsCount && Number(result?.totalWithVat || 0))
+    ? (Number(result.totalWithVat) / Number(liftsCount))
+    : Number(result?.totalWithVat || 0),
 
-    payments: {
-      advance50: result?.totalWithVat ? (result.totalWithVat * 0.50) : 0,
-      mechanical25: result?.totalWithVat ? (result.totalWithVat * 0.25) : 0,
-      electrical20: result?.totalWithVat ? (result.totalWithVat * 0.20) : 0,
-      handover5: result?.totalWithVat ? (result.totalWithVat * 0.05) : 0
-    },
+  // ✅ سعر الوحدة قبل الضريبة + ضريبة الوحدة + شامل الوحدة
+  totalBeforeVatPerLift: Number(result?.totalBeforeVatPerLift || 0),
+  vatAmountPerLift: Number(result?.vatAmountPerLift || 0),
+  totalWithVatPerLift: Number(result?.totalWithVatPerLift || 0),
 
-    /* =========================
-       6) بيانات العميل الموسعة
-       (مطابقة 1:1 مع elevator-quote-offer.html)
-    ========================= */
-    preferredContact: selectedCustomer?.preferred_contact || '',
+  currency: currency || 'SAR',
+  vatRate: vatRate || 15,
+  includeVat: includeVat === true,
 
-    customerDetails: selectedCustomer ? {
-      customer_type: selectedCustomer.customer_type || '',
-      contact_person: selectedCustomer.contact_person || '',
-      id_number: selectedCustomer.id_number || '',
-      cr_number: selectedCustomer.cr_number || '',
-      tax_number: selectedCustomer.tax_number || '',
-      city: selectedCustomer.city || '',
-      district: selectedCustomer.district || '',
-      street: selectedCustomer.street || '',
-      building_no: selectedCustomer.building_no || '',
-      postal_code: selectedCustomer.postal_code || '',
-      full_address: selectedCustomer.full_address || '',
-      mobile: selectedCustomer.mobile || '',
-      phone: selectedCustomer.phone || '',
-      email: selectedCustomer.email || '',
-      preferred_contact: selectedCustomer.preferred_contact || '',
-      notes: selectedCustomer.notes || '',
-    } : {}
-  };
+  payments: {
+    advance50: Number(result?.totalWithVat || 0) ? (Number(result.totalWithVat) * 0.50) : 0,
+    mechanical25: Number(result?.totalWithVat || 0) ? (Number(result.totalWithVat) * 0.25) : 0,
+    electrical20: Number(result?.totalWithVat || 0) ? (Number(result.totalWithVat) * 0.20) : 0,
+    handover5: Number(result?.totalWithVat || 0) ? (Number(result.totalWithVat) * 0.05) : 0
+  },
+
+  /* =========================
+     6) بيانات العميل الموسعة
+     (مطابقة 1:1 مع elevator-quote-offer.html)
+  ========================= */
+  preferredContact: selectedCustomer?.preferred_contact || '',
+
+  customerDetails: selectedCustomer ? {
+    customer_type: selectedCustomer.customer_type || '',
+    contact_person: selectedCustomer.contact_person || '',
+    id_number: selectedCustomer.id_number || '',
+    cr_number: selectedCustomer.cr_number || '',
+    tax_number: selectedCustomer.tax_number || '',
+    city: selectedCustomer.city || '',
+    district: selectedCustomer.district || '',
+    street: selectedCustomer.street || '',
+    building_no: selectedCustomer.building_no || '',
+    postal_code: selectedCustomer.postal_code || '',
+    full_address: selectedCustomer.full_address || '',
+    mobile: selectedCustomer.mobile || '',
+    phone: selectedCustomer.phone || '',
+    email: selectedCustomer.email || '',
+    preferred_contact: selectedCustomer.preferred_contact || '',
+    notes: selectedCustomer.notes || '',
+  } : {}
+};
+
 }
 
 
@@ -2033,7 +2046,7 @@ async function calculateQuote() {
                     liftsCount: entry.liftsCount
                 },
 
-               pricing: {
+pricing: {
   currency: entry.currency,
   vatRate: entry.vatRate,
   includeVat: entry.includeVat,
@@ -2041,21 +2054,24 @@ async function calculateQuote() {
   // ✅ الإجماليات
   totalWithVat: Number(entry.totalWithVat || 0),
 
-  // ✅ أضف هذه الثلاثة (من lastQuoteSnapshot / entry)
+  // ✅ قبل الضريبة والضريبة (لازم تكون محفوظة بالـ entry)
   totalBeforeVat: Number(entry.totalBeforeVat || 0),
   vatAmount: Number(entry.vatAmount || 0),
 
-  // ✅ أسعار الوحدة (بدون ضرب مرة ثانية)
+  // ✅ أسعار الوحدة (حتى لا تنضرب مرة ثانية بالطباعة)
   unitTotalWithVat: Number(entry.pricePerUnit || 0),
+
   unitTotalBeforeVat: (Number(entry.totalBeforeVat || 0) && Number(entry.liftsCount || 1))
     ? (Number(entry.totalBeforeVat || 0) / Number(entry.liftsCount || 1))
     : 0,
+
   unitVatAmount: (Number(entry.vatAmount || 0) && Number(entry.liftsCount || 1))
     ? (Number(entry.vatAmount || 0) / Number(entry.liftsCount || 1))
     : 0,
 
   liftsCount: Number(entry.liftsCount || 1)
 },
+
 
 
                 quoteText: document.getElementById('quote_text').value
@@ -2346,6 +2362,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
