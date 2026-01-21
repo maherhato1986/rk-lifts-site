@@ -2033,12 +2033,30 @@ async function calculateQuote() {
                     liftsCount: entry.liftsCount
                 },
 
-                pricing: {
-                    currency: entry.currency,
-                    vatRate: entry.vatRate,
-                    includeVat: entry.includeVat,
-                    totalWithVat: entry.totalWithVat
-                },
+               pricing: {
+  currency: entry.currency,
+  vatRate: entry.vatRate,
+  includeVat: entry.includeVat,
+
+  // ✅ الإجماليات
+  totalWithVat: Number(entry.totalWithVat || 0),
+
+  // ✅ أضف هذه الثلاثة (من lastQuoteSnapshot / entry)
+  totalBeforeVat: Number(entry.totalBeforeVat || 0),
+  vatAmount: Number(entry.vatAmount || 0),
+
+  // ✅ أسعار الوحدة (بدون ضرب مرة ثانية)
+  unitTotalWithVat: Number(entry.pricePerUnit || 0),
+  unitTotalBeforeVat: (Number(entry.totalBeforeVat || 0) && Number(entry.liftsCount || 1))
+    ? (Number(entry.totalBeforeVat || 0) / Number(entry.liftsCount || 1))
+    : 0,
+  unitVatAmount: (Number(entry.vatAmount || 0) && Number(entry.liftsCount || 1))
+    ? (Number(entry.vatAmount || 0) / Number(entry.liftsCount || 1))
+    : 0,
+
+  liftsCount: Number(entry.liftsCount || 1)
+},
+
 
                 quoteText: document.getElementById('quote_text').value
             };
@@ -2328,6 +2346,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
