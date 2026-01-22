@@ -704,6 +704,7 @@
     <th>FH</th>
     <th>TH</th>
     <th>عدد المصاعد</th>
+      <th>سعر المصعد الواحد (شامل)</th>
     <th>الإجمالي (شامل)</th>
   </tr>
 </thead>
@@ -979,7 +980,7 @@ const CABIN_DESIGN_ADDITIONAL = {
     if (!quotes.length) {
         const tr = document.createElement('tr');
         const td = document.createElement('td');
-        td.colSpan = 23;
+        td.colSpan = 24;
         td.textContent = 'لا توجد عروض أسعار محفوظة في هذا الجهاز حتى الآن.';
         td.style.textAlign = 'center';
         td.style.color = '#9ca3af';
@@ -1027,22 +1028,27 @@ const cols = [
   cd.city || '',
 
   (q.projectName || '') + 
-(q.projectLocation ? ' – ' + q.projectLocation : ''),
+  (q.projectLocation ? ' – ' + q.projectLocation : ''),
 
   `${q.brandLabel} / ${q.capacity} / ${q.speed} / ${q.floors} Stops`,
 
-  // ✅ المقاسات (الجزء المهم!)
   q.shaftSize || '—',
   q.cabinSize || '—',
   q.doors || '—',
   q.pit || '—',
   q.oh || '—',
-    q.floorHeight || '—',   // ✅
- q.travelHeight || '—', // ✅
+  q.floorHeight || '—',
+  q.travelHeight || '—',
 
   q.liftsCount || '',
-  totalStr
+
+  // ✅ سعر الوحدة
+  formatCurrency(q.pricePerUnit || 0, q.currency || 'SAR'),
+
+  // ✅ الإجمالي
+  formatCurrency(q.totalWithVat || 0, q.currency || 'SAR')
 ];
+
 
 
 
@@ -2362,6 +2368,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
