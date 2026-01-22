@@ -1292,24 +1292,88 @@ consultants, and regulatory authorities across the Kingdom.
 ================================ -->
 <div class="section-title">7-3) جدول الدفعات المقترح</div>
 
-<table>
+<table id="payments-summary-table">
   <tbody>
-    <tr><td>عند توقيع العقد</td><td>50%</td><td class="pay50">—</td></tr>
-    <tr><td>عند الانتهاء من الأعمال الميكانيكية</td><td>25%</td><td class="pay25">—</td></tr>
-    <tr><td>بعد الانتهاء من الأعمال الكهربائية والتشغيل</td><td>20%</td><td class="pay20">—</td></tr>
-    <tr><td>عند التسليم النهائي للمصعد</td><td>5%</td><td class="pay5">—</td></tr>
 
-    <tr><th>الإجمالي قبل التعديل</th><th></th><th class="subtotalBefore">—</th></tr>
-    <tr><th>قيمة الخصم / الزيادة</th><th></th><th class="adjustmentAmount">—</th></tr>
-    <tr><th>الإجمالي بعد التعديل</th><th></th><th class="subtotalAfter">—</th></tr>
-    <tr><th>ضريبة القيمة المضافة (15%)</th><th></th><th class="vatAmount">—</th></tr>
-    <tr style="background:#f0f9ff;font-weight:bold">
-      <th>الإجمالي النهائي (شامل الضريبة)</th>
-      <th>100%</th>
-      <th class="grandTotal">—</th>
+    <!-- 1) وصف البند (من جدول 7-1) -->
+    <tr>
+      <th style="width:55%">وصف البند</th>
+      <td id="sum_desc">—</td>
     </tr>
+
+    <!-- 2) هل يوجد بنود إضافية؟ -->
+    <tr>
+      <th>هل يوجد بنود إضافية؟</th>
+      <td id="sum_has_extra">—</td>
+    </tr>
+
+    <!-- 3) تعديل السعر قبل الضريبة (اختياري) -->
+    <tr>
+      <th>تعديل السعر قبل الضريبة (اختياري)</th>
+      <td id="sum_adjust">—</td>
+    </tr>
+
+    <!-- 4) الإجمالي قبل الضريبة -->
+    <tr>
+      <th>الإجمالي قبل الضريبة</th>
+      <td id="sum_subtotal">—</td>
+    </tr>
+
+    <!-- 5) قيمة الضريبة -->
+    <tr>
+      <th>قيمة الضريبة (15%)</th>
+      <td id="sum_vat">—</td>
+    </tr>
+
+    <!-- 6) الإجمالي العام شامل الضريبة -->
+    <tr style="background:#f0f9ff;font-weight:bold">
+      <th>الإجمالي العام (شامل الضريبة)</th>
+      <td class="grandTotal">—</td>
+    </tr>
+
+    <!-- 7) الدفعات (قابلة لتعديل النسبة) -->
+    <tr><th colspan="2" style="background:#f8fafc">قيمة الدفعات (يمكن تعديل النسبة)</th></tr>
+
+    <tr>
+      <td>عند توقيع العقد</td>
+      <td>
+        <input type="number" class="payPercent" data-key="p1" value="50" min="0" max="100" style="width:70px"> %
+        <span class="payAmount pay50" style="margin-right:10px">—</span>
+      </td>
+    </tr>
+
+    <tr>
+      <td>عند الانتهاء من الأعمال الميكانيكية</td>
+      <td>
+        <input type="number" class="payPercent" data-key="p2" value="25" min="0" max="100" style="width:70px"> %
+        <span class="payAmount pay25" style="margin-right:10px">—</span>
+      </td>
+    </tr>
+
+    <tr>
+      <td>بعد الانتهاء من الأعمال الكهربائية والتشغيل</td>
+      <td>
+        <input type="number" class="payPercent" data-key="p3" value="20" min="0" max="100" style="width:70px"> %
+        <span class="payAmount pay20" style="margin-right:10px">—</span>
+      </td>
+    </tr>
+
+    <tr>
+      <td>عند التسليم النهائي للمصعد</td>
+      <td>
+        <input type="number" class="payPercent" data-key="p4" value="5" min="0" max="100" style="width:70px"> %
+        <span class="payAmount pay5" style="margin-right:10px">—</span>
+      </td>
+    </tr>
+
+    <tr style="background:#fff7ed;font-weight:bold">
+      <th>مجموع النسب</th>
+      <td id="sum_percent_total">—</td>
+    </tr>
+
   </tbody>
 </table>
+
 
 <div class="contract-terms">
   <h4>٨) بنود رئيسية للعقد (قابلة للتعديل)</h4>
@@ -1700,11 +1764,47 @@ function recalcPricing(){
   document.querySelector('.subtotalAfter').textContent = formatSAR(afterAdj);
   document.querySelector('.vatAmount').textContent = formatSAR(vat);
   document.querySelector('.grandTotal').textContent = formatSAR(total);
+  // ==========================
+  // ✅ جدول 7-3 الجديد
+  // ==========================
 
-  document.querySelector('.pay50').textContent = formatSAR(total * 0.50);
-  document.querySelector('.pay25').textContent = formatSAR(total * 0.25);
-  document.querySelector('.pay20').textContent = formatSAR(total * 0.20);
-  document.querySelector('.pay5').textContent  = formatSAR(total * 0.05);
+  // (أ) وصف البند من أول صف في 7-1
+  const firstDesc = document.querySelector('#items-table tbody tr:first-child td[contenteditable]')?.textContent?.trim() || '—';
+  document.getElementById('sum_desc') && (document.getElementById('sum_desc').textContent = firstDesc);
+
+  // (ب) هل يوجد بنود إضافية؟
+  const hasExtra = document.querySelectorAll('#items-table tbody tr').length > 1;
+  document.getElementById('sum_has_extra') && (document.getElementById('sum_has_extra').textContent = hasExtra ? 'نعم' : 'لا');
+
+  // (ج) قيمة التعديل
+  document.getElementById('sum_adjust') && (document.getElementById('sum_adjust').textContent = formatSAR(adjAmount));
+
+  // (د) الإجمالي قبل الضريبة / الضريبة / الإجمالي شامل
+  document.getElementById('sum_subtotal') && (document.getElementById('sum_subtotal').textContent = formatSAR(afterAdj));
+  document.getElementById('sum_vat') && (document.getElementById('sum_vat').textContent = formatSAR(vat));
+  // grandTotal أنت أصلاً تربطه: document.querySelector('.grandTotal')...
+
+  // (هـ) الدفعات حسب النسب القابلة للتعديل
+  const percInputs = document.querySelectorAll('.payPercent');
+  let percSum = 0;
+
+  const p = { p1: 50, p2: 25, p3: 20, p4: 5 };
+  percInputs.forEach(inp => {
+    const key = inp.dataset.key;
+    const v = Number(inp.value || 0);
+    p[key] = v;
+    percSum += v;
+  });
+
+  document.getElementById('sum_percent_total') &&
+    (document.getElementById('sum_percent_total').textContent = percSum.toFixed(2) + ' %');
+
+  // تحديث مبالغ الدفعات
+  document.querySelector('.pay50').textContent = formatSAR(total * (p.p1/100));
+  document.querySelector('.pay25').textContent = formatSAR(total * (p.p2/100));
+  document.querySelector('.pay20').textContent = formatSAR(total * (p.p3/100));
+  document.querySelector('.pay5').textContent  = formatSAR(total * (p.p4/100));
+
 }
 
 /* ===============================
@@ -1735,11 +1835,13 @@ document.addEventListener('input',e=>{
   if(
     e.target.closest('#items-table') ||
     e.target.id === 'adjustmentType' ||
-    e.target.id === 'adjustmentValue'
+    e.target.id === 'adjustmentValue' ||
+    e.target.classList.contains('payPercent')
   ){
     recalcPricing();
   }
 });
+
 
 /* ===============================
    تعبئة البند الرئيسي تلقائيًا
@@ -1858,6 +1960,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
 
 
 
