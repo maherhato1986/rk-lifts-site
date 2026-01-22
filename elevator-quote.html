@@ -1764,6 +1764,12 @@ async function calculateQuote() {
   });
 
   const quoteNumber = `RKL-${new Date().getFullYear()}-${Date.now().toString().slice(-5)}`;
+    const en81 = syncEN81ByCapacity(capacity);
+if (!en81) {
+    alert("لم يتم تحديد مقاسات EN81 مطابقة، يرجى التحقق.");
+    return;
+}
+
 
   lastQuoteSnapshot = {
     quoteNumber,
@@ -1785,12 +1791,12 @@ async function calculateQuote() {
 
     shaftsSummary: shaftsSummary || '',
 
+shaftSize: q?.shaftSize || '',
+cabinSize: q?.cabinSize || '',
+doors: q?.doors || '',
+pit: q?.pit || '',
+oh: q?.oh || '',
 
-shaftSize: en81.shaft,
-cabinSize: en81.cabin,
-doors: en81.door,
-pit: en81.pit,
-oh: en81.oh,
 
     cabinDesign: document.getElementById("cabin_design")?.value || 'Standard',
     floorFinish: document.getElementById("floor_finish")?.value || 'Standard',
@@ -2387,6 +2393,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
