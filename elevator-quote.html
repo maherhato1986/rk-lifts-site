@@ -1479,7 +1479,6 @@ async function calculateQuote() {
   if (!currentBrandData) {
     await loadBrandData(brandKey);
   }
-
   if (!currentBrandData) {
     console.log("❌ لم يتم تحميل بيانات الماركة");
     return;
@@ -1529,19 +1528,17 @@ async function calculateQuote() {
 
   // 2) الشحن + التأمين
   const shipUsdPerLift = getShippingUsdPerLiftByQty(liftsCount);
-
   const shippingInsuranceSar = isLocalAssembly
     ? 0
     : (
-        (shipUsdPerLift * rate) +
-        (factoryUsd * (COST_PARAMS.insurancePercent / 100) * rate)
-      );
+      (shipUsdPerLift * rate) +
+      (factoryUsd * (COST_PARAMS.insurancePercent / 100) * rate)
+    );
 
   console.log("liftsCount=", liftsCount, "shippingUsdPerLift(discounted)=", getShippingUsdPerLiftByQty(liftsCount));
 
   // 3) التخليص + النقل الداخلي
   const regionAdder = getRegionAdderSar(projectLocation);
-
   const clearanceTransportSar = isLocalAssembly
     ? (COST_PARAMS.inlandTransportSar + regionAdder)
     : (COST_PARAMS.clearanceSar + COST_PARAMS.inlandTransportSar + regionAdder);
@@ -1571,9 +1568,7 @@ async function calculateQuote() {
 
   const directCostSarFinal = directCostSar + cabinExtraCost;
 
-  const factoryCostPerLift = factorySar / divisor;
-
-  // حفظ سعر FUJI للمقارنة
+  // حفظ سعر FUJI للمقارنة (لو عندك منطق خارجي)
   const profitPercent =
     brandKey === 'VERTILIFT_MRL'
       ? COST_PARAMS.profitPercent + 3
@@ -1588,11 +1583,20 @@ async function calculateQuote() {
     );
   }
 
+  // إعادة بناء directCost بعد ضبط factorySar (مهم)
+  const directCostSar2 =
+    factorySar +
+    shippingInsuranceSar +
+    clearanceTransportSar +
+    installationCommissioningSar;
+
+  const directCostSarFinal2 = directCostSar2 + cabinExtraCost;
+
   // 6) مصاريف التشغيل
-  const overheadSar = directCostSarFinal * (COST_PARAMS.overheadPercent / 100);
+  const overheadSar = directCostSarFinal2 * (COST_PARAMS.overheadPercent / 100);
 
   // 7) تكلفة قبل الربح
-  const costBeforeProfitSar = directCostSarFinal + overheadSar;
+  const costBeforeProfitSar = directCostSarFinal2 + overheadSar;
 
   // 8) هامش الربح
   const profitSar = costBeforeProfitSar * (profitPercent / 100);
@@ -1600,6 +1604,10 @@ async function calculateQuote() {
   // 9) سعر البيع قبل الضريبة
   const totalBeforeVatSar = costBeforeProfitSar + profitSar;
 
+  // =========================
+  // ✅ قيم "للمصعد الواحد"
+  // =========================
+  const factoryCostPerLift = factorySar / divisor;
   const shippingInsurancePerLift = shippingInsuranceSar / divisor;
   const clearanceTransportPerLift = clearanceTransportSar / divisor;
   const installationCommissioningPerLift = installationCommissioningSar / divisor;
@@ -1609,11 +1617,13 @@ async function calculateQuote() {
   const totalBeforeVatPerLift = totalBeforeVatSar / divisor;
 
   const vatAmountPerLift = totalBeforeVatPerLift * (vatRate / 100);
-  const totalWithVatPerLift = includeVat
-    ? totalBeforeVatPerLift + vatAmountPerLift
-    : totalBeforeVatPerLift;
 
-  // مجاميع لعدد المصاعد
+  // ✅ ملاحظة: “includeVat” عندك هو خيار عرض فقط، لكن سنحفظ القيم الحقيقية:
+  const totalWithVatPerLift = totalBeforeVatPerLift + vatAmountPerLift;
+
+  // =========================
+  // ✅ إجماليات كل المصاعد
+  // =========================
   const factoryCostTotal = factoryCostPerLift * liftsCount;
   const shippingInsuranceTotal = shippingInsurancePerLift * liftsCount;
   const clearanceTransportTotal = clearanceTransportPerLift * liftsCount;
@@ -1625,6 +1635,9 @@ async function calculateQuote() {
   const vatAmountTotal = vatAmountPerLift * liftsCount;
   const totalWithVatTotal = totalWithVatPerLift * liftsCount;
 
+  // =========================
+  // ✅ Result object
+  // =========================
   const result = {
     brandKey,
     floors,
@@ -1642,12 +1655,11 @@ async function calculateQuote() {
     vatAmountPerLift,
     totalWithVatPerLift,
 
+    // خصم الشحن
     shippingDiscountRate: shipMeta.discountRate,
-
     shippingBasePerLiftSar,
     shippingAfterDiscountPerLiftSar,
     shippingDiscountPerLiftSar,
-
     shippingBaseTotalSar,
     shippingAfterDiscountTotalSar,
     shippingDiscountTotalSar,
@@ -1665,23 +1677,41 @@ async function calculateQuote() {
     vatRate,
     vatAmount: vatAmountTotal,
     totalWithVat: totalWithVatTotal,
-    includeVat,
 
+    includeVat, // خيار عرض في الواجهة
     overheadPercent: COST_PARAMS.overheadPercent,
 
     cabinExtraPerLift: cabinExtraCost,
     cabinExtraTotal: cabinExtraCost * liftsCount,
 
-    profitPercent: profitPercent
+    profitPercent
   };
 
   // ✅ اجبار LOCAL_MRL على عرض كامل
   const mode = (brandKey === "LOCAL_MRL") ? "full" : (window.__rklPricingMode || "full");
   generateNumbersView(result, model, currency, mode);
-
   generateQuoteText(result, model, currency);
 
+  // =========================
+  // ✅ Snapshot pricing for 7-1 (Clean / No duplicates / No const inside object)
+  // =========================
+  const qty = Number(liftsCount || 1);
+
+  const totalBeforeVatAll = Number(result.totalBeforeVat || 0);
+  const vatAmountAll = Number(result.vatAmount || 0);
+  const totalWithVatAll = Number(result.totalWithVat || 0);
+
+  // اعتمد قيم الوحدة من result مباشرة
+  const totalBeforeVatUnit = Number(result.totalBeforeVatPerLift || 0);
+  const vatAmountUnit = Number(result.vatAmountPerLift || 0);
+  const totalWithVatUnit = Number(result.totalWithVatPerLift || 0);
+
+  // ✅ هذا هو "سعر المصعد الواحد (شامل)" المعتمد للسجل + جدول 7-1
+  const pricePerUnit = totalWithVatUnit || (qty > 0 ? (totalWithVatAll / qty) : totalWithVatAll);
+
+  // =========================
   // حفظ لقطة من هذا العرض لاستخدامها عند الضغط على "حفظ عرض السعر"
+  // =========================
   const manualCustomerName = document.getElementById('customer_name').value.trim();
   const projectName = document.getElementById('project_name').value.trim();
 
@@ -1703,8 +1733,6 @@ async function calculateQuote() {
       shaftsSummary.push(`مصعد ${index + 1}: بئر ${shaft} | كابين ${cabin} | باب ${door}`);
     }
   });
-
-  const quoteNumber = `RKL-${new Date().getFullYear()}-${Date.now().toString().slice(-5)}`;
 
   // ============================================
   // ✅ تجميع المقاسات بالتفصيل لكل مصعد
@@ -1729,110 +1757,106 @@ async function calculateQuote() {
     if (oh) selectedOH.push(oh);
   });
 
+  // (اختياري) رقم عرض داخلي للقطة (الرقم الحقيقي يتولد عند الحفظ)
+  const quoteNumber = `RKL-${new Date().getFullYear()}-${Date.now().toString().slice(-5)}`;
+
   lastQuoteSnapshot = {
-  quoteNumber,
+    quoteNumber,
 
-  /* =========================
-     1) بيانات عامة
-  ========================= */
-  timestamp: new Date().toISOString(),
-  customerName: finalCustomerName || '',
-  projectName: projectName || '',
-  projectLocation: projectLocation || '',
+    /* =========================
+       1) بيانات عامة
+    ========================= */
+    timestamp: new Date().toISOString(),
+    customerName: finalCustomerName || '',
+    projectName: projectName || '',
+    projectLocation: projectLocation || '',
 
-  brandKey,
-  brandLabel,
+    brandKey,
+    brandLabel,
 
-  capacity: capacity ? (capacity + ' kg') : '',
-  speed: speed ? (speed + ' m/s') : '',
-  floors: floors || '',
-  floorHeight: document.getElementById('floorHeight')?.value || '',
-  travelHeight: document.getElementById('travelHeight')?.value || '',
-  liftsCount: liftsCount || 1,
+    capacity: capacity ? (capacity + ' kg') : '',
+    speed: speed ? (speed + ' m/s') : '',
+    floors: floors || '',
+    floorHeight: document.getElementById('floorHeight')?.value || '',
+    travelHeight: document.getElementById('travelHeight')?.value || '',
+    liftsCount: liftsCount || 1,
 
-  /* =========================
-     2) المقاسات – (مطابق لواجهة العرض)
-  ========================= */
-  shaftsSummary: shaftsSummary || '',
+    /* =========================
+       2) المقاسات – (مطابق لواجهة العرض)
+    ========================= */
+    shaftsSummary: shaftsSummary || '',
 
-  // تظهر في Page 3 + Page 4
-  cabinSize: Array.isArray(selectedCabin) ? selectedCabin.join(' | ') : (selectedCabin || ''),
-  shaftSize: Array.isArray(selectedShaft) ? selectedShaft.join(' | ') : (selectedShaft || ''),
-  doors:     Array.isArray(selectedDoor)  ? selectedDoor.join(' | ')  : (selectedDoor || ''),
-  pit:       Array.isArray(selectedPit)   ? selectedPit.join(' | ')   : (selectedPit || ''),
-  oh:        Array.isArray(selectedOH)    ? selectedOH.join(' | ')    : (selectedOH || ''),
+    cabinSize: Array.isArray(selectedCabin) ? selectedCabin.join(' | ') : (selectedCabin || ''),
+    shaftSize: Array.isArray(selectedShaft) ? selectedShaft.join(' | ') : (selectedShaft || ''),
+    doors: Array.isArray(selectedDoor) ? selectedDoor.join(' | ') : (selectedDoor || ''),
+    pit: Array.isArray(selectedPit) ? selectedPit.join(' | ') : (selectedPit || ''),
+    oh: Array.isArray(selectedOH) ? selectedOH.join(' | ') : (selectedOH || ''),
 
-  /* =========================
-     3) التشطيب
-  ========================= */
-  cabinDesign: document.getElementById("cabin_design")?.value || 'Standard',
-  floorFinish: document.getElementById("floor_finish")?.value || 'Standard',
+    /* =========================
+       3) التشطيب
+    ========================= */
+    cabinDesign: document.getElementById("cabin_design")?.value || 'Standard',
+    floorFinish: document.getElementById("floor_finish")?.value || 'Standard',
 
-  /* =========================
-     4) مواصفات فنية
-  ========================= */
-  machineType: model?.machineType || 'MRL – Traction',
-  stops: floors || '',
+    /* =========================
+       4) مواصفات فنية
+    ========================= */
+    machineType: model?.machineType || 'MRL – Traction',
+    stops: floors || '',
 
-  /* =========================
-     5) السعر
-     ✅ تمت إضافة القيم المطلوبة للطباعة الصحيحة (سعر الوحدة + الإجماليات)
-  ========================= */
-  // إجمالي شامل الضريبة
-  totalWithVat: Number(result?.totalWithVat || 0),
+    /* =========================
+       5) السعر (معتمد لجدول 7-1)
+    ========================= */
+    totalBeforeVat: totalBeforeVatAll,
+    vatAmount: vatAmountAll,
+    totalWithVat: totalWithVatAll,
 
-  // ✅ إجمالي قبل الضريبة + الضريبة (مطلوبة لجدول 7-1)
-  totalBeforeVat: Number(result?.totalBeforeVat || 0),
-  vatAmount: Number(result?.vatAmount || 0),
+    // ✅ سعر المصعد الواحد (شامل) — المصدر الرسمي لـ 7-1
+    pricePerUnit: pricePerUnit,
 
-  // ✅ سعر الوحدة (شامل)
-  pricePerUnit: (liftsCount && Number(result?.totalWithVat || 0))
-    ? (Number(result.totalWithVat) / Number(liftsCount))
-    : Number(result?.totalWithVat || 0),
+    // ✅ تفصيل الوحدة
+    totalBeforeVatPerLift: totalBeforeVatUnit,
+    vatAmountPerLift: vatAmountUnit,
+    totalWithVatPerLift: totalWithVatUnit,
 
-  // ✅ سعر الوحدة قبل الضريبة + ضريبة الوحدة + شامل الوحدة
-  totalBeforeVatPerLift: Number(result?.totalBeforeVatPerLift || 0),
-  vatAmountPerLift: Number(result?.vatAmountPerLift || 0),
-  totalWithVatPerLift: Number(result?.totalWithVatPerLift || 0),
+    currency: currency || 'SAR',
+    vatRate: vatRate || 15,
+    includeVat: includeVat === true,
 
-  currency: currency || 'SAR',
-  vatRate: vatRate || 15,
-  includeVat: includeVat === true,
+    payments: {
+      advance50: totalWithVatAll ? (totalWithVatAll * 0.50) : 0,
+      mechanical25: totalWithVatAll ? (totalWithVatAll * 0.25) : 0,
+      electrical20: totalWithVatAll ? (totalWithVatAll * 0.20) : 0,
+      handover5: totalWithVatAll ? (totalWithVatAll * 0.05) : 0
+    },
 
-  payments: {
-    advance50: Number(result?.totalWithVat || 0) ? (Number(result.totalWithVat) * 0.50) : 0,
-    mechanical25: Number(result?.totalWithVat || 0) ? (Number(result.totalWithVat) * 0.25) : 0,
-    electrical20: Number(result?.totalWithVat || 0) ? (Number(result.totalWithVat) * 0.20) : 0,
-    handover5: Number(result?.totalWithVat || 0) ? (Number(result.totalWithVat) * 0.05) : 0
-  },
+    /* =========================
+       6) بيانات العميل الموسعة
+       (مطابقة 1:1 مع elevator-quote-offer.html)
+    ========================= */
+    preferredContact: selectedCustomer?.preferred_contact || '',
 
-  /* =========================
-     6) بيانات العميل الموسعة
-     (مطابقة 1:1 مع elevator-quote-offer.html)
-  ========================= */
-  preferredContact: selectedCustomer?.preferred_contact || '',
-
-  customerDetails: selectedCustomer ? {
-    customer_type: selectedCustomer.customer_type || '',
-    contact_person: selectedCustomer.contact_person || '',
-    id_number: selectedCustomer.id_number || '',
-    cr_number: selectedCustomer.cr_number || '',
-    tax_number: selectedCustomer.tax_number || '',
-    city: selectedCustomer.city || '',
-    district: selectedCustomer.district || '',
-    street: selectedCustomer.street || '',
-    building_no: selectedCustomer.building_no || '',
-    postal_code: selectedCustomer.postal_code || '',
-    full_address: selectedCustomer.full_address || '',
-    mobile: selectedCustomer.mobile || '',
-    phone: selectedCustomer.phone || '',
-    email: selectedCustomer.email || '',
-    preferred_contact: selectedCustomer.preferred_contact || '',
-    notes: selectedCustomer.notes || '',
-  } : {}
-};
-
+    customerDetails: selectedCustomer ? {
+      customer_type: selectedCustomer.customer_type || '',
+      contact_person: selectedCustomer.contact_person || '',
+      id_number: selectedCustomer.id_number || '',
+      cr_number: selectedCustomer.cr_number || '',
+      tax_number: selectedCustomer.tax_number || '',
+      city: selectedCustomer.city || '',
+      district: selectedCustomer.district || '',
+      street: selectedCustomer.street || '',
+      building_no: selectedCustomer.building_no || '',
+      postal_code: selectedCustomer.postal_code || '',
+      full_address: selectedCustomer.full_address || '',
+      mobile: selectedCustomer.mobile || '',
+      phone: selectedCustomer.phone || '',
+      email: selectedCustomer.email || '',
+      preferred_contact: selectedCustomer.preferred_contact || '',
+      notes: selectedCustomer.notes || '',
+    } : {}
+  };
 }
+
 
 
 
@@ -2368,6 +2392,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
