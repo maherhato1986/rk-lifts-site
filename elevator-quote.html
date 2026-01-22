@@ -1241,25 +1241,36 @@ function fillSpeedOptions() {
 }
 
 function syncEN81ByCapacity(capacity) {
+  // 1) حوّل قيمة السعة (حتى لو كانت Range) إلى رقم EN81 مناسب
+  // مثال: "320-450" => 450 (نأخذ الحد الأعلى)
+  const nums = String(capacity || '').match(/\d+/g) || [];
+  const capNum = nums.length ? Number(nums[nums.length - 1]) : 0; // آخر رقم = الحد الأعلى
+  const capKey = capNum ? String(capNum) : String(capacity || '').trim();
+
   const rows = document.querySelectorAll('.standard-table tbody tr');
   let matchedRow = null;
 
   rows.forEach(row => {
     row.classList.remove('en81-active');
-    if (row.dataset.capacity === capacity) {
+
+    // تأكد من وجود data-capacity
+    const rowCap = String(row.dataset.capacity || '').trim();
+
+    if (rowCap && rowCap === capKey) {
       matchedRow = row;
       row.classList.add('en81-active');
     }
   });
 
   return matchedRow ? {
-    cabin: matchedRow.dataset.cabin,
-    shaft: matchedRow.dataset.shaft,
-    door: matchedRow.dataset.door,
-    pit: matchedRow.dataset.pit,
-    oh: matchedRow.dataset.oh
+    cabin: matchedRow.dataset.cabin || '',
+    shaft: matchedRow.dataset.shaft || '',
+    door:  matchedRow.dataset.door  || '',
+    pit:   matchedRow.dataset.pit   || '',
+    oh:    matchedRow.dataset.oh    || ''
   } : null;
 }
+
 
 
 function findModel(capacity, speed) {
@@ -2441,6 +2452,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
