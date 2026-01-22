@@ -476,14 +476,22 @@
             <td>1200</td>
             <td>3500</td>
         </tr>
-        <tr>
-            <td>800</td>
-            <td>1350 × 1400</td>
-            <td>2000 × 1600</td>
-            <td>900</td>
-            <td>1300</td>
-            <td>3600</td>
-        </tr>
+    <tr 
+  data-capacity="800"
+  data-cabin="1350x1400"
+  data-shaft="2000x1600"
+  data-door="900"
+  data-pit="1300"
+  data-oh="3600"
+>
+  <td>800</td>
+  <td>1350 × 1400</td>
+  <td>2000 × 1600</td>
+  <td>900</td>
+  <td>1300</td>
+  <td>3600</td>
+</tr>
+
         <tr>
             <td>1000</td>
             <td>1600 × 1500</td>
@@ -1185,6 +1193,26 @@ function fillSpeedOptions() {
   speedSelect.disabled = speeds.length === 0;
 }
 
+function syncEN81ByCapacity(capacity) {
+  const rows = document.querySelectorAll('.standard-table tbody tr');
+  let matchedRow = null;
+
+  rows.forEach(row => {
+    row.classList.remove('en81-active');
+    if (row.dataset.capacity === capacity) {
+      matchedRow = row;
+      row.classList.add('en81-active');
+    }
+  });
+
+  return matchedRow ? {
+    cabin: matchedRow.dataset.cabin,
+    shaft: matchedRow.dataset.shaft,
+    door: matchedRow.dataset.door,
+    pit: matchedRow.dataset.pit,
+    oh: matchedRow.dataset.oh
+  } : null;
+}
 
 
 function findModel(capacity, speed) {
@@ -1757,11 +1785,12 @@ async function calculateQuote() {
 
     shaftsSummary: shaftsSummary || '',
 
-    cabinSize: Array.isArray(selectedCabin) ? selectedCabin.join(' | ') : (selectedCabin || ''),
-    shaftSize: Array.isArray(selectedShaft) ? selectedShaft.join(' | ') : (selectedShaft || ''),
-    doors:     Array.isArray(selectedDoor)  ? selectedDoor.join(' | ')  : (selectedDoor || ''),
-    pit:       Array.isArray(selectedPit)   ? selectedPit.join(' | ')   : (selectedPit || ''),
-    oh:        Array.isArray(selectedOH)    ? selectedOH.join(' | ')    : (selectedOH || ''),
+
+shaftSize: en81.shaft,
+cabinSize: en81.cabin,
+doors: en81.door,
+pit: en81.pit,
+oh: en81.oh,
 
     cabinDesign: document.getElementById("cabin_design")?.value || 'Standard',
     floorFinish: document.getElementById("floor_finish")?.value || 'Standard',
@@ -2358,6 +2387,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
