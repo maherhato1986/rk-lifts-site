@@ -1432,6 +1432,51 @@ const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
 const currentIndex = localStorage.getItem('rkl_current_quote_index');
 window.q = quotes[currentIndex ?? quotes.length - 1];
 
+   /* =================================================
+   EN81 Annex (B): تعبئة عدد المصاعد لكل صنف من سجل العروض
+   المطلوب: جمع عدد المصاعد حسب الحمولة من rkl_quotes
+================================================= */
+function fillEN81CountsFromQuotesStorage(){
+  const quotesAll = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
+
+  // اجمع حسب الحمولة (450/630/800/...)
+  const sumByCapacity = {}; // { "800": 12, "1000": 3, ... }
+
+  quotesAll.forEach(item => {
+    if(!item) return;
+
+    // استخراج الحمولة كرقم: من "800 kg" أو "800" أو رقم
+    const cap = Number(String(item.capacity || '').replace(/[^\d]/g,''));
+    if(!cap) return;
+
+    const cnt = Number(item.liftsCount || 0) || 0;
+    if(cnt <= 0) return;
+
+    const key = String(cap);
+    sumByCapacity[key] = (sumByCapacity[key] || 0) + cnt;
+  });
+
+  // صفّر كل الخلايا أولاً
+  document.querySelectorAll('#en81-table .en81-count').forEach(td => td.textContent = '0');
+  document.querySelectorAll('#en81-table tbody tr').forEach(tr => tr.classList.remove('en81-active','en81-match'));
+
+  // عبّي كل صف في جدول EN81 بناءً على data-capacity
+  document.querySelectorAll('#en81-table tbody tr[data-capacity]').forEach(tr => {
+    const capKey = String(tr.dataset.capacity || '');
+    const val = sumByCapacity[capKey] || 0;
+
+    const cell = tr.querySelector('.en81-count');
+    if(cell) cell.textContent = String(val);
+
+    // تمييز الصفوف اللي عليها عدد
+    if(val > 0) tr.classList.add('en81-active');
+  });
+}
+
+/* ✅ شغّلها فوراً (السكريبت موجود أسفل الصفحة والجدول موجود) */
+fillEN81CountsFromQuotesStorage();
+
+
 if (!q) {
   alert('لا يوجد عرض سعر لعرضه');
 }
@@ -1938,5 +1983,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
 
 
