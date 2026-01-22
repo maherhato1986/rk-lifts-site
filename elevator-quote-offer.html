@@ -397,6 +397,11 @@ th {
     height: auto !important;
   }
 }
+.en81-match {
+  background: #e8f5e9 !important;
+  border: 2px solid #2e7d32 !important;
+  font-weight: bold;
+}
 
 </style>
 
@@ -1073,77 +1078,123 @@ consultants, and regulatory authorities across the Kingdom.
   ملحق (ب): جدول المقاسات القياسية المعتمدة حسب EN81
 </div>
 
-<table>
+<table id="en81-table" class="standard-table">
   <thead>
     <tr>
       <th>الحمولة (kg)</th>
-      <th style="background:#eef2ff">عدد المصاعد</th>
+      <th>عدد المصاعد</th>
       <th>مقاس الكابينة (mm)</th>
-      <th>مقاس البئر المطلوب (mm)</th>
-      <th>عرض باب المصعد (mm)</th>
-      <th>عمق الحفرة (Pit)</th>
-      <th>ارتفاع أعلى البئر (OH)</th>
+      <th>مقاس البئر (mm)</th>
+      <th>عرض الباب (mm)</th>
+      <th>Pit (mm)</th>
+      <th>OH (mm)</th>
     </tr>
   </thead>
+  <tbody>
 
-  <!-- ✅ مهم: ID للـ tbody حتى يشتغل السكربت -->
-  <tbody id="en81-table">
-
-    <tr data-capacity="450">
+    <!-- 450 KG -->
+    <tr
+      data-capacity="450"
+      data-cabin="1000x1100"
+      data-shaft="1500x1700"
+      data-door="700"
+      data-pit="1200"
+      data-oh="3500"
+    >
       <td>450</td>
-      <td class="en81-count" style="font-weight:bold;text-align:center;background:#eef2ff">0</td>
-      <td>1100 × 1000</td>
-      <td>1700 × 1500</td>
+      <td class="en81-count">0</td>
+      <td>1000 × 1100</td>
+      <td>1500 × 1700</td>
       <td>700</td>
       <td>1200</td>
       <td>3500</td>
     </tr>
 
-    <tr data-capacity="630">
+    <!-- 630 KG -->
+    <tr
+      data-capacity="630"
+      data-cabin="1100x1400"
+      data-shaft="1600x1800"
+      data-door="800"
+      data-pit="1200"
+      data-oh="3500"
+    >
       <td>630</td>
-      <td class="en81-count" style="font-weight:bold;text-align:center;background:#eef2ff">0</td>
-      <td>1400 × 1100</td>
-      <td>1800 × 1600</td>
+      <td class="en81-count">0</td>
+      <td>1100 × 1400</td>
+      <td>1600 × 1800</td>
       <td>800</td>
       <td>1200</td>
       <td>3500</td>
     </tr>
 
-    <tr data-capacity="800">
+    <!-- 800 KG -->
+    <tr
+      data-capacity="800"
+      data-cabin="1350x1400"
+      data-shaft="1600x2000"
+      data-door="900"
+      data-pit="1300"
+      data-oh="3600"
+    >
       <td>800</td>
-      <td class="en81-count" style="font-weight:bold;text-align:center;background:#eef2ff">0</td>
-      <td>1400 × 1350</td>
-      <td>2000 × 1600</td>
+      <td class="en81-count">0</td>
+      <td>1350 × 1400</td>
+      <td>1600 × 2000</td>
       <td>900</td>
       <td>1300</td>
       <td>3600</td>
     </tr>
 
-    <tr data-capacity="1000">
+    <!-- 1000 KG -->
+    <tr
+      data-capacity="1000"
+      data-cabin="1600x1500"
+      data-shaft="1800x2200"
+      data-door="900"
+      data-pit="1400"
+      data-oh="3700"
+    >
       <td>1000</td>
-      <td class="en81-count" style="font-weight:bold;text-align:center;background:#eef2ff">0</td>
-      <td>1500 × 1600</td>
-      <td>2200 × 1800</td>
+      <td class="en81-count">0</td>
+      <td>1600 × 1500</td>
+      <td>1800 × 2200</td>
       <td>900</td>
       <td>1400</td>
       <td>3700</td>
     </tr>
 
-    <tr data-capacity="1275">
+    <!-- 1275 KG -->
+    <tr
+      data-capacity="1275"
+      data-cabin="1800x1600"
+      data-shaft="1900x2400"
+      data-door="1100"
+      data-pit="1400"
+      data-oh="3800"
+    >
       <td>1275</td>
-      <td class="en81-count" style="font-weight:bold;text-align:center;background:#eef2ff">0</td>
-      <td>1600 × 1800</td>
-      <td>2400 × 1900</td>
+      <td class="en81-count">0</td>
+      <td>1800 × 1600</td>
+      <td>1900 × 2400</td>
       <td>1100</td>
       <td>1400</td>
       <td>3800</td>
     </tr>
 
-    <tr data-capacity="1600">
+    <!-- 1600 KG -->
+    <tr
+      data-capacity="1600"
+      data-cabin="1800x2000"
+      data-shaft="2400x2600"
+      data-door="1100"
+      data-pit="1500"
+      data-oh="4000"
+    >
       <td>1600</td>
-      <td class="en81-count" style="font-weight:bold;text-align:center;background:#eef2ff">0</td>
-      <td>2000 × 1800</td>
-      <td>2600 × 2400</td>
+      <td class="en81-count">0</td>
+      <td>1800 × 2000</td>
+      <td>2400 × 2600</td>
       <td>1100</td>
       <td>1500</td>
       <td>4000</td>
@@ -1151,6 +1202,7 @@ consultants, and regulatory authorities across the Kingdom.
 
   </tbody>
 </table>
+
 
 <p style="font-size:11px; color:#6b7280; margin-top:8px">
   جميع القيم الواردة في الجدول أعلاه هي قيم إرشادية وفق معيار EN81،
@@ -1445,27 +1497,54 @@ bind('.bind_machine_type', q.machineType || 'MRL – Machine Room Less');
 function highlightEN81Row() {
   if (!window.q) return;
 
-  // استخراج رقم الحمولة من نص مثل: "kg 630" أو "630 kg"
-  const capacity = String(q.capacity || '').replace(/[^\d]/g, '');
-  const lifts    = Number(q.liftsCount || 1);
+  // دالة تنظيف القيم
+  const norm = v =>
+    String(v || '')
+      .replace(/\s+/g, '')
+      .replace('×', 'x')
+      .toLowerCase();
+
+  const selected = {
+    capacity: norm(q.capacity),
+    cabin: norm(q.cabinSize),
+    shaft: norm(q.shaftSize),
+    door: norm(q.doorSize),
+    pit: norm(q.pit),
+    oh: norm(q.oh)
+  };
 
   document.querySelectorAll('#en81-table tr').forEach(row => {
-    const rowCap = row.dataset.capacity;
-    const countCell = row.querySelector('.en81-count');
 
-    // تنظيف
-    row.classList.remove('en81-active');
-    if (countCell) countCell.textContent = '0';
+    const rowData = {
+      capacity: norm(row.dataset.capacity),
+      cabin: norm(row.dataset.cabin),
+      shaft: norm(row.dataset.shaft),
+      door: norm(row.dataset.door),
+      pit: norm(row.dataset.pit),
+      oh: norm(row.dataset.oh)
+    };
 
-    // تطابق الحمولة
-    if (rowCap === capacity) {
-      row.classList.add('en81-active');
-      if (countCell) countCell.textContent = lifts;
+    const isMatch =
+      rowData.capacity === selected.capacity &&
+      rowData.cabin    === selected.cabin &&
+      rowData.shaft    === selected.shaft &&
+      rowData.door     === selected.door &&
+      rowData.pit      === selected.pit &&
+      rowData.oh       === selected.oh;
+
+    if (isMatch) {
+      row.classList.add('en81-match');
+
+      const countCell = row.querySelector('.en81-count');
+      if (countCell) {
+        countCell.textContent = q.liftsCount || 1;
+      }
     }
   });
 }
 
-window.addEventListener('load', highlightEN81Row);
+// تشغيل التظليل بعد تحميل الصفحة
+document.addEventListener('DOMContentLoaded', highlightEN81Row);
 
 
 /* =================================================
@@ -1858,3 +1937,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
