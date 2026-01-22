@@ -449,75 +449,122 @@
                     <div class="section-title">📌 جدول المقاسات القياسية (EN81)</div>
 
 <table class="standard-table">
-    <thead>
-        <tr>
-            <th>الحمولة (kg)</th>
-            <th>مقاس الكابينة (mm)</th>
-            <th>مقاس البئر المطلوب (mm)</th>
-            <th>باب المصعد (mm)</th>
-            <th>Pit</th>
-            <th>OH</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>450</td>
-            <td>1100 × 1000</td>
-            <td>1700 × 1500</td>
-            <td>700</td>
-            <td>1200</td>
-            <td>3500</td>
-        </tr>
-        <tr>
-            <td>630</td>
-            <td>1100 × 1400</td>
-            <td>1800 × 1600</td>
-            <td>7000or800</td>
-            <td>1200</td>
-            <td>3500</td>
-        </tr>
-    <tr 
-  data-capacity="800"
-  data-cabin="1350x1400"
-  data-shaft="2000x1600"
-  data-door="900"
-  data-pit="1300"
-  data-oh="3600"
->
-  <td>800</td>
-  <td>1350 × 1400</td>
-  <td>2000 × 1600</td>
-  <td>900</td>
-  <td>1300</td>
-  <td>3600</td>
-</tr>
+  <thead>
+    <tr>
+      <th>الحمولة (kg)</th>
+      <th>مقاس الكابينة (mm)</th>
+      <th>مقاس البئر المطلوب (mm)</th>
+      <th>باب المصعد (mm)</th>
+      <th>Pit</th>
+      <th>OH</th>
+    </tr>
+  </thead>
 
-        <tr>
-            <td>1000</td>
-            <td>1600 × 1500</td>
-            <td>2200 × 1800</td>
-            <td>900</td>
-            <td>1400</td>
-            <td>3700</td>
-        </tr>
-        <tr>
-            <td>1275</td>
-            <td>1800 × 1600</td>
-            <td>2400 × 1900</td>
-            <td>1100</td>
-            <td>1400</td>
-            <td>3800</td>
-        </tr>
-        <tr>
-            <td>1600</td>
-            <td>1800 × 2000</td>
-            <td>2600 × 2400</td>
-            <td>1100</td>
-            <td>1500</td>
-            <td>4000</td>
-        </tr>
-    </tbody>
+  <tbody>
+    <!-- 450 kg -->
+    <tr
+      data-capacity="450"
+      data-cabin="1100x1000"
+      data-shaft="1700x1500"
+      data-door="700"
+      data-pit="1200"
+      data-oh="3500"
+    >
+      <td>450</td>
+      <td>1100 × 1000</td>
+      <td>1700 × 1500</td>
+      <td>700</td>
+      <td>1200</td>
+      <td>3500</td>
+    </tr>
+
+    <!-- 630 kg -->
+    <tr
+      data-capacity="630"
+      data-cabin="1100x1400"
+      data-shaft="1800x1600"
+      data-door="800"
+      data-pit="1200"
+      data-oh="3500"
+    >
+      <td>630</td>
+      <td>1100 × 1400</td>
+      <td>1800 × 1600</td>
+      <td>800</td>
+      <td>1200</td>
+      <td>3500</td>
+    </tr>
+
+    <!-- 800 kg -->
+    <tr
+      data-capacity="800"
+      data-cabin="1350x1400"
+      data-shaft="2000x1600"
+      data-door="900"
+      data-pit="1300"
+      data-oh="3600"
+    >
+      <td>800</td>
+      <td>1350 × 1400</td>
+      <td>2000 × 1600</td>
+      <td>900</td>
+      <td>1300</td>
+      <td>3600</td>
+    </tr>
+
+    <!-- 1000 kg -->
+    <tr
+      data-capacity="1000"
+      data-cabin="1600x1500"
+      data-shaft="2200x1800"
+      data-door="900"
+      data-pit="1400"
+      data-oh="3700"
+    >
+      <td>1000</td>
+      <td>1600 × 1500</td>
+      <td>2200 × 1800</td>
+      <td>900</td>
+      <td>1400</td>
+      <td>3700</td>
+    </tr>
+
+    <!-- 1275 kg -->
+    <tr
+      data-capacity="1275"
+      data-cabin="1800x1600"
+      data-shaft="2400x1900"
+      data-door="1100"
+      data-pit="1400"
+      data-oh="3800"
+    >
+      <td>1275</td>
+      <td>1800 × 1600</td>
+      <td>2400 × 1900</td>
+      <td>1100</td>
+      <td>1400</td>
+      <td>3800</td>
+    </tr>
+
+    <!-- 1600 kg -->
+    <tr
+      data-capacity="1600"
+      data-cabin="2000x1800"
+      data-shaft="2600x2400"
+      data-door="1100"
+      data-pit="1500"
+      data-oh="4000"
+    >
+      <td>1600</td>
+      <td>1800 × 2000</td>
+      <td>2600 × 2400</td>
+      <td>1100</td>
+      <td>1500</td>
+      <td>4000</td>
+    </tr>
+  </tbody>
 </table>
+
 
 <style>
 .standard-table {
@@ -1791,11 +1838,12 @@ if (!en81) {
 
     shaftsSummary: shaftsSummary || '',
 
-shaftSize: q?.shaftSize || '',
-cabinSize: q?.cabinSize || '',
-doors: q?.doors || '',
-pit: q?.pit || '',
-oh: q?.oh || '',
+shaftSize: en81?.shaft || '',
+cabinSize: en81?.cabin || '',
+doors: en81?.door || '',
+pit: en81?.pit || '',
+oh: en81?.oh || '',
+
 
 
     cabinDesign: document.getElementById("cabin_design")?.value || 'Standard',
@@ -2393,6 +2441,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
