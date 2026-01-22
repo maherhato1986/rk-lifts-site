@@ -1447,60 +1447,7 @@ if (!window.q) {
   alert('لا يوجد عرض سعر لعرضه');
 } else {
 
-  function fillEN81CountsFromCurrentQuoteSelections(){
-    // 0) صفّر كل الخلايا وأزل التمييز
-    document.querySelectorAll('#en81-table .en81-count')
-      .forEach(td => td.textContent = '0');
 
-    document.querySelectorAll('#en81-table tbody tr')
-      .forEach(tr => tr.classList.remove('en81-active','en81-match'));
-
-    // 1) حاول قراءة مصفوفة اختيارات المصاعد من نفس العرض
-    // (جرّبت أكثر اسم محتمل عندك)
-    const picks =
-      (Array.isArray(q.elevators) && q.elevators) ||
-      (Array.isArray(q.shaftSelections) && q.shaftSelections) ||
-      (Array.isArray(q.shafts) && q.shafts) ||
-      null;
-
-    const sumByCapacity = {}; // { "630": 2, "1000": 3, ... }
-
-    if (picks && picks.length) {
-      // كل عنصر يمثل مصعد (No.ELE)
-      picks.forEach(p => {
-        // استخرج الحمولة من p.capacity أو من q.capacity إذا غير موجودة
-        const cap = Number(String((p && p.capacity) || q.capacity || '').replace(/[^\d]/g,'')) || 0;
-        if(!cap) return;
-
-        const key = String(cap);
-        sumByCapacity[key] = (sumByCapacity[key] || 0) + 1;
-      });
-    } else {
-      // 2) احتياطي: إذا ما عندك مصفوفة اختيارات محفوظة
-      const cap = Number(String(q.capacity || '').replace(/[^\d]/g,'')) || 0;
-      const cnt = Number(q.liftsCount || 0) || 0;
-      if(cap && cnt) sumByCapacity[String(cap)] = cnt;
-    }
-
-    // 3) اكتب النتائج في جدول EN81 حسب data-capacity
-    document.querySelectorAll('#en81-table tbody tr[data-capacity]').forEach(tr => {
-      const capKey = String(tr.dataset.capacity || '').trim();
-      const val = sumByCapacity[capKey] || 0;
-
-      const cell = tr.querySelector('.en81-count');
-      if(cell) cell.textContent = String(val);
-
-      if(val > 0) tr.classList.add('en81-active');
-    });
-  }
-
-  // ✅ شغّلها بدل الدالة القديمة
-  fillEN81CountsFromCurrentQuoteSelections();
-
-  // ❌ ممنوع تشغيل هذا لأنه يخرب الأرقام (التجميع من كل السجل)
-  // fillEN81CountsFromQuotesStorage();
-
-}
 
 
 
@@ -1697,6 +1644,73 @@ recalcFinancialSummary();
 /* ✅ إعادة الحساب عند أي تعديل */
 document.getElementById('adjust_type')?.addEventListener('change', recalcFinancialSummary);
 document.getElementById('adjust_value')?.addEventListener('input', recalcFinancialSummary);
+
+   /* ===============================
+   EN81 – حساب عدد المصاعد الصحيح
+   من اختيارات ⚙️ جدول المقاسات
+=============================== */
+function fillEN81CountsFromCurrentQuoteSelections() {
+
+  // 1) تصفير الجدول
+  document.querySelectorAll('#en81-table .en81-count')
+    .forEach(td => td.textContent = '0');
+
+  document.querySelectorAll('#en81-table tbody tr')
+    .forEach(tr => tr.classList.remove('en81-active', 'en81-match'));
+
+  if (!window.q) return;
+
+  // 2) محاولة قراءة مصفوفة المصاعد الفعلية
+  const picks =
+    (Array.isArray(q.elevators) && q.elevators) ||
+    (Array.isArray(q.shaftSelections) && q.shaftSelections) ||
+    (Array.isArray(q.shafts) && q.shafts) ||
+    null;
+
+  const sumByCapacity = {};
+
+  if (picks && picks.length) {
+    // ✅ كل صف = مصعد حقيقي
+    picks.forEach(p => {
+      const cap = Number(
+        String(p.capacity || q.capacity || '')
+          .replace(/[^\d]/g, '')
+      ) || 0;
+
+      if (!cap) return;
+      sumByCapacity[cap] = (sumByCapacity[cap] || 0) + 1;
+    });
+  } else {
+    // 🟡 احتياطي (في حال لم تُحفظ مصفوفة)
+    const cap = Number(
+      String(q.capacity || '').replace(/[^\d]/g, '')
+    ) || 0;
+
+    const cnt = Number(q.liftsCount || 0) || 0;
+
+    if (cap && cnt) {
+      sumByCapacity[cap] = cnt;
+    }
+  }
+
+  // 3) تعبئة جدول EN81
+  document
+    .querySelectorAll('#en81-table tbody tr[data-capacity]')
+    .forEach(tr => {
+
+      const capKey = String(tr.dataset.capacity);
+      const val = sumByCapacity[capKey] || 0;
+
+      const cell = tr.querySelector('.en81-count');
+      if (cell) cell.textContent = String(val);
+
+      if (val > 0) tr.classList.add('en81-active');
+    });
+}
+
+/* 🔥 شغّلها مباشرة بعد تحميل العرض */
+fillEN81CountsFromCurrentQuoteSelections();
+
 </script>
 
 
@@ -2004,6 +2018,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
 
 
 
