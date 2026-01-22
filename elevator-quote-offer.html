@@ -1432,10 +1432,13 @@ const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
 const currentIndex = localStorage.getItem('rkl_current_quote_index');
 window.q = quotes[currentIndex ?? quotes.length - 1];
 
-
 if (!q) {
   alert('لا يوجد عرض سعر لعرضه');
 }
+
+/* 🔴 شغّل الربط مباشرة */
+highlightEN81Row();
+
 /* =================================================
    (1) بيانات العرض العامة
 ================================================= */
@@ -1543,8 +1546,6 @@ function highlightEN81Row() {
   });
 }
 
-// تشغيل التظليل بعد تحميل الصفحة
-document.addEventListener('DOMContentLoaded', highlightEN81Row);
 
 
 /* =================================================
@@ -1937,4 +1938,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
 
