@@ -1829,91 +1829,112 @@ if (!en81) {
 }
 
 
-  lastQuoteSnapshot = {
-    quoteNumber,
+lastQuoteSnapshot = {
+  quoteNumber,
 
-    timestamp: new Date().toISOString(),
-    customerName: finalCustomerName || '',
-    projectName: projectName || '',
-    projectLocation: projectLocation || '',
+  /* =========================
+     بيانات عامة
+  ========================= */
+  timestamp: new Date().toISOString(),
+  customerName: finalCustomerName || '',
+  projectName: projectName || '',
+  projectLocation: projectLocation || '',
 
-    brandKey,
-    brandLabel,
+  brandKey,
+  brandLabel,
 
-    capacity: capacity ? (capacity + ' kg') : '',
-    speed: speed ? (speed + ' m/s') : '',
-    floors: floors || '',
-    floorHeight: document.getElementById('floorHeight')?.value || '',
-    travelHeight: document.getElementById('travelHeight')?.value || '',
-    liftsCount: liftsCount || 1,
+  capacity: capacity ? (capacity + ' kg') : '',
+  speed: speed ? (speed + ' m/s') : '',
+  floors: floors || '',
+  floorHeight: document.getElementById('floorHeight')?.value || '',
+  travelHeight: document.getElementById('travelHeight')?.value || '',
+  liftsCount: liftsCount || 1,
 
-    shaftsSummary: shaftsSummary || '',
+  shaftsSummary: shaftsSummary || '',
 
-shaftSize: en81?.shaft || '',
-cabinSize: en81?.cabin || '',
-doors: en81?.door || '',
-pit: en81?.pit || '',
-oh: en81?.oh || '',
+  /* =========================
+     ✅ مصفوفة المصاعد المختارة (الأهم)
+     مأخوذة من جدول ⚙️ اختيار مقاسات المصاعد
+  ========================= */
+  elevators: Array.from(
+    document.querySelectorAll('#shaft-table tbody tr')
+  ).map((tr, index) => ({
+    no: index + 1,
 
+    shaft: tr.querySelector('[data-field="shaft"]')?.value || '',
+    cabin: tr.querySelector('[data-field="cabin"]')?.value || '',
+    door:  tr.querySelector('[data-field="door"]')?.value || '',
+    pit:   tr.querySelector('[data-field="pit"]')?.value || '',
+    oh:    tr.querySelector('[data-field="oh"]')?.value || '',
 
+    floorHeight: tr.querySelector('[data-field="fh"]')?.value || '',
+    travelHeight: tr.querySelector('[data-field="th"]')?.value || ''
+  })),
 
-    cabinDesign: document.getElementById("cabin_design")?.value || 'Standard',
-    floorFinish: document.getElementById("floor_finish")?.value || 'Standard',
+  /* =========================
+     التشطيبات والمواصفات
+  ========================= */
+  cabinDesign: document.getElementById("cabin_design")?.value || 'Standard',
+  floorFinish: document.getElementById("floor_finish")?.value || 'Standard',
 
-    machineType: model?.machineType || 'MRL – Traction',
-    stops: floors || '',
+  machineType: model?.machineType || 'MRL – Traction',
+  stops: floors || '',
 
-    // ✅ Totals
-    totalBeforeVat: Number(result.totalBeforeVat || 0),
-    vatAmount: Number(result.vatAmount || 0),
-    totalWithVat: Number(result.totalWithVat || 0),
+  /* =========================
+     الحسابات المالية
+  ========================= */
+  totalBeforeVat: Number(result.totalBeforeVat || 0),
+  vatAmount: Number(result.vatAmount || 0),
+  totalWithVat: Number(result.totalWithVat || 0),
 
-    // ✅ Unit prices
-    // هذا يستخدمه 7-1
-    pricePerUnitBeforeVat: unitPriceBeforeVat,
+  pricePerUnitBeforeVat: unitPriceBeforeVat,
+  pricePerUnitWithVat: unitPriceWithVat,
 
-    // هذا للعرض في جدول السجل "سعر المصعد الواحد (شامل)"
-    pricePerUnitWithVat: unitPriceWithVat,
+  // للتوافق مع الأكواد القديمة
+  pricePerUnit: unitPriceWithVat,
 
-    // (للتوافق إذا كان عندك كود قديم يقرأ pricePerUnit)
-    // نجعله "شامل" لأن عنوان جدول السجل عندك (شامل)
-    pricePerUnit: unitPriceWithVat,
+  totalBeforeVatPerLift: Number(result.totalBeforeVatPerLift || 0),
+  vatAmountPerLift: Number(result.vatAmountPerLift || 0),
+  totalWithVatPerLift: Number(result.totalWithVatPerLift || 0),
 
-    totalBeforeVatPerLift: Number(result.totalBeforeVatPerLift || 0),
-    vatAmountPerLift: Number(result.vatAmountPerLift || 0),
-    totalWithVatPerLift: Number(result.totalWithVatPerLift || 0),
+  currency: currency || 'SAR',
+  vatRate: vatRate || 15,
+  includeVat: includeVat === true,
 
-    currency: currency || 'SAR',
-    vatRate: vatRate || 15,
-    includeVat: includeVat === true,
+  /* =========================
+     الدفعات
+  ========================= */
+  payments: {
+    advance50:     Number(result.totalWithVat || 0) ? Number(result.totalWithVat) * 0.50 : 0,
+    mechanical25:  Number(result.totalWithVat || 0) ? Number(result.totalWithVat) * 0.25 : 0,
+    electrical20:  Number(result.totalWithVat || 0) ? Number(result.totalWithVat) * 0.20 : 0,
+    handover5:     Number(result.totalWithVat || 0) ? Number(result.totalWithVat) * 0.05 : 0
+  },
 
-    payments: {
-      advance50: Number(result.totalWithVat || 0) ? (Number(result.totalWithVat) * 0.50) : 0,
-      mechanical25: Number(result.totalWithVat || 0) ? (Number(result.totalWithVat) * 0.25) : 0,
-      electrical20: Number(result.totalWithVat || 0) ? (Number(result.totalWithVat) * 0.20) : 0,
-      handover5: Number(result.totalWithVat || 0) ? (Number(result.totalWithVat) * 0.05) : 0
-    },
+  /* =========================
+     بيانات العميل
+  ========================= */
+  preferredContact: selectedCustomer?.preferred_contact || '',
+  customerDetails: selectedCustomer ? {
+    customer_type: selectedCustomer.customer_type || '',
+    contact_person: selectedCustomer.contact_person || '',
+    id_number: selectedCustomer.id_number || '',
+    cr_number: selectedCustomer.cr_number || '',
+    tax_number: selectedCustomer.tax_number || '',
+    city: selectedCustomer.city || '',
+    district: selectedCustomer.district || '',
+    street: selectedCustomer.street || '',
+    building_no: selectedCustomer.building_no || '',
+    postal_code: selectedCustomer.postal_code || '',
+    full_address: selectedCustomer.full_address || '',
+    mobile: selectedCustomer.mobile || '',
+    phone: selectedCustomer.phone || '',
+    email: selectedCustomer.email || '',
+    preferred_contact: selectedCustomer.preferred_contact || '',
+    notes: selectedCustomer.notes || ''
+  } : {}
+};
 
-    preferredContact: selectedCustomer?.preferred_contact || '',
-    customerDetails: selectedCustomer ? {
-      customer_type: selectedCustomer.customer_type || '',
-      contact_person: selectedCustomer.contact_person || '',
-      id_number: selectedCustomer.id_number || '',
-      cr_number: selectedCustomer.cr_number || '',
-      tax_number: selectedCustomer.tax_number || '',
-      city: selectedCustomer.city || '',
-      district: selectedCustomer.district || '',
-      street: selectedCustomer.street || '',
-      building_no: selectedCustomer.building_no || '',
-      postal_code: selectedCustomer.postal_code || '',
-      full_address: selectedCustomer.full_address || '',
-      mobile: selectedCustomer.mobile || '',
-      phone: selectedCustomer.phone || '',
-      email: selectedCustomer.email || '',
-      preferred_contact: selectedCustomer.preferred_contact || '',
-      notes: selectedCustomer.notes || '',
-    } : {}
-  };
 }
 
 
@@ -2452,6 +2473,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
