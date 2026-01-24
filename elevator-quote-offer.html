@@ -2014,54 +2014,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 }
 </style>
-<script>
-function highlightEN81Table() {
-
-  const q = window.lastQuoteSnapshot;
-  if (!q || !Array.isArray(q.elevators)) return;
-
-  // تصفير
-  document.querySelectorAll('.en81-count').forEach(td => td.textContent = '0');
-  document.querySelectorAll('#en81-table tbody tr')
-    .forEach(tr => tr.classList.remove('en81-match'));
-
-  const map = {};
-
-  q.elevators.forEach(e => {
-    const key = [
-      e.shaft,
-      e.cabin,
-      e.door,
-      e.pit,
-      e.oh
-    ].join('|');
-
-    map[key] = (map[key] || 0) + 1;
-  });
-
-  document.querySelectorAll('#en81-table tbody tr').forEach(tr => {
-    const rowKey = [
-      tr.dataset.shaft,
-      tr.dataset.cabin,
-      tr.dataset.door,
-      tr.dataset.pit,
-      tr.dataset.oh
-    ].join('|');
-
-    if (map[rowKey]) {
-      tr.classList.add('en81-match');
-      tr.querySelector('.en81-count').textContent = map[rowKey];
-    }
-  });
-}
-
-document.addEventListener('DOMContentLoaded', highlightEN81Table);
-</script>
 
 
 </body>
 </html>
-
 
 
 
