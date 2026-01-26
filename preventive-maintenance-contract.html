@@ -1298,7 +1298,7 @@ function calculateTotal(){
 
   if (floors > 2) pricePerLift *= 1.10;
   if (building === 'government') pricePerLift *= 1.50;
-  if (['otis','kone','mitsubishi','schindler'].includes(brand)) pricePerLift += 2000;
+  if (['otis','kone','wittur','mitsubishi','schindler'].includes(brand)) pricePerLift += 2000;
 
   pricePerLift *= (1 + zone.increase);
 
@@ -3284,7 +3284,7 @@ const brand = (brandSelect === 'Other' || brandSelect === 'Local')
 
   if(floors>2) price*=1.10;
   if(building==='government') price*=1.50;
-  if(['otis','kone','mitsubishi','schindler'].some(b=>brand.includes(b))){
+  if(['otis','kone','wittur','mitsubishi','schindler'].some(b=>brand.includes(b))){
     price+=2000;
   }
 
