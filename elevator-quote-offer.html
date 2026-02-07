@@ -1300,7 +1300,8 @@ consultants, and regulatory authorities across the Kingdom.
   <tbody>
     <!-- بند رئيسي تلقائي من عرض السعر -->
     <tr>
-      <td contenteditable="true" class="item-desc"></td>
+      <td class="item-desc auto-main-item"></td>
+
       <td><input type="number" class="qty" value="1" min="1"></td>
       <td><input type="number" class="unit" value="0" min="0"></td>
       <td class="row-total">0.00</td>
@@ -1431,6 +1432,42 @@ const bind = (selector, value) => {
 const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
 const currentIndex = localStorage.getItem('rkl_current_quote_index');
 window.q = quotes[currentIndex ?? quotes.length - 1];
+
+   /* ==========================================
+   توليد وصف البند الرئيسي تلقائياً
+========================================== */
+function generateMainItemDescription(q){
+
+  const lifts     = q.liftsCount || '—';
+  const brand     = q.brandLabel || '—';
+  const machine   = q.machineType || '';
+  const capacity  = q.capacity || '—';
+  const speed     = q.speed || '—';
+  const stops     = q.stops || q.floors || '—';
+  const project   = q.projectName || '—';
+  const location  = q.projectLocation || '—';
+
+  return `
+توريد وتركيب وتشغيل عدد ${lifts} مصعد كهربائي
+من نوع ${brand} ${machine ? '– ' + machine : ''}
+بحمولة ${capacity} بسرعة ${speed}
+بعدد ${stops} وقفات
+لصالح مشروع ${project}
+في موقع ${location}
+وفق المواصفات الفنية المعتمدة في هذا العرض.
+  `.replace(/\n\s+/g,' ').trim();
+}
+
+/* تعبئة البند الرئيسي */
+document.addEventListener("DOMContentLoaded", function(){
+  if(!q) return;
+
+  const descCell = document.querySelector('.auto-main-item');
+  if(descCell){
+    descCell.textContent = generateMainItemDescription(q);
+  }
+});
+
 
    /* =================================================
    EN81 Annex (B): تعبئة عدد المصاعد لكل صنف من سجل العروض
@@ -1983,6 +2020,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
 
 
 
