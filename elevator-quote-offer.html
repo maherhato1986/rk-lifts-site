@@ -1486,45 +1486,91 @@ document.addEventListener("DOMContentLoaded", function(){
    EN81 Annex (B): تعبئة عدد المصاعد لكل صنف من سجل العروض
    المطلوب: جمع عدد المصاعد حسب الحمولة من rkl_quotes
 ================================================= */
-function fillEN81CountsFromQuotesStorage(){
-  const quotesAll = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
+function normDim(v){
+  return String(v || '')
+    .replace(/\s+/g,'')
+    .replace('×','x')
+    .toLowerCase();
+}
 
-  // اجمع حسب الحمولة (450/630/800/...)
-  const sumByCapacity = {}; // { "800": 12, "1000": 3, ... }
+function fillEN81CountsFromCurrentQuote(){
+  if(!window.q) return;
 
-  quotesAll.forEach(item => {
-    if(!item) return;
-
-    // استخراج الحمولة كرقم: من "800 kg" أو "800" أو رقم
-    const cap = Number(String(item.capacity || '').replace(/[^\d]/g,''));
-    if(!cap) return;
-
-    const cnt = Number(item.liftsCount || 0) || 0;
-    if(cnt <= 0) return;
-
-    const key = String(cap);
-    sumByCapacity[key] = (sumByCapacity[key] || 0) + cnt;
-  });
-
-  // صفّر كل الخلايا أولاً
+  // صفّر
   document.querySelectorAll('#en81-table .en81-count').forEach(td => td.textContent = '0');
   document.querySelectorAll('#en81-table tbody tr').forEach(tr => tr.classList.remove('en81-active','en81-match'));
 
-  // عبّي كل صف في جدول EN81 بناءً على data-capacity
+  const dist = q.en81Distribution || null;
+
+  // إذا ما في distribution (عروض قديمة)، fallback على liftsCount على صف واحد مطابق
   document.querySelectorAll('#en81-table tbody tr[data-capacity]').forEach(tr => {
-    const capKey = String(tr.dataset.capacity || '');
-    const val = sumByCapacity[capKey] || 0;
+
+    const rowKey = [
+      String(tr.dataset.capacity || ''),
+      normDim(tr.dataset.cabin),
+      normDim(tr.dataset.shaft),
+      normDim(tr.dataset.door),
+      normDim(tr.dataset.pit),
+      normDim(tr.dataset.oh)
+    ].join('|');
+
+    let val = 0;
+
+    if(dist){
+      // مفاتيحنا مخزنة بدون تحويل × إلى x داخل التخزين؟
+      // عملنا التخزين cabin/shaft بدون × (حسب النص)، لذلك نطبع نفس normDim
+      // نعيد بناء مفتاح مثل التخزين
+      const cap = String(tr.dataset.capacity || '');
+      const key2 = [
+        cap,
+        String(tr.querySelectorAll('td')[2]?.textContent || '').replace(/\s+/g,'').replace('×','x').toLowerCase(),
+        String(tr.querySelectorAll('td')[3]?.textContent || '').replace(/\s+/g,'').replace('×','x').toLowerCase(),
+        String(tr.dataset.door || '').replace(/\s+/g,''),
+        String(tr.dataset.pit || '').replace(/\s+/g,''),
+        String(tr.dataset.oh || '').replace(/\s+/g,'')
+      ].join('|');
+
+      // حاول بالمفتاحين (احتياط)
+      val = Number(dist[rowKey] || dist[key2] || 0);
+    }
+
+    // fallback (عرض قديم): لو يطابق صف واحد حسب q.cabinSize/q.shaftSize...
+    if(!dist && window.q){
+      const sel = {
+        capacity: normDim(q.capacity),
+        cabin: normDim(q.cabinSize),
+        shaft: normDim(q.shaftSize),
+        door: normDim(q.doorSize || q.doors),
+        pit: normDim(q.pit),
+        oh: normDim(q.oh)
+      };
+      const rowData = {
+        capacity: normDim(tr.dataset.capacity),
+        cabin: normDim(tr.dataset.cabin),
+        shaft: normDim(tr.dataset.shaft),
+        door: normDim(tr.dataset.door),
+        pit: normDim(tr.dataset.pit),
+        oh: normDim(tr.dataset.oh)
+      };
+      const isMatch =
+        rowData.capacity === sel.capacity &&
+        rowData.cabin === sel.cabin &&
+        rowData.shaft === sel.shaft &&
+        rowData.door === sel.door &&
+        rowData.pit === sel.pit &&
+        rowData.oh === sel.oh;
+
+      if(isMatch) val = Number(q.liftsCount || 1);
+    }
 
     const cell = tr.querySelector('.en81-count');
     if(cell) cell.textContent = String(val);
 
-    // تمييز الصفوف اللي عليها عدد
     if(val > 0) tr.classList.add('en81-active');
   });
 }
 
-/* ✅ شغّلها فوراً (السكريبت موجود أسفل الصفحة والجدول موجود) */
-fillEN81CountsFromQuotesStorage();
+
 
 
 if (!q) {
@@ -1606,7 +1652,8 @@ function highlightEN81Row() {
     capacity: norm(q.capacity),
     cabin: norm(q.cabinSize),
     shaft: norm(q.shaftSize),
-    door: norm(q.doorSize),
+    door: norm(q.doorSize || q.doors || q.door),
+
     pit: norm(q.pit),
     oh: norm(q.oh)
   };
@@ -2033,6 +2080,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
 
 
 
