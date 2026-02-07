@@ -464,6 +464,12 @@ th {
   border: 2px solid #2e7d32 !important;
   font-weight: bold;
 }
+   #annexC-table tr.annexC-active {
+  background: #e8f5e9 !important;
+  border: 2px solid #2e7d32 !important;
+  font-weight: bold;
+}
+
 
 </style>
 
@@ -1289,27 +1295,55 @@ consultants, and regulatory authorities across the Kingdom.
   ANNEX (C) | Cabin Interior Design
   يوضع تحت ملحق (ب) مباشرة
 ========================= -->
+
 <div class="annexC-wrap" id="annexC">
+
   <div class="annexC-title">ملحق (ج): تصميم الكابينة الداخلية</div>
-  <div class="annexC-subtitle">Cabin Interior Finishing & Flooring Options</div>
-
-  <div style="display:flex; gap:12px; align-items:flex-start; margin-bottom:10px;">
-    <div style="flex:1;">
-      <div style="font-weight:800; font-size:12px; margin:0 0 6px 0;">1) نوع التشطيب الداخلي للكبينه</div>
-      <div class="finish-grid" id="cabinFinishGrid"></div>
-    </div>
-
-    <div style="flex:1;">
-      <div style="font-weight:800; font-size:12px; margin:0 0 6px 0;">2) تشطيب الأرضية</div>
-      <div class="finish-grid" id="floorFinishGrid"></div>
-    </div>
+  <div class="annexC-subtitle">
+    Cabin Interior Finishing & Flooring Specification
   </div>
 
-  <div class="finish-note">
-    يتم تمييز (تضليل) الخيار المختار باللون الأخضر وفقًا لبيانات عرض السعر القادمة من واجهة
-    <strong>elevator-quote.html</strong>.
-  </div>
+  <table class="standard-table" id="annexC-table">
+    <thead>
+      <tr>
+        <th style="width:50%">نوع التشطيب الداخلي للكابينة</th>
+        <th style="width:50%">تشطيب الأرضية</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr data-cabin="SS304-Hairline" data-floor="Vinyl">
+        <td>ستانلس ستيل 304 – Hairline</td>
+        <td>فينيل</td>
+      </tr>
+
+      <tr data-cabin="SS304-Mirror" data-floor="Granite">
+        <td>ستانلس ستيل 304 – مرايا</td>
+        <td>جرانيت</td>
+      </tr>
+
+      <tr data-cabin="Mirror-SS304" data-floor="Marble">
+        <td>مرايا + ستانلس</td>
+        <td>رخام</td>
+      </tr>
+
+      <tr data-cabin="Wood-SS304" data-floor="Aluminum-Checker">
+        <td>خشبي + ستانلس</td>
+        <td>ألمنيوم Checker Plate</td>
+      </tr>
+
+      <tr data-cabin="Custom" data-floor="Custom">
+        <td>تصميم خاص (Custom Design)</td>
+        <td>حسب اختيار العميل</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p style="font-size:11px; margin-top:8px; color:#6b7280;">
+    يتم تمييز الصف المختار وفق بيانات عرض السعر المعتمدة.
+  </p>
+
 </div>
+
 
 
 
@@ -1750,48 +1784,30 @@ function highlightEN81Row() {
     }[m]));
   }
 
-  function renderFinishCards(containerId, items, selectedValue){
-    const el = document.getElementById(containerId);
-    if(!el) return;
-    const sel = String(selectedValue || '').trim();
 
-    el.innerHTML = items.map(it => {
-      const isActive = String(it.value) === sel;
-      return `
-        <div class="finish-card ${isActive ? 'active' : ''}" data-value="${escHtml(it.value)}">
-          <img class="finish-thumb" src="${escHtml(it.img)}" alt="${escHtml(it.label)}">
-          <div class="finish-meta">
-            <p class="finish-name">${escHtml(it.label)}</p>
-            <p class="finish-code">${escHtml(it.value)}</p>
-          </div>
-        </div>
-      `;
-    }).join('');
-  }
+function highlightAnnexCRow() {
+  if (!window.q) return;
 
-  function renderAnnexC(){
-    if(!window.q) return;
+  const cabinSelected = String(q.cabinDesign || '').trim();
+  const floorSelected = String(q.floorFinish || '').trim();
 
-    // نفس قيم الـ select في elevator-quote.html :contentReference[oaicite:5]{index=5}
-    const cabinFinishes = [
-      { value:'SS304-Hairline', label:'ستانلس ستيل 304 – Hairline', img:'/public/images/finishes/ss304-hairline.png' },
-      { value:'SS304-Mirror',   label:'ستانلس ستيل 304 – مرايا',    img:'/public/images/finishes/ss304-mirror.png' },
-      { value:'Mirror-SS304',   label:'مرايا + ستانلس',             img:'/public/images/finishes/mirror-ss304.png' },
-      { value:'Wood-SS304',     label:'خشبي + ستانلس',              img:'/public/images/finishes/wood-ss304.png' },
-      { value:'Custom',         label:'تصميم خاص (Custom)',         img:'/public/images/finishes/custom.png' }
-    ];
+  document.querySelectorAll('#annexC-table tbody tr').forEach(row => {
 
-    const floorFinishes = [
-      { value:'Vinyl',            label:'فينيل',                 img:'/public/images/floors/vinyl.png' },
-      { value:'Granite',          label:'جرانيت',                img:'/public/images/floors/granite.png' },
-      { value:'Marble',           label:'رخام',                  img:'/public/images/floors/marble.png' },
-      { value:'Aluminum-Checker', label:'ألمنيوم Checker Plate', img:'/public/images/floors/aluminum-checker.png' }
-    ];
+    const rowCabin = row.dataset.cabin;
+    const rowFloor = row.dataset.floor;
 
-    // القيم محفوظة داخل snapshot :contentReference[oaicite:6]{index=6}
-    renderFinishCards('cabinFinishGrid', cabinFinishes, window.q.cabinDesign);
-    renderFinishCards('floorFinishGrid', floorFinishes, window.q.floorFinish);
-  }
+    const match =
+      rowCabin === cabinSelected ||
+      rowFloor === floorSelected;
+
+    if (match) {
+      row.classList.add('annexC-active');
+    }
+  });
+}
+
+/* شغّلها بعد تحميل البيانات */
+highlightAnnexCRow();
 
   // بعد highlightEN81Row مباشرة
   try { renderAnnexC(); } catch(e) {}
@@ -2186,6 +2202,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
 
 
 
