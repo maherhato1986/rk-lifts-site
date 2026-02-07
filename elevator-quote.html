@@ -1794,6 +1794,48 @@ async function calculateQuote() {
   const shaftRows = document.querySelectorAll("#shaft-table tbody tr");
   const shaftsSummary = [];
 
+    // =========================
+// EN81 per-elevator selections + distribution (داخل نفس عرض السعر)
+// =========================
+const capNum = Number(String(capacity || '').replace(/[^\d]/g,'')) || 0;
+
+const en81Selections = [];
+const en81Distribution = {}; // key -> count
+
+shaftRows.forEach((row, idx) => {
+  const cabin = (row.querySelector(".cabin-cell")?.innerText || "").trim();
+  const shaft = (row.querySelector(".shaft-select")?.value || "").trim();
+  const door  = (row.querySelector(".door-cell")?.innerText || "").trim();
+  const pit   = (row.querySelector(".pit-cell")?.innerText || "").trim();
+  const oh    = (row.querySelector(".oh-cell")?.innerText || "").trim();
+
+  if (!cabin && !shaft && !door) return;
+
+  const item = {
+    no: idx + 1,
+    capacity: capNum,
+    cabin, shaft, door, pit, oh
+  };
+  en81Selections.push(item);
+
+  // مفتاح مطابق لصفوف ملحق (ب) (capacity + كل الأبعاد)
+  const key = [
+    String(capNum),
+    cabin.replace(/\s+/g,''),
+    shaft.replace(/\s+/g,''),
+    String(door).replace(/\s+/g,''),
+    String(pit).replace(/\s+/g,''),
+    String(oh).replace(/\s+/g,'')
+  ].join('|');
+
+  en81Distribution[key] = (en81Distribution[key] || 0) + 1;
+});
+
+// ✅ ضمان أن عدد المصاعد في السجل = عدد الصفوف الفعلي (لو حبيت)
+// إذا تفضّل تبقيه من input كما هو، اتركه.
+// const liftsCountFixed = en81Selections.length || (liftsCount || 1);
+
+
   shaftRows.forEach((row, index) => {
     const shaft = row.querySelector(".shaft-select")?.value || "";
     const cabin = row.querySelector(".cabin-cell")?.innerText || "";
@@ -1839,6 +1881,9 @@ if (!en81) {
 
     brandKey,
     brandLabel,
+      en81Selections,
+en81Distribution,
+
 
     capacity: capacity ? (capacity + ' kg') : '',
     speed: speed ? (speed + ' m/s') : '',
@@ -2452,6 +2497,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
