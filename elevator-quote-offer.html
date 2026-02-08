@@ -448,10 +448,37 @@ th {
 }
 
   /* منع زيادة ارتفاع الصفوف */
-  tr {
+   tr {
     height: auto !important;
   }
+
+  /* ===============================
+     FINAL CONTACT PAGE – FULL A4
+  =============================== */
+
+  .page.final-contact-page {
+    width: 210mm !important;
+    height: 297mm !important;
+    min-height: 297mm !important;
+
+    page-break-before: always !important;
+    page-break-after: always !important;
+
+    break-before: page !important;
+    break-after: page !important;
+
+    padding: 20mm !important;
+    box-sizing: border-box !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+
+    overflow: hidden !important;
+  }
+
 }
+
 .en81-match {
   background: #e8f5e9 !important;
   border: 2px solid #2e7d32 !important;
@@ -1674,7 +1701,7 @@ All dimensions are subject to final site verification and approved shop drawings
 
 </ol>
 
-</div>
+</div> <!-- نهاية صفحة 7 -->
 
 <div class="page final-contact-page">
 
@@ -1725,7 +1752,7 @@ All dimensions are subject to final site verification and approved shop drawings
 </div>
 
 
-</div>
+
 
 
 
@@ -2539,6 +2566,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
 
 
 
