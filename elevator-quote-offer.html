@@ -476,6 +476,17 @@ th {
 
     overflow: hidden !important;
   }
+/* ✅ لا تعمل صفحة زيادة بعد آخر صفحة */
+.page.final-contact-page{
+  page-break-after: auto !important;
+  break-after: auto !important;
+}
+
+/* ✅ ضمان: آخر .page لا يفرض break */
+.page:last-of-type{
+  page-break-after: auto !important;
+  break-after: auto !important;
+}
 
 }
 
@@ -2566,6 +2577,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
 
 
 
