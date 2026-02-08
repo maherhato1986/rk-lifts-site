@@ -1050,27 +1050,127 @@ consultants, and regulatory authorities across the Kingdom.
     </div>
 
     <div style="flex: 1.5; background: #fdfdfd; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px;">
-        <svg viewBox="0 0 450 320" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto;">
-            <defs>
-                <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b" />
-                </marker>
-            </defs>
+     <svg id="en81Svg" viewBox="0 0 980 340" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto;">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b" />
+    </marker>
+    <style>
+      .lbl{font-family:Arial, sans-serif; fill:#1e3a8a}
+      .dim{font-family:Arial, sans-serif; fill:#475569}
+      .soft{fill:#f1f5f9; stroke:#2563eb; stroke-width:1.5}
+      .frame{fill:none; stroke:#1e293b; stroke-width:2}
+      .guide{stroke:#94a3b8; stroke-width:2}
+      .dimline{stroke:#64748b; stroke-width:0.9}
+      .warn{fill:#ef4444; font-family:Arial, sans-serif;}
+    </style>
+  </defs>
 
-            <g transform="translate(40, 40)">
-                <text x="35" y="-15" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e3a8a">SECTION VIEW</text>
-                
-                <line x1="0" y1="0" x2="0" y2="240" stroke="#94a3b8" stroke-width="2" />
-                <line x1="70" y1="0" x2="70" y2="240" stroke="#94a3b8" stroke-width="2" />
-                
-                <rect x="10" y="80" width="50" height="80" fill="#f1f5f9" stroke="#2563eb" stroke-width="1.5" rx="2" />
-                <text x="35" y="125" text-anchor="middle" font-size="9" fill="#1e3a8a">CABIN</text>
+  <!-- ===================== LEFT: SECTION VIEW ===================== -->
+  <g transform="translate(40,40)">
+    <text x="70" y="-15" text-anchor="middle" class="lbl" font-size="12" font-weight="bold">SECTION VIEW</text>
 
-                <g stroke="#ef4444" stroke-width="1" marker-end="url(#arrow)" marker-start="url(#arrow)">
-                    <line x1="85" y1="200" x2="85" y2="240" /> <line x1="85" y1="0" x2="85" y2="40" />   </g>
-                <text x="92" y="225" font-size="9" fill="#ef4444">PIT</text>
-                <text x="92" y="25" font-size="9" fill="#ef4444">OH</text>
-            </g>
+    <!-- rails/walls -->
+    <line x1="0"  y1="0" x2="0"  y2="240" class="guide"/>
+    <line x1="140" y1="0" x2="140" y2="240" class="guide"/>
+
+    <!-- cabin block -->
+    <rect x="35" y="70" width="70" height="110" rx="3" class="soft"/>
+    <text x="70" y="130" text-anchor="middle" class="lbl" font-size="10">CABIN</text>
+
+    <!-- PIT / OH arrows -->
+    <g class="dimline" marker-end="url(#arrow)" marker-start="url(#arrow)">
+      <line x1="165" y1="200" x2="165" y2="240"/>
+      <line x1="165" y1="0"   x2="165" y2="40"/>
+    </g>
+    <text x="172" y="225" class="warn" font-size="10">PIT</text>
+    <text x="172" y="25"  class="warn" font-size="10">OH</text>
+
+    <!-- numeric labels -->
+    <text x="168" y="238" class="warn" font-size="9" id="svgPitTxt" text-anchor="start">—</text>
+    <text x="168" y="38"  class="warn" font-size="9" id="svgOhTxt"  text-anchor="start">—</text>
+  </g>
+
+  <!-- ===================== MIDDLE: PLAN VIEW ===================== -->
+  <g transform="translate(290,55)">
+    <text x="130" y="-15" text-anchor="middle" class="lbl" font-size="12" font-weight="bold">PLAN VIEW</text>
+
+    <!-- shaft outer -->
+    <rect x="0" y="0" width="260" height="180" class="frame"/>
+
+    <!-- cabin inner -->
+    <rect x="55" y="25" width="150" height="120" rx="3" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+
+    <!-- dimension lines HW / HD -->
+    <g class="dimline" marker-end="url(#arrow)" marker-start="url(#arrow)">
+      <line x1="0" y1="205" x2="260" y2="205"/>
+      <line x1="285" y1="0" x2="285" y2="180"/>
+    </g>
+    <text x="130" y="222" text-anchor="middle" class="dim" font-size="11" font-weight="bold">
+      HW (Width): <tspan id="svgHwTxt">—</tspan>
+    </text>
+    <text x="305" y="90" transform="rotate(90 305,90)" text-anchor="middle" class="dim" font-size="11" font-weight="bold">
+      HD (Depth): <tspan id="svgHdTxt">—</tspan>
+    </text>
+
+    <!-- CWxCD label -->
+    <text x="130" y="92" text-anchor="middle" fill="#2563eb" font-size="10" font-weight="bold">
+      CW x CD: <tspan id="svgCwCdTxt">—</tspan>
+    </text>
+
+    <!-- entrance -->
+    <rect x="70" y="175" width="120" height="10" fill="#1e3a8a" rx="2"/>
+    <text x="130" y="172" text-anchor="middle" fill="#1e3a8a" font-size="9" font-weight="bold">ENTRANCE</text>
+  </g>
+
+  <!-- ===================== RIGHT: ELEVATION (FLOORS) ===================== -->
+  <g transform="translate(610,25)">
+    <text x="155" y="0" text-anchor="middle" class="lbl" font-size="12" font-weight="bold">ELEVATION VIEW</text>
+
+    <!-- shaft vertical frame -->
+    <rect x="70" y="25" width="170" height="280" class="frame"/>
+    <!-- guide line for floors -->
+    <line x1="70" y1="25" x2="240" y2="25"  class="guide"/>
+    <line x1="70" y1="305" x2="240" y2="305" class="guide"/>
+
+    <!-- dynamic floors container -->
+    <g id="svgFloors"></g>
+
+    <!-- cabin in elevation (moves by JS, default middle) -->
+    <rect id="svgCabElev" x="105" y="135" width="100" height="70" rx="3" class="soft"/>
+    <text x="155" y="175" text-anchor="middle" class="lbl" font-size="10">CABIN</text>
+
+    <!-- left dimension: TH (Travel Height) -->
+    <g class="dimline" marker-end="url(#arrow)" marker-start="url(#arrow)">
+      <line x1="50" y1="25" x2="50" y2="305"/>
+    </g>
+    <text x="42" y="168" transform="rotate(-90 42,168)" text-anchor="middle" class="dim" font-size="11" font-weight="bold">
+      TH: <tspan id="svgThTxt">—</tspan>
+    </text>
+
+    <!-- right dimension: FH (Floor Height) -->
+    <g class="dimline" marker-end="url(#arrow)" marker-start="url(#arrow)">
+      <line id="svgFhLine" x1="260" y1="255" x2="260" y2="305"/>
+    </g>
+    <text x="270" y="285" class="dim" font-size="11" font-weight="bold">
+      FH: <tspan id="svgFhTxt">—</tspan>
+    </text>
+
+    <!-- bottom PIT & top OH labels -->
+    <text x="155" y="330" text-anchor="middle" class="warn" font-size="10">
+      PIT: <tspan id="svgPit2Txt">—</tspan>
+    </text>
+    <text x="155" y="18" text-anchor="middle" class="warn" font-size="10">
+      OH: <tspan id="svgOh2Txt">—</tspan>
+    </text>
+
+    <!-- floors count -->
+    <text x="155" y="315" text-anchor="middle" class="dim" font-size="10" font-weight="bold">
+      Stops / Floors: <tspan id="svgStopsTxt">—</tspan>
+    </text>
+  </g>
+</svg>
+
 
             <g transform="translate(240, 60)">
                 <text x="75" y="-15" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e3a8a">PLAN VIEW</text>
@@ -1839,6 +1939,105 @@ function highlightEN81Row() {
     }
   });
 }
+function toNum(v){
+  const n = Number(String(v ?? '').replace(/[^\d.]/g,''));
+  return Number.isFinite(n) ? n : 0;
+}
+
+function splitWxH(dim){
+  // يقبل "1800x1600" أو "1800 × 1600"
+  const s = String(dim || '').replace('×','x').replace(/\s+/g,'');
+  const parts = s.split('x');
+  return {
+    w: parts[0] || '—',
+    h: parts[1] || '—'
+  };
+}
+
+function renderEN81Diagram(){
+  if(!window.q) return;
+
+  // قيم أساسية
+  const pit = q.pit ?? '—';
+  const oh  = q.oh  ?? '—';
+  const th  = q.travelHeight ? (String(q.travelHeight).includes('mm') ? q.travelHeight : q.travelHeight + ' mm') : '—';
+  const fh  = q.floorHeight  ? (String(q.floorHeight).includes('mm')  ? q.floorHeight  : q.floorHeight  + ' mm') : '—';
+  const stops = q.stops || q.floors || '—';
+
+  // HW/HD و CW/CD
+  const shaft = splitWxH(q.shaftSize);
+  const cabin = splitWxH(q.cabinSize);
+
+  // تعبئة نصوص الـ SVG
+  const setTxt = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
+
+  setTxt('svgPitTxt',  String(pit));
+  setTxt('svgOhTxt',   String(oh));
+  setTxt('svgPit2Txt', String(pit));
+  setTxt('svgOh2Txt',  String(oh));
+
+  setTxt('svgThTxt',   String(th));
+  setTxt('svgFhTxt',   String(fh));
+  setTxt('svgStopsTxt', String(stops));
+
+  setTxt('svgHwTxt', shaft.w);
+  setTxt('svgHdTxt', shaft.h);
+  setTxt('svgCwCdTxt', `${cabin.w} x ${cabin.h}`);
+
+  // رسم خطوط الأدوار داخل ELEVATION
+  const floorsG = document.getElementById('svgFloors');
+  if(!floorsG) return;
+  floorsG.innerHTML = '';
+
+  // منطقة الارتفاع داخل الإطار (من y=25 إلى y=305)
+  const yTop = 25, yBot = 305, xL = 70, xR = 240;
+  const floorsCount = Math.max(2, toNum(stops) || 2); // حد أدنى 2 حتى يبان شكل الأدوار
+  const step = (yBot - yTop) / (floorsCount - 1);
+
+  for(let i=0; i<floorsCount; i++){
+    const y = yBot - (i * step);
+
+    // خط الدور
+    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1', xL);
+    line.setAttribute('x2', xR);
+    line.setAttribute('y1', y);
+    line.setAttribute('y2', y);
+    line.setAttribute('stroke', '#cbd5e1');
+    line.setAttribute('stroke-width', '1');
+    floorsG.appendChild(line);
+
+    // اسم الدور (F0, F1...)
+    const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x', xR + 8);
+    t.setAttribute('y', y + 4);
+    t.setAttribute('fill', '#475569');
+    t.setAttribute('font-size', '9');
+    t.textContent = `F${i}`;
+    floorsG.appendChild(t);
+  }
+
+  // تحريك كابينة الإليفيشن لمنتصف المسار تقريباً
+  const cab = document.getElementById('svgCabElev');
+  if(cab){
+    const midY = yTop + (yBot - yTop) * 0.45;
+    cab.setAttribute('y', Math.max(yTop + 10, Math.min(midY, yBot - 80)));
+  }
+
+  // FH line طولها يعتمد على خطوة الأدوار (تقريب بصري)
+  const fhLine = document.getElementById('svgFhLine');
+  if(fhLine){
+    const y2 = yBot;
+    const y1 = yBot - step;
+    fhLine.setAttribute('y1', y1);
+    fhLine.setAttribute('y2', y2);
+  }
+}
+
+// شغّلها بعد تحميل الصفحة وربط q
+document.addEventListener("DOMContentLoaded", function(){
+  try { renderEN81Diagram(); } catch(e) {}
+});
 
  function escHtml(s){
     return String(s ?? '').replace(/[&<>"']/g, m => ({
@@ -2264,6 +2463,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
 
 
 
