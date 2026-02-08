@@ -365,7 +365,58 @@ th {
 
     box-shadow: none !important;
   }
+  .page.en81-page{
+    padding: 8mm !important;            /* كان 15mm */
+  }
 
+  /* ✅ تقليل الفراغات فوق العنوان */
+  .page.en81-page .section-title{
+    margin-top: 4mm !important;
+    margin-bottom: 2mm !important;
+    padding-bottom: 2mm !important;
+  }
+
+  /* ✅ اجعل الجدول + الرسم يأخذون كامل عرض الصفحة بدون فراغ */
+  .page.en81-page > div[style*="display: flex"]{
+    gap: 8px !important;                /* كان 15px */
+    margin-top: 6px !important;         /* كان 15px */
+  }
+
+  /* ✅ اجعل الجدول أصغر قليلاً والرسم أكبر */
+  .page.en81-page .tech-table{
+    font-size: 11px !important;
+  }
+
+  /* ✅ تكبير منطقة الرسم لتعبئة المساحة */
+  .page.en81-page .diagram-container,
+  .page.en81-page div[style*="border-radius: 8px"][style*="padding: 10px"]{
+    padding: 6px !important;            /* كان 10px */
+  }
+
+  .page.en81-page #en81Svg{
+    width: 100% !important;
+    height: 240mm !important;           /* يملأ ارتفاع الورقة تقريباً */
+    max-height: 240mm !important;
+  }
+
+  /* ✅ إلغاء أي “scale” قد يصغّر بدل يكبّر */
+  .page.en81-page .diagram-container svg{
+    transform: none !important;
+  }
+
+  /* ✅ تصغير صندوق “ملاحظة فنية” حتى ما يستهلك مساحة */
+  .page.en81-page div[style*="ملاحظة فنية"]{
+    margin-top: 6px !important;
+    padding: 6px !important;
+    font-size: 9.8px !important;
+  }
+
+  /* ✅ تقليل شرح النص العربي/الإنجليزي */
+  .page.en81-page .en81-note p{
+    margin: 4px 0 !important;
+    font-size: 10px !important;
+    line-height: 1.45 !important;
+  }
   .page:last-child {
     page-break-after: auto !important;
   }
@@ -1017,7 +1068,8 @@ consultants, and regulatory authorities across the Kingdom.
 
 <div style="display: flex; gap: 15px; align-items: flex-start; margin-top: 15px;">
 
-    <div style="flex: 1;">
+   <div style="flex: 0.85;">
+
         <table class="tech-table" style="width: 100%; border-collapse: collapse; font-size: 11px; background: white;">
             <thead>
                 <tr style="background: #1e3a8a; color: white;">
@@ -1049,7 +1101,7 @@ consultants, and regulatory authorities across the Kingdom.
         </table>
     </div>
 
-    <div style="flex: 1.5; background: #fdfdfd; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px;">
+    <div style="flex: 2.15; background: #fdfdfd; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px;">
      <svg id="en81Svg" viewBox="0 0 980 340" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto;">
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -2463,6 +2515,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
 
 
 
