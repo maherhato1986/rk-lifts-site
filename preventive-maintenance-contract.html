@@ -2140,41 +2140,59 @@ button{
     </div>
 
     <!-- Items Table -->
-    <div class="section">
-      <h3>التفاصيل المالية (بنود العرض)</h3>
-      <table>
-        <thead>
-          <tr>
-           <th style="width:6%">#</th>
-<th style="width:28%">البند</th>
-<th>الوصف</th>
-<th style="width:14%">سعر الوحدة</th>
-<th style="width:10%">الكمية</th>
-<th style="width:14%">الإجمالي</th>
-          </tr>
-        </thead>
-       <tbody>
-  <tr>
-    <td>1</td>
-    <td>توريد قطع غيار</td>
-    <td>${lifts}</td>
-    <td>توريد قطع الغيار حسب الوصف أعلاه</td>
-    <td class="money">${money(material)}</td>
-    <td class="money">${money(material)}</td>
-  </tr>
+<div class="section">
+  <h3>التفاصيل المالية (بنود العرض)</h3>
 
-  <tr>
-    <td>2</td>
-    <td>تركيب / تشغيل</td>
-    <td>${lifts}</td>
-    <td>أعمال التركيب والبرمجة والتشغيل حسب نوع العمل</td>
-    <td class="money">${money(labor)}</td>
-    <td class="money">${money(labor)}</td>
-  </tr>
-</tbody>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:6%">#</th>
+        <th style="width:22%">البند</th>
+        <th>الوصف</th>
+        <th style="width:14%">سعر الوحدة</th>
+        <th style="width:10%">الكمية</th>
+        <th style="width:14%">الإجمالي</th>
+      </tr>
+    </thead>
 
-      </table>
-    </div>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>توريد قطع غيار</td>
+        <td>توريد قطع الغيار حسب الوصف أعلاه</td>
+
+        <!-- سعر الوحدة (ريال) -->
+        <td class="money">${money(material)}</td>
+
+        <!-- الكمية -->
+        <td style="text-align:center;font-weight:800">${lifts}</td>
+
+        <!-- الإجمالي -->
+        <td class="money">${money(material * Number(lifts || 1))}</td>
+      </tr>
+
+      <tr>
+        <td>2</td>
+        <td>تركيب / تشغيل</td>
+        <td>أعمال التركيب والبرمجة والتشغيل حسب نوع العمل</td>
+
+        <!-- سعر الوحدة (ريال) -->
+        <td class="money">${money(labor)}</td>
+
+        <!-- الكمية -->
+        <td style="text-align:center;font-weight:800">${lifts}</td>
+
+        <!-- الإجمالي -->
+        <td class="money">${money(labor * Number(lifts || 1))}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="note" style="margin-top:8px">
+    * تم احتساب الإجمالي بناءً على (الكمية × سعر الوحدة).
+  </div>
+</div>
+
 
     <!-- Summary -->
     <div class="section summary">
