@@ -2143,55 +2143,29 @@ button{
 <div class="section">
   <h3>التفاصيل المالية (بنود العرض)</h3>
 
-  <table>
+  <table id="itemsTable">
     <thead>
       <tr>
-        <th style="width:6%">#</th>
+        <th style="width:5%">#</th>
         <th style="width:22%">البند</th>
         <th>الوصف</th>
         <th style="width:14%">سعر الوحدة</th>
         <th style="width:10%">الكمية</th>
         <th style="width:14%">الإجمالي</th>
+        <th style="width:8%">إجراء</th>
       </tr>
     </thead>
 
-    <tbody>
-      <tr>
-        <td>1</td>
-        <td>توريد قطع غيار</td>
-        <td>توريد قطع الغيار حسب الوصف أعلاه</td>
-
-        <!-- سعر الوحدة (ريال) -->
-        <td class="money">${money(material)}</td>
-
-        <!-- الكمية -->
-        <td style="text-align:center;font-weight:800">${lifts}</td>
-
-        <!-- الإجمالي -->
-        <td class="money">${money(material * Number(lifts || 1))}</td>
-      </tr>
-
-      <tr>
-        <td>2</td>
-        <td>تركيب / تشغيل</td>
-        <td>أعمال التركيب والبرمجة والتشغيل حسب نوع العمل</td>
-
-        <!-- سعر الوحدة (ريال) -->
-        <td class="money">${money(labor)}</td>
-
-        <!-- الكمية -->
-        <td style="text-align:center;font-weight:800">${lifts}</td>
-
-        <!-- الإجمالي -->
-        <td class="money">${money(labor * Number(lifts || 1))}</td>
-      </tr>
+    <tbody id="itemsBody">
+      <!-- بنود افتراضية -->
     </tbody>
   </table>
 
-  <div class="note" style="margin-top:8px">
-    * تم احتساب الإجمالي بناءً على (الكمية × سعر الوحدة).
+  <div style="margin-top:10px">
+    <button type="button" onclick="addItem()">➕ إضافة بند</button>
   </div>
 </div>
+
 
 
     <!-- Summary -->
@@ -3710,6 +3684,76 @@ function toggleOperationMode(){
 
 </script>
 
+<script>
+let itemIndex = 0;
+
+function addItem(data = {}) {
+  itemIndex++;
+
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td>${itemIndex}</td>
+
+    <td>
+      <input type="text" value="${data.name || ''}" placeholder="مثال: توريد قطع غيار">
+    </td>
+
+    <td>
+      <input type="text" value="${data.desc || ''}" placeholder="وصف البند">
+    </td>
+
+    <td>
+      <input type="number" value="${data.price || 0}" min="0" oninput="updateRow(this)">
+    </td>
+
+    <td>
+      <input type="number" value="${data.qty || 1}" min="1" oninput="updateRow(this)">
+    </td>
+
+    <td class="money">0.00</td>
+
+    <td>
+      <button type="button" onclick="removeItem(this)" style="background:#dc2626">✖</button>
+    </td>
+  `;
+
+  document.getElementById('itemsBody').appendChild(row);
+  recalcAll();
+}
+
+function removeItem(btn) {
+  btn.closest('tr').remove();
+  recalcAll();
+}
+
+function updateRow(el) {
+  const row = el.closest('tr');
+  const price = Number(row.children[3].querySelector('input').value || 0);
+  const qty   = Number(row.children[4].querySelector('input').value || 0);
+
+  row.children[5].innerText = (price * qty).toFixed(2);
+  recalcAll();
+}
+
+function recalcAll() {
+  let subtotal = 0;
+
+  document.querySelectorAll('#itemsBody tr').forEach(row => {
+    subtotal += Number(row.children[5].innerText || 0);
+  });
+
+  const vat = subtotal * 0.15;
+  const total = subtotal + vat;
+
+  // استخدم نفس متغيراتك الحالية
+  window.finalCalcOverride = {
+    subtotal,
+    vat,
+    total,
+    isManual: true
+  };
+}
+</script>
 
 </body>
 </html>
