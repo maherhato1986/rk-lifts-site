@@ -1890,7 +1890,7 @@ function openSupplyOfferPrint(contract) {
 
   const money = (n) => (Number(n || 0)).toFixed(2);
 
-  // إجبار أرقام (حتى لو كانت محفوظة كنص)
+  // أرقام
   const material = Number(supply.material || 0);
   const labor    = Number(supply.labor || 0);
   const subtotal = Number(pricing.subtotal ?? (material + labor));
@@ -2088,6 +2088,8 @@ button{
   font-weight:800;
   cursor:pointer;
 }
+
+/* ========= Editable UI ========= */
 .editor-toolbar{
   margin-top:12px;
   display:flex;
@@ -2095,7 +2097,6 @@ button{
   flex-wrap:wrap;
   justify-content:center;
 }
-
 .editor-toolbar button{
   background:var(--brand);
   color:#fff;
@@ -2123,13 +2124,10 @@ button{
 .actions-col{ width:72px; text-align:center; }
 .hide-print{}
 
-/* عند الطباعة نخفي أدوات التعديل */
 @media print{
   .editor-toolbar, .edit-hint, .hide-print{ display:none !important; }
   [contenteditable="true"]{ outline:none; padding:0; }
-}
-@media print{
-  .print-actions{ display:none; }
+  .print-actions{ display:none !important; }
 }
 </style>
 </head>
@@ -2140,7 +2138,7 @@ button{
     <!-- Header -->
     <div class="header">
       <img src="/public/images/logo.png" alt="RKL">
-      <h1>عرض سعر توريد وتركيب وتشغيل قطع غيار</h1>
+      <h1 contenteditable="true">عرض سعر توريد وتركيب وتشغيل قطع غيار</h1>
       <div class="small">
         RKL Elevators & Escalators<br>
         CR: 1010709355<br>
@@ -2151,146 +2149,143 @@ button{
     <!-- Meta -->
     <div class="meta">
       <div class="meta-grid">
-        <div><b>رقم العرض:</b> ${refNo}</div>
-        <div><b>تاريخ التنفيذ:</b> ${execDate}</div>
+        <div><b contenteditable="true">رقم العرض:</b> <span contenteditable="true">${refNo}</span></div>
+        <div><b contenteditable="true">تاريخ التنفيذ:</b> <span contenteditable="true">${execDate}</span></div>
 
-        <div><b>العميل:</b> ${(customer.customer_name || customer.name || '—')}</div>
-        <div><b>عدد المصاعد:</b> ${lifts}</div>
+        <div><b contenteditable="true">العميل:</b> <span contenteditable="true">${(customer.customer_name || customer.name || '—')}</span></div>
+        <div><b contenteditable="true">عدد المصاعد:</b> <span contenteditable="true">${lifts}</span></div>
 
-        <div><b>اسم المشروع:</b> ${projectName}</div>
-        <div><b>موقع المشروع:</b> ${projectLocation}</div>
+        <div><b contenteditable="true">اسم المشروع:</b> <span contenteditable="true">${projectName}</span></div>
+        <div><b contenteditable="true">موقع المشروع:</b> <span contenteditable="true">${projectLocation}</span></div>
 
-        <div><b>نوع العمل:</b> ${supplyTypeText}</div>
-        <div><b>حالة المصعد:</b> ${(supply.stopped === 'yes') ? 'متوقف' : 'غير متوقف'}</div>
+        <div><b contenteditable="true">نوع العمل:</b> <span contenteditable="true">${supplyTypeText}</span></div>
+        <div><b contenteditable="true">حالة المصعد:</b> <span contenteditable="true">${(supply.stopped === 'yes') ? 'متوقف' : 'غير متوقف'}</span></div>
       </div>
     </div>
 
     <!-- Scope / Description -->
     <div class="section">
-      <h3>نطاق العمل ووصف القطع</h3>
-      <div style="white-space:pre-wrap">${description}</div>
+      <h3 contenteditable="true">نطاق العمل ووصف القطع</h3>
+      <div contenteditable="true" style="white-space:pre-wrap">${description}</div>
 
       ${options.length ? `
         <div class="note" style="margin-top:10px">
-          <b style="color:var(--brand)">خيارات ضمن العرض:</b><br>
-          ${options.map(x => `- ${x}`).join('<br>')}
+          <b style="color:var(--brand)" contenteditable="true">خيارات ضمن العرض:</b><br>
+          <div contenteditable="true">${options.map(x => `- ${x}`).join('<br>')}</div>
         </div>
       ` : ``}
     </div>
 
-    <!-- Items Table -->
-<div class="section">
-  <h3>التفاصيل المالية (بنود العرض)</h3>
+    <!-- Items Table (Editable) -->
+    <div class="section">
+      <h3 contenteditable="true">التفاصيل المالية (بنود العرض)</h3>
 
-  <table>
-    <thead>
-      <tr>
-        <th style="width:6%">#</th>
-        <th style="width:22%">البند</th>
-        <th>الوصف</th>
-        <th style="width:14%">سعر الوحدة</th>
-        <th style="width:10%">الكمية</th>
-        <th style="width:14%">الإجمالي</th>
-      </tr>
-    </thead>
+      <div class="editor-toolbar hide-print">
+        <button type="button" onclick="addItemRow()">➕ إضافة بند</button>
+        <button type="button" onclick="recalcAll()">🔄 إعادة احتساب</button>
+        <button type="button" onclick="window.print()">🖨️ طباعة</button>
+      </div>
+      <div class="edit-hint hide-print">اضغط على أي خلية للتعديل. يمكنك إضافة/حذف بنود وسيتم تحديث الإجمالي تلقائيًا.</div>
 
-    <tbody>
-      <tr>
-        <td>1</td>
-        <td>توريد قطع غيار</td>
-        <td>توريد قطع الغيار حسب الوصف أعلاه</td>
+      <table id="itemsTable">
+        <thead>
+          <tr>
+            <th style="width:6%">#</th>
+            <th style="width:22%">البند</th>
+            <th>الوصف</th>
+            <th style="width:14%">سعر الوحدة</th>
+            <th style="width:10%">الكمية</th>
+            <th style="width:14%">الإجمالي</th>
+            <th class="actions-col hide-print">حذف</th>
+          </tr>
+        </thead>
 
-        <!-- سعر الوحدة (ريال) -->
-        <td class="money">${money(material)}</td>
+        <tbody id="itemsBody">
+          <tr>
+            <td class="idx">1</td>
+            <td contenteditable="true">توريد قطع غيار</td>
+            <td contenteditable="true">توريد قطع الغيار حسب الوصف أعلاه</td>
+            <td class="money" contenteditable="true" data-type="unit">${money(material)}</td>
+            <td style="text-align:center;font-weight:800" contenteditable="true" data-type="qty">${lifts}</td>
+            <td class="money line-total">${money(material * Number(lifts || 1))}</td>
+            <td class="hide-print" style="text-align:center"><button type="button" onclick="deleteRow(this)">✖</button></td>
+          </tr>
 
-        <!-- الكمية -->
-        <td style="text-align:center;font-weight:800">${lifts}</td>
+          <tr>
+            <td class="idx">2</td>
+            <td contenteditable="true">تركيب / تشغيل</td>
+            <td contenteditable="true">أعمال التركيب والبرمجة والتشغيل حسب نوع العمل</td>
+            <td class="money" contenteditable="true" data-type="unit">${money(labor)}</td>
+            <td style="text-align:center;font-weight:800" contenteditable="true" data-type="qty">${lifts}</td>
+            <td class="money line-total">${money(labor * Number(lifts || 1))}</td>
+            <td class="hide-print" style="text-align:center"><button type="button" onclick="deleteRow(this)">✖</button></td>
+          </tr>
+        </tbody>
+      </table>
 
-        <!-- الإجمالي -->
-        <td class="money">${money(material * Number(lifts || 1))}</td>
-      </tr>
+      <div class="note" style="margin-top:8px" contenteditable="true">
+        * تم احتساب الإجمالي بناءً على (الكمية × سعر الوحدة). يمكنك تعديل البنود قبل الطباعة.
+      </div>
+    </div>
 
-      <tr>
-        <td>2</td>
-        <td>تركيب / تشغيل</td>
-        <td>أعمال التركيب والبرمجة والتشغيل حسب نوع العمل</td>
-
-        <!-- سعر الوحدة (ريال) -->
-        <td class="money">${money(labor)}</td>
-
-        <!-- الكمية -->
-        <td style="text-align:center;font-weight:800">${lifts}</td>
-
-        <!-- الإجمالي -->
-        <td class="money">${money(labor * Number(lifts || 1))}</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <div class="note" style="margin-top:8px">
-    * تم احتساب الإجمالي بناءً على (الكمية × سعر الوحدة).
-  </div>
-</div>
-
-
-    <!-- Summary -->
+    <!-- Summary (Auto-updated) -->
     <div class="section summary">
-      <h3>ملخص الإجمالي</h3>
-      <div class="row"><span>الإجمالي قبل الضريبة</span><span class="money">${money(subtotal)}</span></div>
-      <div class="row"><span>ضريبة القيمة المضافة (15%)</span><span class="money">${money(vat)}</span></div>
-      <div class="row total"><span>الإجمالي شامل الضريبة</span><span class="money">${money(total)}</span></div>
+      <h3 contenteditable="true">ملخص الإجمالي</h3>
+      <div class="row"><span contenteditable="true">الإجمالي قبل الضريبة</span><span class="money"><span id="sum_subtotal">${money(subtotal)}</span></span></div>
+      <div class="row"><span contenteditable="true">ضريبة القيمة المضافة (15%)</span><span class="money"><span id="sum_vat">${money(vat)}</span></span></div>
+      <div class="row total"><span contenteditable="true">الإجمالي شامل الضريبة</span><span class="money"><span id="sum_total">${money(total)}</span></span></div>
 
-      <div class="note">
+      <div class="note" contenteditable="true">
         * جميع الأسعار أعلاه بالريال السعودي وتشمل ضريبة القيمة المضافة 15% حسب الأنظمة.
       </div>
     </div>
 
-    <!-- Terms -->
+    <!-- Terms (Editable) -->
     <div class="section">
-      <h3>الشروط والأحكام</h3>
+      <h3 contenteditable="true">الشروط والأحكام</h3>
       <table>
         <tbody>
           <tr>
-            <th style="width:28%">شروط الدفع</th>
-            <td>يبدأ التنفيذ بعد اعتماد العرض واستلام التحويل/الدفعة وإرسال إشعار السداد.</td>
+            <th style="width:28%" contenteditable="true">شروط الدفع</th>
+            <td contenteditable="true">يبدأ التنفيذ بعد اعتماد العرض واستلام التحويل/الدفعة وإرسال إشعار السداد.</td>
           </tr>
           <tr>
-            <th>مدة التنفيذ</th>
-            <td>حسب توفر القطع وجدولة الفريق الفني بالموقع (يتم تأكيدها بعد التعميد).</td>
+            <th contenteditable="true">مدة التنفيذ</th>
+            <td contenteditable="true">حسب توفر القطع وجدولة الفريق الفني بالموقع (يتم تأكيدها بعد التعميد).</td>
           </tr>
           <tr>
-            <th>الضمان</th>
-            <td>ضمان على القطع ضد عيوب التصنيع حسب سياسة المورد، وعلى أعمال التركيب وفق نطاق العمل.</td>
+            <th contenteditable="true">الضمان</th>
+            <td contenteditable="true">ضمان على القطع ضد عيوب التصنيع حسب سياسة المورد، وعلى أعمال التركيب وفق نطاق العمل.</td>
           </tr>
           <tr>
-            <th>الاستثناءات</th>
-            <td>لا يشمل العرض أي أعمال مدنية/تمديدات كهربائية إضافية غير متوفرة بالموقع، إلا بعرض مستقل.</td>
+            <th contenteditable="true">الاستثناءات</th>
+            <td contenteditable="true">لا يشمل العرض أي أعمال مدنية/تمديدات كهربائية إضافية غير متوفرة بالموقع، إلا بعرض مستقل.</td>
           </tr>
           <tr>
-            <th>حدود المسؤولية</th>
-            <td>لا تتحمل المؤسسة الأعطال الناتجة عن سوء الاستخدام، العبث، التحميل الزائد، انقطاع الكهرباء، أو تدخل أطراف غير معتمدة.</td>
+            <th contenteditable="true">حدود المسؤولية</th>
+            <td contenteditable="true">لا تتحمل المؤسسة الأعطال الناتجة عن سوء الاستخدام، العبث، التحميل الزائد، انقطاع الكهرباء، أو تدخل أطراف غير معتمدة.</td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <!-- Bank Details -->
+    <!-- Bank Details (Editable) -->
     <div class="section">
-      <h3>بيانات التحويل البنكي</h3>
+      <h3 contenteditable="true">بيانات التحويل البنكي</h3>
       <table>
-        <tr><th style="width:30%">البنك</th><td>${bankName}</td></tr>
-        <tr><th>اسم المستفيد</th><td>${beneficiary}</td></tr>
-        <tr><th>رقم العميل</th><td class="money">${customerNo}</td></tr>
-        <tr><th>رقم الحساب</th><td class="money">${accountNo}</td></tr>
-        <tr><th>الآيبان</th><td class="money"><b>${iban}</b></td></tr>
+        <tr><th style="width:30%" contenteditable="true">البنك</th><td contenteditable="true">${bankName}</td></tr>
+        <tr><th contenteditable="true">اسم المستفيد</th><td contenteditable="true">${beneficiary}</td></tr>
+        <tr><th contenteditable="true">رقم العميل</th><td class="money" contenteditable="true">${customerNo}</td></tr>
+        <tr><th contenteditable="true">رقم الحساب</th><td class="money" contenteditable="true">${accountNo}</td></tr>
+        <tr><th contenteditable="true">الآيبان</th><td class="money" contenteditable="true"><b>${iban}</b></td></tr>
       </table>
-      <div class="note">
+      <div class="note" contenteditable="true">
         * يُرجى إرسال إشعار التحويل مع رقم العرض لضمان سرعة التفعيل والجدولة.
       </div>
     </div>
 
     <!-- Footer -->
-    <div class="footer">
+    <div class="footer" contenteditable="true">
       مؤسسة آر كي ال RKL للمصاعد والسلالم الكهربائية<br>
       السجل التجاري: 1010709355 – الرقم الضريبي: 302250422600003<br>
       الرياض – السليمانية | هاتف: 0114774021 | البريد: admin@rk-lifts.com
@@ -2301,12 +2296,94 @@ button{
     </div>
 
   </div>
+
+<script>
+function toNumber(x){
+  const s = String(x || '').replace(/[,]/g,'').replace(/[^\d.]/g,'').trim();
+  const n = parseFloat(s);
+  return isNaN(n) ? 0 : n;
+}
+
+function renumber(){
+  document.querySelectorAll('#itemsBody tr').forEach((tr,i)=>{
+    const idx = tr.querySelector('.idx');
+    if(idx) idx.textContent = (i+1);
+  });
+}
+
+function recalcRow(tr){
+  const unitCell = tr.querySelector('[data-type="unit"]');
+  const qtyCell  = tr.querySelector('[data-type="qty"]');
+  const totalCell= tr.querySelector('.line-total');
+
+  const unit = toNumber(unitCell ? unitCell.textContent : 0);
+  const qty  = toNumber(qtyCell ? qtyCell.textContent : 0);
+
+  const line = unit * qty;
+  if(totalCell) totalCell.textContent = line.toFixed(2);
+  return line;
+}
+
+function recalcAll(){
+  let subtotal = 0;
+  document.querySelectorAll('#itemsBody tr').forEach(tr => subtotal += recalcRow(tr));
+
+  const vat = subtotal * 0.15;
+  const total = subtotal + vat;
+
+  const s = document.getElementById('sum_subtotal');
+  const v = document.getElementById('sum_vat');
+  const t = document.getElementById('sum_total');
+
+  if(s) s.textContent = subtotal.toFixed(2);
+  if(v) v.textContent = vat.toFixed(2);
+  if(t) t.textContent = total.toFixed(2);
+}
+
+function addItemRow(){
+  const tbody = document.getElementById('itemsBody');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td class="idx">0</td>
+    <td contenteditable="true">بند جديد</td>
+    <td contenteditable="true">وصف البند...</td>
+    <td class="money" contenteditable="true" data-type="unit">0.00</td>
+    <td style="text-align:center;font-weight:800" contenteditable="true" data-type="qty">1</td>
+    <td class="money line-total">0.00</td>
+    <td class="hide-print" style="text-align:center">
+      <button type="button" onclick="deleteRow(this)">✖</button>
+    </td>
+  `;
+  tbody.appendChild(tr);
+  renumber();
+  recalcAll();
+}
+
+function deleteRow(btn){
+  const tr = btn.closest('tr');
+  if(tr) tr.remove();
+  renumber();
+  recalcAll();
+}
+
+document.addEventListener('input', (e)=>{
+  const table = document.getElementById('itemsTable');
+  if(table && table.contains(e.target)) recalcAll();
+});
+
+window.addEventListener('load', ()=>{
+  renumber();
+  recalcAll();
+});
+</script>
+
 </body>
 </html>
   `);
 
   w.document.close();
 }
+
 
 
 
