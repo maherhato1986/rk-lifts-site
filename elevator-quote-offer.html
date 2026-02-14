@@ -2620,6 +2620,26 @@ document.addEventListener('DOMContentLoaded', () => {
   .print-footer {
     page-break-inside: avoid;
   }
+/* تنسيق أرقام ملخص عرض السعر */
+#items-table td,
+#items-table th {
+  font-variant-numeric: tabular-nums;
+}
+
+#items-table td:nth-child(3),
+#items-table td:nth-child(4),
+#items-table th:nth-child(3),
+#items-table th:nth-child(4) {
+  text-align: right !important;
+  direction: ltr !important;
+  padding-right: 10px;
+  font-weight: 600;
+}
+
+#items-table tfoot td {
+  font-size: 12px;
+  font-weight: bold;
+}
 
 }
 </style>
@@ -2627,6 +2647,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
 
 
 
