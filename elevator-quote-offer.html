@@ -45,6 +45,43 @@
     margin-top:-6px;
     margin-bottom: 10px;
   }
+   /* =========================
+   ANNEX D – Cabin Components
+========================= */
+
+.annexD-wrap{
+  margin-top:10px;
+  border:1px solid #e5e7eb;
+  border-radius:10px;
+  padding:10px;
+  background:#ffffff;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.annexD-title{
+  text-align:center;
+  font-weight:800;
+  font-size:13px;
+  margin-bottom:8px;
+  color:#111827;
+}
+
+.annexD-grid{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap:6px;
+}
+
+.annexD-item{
+  background:#f9fafb;
+  border:1px solid #e5e7eb;
+  border-radius:6px;
+  padding:6px;
+  font-size:10.5px;
+  text-align:center;
+}
+
   .finish-grid{
     display:grid;
     grid-template-columns: repeat(3, 1fr);
@@ -1507,6 +1544,31 @@ All dimensions are subject to final site verification and approved shop drawings
 
 </div>
 
+<!-- =========================
+  ANNEX (D) | Cabin Components
+========================= -->
+
+<div class="annexD-wrap">
+
+  <div class="annexD-title">
+    ملحق (د): محتويات الكابينة
+  </div>
+
+  <div class="annexD-grid">
+
+    <div class="annexD-item">سقف ديكوري LED</div>
+    <div class="annexD-item">مروحة تهوية</div>
+    <div class="annexD-item">مرآة جانبية</div>
+    <div class="annexD-item">درابزين ستانلس</div>
+    <div class="annexD-item">لوحة أزرار COP</div>
+    <div class="annexD-item">شاشة عرض رقم الدور</div>
+    <div class="annexD-item">جرس إنذار</div>
+    <div class="annexD-item">إنتركم طوارئ</div>
+    <div class="annexD-item">أرضية حسب التشطيب المختار</div>
+
+  </div>
+
+</div>
 
 
 
@@ -2573,6 +2635,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
 
 
 
