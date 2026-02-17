@@ -5,239 +5,250 @@
     <title>إضافة / إدارة بيانات العميل</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <style>
-        body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: #f3f4f6;
-            margin: 0;
-            padding: 0;
-        }
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
 
-        .page-wrapper {
-            max-width: 1000px;
-            margin: 30px auto;
-            padding: 16px;
-        }
-
-        .card {
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
-            padding: 20px 22px;
-            margin-bottom: 20px;
-        }
-
-        .card-header {
-            border-bottom: 1px solid #e5e7eb;
-            margin-bottom: 14px;
-            padding-bottom: 8px;
-        }
-
-        .card-header h1 {
-            margin: 0;
-            font-size: 22px;
-            color: #111827;
-        }
-
-        .card-header p {
-            margin: 4px 0 0;
-            font-size: 13px;
-            color: #6b7280;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-            gap: 14px 16px;
-        }
-
-        label {
-            display: block;
-            font-size: 13px;
-            color: #374151;
-            margin-bottom: 4px;
-        }
-
-        input[type="text"],
-        input[type="number"],
-        input[type="email"],
-        select,
-        textarea {
-            width: 100%;
-            padding: 8px 10px;
-            border-radius: 8px;
-            border: 1px solid #d1d5db;
-            font-size: 14px;
-            box-sizing: border-box;
-        }
-
-        input:focus,
-        select:focus,
-        textarea:focus {
-            outline: none;
-            border-color: #10b981;
-            box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.25);
-        }
-
-        textarea {
-            min-height: 80px;
-            resize: vertical;
-        }
-
-        .hint {
-            font-size: 11px;
-            color: #9ca3af;
-            margin-top: 2px;
-        }
-
-        .section-title {
-            margin: 12px 0 4px;
-            font-size: 14px;
-            font-weight: 600;
-            color: #111827;
-        }
-
-        .actions {
-            margin-top: 18px;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: flex-start;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 999px;
-            border: none;
-            padding: 8px 18px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.05s;
-        }
-
-        .btn-primary {
-            background: #059669;
-            color: #ffffff;
-        }
-
-        .btn-primary:hover {
-            background: #047857;
-            box-shadow: 0 4px 10px rgba(4, 120, 87, 0.25);
-        }
-
-        .btn-secondary {
-            background: #e5e7eb;
-            color: #111827;
-        }
-
-        .btn-secondary:hover {
-            background: #d1d5db;
-        }
-
-        .btn-warning {
-            background: #fbbf24;
-            color: #111827;
-        }
-
-        .btn-danger {
-            background: #ef4444;
-            color: #ffffff;
-        }
-
-        .btn:active {
-            transform: translateY(1px);
-            box-shadow: none;
-        }
-
-        .customers-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            font-size: 13px;
-        }
-
-        .customers-table th,
-        .customers-table td {
-            border: 1px solid #e5e7eb;
-            padding: 6px 8px;
-            text-align: center;
-        }
-
-        .customers-table th {
-            background: #f9fafb;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 999px;
-            font-size: 11px;
-            background: #eef2ff;
-            color: #3730a3;
-        }
-
-        /* =================================================
-   Responsive – Mobile Support
-================================================= */
-
-/* منع تكبير iOS داخل الحقول */
-input, select, textarea, button {
-    font-size: 16px;
+:root{
+  --primary:#0f766e;
+  --primary-dark:#065f46;
+  --accent:#10b981;
+  --bg:#f1f5f9;
+  --card:#ffffff;
+  --border:#e2e8f0;
+  --text:#0f172a;
+  --muted:#64748b;
 }
 
-/* تغليف الجدول للتمرير الأفقي */
-.table-wrap {
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    border-radius: 12px;
+/* ============================= */
+/* Base */
+/* ============================= */
+
+body{
+    font-family:'Cairo', sans-serif;
+    background:var(--bg);
+    margin:0;
+    padding:0;
+    color:var(--text);
 }
 
-/* تحسين الأزرار داخل الجدول */
-.row-actions {
-    display: flex;
-    gap: 6px;
-    justify-content: center;
-    flex-wrap: wrap;
+.page-wrapper{
+    max-width:1100px;
+    margin:40px auto;
+    padding:20px;
 }
 
-/* الجوال */
-@media (max-width: 768px) {
+/* ============================= */
+/* Card */
+/* ============================= */
 
-    .page-wrapper {
-        margin: 12px auto;
-        padding: 12px;
-    }
-
-    .card {
-        padding: 16px;
-    }
-
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .actions {
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    .actions .btn {
-        width: 100%;
-    }
-
-    .customers-table {
-        min-width: 720px;
-    }
-
-    .card-header h1 {
-        font-size: 18px;
-    }
+.card{
+    background:var(--card);
+    border-radius:16px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.05);
+    padding:28px;
+    margin-bottom:28px;
+    border-top:5px solid var(--primary);
 }
 
-    </style>
+.card-header{
+    margin-bottom:18px;
+}
+
+.card-header h1{
+    margin:0;
+    font-size:22px;
+    font-weight:700;
+    color:var(--primary-dark);
+}
+
+.card-header p{
+    margin-top:6px;
+    font-size:14px;
+    color:var(--muted);
+}
+
+/* ============================= */
+/* Sections */
+/* ============================= */
+
+.section-title{
+    margin:20px 0 10px;
+    font-size:15px;
+    font-weight:700;
+    color:var(--primary-dark);
+    border-right:4px solid var(--accent);
+    padding-right:8px;
+}
+
+/* ============================= */
+/* Form */
+/* ============================= */
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:18px;
+}
+
+label{
+    font-size:13px;
+    font-weight:600;
+    margin-bottom:5px;
+    display:block;
+}
+
+input,
+select,
+textarea{
+    width:100%;
+    padding:10px 12px;
+    border-radius:10px;
+    border:1px solid var(--border);
+    background:#f8fafc;
+    font-family:'Cairo', sans-serif;
+    transition:all .2s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+    outline:none;
+    border-color:var(--accent);
+    background:#ffffff;
+    box-shadow:0 0 0 3px rgba(16,185,129,0.15);
+}
+
+textarea{
+    min-height:90px;
+    resize:vertical;
+}
+
+.hint{
+    font-size:11px;
+    color:var(--muted);
+    margin-top:4px;
+}
+
+/* ============================= */
+/* Buttons */
+/* ============================= */
+
+.actions{
+    margin-top:22px;
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+.btn{
+    border:none;
+    padding:10px 22px;
+    border-radius:999px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    transition:all .2s ease;
+}
+
+.btn-primary{
+    background:linear-gradient(135deg,var(--primary),var(--accent));
+    color:#fff;
+}
+
+.btn-primary:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(15,118,110,.25);
+}
+
+.btn-secondary{
+    background:#e2e8f0;
+}
+
+.btn-warning{
+    background:#facc15;
+}
+
+.btn-danger{
+    background:#ef4444;
+    color:#fff;
+}
+
+/* ============================= */
+/* Table */
+/* ============================= */
+
+.table-wrap{
+    overflow-x:auto;
+}
+
+.customers-table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:16px;
+    font-size:13px;
+    background:white;
+    border-radius:12px;
+    overflow:hidden;
+}
+
+.customers-table thead{
+    background:var(--primary-dark);
+    color:white;
+}
+
+.customers-table th,
+.customers-table td{
+    padding:10px;
+    text-align:center;
+}
+
+.customers-table tbody tr{
+    border-bottom:1px solid var(--border);
+    transition:background .2s;
+}
+
+.customers-table tbody tr:hover{
+    background:#f0fdfa;
+}
+
+.badge{
+    padding:4px 10px;
+    border-radius:999px;
+    font-size:11px;
+    font-weight:600;
+    background:#ecfdf5;
+    color:var(--primary-dark);
+}
+
+/* ============================= */
+/* Responsive */
+/* ============================= */
+
+@media(max-width:768px){
+
+  .page-wrapper{
+      margin:15px auto;
+      padding:12px;
+  }
+
+  .card{
+      padding:18px;
+  }
+
+  .actions{
+      flex-direction:column;
+  }
+
+  .actions .btn{
+      width:100%;
+  }
+
+  .customers-table{
+      min-width:750px;
+  }
+}
+</style>
+
 </head>
 <body>
 <div class="page-wrapper">
@@ -666,6 +677,7 @@ if(action === 'lift_plan'){
     // عند تحميل الصفحة لأول مرة: عرض العملاء الموجودين (إن وجدوا)
     renderTable();
 </script>
+
 
 
 
