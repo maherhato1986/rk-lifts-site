@@ -10,414 +10,255 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
- /* ===============================
-   تحسين الواجهة العامة
-=============================== */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+
+:root{
+  --primary:#0f766e;
+  --primary-dark:#064e3b;
+  --accent:#10b981;
+  --bg:#f1f5f9;
+  --card:#ffffff;
+  --border:#e2e8f0;
+  --text:#0f172a;
+  --muted:#64748b;
+}
+
+/* =====================================
+   Base
+===================================== */
 body{
-  background:#f3f4f6;
+  margin:0;
+  font-family:'Cairo',sans-serif;
+  background:var(--bg);
+  color:var(--text);
 }
 
 .container{
-  max-width:1100px;
-  margin:30px auto;
-  background:#ffffff;
-  padding:35px 40px;
-  border-radius:14px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+  max-width:1200px;
+  margin:40px auto;
+  padding:30px;
 }
 
-/* ===============================
-   العنوان الرئيسي
-=============================== */
+/* =====================================
+   Header
+===================================== */
 .page-header{
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:white;
+  padding:28px;
+  border-radius:18px;
+  margin-bottom:30px;
   text-align:center;
-  margin-bottom:35px;
+  box-shadow:0 12px 35px rgba(0,0,0,.08);
 }
 
 .page-header h2{
-  font-size:26px;
-  font-weight:800;
-  color:#0f766e;
+  margin:0;
+  font-size:24px;
+  font-weight:900;
+  letter-spacing:.5px;
 }
 
 .page-header p{
+  margin-top:6px;
   font-size:13px;
-  color:#6b7280;
-}
-  .print-logo{ width:38px }
-.print-header{
-  margin-bottom: 16px;
+  opacity:.9;
 }
 
-
-/* ===============================
-   الأقسام (Cards)
-=============================== */
+/* =====================================
+   Sections (Cards)
+===================================== */
 .section{
-  background:#f9fafb;
-  border:1px solid #e5e7eb;
-  border-radius:12px;
-  padding:25px;
-  margin-bottom:25px;
+  background:var(--card);
+  border-radius:16px;
+  padding:26px;
+  margin-bottom:26px;
+  box-shadow:0 8px 28px rgba(0,0,0,.05);
+  border-top:5px solid var(--primary);
 }
 
 .section h3{
-  margin:0 0 18px;
-  font-size:18px;
-  font-weight:700;
-  color:#0f766e;
-  border-bottom:1px solid #e5e7eb;
+  margin:0 0 18px 0;
+  font-size:17px;
+  font-weight:800;
+  color:var(--primary-dark);
+  border-bottom:1px solid var(--border);
   padding-bottom:8px;
 }
 
-/* ===============================
-   Grid احترافي
-=============================== */
+/* =====================================
+   Grid
+===================================== */
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
   gap:18px 22px;
 }
 
-/* ===============================
-   الحقول
-=============================== */
+/* =====================================
+   Inputs
+===================================== */
 label{
-  display:block;
   font-size:13px;
-  font-weight:600;
-  color:#374151;
+  font-weight:700;
   margin-bottom:6px;
+  display:block;
 }
 
 input,
 select,
 textarea{
   width:100%;
-  padding:10px 12px;
-  border-radius:8px;
-  border:1px solid #d1d5db;
-  font-family:"Cairo",sans-serif;
-  font-size:14px;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:#f8fafc;
+  font-family:'Cairo',sans-serif;
+  transition:.25s ease;
 }
 
 input:focus,
 select:focus,
 textarea:focus{
   outline:none;
-  border-color:#0f766e;
-  box-shadow:0 0 0 2px rgba(15,118,110,0.15);
+  border-color:var(--accent);
+  background:#ffffff;
+  box-shadow:0 0 0 3px rgba(16,185,129,.15);
 }
 
 textarea{
-  min-height:90px;
+  min-height:110px;
   resize:vertical;
 }
 
-/* ===============================
-   أزرار
-=============================== */
+/* =====================================
+   Buttons
+===================================== */
 button{
-  background:#0f766e;
-  color:#fff;
+  background:linear-gradient(135deg,var(--primary),var(--accent));
+  color:white;
   border:none;
-  padding:10px 18px;
-  border-radius:10px;
+  padding:12px 22px;
+  border-radius:999px;
   font-size:14px;
-  font-weight:600;
+  font-weight:700;
   cursor:pointer;
-  transition:0.25s;
+  transition:.25s ease;
 }
 
 button:hover{
-  background:#115e59;
+  transform:translateY(-2px);
+  box-shadow:0 8px 22px rgba(15,118,110,.25);
 }
 
-/* ===============================
-   بيانات العميل
-=============================== */
+/* أزرار ثانوية */
+button.secondary{
+  background:#e2e8f0;
+  color:#111;
+}
+
+/* =====================================
+   Customer Info Box
+===================================== */
 #customerInfo{
-  background:#ecfeff;
-  border:1px dashed #0f766e;
-  padding:15px 18px;
-  border-radius:10px;
+  background:#f0fdfa;
+  border:1px dashed var(--primary);
+  padding:16px;
+  border-radius:14px;
   font-size:14px;
 }
 
 #customerInfo .user-data{
-  color:#0f766e;
-  font-weight:700;
+  font-weight:800;
+  color:var(--primary-dark);
 }
 
-/* ===============================
-   جدول السجل
-=============================== */
+/* =====================================
+   Tables
+===================================== */
 table{
-  border-radius:10px;
+  width:100%;
+  border-collapse:collapse;
+  border-radius:12px;
   overflow:hidden;
   font-size:13px;
+  background:white;
 }
 
 thead{
-  background:#0f766e;
-  color:#fff;
+  background:var(--primary-dark);
+  color:white;
 }
 
 thead th{
-  font-weight:600;
+  padding:10px;
+  font-weight:800;
+}
+
+tbody td{
+  padding:10px;
+  border-bottom:1px solid var(--border);
 }
 
 tbody tr:nth-child(even){
-  background:#f9fafb;
-}
-
-/* ===============================
-   تحسين الطباعة
-=============================== */
-@media print{
-  body{
-    background:#fff;
-  }
-
-  /* ===============================
-     شعار شفاف أثناء الطباعة
-  =============================== */
-  body::before{
-    content:"";
-    position:fixed;
-    top:50%;
-    left:50%;
-    width:420px;
-    height:420px;
-    background:url('/public/images/logo.png') no-repeat center center;
-    background-size:contain;
-    opacity:0.05;   /* درجة الشفافية */
-    transform:translate(-50%, -50%);
-    z-index:-1;
-  }
-
-  .container{
-    box-shadow:none;
-    border-radius:0;
-    padding:0;
-  }
-
-  .section{
-    border:none;
-    background:#fff;
-    padding:0;
-  }
-}
-.cover-title{
-  font-size:28px;
-  letter-spacing:0.5px;
-}
-.cover-line{
-  width:120px;
-  height:2px;
-  background:#0f766e;
-  margin:14px auto 25px;
-}
-.contract p{
-  margin: 4px 0;
-}
-.contract p strong{
-  color:#0f766e;
-}
-.contract-value{
   background:#f8fafc;
-  border:1px solid #e5e7eb;
-  border-radius:10px;
-  padding:18px;
-  margin:25px 0;
-}
-.contract-value b{
-  color:#0f766e;
 }
 
-  .contract-summary{
-  background:#f8fafc;
-  border:1px solid #e5e7eb;
-  border-radius:12px;
+tbody tr:hover{
+  background:#ecfdf5;
+}
+
+/* =====================================
+   Contract Summary Box
+===================================== */
+.contract-summary{
+  background:#f0fdfa;
+  border:1px solid #99f6e4;
+  border-radius:14px;
   padding:18px 20px;
-  margin:22px 0;
 }
 
 .contract-summary h4{
-  margin:0 0 14px;
+  margin:0 0 12px;
   text-align:center;
-  font-size:16px;
-  font-weight:700;
-  color:#0f766e;
-  border-bottom:1px solid #e5e7eb;
-  padding-bottom:8px;
+  font-weight:900;
+  color:var(--primary-dark);
 }
 
 .contract-summary table{
-  width:100%;
-  border-collapse:collapse;
   font-size:14px;
 }
 
-.contract-summary td{
-  padding:8px 6px;
-}
-
-.contract-summary tr:not(:last-child){
-  border-bottom:1px dashed #e5e7eb;
-}
-
-.contract-summary .label{
-  color:#374151;
-}
-
-.contract-summary .value{
-  text-align:left;
-  font-weight:600;
-}
-
 .contract-summary .total{
-  font-size:15px;
-  font-weight:800;
-  color:#0f766e;
+  font-size:16px;
+  font-weight:900;
+  color:var(--primary-dark);
 }
 
-.contract-summary .words{
-  margin-top:10px;
-  font-size:13px;
-  color:#374151;
-}
+/* =====================================
+   Responsive
+===================================== */
+@media(max-width:768px){
 
-/* =================================================
-   Mobile Responsive Support – RKL
-================================================= */
-
-/* منع تكبير iOS داخل الحقول */
-input,
-select,
-textarea,
-button {
-  font-size: 16px;
-  touch-action: manipulation;
-}
-
-/* لف الجداول للتمرير الأفقي */
-.table-wrap {
-  width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* ===============================
-   Mobile Layout
-=============================== */
-@media (max-width: 768px) {
-
-  /* الحاوية الرئيسية */
-  .container {
-    margin: 10px auto;
-    padding: 16px 14px;
-    border-radius: 10px;
+  .container{
+    padding:16px;
+    margin:15px auto;
   }
 
-  /* العنوان */
-  .page-header {
-    margin-bottom: 20px;
+  .grid{
+    grid-template-columns:1fr;
   }
 
-  .page-header h2 {
-    font-size: 20px;
-    line-height: 1.4;
+  button{
+    width:100%;
   }
 
-  .page-header p {
-    font-size: 12px;
-  }
-
-  /* الكروت */
-  .section {
-    padding: 16px;
-    margin-bottom: 18px;
-  }
-
-  .section h3 {
-    font-size: 16px;
-    margin-bottom: 14px;
-  }
-
-  /* النماذج – عمود واحد */
-  .grid {
-    grid-template-columns: 1fr !important;
-    gap: 12px;
-  }
-
-  /* الحقول */
-  label {
-    font-size: 12px;
-  }
-
-  input,
-  select,
-  textarea {
-    padding: 12px;
-    font-size: 16px;
-  }
-
-  textarea {
-    min-height: 110px;
-  }
-
-  /* الأزرار */
-  button {
-    width: 100%;
-    padding: 12px;
-    font-size: 15px;
-    border-radius: 10px;
-  }
-
-  /* أزرار متعددة */
-  .actions {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  /* الجداول */
-  table {
-    min-width: 780px;
-  }
-
-  /* مراجعة العقد */
-  #reviewBox p {
-    font-size: 14px;
-    line-height: 1.6;
-  }
-
-  /* ترويسة الطباعة داخل المعاينة */
-  .print-header h1 {
-    font-size: 18px;
+  table{
+    min-width:800px;
   }
 }
-
-/* ===============================
-   Small Phones
-=============================== */
-@media (max-width: 420px) {
-
-  .page-header h2 {
-    font-size: 18px;
-  }
-
-  .section h3 {
-    font-size: 15px;
-  }
-
-  button {
-    font-size: 14px;
-  }
-}
-
-
 </style>
+
 </head>
 
 <body>
