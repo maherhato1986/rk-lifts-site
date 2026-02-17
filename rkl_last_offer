@@ -1,0 +1,1886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>RKL | Elevator Quote Builder (Pro)</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg: #0b1220;
+      --panel:#0f1a2e;
+      --card:#101f3a;
+      --card2:#0f1a2e;
+      --stroke: rgba(255,255,255,.10);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.65);
+      --muted2: rgba(255,255,255,.45);
+      --primary:#44d19d;
+      --primary2:#2fb98a;
+      --warning:#ffcc66;
+      --danger:#ff6b6b;
+      --shadow: 0 14px 50px rgba(0,0,0,.45);
+      --radius: 18px;
+      --radius2: 14px;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(1200px 800px at 20% 10%, rgba(68,209,157,.16), transparent 60%),
+        radial-gradient(900px 650px at 80% 20%, rgba(79,142,255,.14), transparent 60%),
+        linear-gradient(180deg, #070b14 0%, #0b1220 100%);
+      color:var(--text);
+    }
+
+    a{ color:inherit; }
+
+    .topbar{
+      position: sticky;
+      top:0;
+      z-index:20;
+      background: rgba(11,18,32,.75);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--stroke);
+    }
+    .topbar-inner{
+      max-width: 1240px;
+      margin:0 auto;
+      padding: 14px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width: 260px;
+    }
+    .logo{
+      width:40px;height:40px;
+      border-radius: 12px;
+      background:
+        radial-gradient(16px 16px at 35% 30%, rgba(255,255,255,.35), transparent 60%),
+        linear-gradient(135deg, rgba(68,209,157,1), rgba(79,142,255,1));
+      box-shadow: 0 12px 30px rgba(68,209,157,.22);
+    }
+    .brand h1{
+      font-size: 14px;
+      margin:0;
+      letter-spacing:.2px;
+    }
+    .brand p{
+      margin:2px 0 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .top-actions{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .pill{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding: 8px 10px;
+      border: 1px solid var(--stroke);
+      border-radius: 999px;
+      background: rgba(255,255,255,.04);
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .dot{
+      width:8px;height:8px;border-radius:50%;
+      background: var(--primary);
+      box-shadow: 0 0 0 6px rgba(68,209,157,.12);
+    }
+
+    .container{
+      max-width: 1240px;
+      margin: 18px auto 56px;
+      padding: 0 16px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.35fr .95fr;
+      gap: 14px;
+    }
+    @media (max-width: 1050px){
+      .grid{ grid-template-columns: 1fr; }
+      .brand{ min-width: unset; }
+    }
+
+    .card{
+      border:1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(16,31,58,.92), rgba(15,26,46,.92));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .card-header{
+      padding: 16px 16px 10px;
+      border-bottom:1px solid var(--stroke);
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .card-header h2{
+      margin:0;
+      font-size: 14px;
+      letter-spacing:.2px;
+    }
+    .card-header .sub{
+      margin:4px 0 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+      max-width: 820px;
+    }
+
+    .card-body{ padding: 14px 16px 16px; }
+
+    .section{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.03);
+      border-radius: var(--radius2);
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    .section-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin: 0 0 10px 0;
+    }
+    .section-title h3{
+      margin:0;
+      font-size: 13px;
+      letter-spacing: .2px;
+    }
+    .section-title span{
+      font-size: 12px;
+      color: var(--muted2);
+    }
+
+    .form-grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:10px;
+    }
+    .field{ grid-column: span 6; }
+    .field.span-12{ grid-column: span 12; }
+    .field.span-4{ grid-column: span 4; }
+    .field.span-3{ grid-column: span 3; }
+    .field.span-2{ grid-column: span 2; }
+    @media (max-width: 900px){
+      .field{ grid-column: span 12; }
+      .field.span-4,.field.span-3,.field.span-2{ grid-column: span 12; }
+    }
+
+    label{
+      display:block;
+      font-size: 12px;
+      color: var(--muted);
+      margin: 0 0 6px 0;
+    }
+    input, select, textarea{
+      width:100%;
+      border-radius: 12px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      color: var(--text);
+      padding: 10px 11px;
+      outline:none;
+      font-size: 13px;
+    }
+    input:focus, select:focus, textarea:focus{
+      border-color: rgba(68,209,157,.55);
+      box-shadow: 0 0 0 4px rgba(68,209,157,.12);
+    }
+    textarea{ min-height: 110px; resize: vertical; }
+
+    .hint{
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--muted2);
+      line-height: 1.35;
+    }
+
+    .row{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap: wrap;
+    }
+
+    .btn{
+      border:1px solid transparent;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor:pointer;
+      color: #0b1220;
+      background: #fff;
+      transition: transform .08s ease, opacity .15s ease, background .15s ease;
+      user-select:none;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btn.primary{ background: linear-gradient(135deg, var(--primary), #53d7ff); }
+    .btn.ghost{
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      border-color: rgba(255,255,255,.12);
+    }
+    .btn.danger{
+      background: rgba(255,107,107,.15);
+      color: #ffd6d6;
+      border-color: rgba(255,107,107,.35);
+    }
+    .btn.small{ padding: 8px 10px; font-size: 12px; border-radius: 11px; }
+
+    .kpi{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    .kpi .box{
+      border:1px solid var(--stroke);
+      background: rgba(0,0,0,.16);
+      border-radius: 14px;
+      padding: 12px;
+    }
+    .kpi .box .t{ font-size: 12px; color: var(--muted); }
+    .kpi .box .v{ margin-top: 6px; font-size: 16px; font-weight: 700; letter-spacing: .2px; }
+    .kpi .box .s{ margin-top: 6px; font-size: 12px; color: var(--muted2); }
+
+    table{
+      width:100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 14px;
+      border:1px solid var(--stroke);
+      background: rgba(0,0,0,.10);
+    }
+    th, td{
+      padding: 9px 10px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      font-size: 12px;
+      text-align:left;
+      vertical-align: top;
+      color: rgba(255,255,255,.86);
+    }
+    th{
+      color: rgba(255,255,255,.92);
+      background: rgba(255,255,255,.06);
+      font-weight: 700;
+      letter-spacing: .15px;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    tr:hover td{ background: rgba(255,255,255,.03); }
+    .table-wrap{
+      max-height: 360px;
+      overflow:auto;
+      border-radius: 14px;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* Lock screen */
+    .lock{
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(1000px 700px at 20% 10%, rgba(68,209,157,.18), transparent 55%),
+        radial-gradient(900px 600px at 80% 20%, rgba(79,142,255,.16), transparent 55%),
+        rgba(4,7,14,.94);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 18px;
+      z-index: 999;
+    }
+    .lock-card{
+      width: min(520px, 100%);
+      border:1px solid var(--stroke);
+      border-radius: 22px;
+      background: rgba(15,26,46,.85);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .lock-head{
+      padding: 18px 18px 12px;
+      border-bottom: 1px solid var(--stroke);
+    }
+    .lock-head h2{ margin:0; font-size: 16px; }
+    .lock-head p{ margin: 6px 0 0 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .lock-body{ padding: 16px 18px 18px; }
+    .msg{ margin-top: 10px; font-size: 12px; color: var(--muted); }
+    .msg.ok{ color: rgba(68,209,157,.95); }
+    .msg.err{ color: rgba(255,107,107,.95); }
+
+    .muted{ color: var(--muted); }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+  </style>
+</head>
+
+<body>
+
+  <!-- Pricing Lock -->
+  <div class="lock" id="pricingLock">
+    <div class="lock-card">
+      <div class="lock-head">
+        <div class="row" style="justify-content:space-between;">
+          <div class="row" style="gap:10px;">
+            <div class="logo" style="width:44px;height:44px;border-radius:14px;"></div>
+            <div>
+              <h2>RKL Pricing Access</h2>
+              <p>Enter the password to unlock pricing settings and calculations. Customer data & EN81 table can still be viewed.</p>
+            </div>
+          </div>
+          <span class="badge">LocalStorage protected</span>
+        </div>
+      </div>
+      <div class="lock-body">
+        <div class="row" style="align-items:flex-end;">
+          <div style="flex:1; min-width: 220px;">
+            <label for="rklPass">Password</label>
+            <input id="rklPass" type="password" placeholder="••••••••" autocomplete="current-password" />
+          </div>
+          <button class="btn primary" id="rklEnterBtn" type="button">Unlock</button>
+          <button class="btn ghost" id="rklClearBtn" type="button">Clear</button>
+        </div>
+        <div class="msg" id="rklLockMsg"></div>
+
+        <div class="hint" style="margin-top:10px;">
+          Tip: You can keep pricing locked when sharing the page with others.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <h1>RKL Elevator Quote Builder (Pro)</h1>
+          <p>FUJI MRL (Phase-1) • EN81 sizes • Saved quotes & print-ready offer</p>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <div class="pill"><span class="dot"></span> Offline-ready • Stored on this device</div>
+        <button class="btn ghost small" id="btnScrollQuotes" type="button">Quotes Registry</button>
+        <button class="btn ghost small" id="btnLockNow" type="button">Lock Pricing</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="grid">
+
+      <!-- Left: Form -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2>Quote Inputs</h2>
+            <p class="sub">
+              Select a customer (optional), then choose brand/capacity/speed/stops. Use EN81 table to auto-fill dimensions.
+              You can build multiple elevator selections (No.ELE) and store everything into the quote snapshot.
+            </p>
+          </div>
+          <span class="badge">Key storage: <span class="mono">rkl_customers</span> • <span class="mono">rkl_quotes</span></span>
+        </div>
+
+        <div class="card-body">
+          <form id="quote-form">
+
+            <!-- Customer -->
+            <div class="section">
+              <div class="section-title">
+                <h3>1) Customer & Project</h3>
+                <span>Optional (pulled from customer manager)</span>
+              </div>
+
+              <div class="form-grid">
+                <div class="field span-12">
+                  <label for="customer_select">Select customer from registry (this device)</label>
+                  <select id="customer_select">
+                    <option value="">— Select (optional) —</option>
+                  </select>
+                  <div class="hint">This list is loaded from <span class="mono">localStorage: rkl_customers</span>.</div>
+                </div>
+
+                <div class="field span-6">
+                  <label for="customer_name">Customer name (editable)</label>
+                  <input id="customer_name" type="text" placeholder="e.g., ABC Contracting Co." />
+                </div>
+
+                <div class="field span-6">
+                  <label>Project name & location</label>
+                  <input id="project_name" type="text" placeholder="e.g., Office Tower Project" />
+                  <div style="height:8px"></div>
+                  <input id="project_location" type="text" placeholder="e.g., Riyadh – Al Olaya" />
+                </div>
+              </div>
+
+              <div class="section" id="customer-details-card" style="display:none; margin-top:12px;">
+                <div class="section-title">
+                  <h3>Customer Details</h3>
+                  <span>Auto-filled</span>
+                </div>
+                <div class="form-grid" id="customer-details"></div>
+              </div>
+            </div>
+
+            <!-- Elevator Specs -->
+            <div class="section">
+              <div class="section-title">
+                <h3>2) Elevator Specs</h3>
+                <span>FUJI MRL (Phase-1)</span>
+              </div>
+
+              <div class="form-grid">
+                <div class="field span-4">
+                  <label for="brand">Brand</label>
+                  <select id="brand" required>
+                    <option value="fuji_mrl">FUJI (MRL)</option>
+                  </select>
+                </div>
+
+                <div class="field span-4">
+                  <label for="capacity">Capacity (kg)</label>
+                  <select id="capacity" required>
+                    <option value="">Select capacity…</option>
+                  </select>
+                </div>
+
+                <div class="field span-4">
+                  <label for="speed">Speed (m/s)</label>
+                  <select id="speed" required disabled>
+                    <option value="">Select speed…</option>
+                  </select>
+                </div>
+
+                <div class="field span-4">
+                  <label for="floors">Stops</label>
+                  <input id="floors" type="number" min="2" value="2" required />
+                  <div class="hint">Base price includes 2 stops. Extra stops are calculated per stop.</div>
+                </div>
+
+                <div class="field span-4">
+                  <label for="floorHeight">Floor height (mm)</label>
+                  <input id="floorHeight" type="number" step="10" value="3500" />
+                  <div class="hint">Used to calculate total travel height.</div>
+                </div>
+
+                <div class="field span-4">
+                  <label for="travelHeight">Travel height (mm)</label>
+                  <input id="travelHeight" type="number" readonly placeholder="Auto calculated" />
+                  <div class="hint">TH = (Stops - 1) × FH</div>
+                </div>
+
+                <div class="field span-12">
+                  <label for="doors">Door configuration (optional)</label>
+                  <input id="doors" type="text" placeholder="e.g., 900mm Center Opening / 2-Speed / Telescopic…" />
+                </div>
+              </div>
+            </div>
+
+            <!-- EN81 Table -->
+            <div class="section">
+              <div class="section-title">
+                <h3>3) EN81 Standard Sizes</h3>
+                <span>Click a row to apply sizes</span>
+              </div>
+
+              <div class="table-wrap">
+                <table id="en81Table">
+                  <thead>
+                    <tr>
+                      <th>Capacity (kg)</th>
+                      <th>Cabin (mm)</th>
+                      <th>Shaft required (mm)</th>
+                      <th>Door (mm)</th>
+                      <th>Pit</th>
+                      <th>OH</th>
+                      <th>Apply</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- data-* used to apply -->
+                    <tr data-capacity="450" data-cabin="1100x1000" data-shaft="1700x1500" data-door="700" data-pit="1200" data-oh="3500">
+                      <td>450</td><td>1100 × 1000</td><td>1700 × 1500</td><td>700</td><td>1200</td><td>3500</td>
+                      <td><button class="btn ghost small" type="button">Apply</button></td>
+                    </tr>
+                    <tr data-capacity="630" data-cabin="1100x1400" data-shaft="1700x2000" data-door="800" data-pit="1400" data-oh="3800">
+                      <td>630</td><td>1100 × 1400</td><td>1700 × 2000</td><td>800</td><td>1400</td><td>3800</td>
+                      <td><button class="btn ghost small" type="button">Apply</button></td>
+                    </tr>
+                    <tr data-capacity="800" data-cabin="1350x1400" data-shaft="1950x2100" data-door="900" data-pit="1500" data-oh="4000">
+                      <td>800</td><td>1350 × 1400</td><td>1950 × 2100</td><td>900</td><td>1500</td><td>4000</td>
+                      <td><button class="btn ghost small" type="button">Apply</button></td>
+                    </tr>
+                    <tr data-capacity="1000" data-cabin="1600x1400" data-shaft="2200x2100" data-door="900" data-pit="1600" data-oh="4200">
+                      <td>1000</td><td>1600 × 1400</td><td>2200 × 2100</td><td>900</td><td>1600</td><td>4200</td>
+                      <td><button class="btn ghost small" type="button">Apply</button></td>
+                    </tr>
+                    <tr data-capacity="1275" data-cabin="2000x1400" data-shaft="2600x2100" data-door="1100" data-pit="1700" data-oh="4500">
+                      <td>1275</td><td>2000 × 1400</td><td>2600 × 2100</td><td>1100</td><td>1700</td><td>4500</td>
+                      <td><button class="btn ghost small" type="button">Apply</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="hint" style="margin-top:10px;">
+                When you apply an EN81 row, sizes will be assigned to the “Per-Elevator Size Selection” table below.
+              </div>
+            </div>
+
+            <!-- Per Elevator selection -->
+            <div class="section" id="shaft-table-container" style="display:none;">
+              <div class="section-title">
+                <h3>4) Per-Elevator Size Selection</h3>
+                <span>Build multiple elevators under one quote</span>
+              </div>
+
+              <div class="row" style="margin-bottom:10px;">
+                <button class="btn ghost" type="button" id="addElevatorRow">+ Add Elevator (No.ELE)</button>
+                <button class="btn danger" type="button" id="clearElevatorRows">Clear</button>
+                <span class="hint" style="margin:0;">Rows are stored inside the quote snapshot.</span>
+              </div>
+
+              <div class="table-wrap" style="max-height:280px;">
+                <table id="shaft-table">
+                  <thead>
+                    <tr>
+                      <th>No.ELE</th>
+                      <th>Shaft</th>
+                      <th>Cabin</th>
+                      <th>Door</th>
+                      <th>Pit</th>
+                      <th>OH</th>
+                      <th>FH</th>
+                      <th>TH</th>
+                      <th>Notes</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Pricing -->
+            <div class="section" id="pricingSection">
+              <div class="section-title">
+                <h3>5) Pricing Settings</h3>
+                <span>Locked until password entered</span>
+              </div>
+
+              <div class="form-grid">
+                <div class="field span-4">
+                  <label for="currency">Currency</label>
+                  <select id="currency">
+                    <option value="SAR">SAR (Saudi Riyal)</option>
+                    <option value="USD">USD (US Dollar)</option>
+                  </select>
+                </div>
+
+                <div class="field span-4">
+                  <label for="vat_rate">VAT rate (%)</label>
+                  <input id="vat_rate" type="number" value="15" step="0.1" />
+                </div>
+
+                <div class="field span-4">
+                  <label>VAT display</label>
+                  <div class="row" style="gap:10px;">
+                    <label class="badge" style="cursor:pointer;">
+                      <input type="checkbox" id="include_vat" checked style="width:auto;margin:0;">
+                      Include VAT in totals
+                    </label>
+                  </div>
+                </div>
+
+                <div class="field span-3">
+                  <label for="shippingCost">Shipping / lift</label>
+                  <input id="shippingCost" type="number" value="18000" step="100" />
+                </div>
+                <div class="field span-3">
+                  <label for="clearanceCost">Clearance / lift</label>
+                  <input id="clearanceCost" type="number" value="4500" step="100" />
+                </div>
+                <div class="field span-3">
+                  <label for="installationCost">Installation / lift</label>
+                  <input id="installationCost" type="number" value="22000" step="100" />
+                </div>
+                <div class="field span-3">
+                  <label for="sparesCost">Spares / lift</label>
+                  <input id="sparesCost" type="number" value="3500" step="100" />
+                </div>
+
+                <div class="field span-6">
+                  <label for="overheadPercent">Overhead (%)</label>
+                  <input id="overheadPercent" type="number" value="12" step="0.5" />
+                </div>
+                <div class="field span-6">
+                  <label for="profitPercent">Profit (%)</label>
+                  <input id="profitPercent" type="number" value="25" step="0.5" />
+                </div>
+
+                <div class="field span-6">
+                  <label for="extraStopCost">Extra stop cost (per stop / lift)</label>
+                  <input id="extraStopCost" type="number" value="4500" step="100" />
+                  <div class="hint">Applies when Stops > 2.</div>
+                </div>
+
+                <div class="field span-6">
+                  <label for="cabinDesign">Cabin design upgrade (optional)</label>
+                  <select id="cabinDesign">
+                    <option value="SS304-Hairline">SS304 Hairline (0)</option>
+                    <option value="SS304-Mirror">SS304 Mirror (+2,500)</option>
+                    <option value="Mirror-SS304">Mirror + SS304 (+4,000)</option>
+                    <option value="Wood-SS304">Wood + SS304 (+6,000)</option>
+                    <option value="Custom">Custom (+10,000)</option>
+                  </select>
+                </div>
+
+                <div class="field span-12">
+                  <label for="notes">Notes (internal)</label>
+                  <textarea id="notes" placeholder="Any special remarks, assumptions, exclusions…"></textarea>
+                </div>
+              </div>
+
+              <div class="row" style="margin-top:12px;">
+                <button type="button" class="btn primary" id="calc-btn">Calculate Quote</button>
+                <button type="reset" class="btn ghost" id="reset-btn">Reset</button>
+                <span class="badge">Stops pricing • VAT • Saved snapshot</span>
+              </div>
+
+              <div class="hint" style="margin-top:8px;">
+                This tool stores quotes locally on your device. Always verify before sending an official offer.
+              </div>
+            </div>
+
+          </form>
+        </div>
+      </div>
+
+      <!-- Right: Results -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2>Results & Export</h2>
+            <p class="sub">After calculation, you can copy the text summary, save to registry, export CSV, or print a formal offer.</p>
+          </div>
+          <span class="badge">Print-ready</span>
+        </div>
+
+        <div class="card-body">
+
+          <div class="section">
+            <div class="section-title">
+              <h3>Numeric KPIs</h3>
+              <span>Per-lift and total</span>
+            </div>
+
+            <div class="kpi" id="kpiBoxes">
+              <div class="box">
+                <div class="t">Total (with VAT)</div>
+                <div class="v" id="kpiTotal">—</div>
+                <div class="s" id="kpiTotalSub">—</div>
+              </div>
+              <div class="box">
+                <div class="t">Unit price (with VAT)</div>
+                <div class="v" id="kpiUnit">—</div>
+                <div class="s" id="kpiUnitSub">—</div>
+              </div>
+            </div>
+
+            <div class="hint" style="margin-top:10px;" id="numbersHint">
+              Select capacity & speed, then click <b>Calculate Quote</b>.
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">
+              <h3>Text Summary</h3>
+              <span>Copy/paste into Word offer</span>
+            </div>
+            <textarea id="quote_text" placeholder="Text summary will appear here…"></textarea>
+            <div class="row" style="margin-top:10px;">
+              <button type="button" class="btn ghost" id="copy-btn">Copy Text</button>
+              <button type="button" class="btn ghost" id="open-print-preview">Open Print Preview</button>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">
+              <h3>Quotes Registry (This Device)</h3>
+              <span>Save / Export / Print selected</span>
+            </div>
+
+            <div class="row" style="margin-bottom:10px;">
+              <button type="button" class="btn primary" id="save-quote-btn">Save Current Quote</button>
+              <button type="button" class="btn ghost" id="export-quotes-btn">Export CSV</button>
+              <button type="button" class="btn ghost" id="printOfferButton">Print Selected Offer</button>
+            </div>
+
+            <div class="table-wrap" id="quotesWrap" style="max-height: 420px;">
+              <table id="quotes-table">
+                <thead>
+                  <tr>
+                    <th style="width:40px;"></th>
+                    <th>#</th>
+                    <th>Quote No.</th>
+                    <th>Date</th>
+                    <th>Customer</th>
+                    <th>Project</th>
+                    <th>Specs</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+
+            <div class="hint" style="margin-top:10px;">
+              Printing uses:
+              <span class="mono">rkl_current_quote_index</span> + <span class="mono">rkl_last_offer</span>
+              for compatibility with your existing print templates.
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+/* =========================================================
+   Compatibility keys (KEEP SAME as your current system)
+========================================================= */
+const CUSTOMER_STORAGE_KEY = 'rkl_customers';
+const QUOTES_STORAGE_KEY   = 'rkl_quotes';
+const LS_LAST_OFFER        = 'rkl_last_offer';
+const LS_CURRENT_INDEX     = 'rkl_current_quote_index';
+
+/* =========================================================
+   Demo price list (Phase-1: FUJI MRL)
+   Structure: capacity -> speed -> basePriceSAR (2 stops)
+   You can replace these with your real list later.
+========================================================= */
+const BRAND_DATA = {
+  fuji_mrl: {
+    label: "FUJI (MRL)",
+    currency: "SAR",
+    priceList: {
+      450:  { "1.0": 178000, "1.6": 188000 },
+      630:  { "1.0": 186000, "1.6": 198000 },
+      800:  { "1.0": 195000, "1.6": 210000 },
+      1000: { "1.0": 215000, "1.6": 232000 },
+      1275: { "1.0": 245000, "1.6": 265000 }
+    }
+  }
+};
+
+const CABIN_DESIGN_ADDITIONAL = {
+  "SS304-Hairline": 0,
+  "SS304-Mirror": 2500,
+  "Mirror-SS304": 4000,
+  "Wood-SS304": 6000,
+  "Custom": 10000
+};
+
+/* =========================================================
+   State
+========================================================= */
+let pricingUnlocked = false;
+let lastQuoteSnapshot = null;
+let currentBrandKey = 'fuji_mrl';
+let selectedCustomer = null;
+
+let appliedEn81 = null; // last applied EN81 row data
+
+/* =========================================================
+   Helpers
+========================================================= */
+function esc(s){
+  return String(s ?? '').replace(/[&<>"']/g, m => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
+  }[m]));
+}
+
+function n(x){ return Number(x || 0); }
+
+function formatCurrency(value, currency){
+  const val = n(value);
+  try{
+    return new Intl.NumberFormat('en-US', { style:'currency', currency: currency || 'SAR', maximumFractionDigits: 2 }).format(val);
+  }catch(_){
+    return (val).toFixed(2) + ' ' + (currency || 'SAR');
+  }
+}
+
+function todayISO(){
+  const d = new Date();
+  const pad = (x)=> String(x).padStart(2,'0');
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+}
+
+function makeQuoteNumber(){
+  // RKL-Q-YYYYMMDD-XXX
+  const d = new Date();
+  const pad = (x)=> String(x).padStart(2,'0');
+  const stamp = `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}`;
+  const rnd = String(Math.floor(Math.random()*900)+100);
+  return `RKL-Q-${stamp}-${rnd}`;
+}
+
+function loadStoredCustomers(){
+  try{
+    return JSON.parse(localStorage.getItem(CUSTOMER_STORAGE_KEY) || '[]');
+  }catch(e){
+    console.error('Failed reading customers', e);
+    return [];
+  }
+}
+
+function loadStoredQuotes(){
+  try{
+    return JSON.parse(localStorage.getItem(QUOTES_STORAGE_KEY) || '[]');
+  }catch(e){
+    console.error('Failed reading quotes', e);
+    return [];
+  }
+}
+
+function saveQuotesToStorage(quotes){
+  try{
+    localStorage.setItem(QUOTES_STORAGE_KEY, JSON.stringify(quotes));
+  }catch(e){
+    console.error('Failed saving quotes', e);
+    alert('Unable to save quotes on this device.');
+  }
+}
+
+/* =========================================================
+   Customer UI
+========================================================= */
+function renderCustomerDetails(customer){
+  const card = document.getElementById('customer-details-card');
+  const container = document.getElementById('customer-details');
+  if(!card || !container) return;
+
+  if(!customer){
+    card.style.display='none';
+    container.innerHTML='';
+    return;
+  }
+
+  const fields = [
+    { label:'Customer type', value: customer.customer_type },
+    { label:'Contact person', value: customer.contact_person },
+    { label:'ID number', value: customer.id_number },
+    { label:'CR number', value: customer.cr_number },
+    { label:'VAT number', value: customer.tax_number },
+    { label:'City', value: customer.city },
+    { label:'District', value: customer.district },
+    { label:'Street', value: customer.street },
+    { label:'Building no', value: customer.building_no },
+    { label:'Postal code', value: customer.postal_code },
+    { label:'Full address', value: customer.full_address },
+    { label:'Mobile', value: customer.mobile },
+    { label:'Phone', value: customer.phone },
+    { label:'Email', value: customer.email },
+    { label:'Preferred contact', value: customer.preferred_contact },
+    { label:'Notes', value: customer.notes }
+  ];
+
+  container.innerHTML='';
+  fields.forEach(f=>{
+    if(!f.value) return;
+    const div = document.createElement('div');
+    div.className = 'field span-4';
+    div.innerHTML = `<label>${esc(f.label)}</label><div style="font-size:13px;color:rgba(255,255,255,.88)">${esc(f.value)}</div>`;
+    container.appendChild(div);
+  });
+
+  card.style.display='block';
+}
+
+function populateCustomerDropdown(){
+  const select = document.getElementById('customer_select');
+  if(!select) return;
+
+  const customers = loadStoredCustomers();
+  select.innerHTML = '<option value="">— Select (optional) —</option>';
+
+  customers.forEach((c, index)=>{
+    const name = c.customer_name || '(No name)';
+    const city = c.city ? ` - ${c.city}` : '';
+    const opt = document.createElement('option');
+    opt.value = String(index);
+    opt.textContent = `${name}${city}`;
+    select.appendChild(opt);
+  });
+
+  if(!customers.length){
+    const opt = document.createElement('option');
+    opt.value='';
+    opt.textContent='No customers found in this browser.';
+    select.appendChild(opt);
+    select.disabled=true;
+  }else{
+    select.disabled=false;
+  }
+}
+
+function applyCustomerToForm(customer){
+  selectedCustomer = customer || null;
+
+  if(customer){
+    document.getElementById('customer_name').value = customer.customer_name || '';
+    const projectInput = document.getElementById('project_name');
+    if(projectInput && !projectInput.value){
+      projectInput.value = `Project for ${customer.customer_name || 'Customer'}`;
+    }
+    renderCustomerDetails(customer);
+  }else{
+    renderCustomerDetails(null);
+  }
+}
+
+/* =========================================================
+   Brand & spec UI
+========================================================= */
+function populateCapacity(){
+  const capSel = document.getElementById('capacity');
+  capSel.innerHTML = '<option value="">Select capacity…</option>';
+  const bd = BRAND_DATA[currentBrandKey];
+  Object.keys(bd.priceList).map(Number).sort((a,b)=>a-b).forEach(cap=>{
+    const opt = document.createElement('option');
+    opt.value = String(cap);
+    opt.textContent = `${cap} kg`;
+    capSel.appendChild(opt);
+  });
+}
+
+function populateSpeedForCapacity(capacity){
+  const speedSel = document.getElementById('speed');
+  speedSel.innerHTML = '<option value="">Select speed…</option>';
+  speedSel.disabled = true;
+
+  const bd = BRAND_DATA[currentBrandKey];
+  const row = bd.priceList[n(capacity)];
+  if(!row) return;
+
+  Object.keys(row).sort((a,b)=>n(a)-n(b)).forEach(sp=>{
+    const opt = document.createElement('option');
+    opt.value = sp;
+    opt.textContent = `${sp} m/s`;
+    speedSel.appendChild(opt);
+  });
+  speedSel.disabled = false;
+}
+
+function updateTravelHeight(){
+  const floors = n(document.getElementById('floors').value);
+  const fh = n(document.getElementById('floorHeight').value);
+  const th = Math.max(0, (floors - 1) * fh);
+  document.getElementById('travelHeight').value = th ? String(th) : '';
+}
+
+/* =========================================================
+   EN81 Apply + Per-Elevator table
+========================================================= */
+function ensureShaftTableVisible(){
+  const c = document.getElementById('shaft-table-container');
+  if(c) c.style.display = 'block';
+}
+
+function addElevatorRow(prefill){
+  ensureShaftTableVisible();
+  const tbody = document.querySelector('#shaft-table tbody');
+  if(!tbody) return;
+
+  const idx = tbody.querySelectorAll('tr').length + 1;
+  const fh = n(document.getElementById('floorHeight').value);
+  const th = n(document.getElementById('travelHeight').value);
+
+  const data = prefill || {};
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td class="mono">${idx}</td>
+    <td><input class="row-shaft" value="${esc(data.shaft || '')}" placeholder="e.g., 1700x2000"></td>
+    <td><input class="row-cabin" value="${esc(data.cabin || '')}" placeholder="e.g., 1100x1400"></td>
+    <td><input class="row-door" value="${esc(data.door || '')}" placeholder="e.g., 800"></td>
+    <td><input class="row-pit" value="${esc(data.pit || '')}" placeholder="e.g., 1400"></td>
+    <td><input class="row-oh" value="${esc(data.oh || '')}" placeholder="e.g., 3800"></td>
+    <td><input class="row-fh" value="${esc(String(data.fh ?? fh))}" placeholder="FH"></td>
+    <td><input class="row-th" value="${esc(String(data.th ?? th))}" placeholder="TH"></td>
+    <td><input class="row-notes" value="${esc(data.notes || '')}" placeholder="Optional"></td>
+    <td><button class="btn danger small" type="button" title="Remove">✕</button></td>
+  `;
+  tr.querySelector('button').onclick = ()=>{
+    tr.remove();
+    // Re-number
+    [...tbody.querySelectorAll('tr')].forEach((r,i)=>{
+      r.querySelector('td').textContent = String(i+1);
+    });
+  };
+  tbody.appendChild(tr);
+}
+
+function clearElevatorRows(){
+  const tbody = document.querySelector('#shaft-table tbody');
+  if(tbody) tbody.innerHTML = '';
+}
+
+function readElevatorRows(){
+  const tbody = document.querySelector('#shaft-table tbody');
+  if(!tbody) return [];
+
+  return [...tbody.querySelectorAll('tr')].map((tr, i)=>({
+    no: i+1,
+    shaft: tr.querySelector('.row-shaft')?.value || '',
+    cabin: tr.querySelector('.row-cabin')?.value || '',
+    door:  tr.querySelector('.row-door')?.value || '',
+    pit:   tr.querySelector('.row-pit')?.value || '',
+    oh:    tr.querySelector('.row-oh')?.value || '',
+    fh:    n(tr.querySelector('.row-fh')?.value || 0),
+    th:    n(tr.querySelector('.row-th')?.value || 0),
+    notes: tr.querySelector('.row-notes')?.value || ''
+  }));
+}
+
+function applyEN81ToRows(en81){
+  appliedEn81 = en81;
+
+  // If no rows exist, create one row and prefill
+  const tbody = document.querySelector('#shaft-table tbody');
+  if(!tbody) return;
+
+  if(tbody.querySelectorAll('tr').length === 0){
+    addElevatorRow({
+      shaft: en81.shaft,
+      cabin: en81.cabin,
+      door: en81.door,
+      pit: en81.pit,
+      oh: en81.oh
+    });
+    return;
+  }
+
+  // Otherwise: apply to selected rows? We'll apply to all rows for speed.
+  [...tbody.querySelectorAll('tr')].forEach(tr=>{
+    tr.querySelector('.row-shaft').value = en81.shaft;
+    tr.querySelector('.row-cabin').value = en81.cabin;
+    tr.querySelector('.row-door').value  = en81.door;
+    tr.querySelector('.row-pit').value   = en81.pit;
+    tr.querySelector('.row-oh').value    = en81.oh;
+  });
+}
+
+/* =========================================================
+   Pricing Lock
+========================================================= */
+function setPricingUnlocked(unlocked){
+  pricingUnlocked = unlocked === true;
+
+  const lock = document.getElementById('pricingLock');
+  const pricingSection = document.getElementById('pricingSection');
+
+  if(pricingUnlocked){
+    lock.style.display = 'none';
+    pricingSection.style.opacity = '1';
+    pricingSection.style.pointerEvents = 'auto';
+  }else{
+    lock.style.display = 'flex';
+    pricingSection.style.opacity = '.55';
+    pricingSection.style.pointerEvents = 'none';
+  }
+}
+
+function checkPassword(pass){
+  // You can change the password here
+  // IMPORTANT: This is client-side only.
+  const MASTER = 'RKL-2026';
+  return String(pass || '').trim() === MASTER;
+}
+
+/* =========================================================
+   Calculation
+========================================================= */
+function calculateQuote(){
+  if(!pricingUnlocked){
+    alert('Pricing is locked. Unlock pricing first.');
+    return null;
+  }
+
+  const bd = BRAND_DATA[currentBrandKey];
+
+  const customerName = document.getElementById('customer_name').value.trim();
+  const projectName = document.getElementById('project_name').value.trim();
+  const projectLocation = document.getElementById('project_location').value.trim();
+
+  const capacity = n(document.getElementById('capacity').value);
+  const speed = document.getElementById('speed').value;
+  const stops = Math.max(2, n(document.getElementById('floors').value));
+  const doors = document.getElementById('doors').value.trim();
+
+  if(!capacity || !speed){
+    alert('Please select capacity and speed.');
+    return null;
+  }
+
+  const basePrice = n(bd.priceList[capacity]?.[speed]);
+  if(!basePrice){
+    alert('No pricing found for the selected capacity/speed.');
+    return null;
+  }
+
+  const currency = document.getElementById('currency').value || 'SAR';
+  const vatRate = n(document.getElementById('vat_rate').value || 15);
+  const includeVat = document.getElementById('include_vat').checked === true;
+
+  const extraStopCost = n(document.getElementById('extraStopCost').value || 0);
+  const extraStops = Math.max(0, stops - 2);
+  const extraStopsValue = extraStops * extraStopCost;
+
+  const cabinDesignKey = document.getElementById('cabinDesign').value;
+  const cabinDesignExtra = n(CABIN_DESIGN_ADDITIONAL[cabinDesignKey] || 0);
+
+  const shipping = n(document.getElementById('shippingCost').value);
+  const clearance = n(document.getElementById('clearanceCost').value);
+  const installation = n(document.getElementById('installationCost').value);
+  const spares = n(document.getElementById('sparesCost').value);
+
+  const overheadPercent = n(document.getElementById('overheadPercent').value);
+  const profitPercent = n(document.getElementById('profitPercent').value);
+
+  const costBeforeOHProfit = basePrice + extraStopsValue + cabinDesignExtra + shipping + clearance + installation + spares;
+
+  const overhead = costBeforeOHProfit * (overheadPercent / 100);
+  const profit = (costBeforeOHProfit + overhead) * (profitPercent / 100);
+
+  const unitBeforeVat = costBeforeOHProfit + overhead + profit;
+  const vatAmount = unitBeforeVat * (vatRate / 100);
+  const unitWithVat = unitBeforeVat + vatAmount;
+
+  // How many lifts? use number of rows if available, else 1
+  const rows = readElevatorRows();
+  const liftsCount = rows.length ? rows.length : 1;
+
+  const totalBeforeVat = unitBeforeVat * liftsCount;
+  const totalVat = vatAmount * liftsCount;
+  const totalWithVat = unitWithVat * liftsCount;
+
+  // Dimensions: if rows exist, keep them; else from applied EN81
+  let sizeSummary = null;
+  if(rows.length){
+    sizeSummary = {
+      method: "per_elevator_rows",
+      rows
+    };
+  }else if(appliedEn81){
+    sizeSummary = {
+      method: "en81_applied",
+      rows: [{
+        no: 1,
+        shaft: appliedEn81.shaft,
+        cabin: appliedEn81.cabin,
+        door: appliedEn81.door,
+        pit: appliedEn81.pit,
+        oh: appliedEn81.oh,
+        fh: n(document.getElementById('floorHeight').value),
+        th: n(document.getElementById('travelHeight').value),
+        notes: ''
+      }]
+    };
+  }else{
+    sizeSummary = { method: "none", rows: [] };
+  }
+
+  const notes = document.getElementById('notes').value || '';
+
+  const snapshot = {
+    id: makeQuoteNumber(),
+    timestamp: new Date().toISOString(),
+    quoteNumber: null, // we keep id as quoteNumber (compat)
+    customerName,
+    projectName,
+    projectLocation,
+    brandKey: currentBrandKey,
+    brandLabel: bd.label,
+    capacity,
+    speed,
+    floors: stops,
+    doors,
+    floorHeight: n(document.getElementById('floorHeight').value),
+    travelHeight: n(document.getElementById('travelHeight').value),
+
+    // For backward compatibility with your registry table columns:
+    shaftSize: sizeSummary.rows?.[0]?.shaft || '',
+    cabinSize: sizeSummary.rows?.[0]?.cabin || '',
+    pit: sizeSummary.rows?.[0]?.pit || '',
+    oh: sizeSummary.rows?.[0]?.oh || '',
+
+    sizeSelection: sizeSummary, // full rows for multi elevators
+
+    pricing: {
+      basePrice,
+      extraStops,
+      extraStopsValue,
+      cabinDesignKey,
+      cabinDesignExtra,
+      shipping,
+      clearance,
+      installation,
+      spares,
+      overheadPercent,
+      overhead,
+      profitPercent,
+      profit,
+      vatRate,
+      vatAmountPerLift: vatAmount,
+      unitBeforeVat,
+      unitWithVat,
+      liftsCount,
+      totalBeforeVat,
+      totalVat,
+      totalWithVat,
+      includeVat,
+      currency
+    },
+
+    // Keep old keys often used in other pages:
+    totalWithVat,
+    totalWithVatPerLift: unitWithVat,
+    totalBeforeVatPerLift: unitBeforeVat,
+    vatAmountPerLift: vatAmount,
+    currency,
+    vatRate,
+    includeVat,
+
+    customerDetails: selectedCustomer ? {
+      customer_type: selectedCustomer.customer_type || '',
+      contact_person: selectedCustomer.contact_person || '',
+      id_number: selectedCustomer.id_number || '',
+      cr_number: selectedCustomer.cr_number || '',
+      tax_number: selectedCustomer.tax_number || '',
+      city: selectedCustomer.city || '',
+      district: selectedCustomer.district || '',
+      street: selectedCustomer.street || '',
+      building_no: selectedCustomer.building_no || '',
+      postal_code: selectedCustomer.postal_code || '',
+      full_address: selectedCustomer.full_address || '',
+      mobile: selectedCustomer.mobile || '',
+      phone: selectedCustomer.phone || '',
+      email: selectedCustomer.email || '',
+      preferred_contact: selectedCustomer.preferred_contact || '',
+      notes: selectedCustomer.notes || '',
+    } : {},
+    notes
+  };
+
+  snapshot.quoteNumber = snapshot.id; // keep compatible
+
+  return snapshot;
+}
+
+/* =========================================================
+   Render results
+========================================================= */
+function renderResults(snapshot){
+  if(!snapshot) return;
+
+  lastQuoteSnapshot = snapshot;
+
+  const p = snapshot.pricing;
+  const currency = p.currency || 'SAR';
+
+  document.getElementById('kpiTotal').textContent = formatCurrency(p.totalWithVat, currency);
+  document.getElementById('kpiTotalSub').textContent =
+    `Lifts: ${p.liftsCount} • VAT: ${p.vatRate}% • Stops: ${snapshot.floors}`;
+
+  document.getElementById('kpiUnit').textContent = formatCurrency(p.unitWithVat, currency);
+  document.getElementById('kpiUnitSub').textContent =
+    `Base(2 stops): ${formatCurrency(p.basePrice, currency)} • Extra stops: ${p.extraStops}`;
+
+  document.getElementById('numbersHint').innerHTML =
+    `<span class="muted">Calculated at</span> <span class="mono">${esc(new Date().toLocaleString())}</span>`;
+
+  // Build text summary
+  const rows = snapshot.sizeSelection?.rows || [];
+  const sizeLines = rows.length
+    ? rows.map(r => `- No.ELE ${r.no}: Shaft ${r.shaft || '—'}, Cabin ${r.cabin || '—'}, Door ${r.door || '—'}, Pit ${r.pit || '—'}, OH ${r.oh || '—'}, FH ${r.fh || '—'}, TH ${r.th || '—'}${r.notes ? ` (Notes: ${r.notes})` : ''}`).join('\n')
+    : `- No size rows provided`;
+
+  const vatLine = snapshot.includeVat
+    ? `VAT (${p.vatRate}%): ${formatCurrency(p.totalVat, currency)}`
+    : `VAT (${p.vatRate}%): ${formatCurrency(p.totalVat, currency)} (shown separately)`;
+
+  const txt =
+`RKL | Elevator Quote Summary
+Quote No.: ${snapshot.id}
+Date: ${todayISO()}
+
+Customer: ${snapshot.customerName || '—'}
+Project: ${snapshot.projectName || '—'}
+Location: ${snapshot.projectLocation || '—'}
+
+Brand: ${snapshot.brandLabel}
+Capacity: ${snapshot.capacity} kg
+Speed: ${snapshot.speed} m/s
+Stops: ${snapshot.floors}
+FH: ${snapshot.floorHeight} mm
+TH: ${snapshot.travelHeight} mm
+Doors: ${snapshot.doors || '—'}
+
+Per-Elevator Sizes:
+${sizeLines}
+
+Cost Breakdown (Per Lift):
+- Base price (2 stops): ${formatCurrency(p.basePrice, currency)}
+- Extra stops (${p.extraStops}): ${formatCurrency(p.extraStopsValue, currency)}
+- Cabin design (${p.cabinDesignKey}): ${formatCurrency(p.cabinDesignExtra, currency)}
+- Shipping: ${formatCurrency(p.shipping, currency)}
+- Clearance: ${formatCurrency(p.clearance, currency)}
+- Installation: ${formatCurrency(p.installation, currency)}
+- Spares: ${formatCurrency(p.spares, currency)}
+- Overhead (${p.overheadPercent}%): ${formatCurrency(p.overhead, currency)}
+- Profit (${p.profitPercent}%): ${formatCurrency(p.profit, currency)}
+
+Unit price (before VAT): ${formatCurrency(p.unitBeforeVat, currency)}
+Unit price (with VAT):   ${formatCurrency(p.unitWithVat, currency)}
+
+Totals:
+- Lifts count: ${p.liftsCount}
+- Subtotal (before VAT): ${formatCurrency(p.totalBeforeVat, currency)}
+- ${vatLine}
+- Total (with VAT): ${formatCurrency(p.totalWithVat, currency)}
+
+Notes:
+${snapshot.notes || '—'}
+`;
+
+  document.getElementById('quote_text').value = txt;
+
+  // Suggest shaft table visible (in case user didn't use it)
+  if(rows.length) ensureShaftTableVisible();
+}
+
+/* =========================================================
+   Registry table (simple/clean)
+========================================================= */
+function renderQuotesTable(){
+  const tbody = document.querySelector('#quotes-table tbody');
+  if(!tbody) return;
+
+  const quotes = loadStoredQuotes();
+  tbody.innerHTML = '';
+
+  if(!quotes.length){
+    const tr = document.createElement('tr');
+    const td = document.createElement('td');
+    td.colSpan = 8;
+    td.textContent = 'No saved quotes on this device yet.';
+    td.style.textAlign = 'center';
+    td.style.color = 'rgba(255,255,255,.55)';
+    tr.appendChild(td);
+    tbody.appendChild(tr);
+    return;
+  }
+
+  quotes.forEach((q, index)=>{
+    const tr = document.createElement('tr');
+
+    const total = formatCurrency(q.totalWithVat ?? q.pricing?.totalWithVat ?? 0, q.currency || q.pricing?.currency || 'SAR');
+    const specs = `${q.brandLabel || q.brandKey || ''} / ${q.capacity || ''}kg / ${q.speed || ''}m/s / ${q.floors || ''} Stops`;
+    const dateStr = (q.timestamp ? q.timestamp.slice(0,10) : '');
+
+    tr.innerHTML = `
+      <td><input type="radio" name="quotePick" class="quote-check" data-index="${index}"></td>
+      <td class="mono">${index + 1}</td>
+      <td class="mono">${esc(q.quoteNumber || q.id || '')}</td>
+      <td>${esc(dateStr)}</td>
+      <td>${esc(q.customerName || '')}</td>
+      <td>${esc((q.projectName || '') + (q.projectLocation ? ' – ' + q.projectLocation : ''))}</td>
+      <td>${esc(specs)}</td>
+      <td><b>${esc(total)}</b></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+/* =========================================================
+   CSV Export
+========================================================= */
+function exportQuotesCSV(){
+  const quotes = loadStoredQuotes();
+  if(!quotes.length){
+    alert('No quotes to export.');
+    return;
+  }
+
+  const headers = [
+    'Index','QuoteNo','Date','Customer','Project','Location','Brand','Capacity','Speed','Stops','FH','TH','UnitWithVAT','TotalWithVAT','Currency'
+  ];
+
+  const rows = quotes.map((q, i)=>{
+    const p = q.pricing || {};
+    return [
+      i+1,
+      q.quoteNumber || q.id || '',
+      (q.timestamp ? q.timestamp.slice(0,10) : ''),
+      q.customerName || '',
+      q.projectName || '',
+      q.projectLocation || '',
+      q.brandLabel || q.brandKey || '',
+      q.capacity || '',
+      q.speed || '',
+      q.floors || '',
+      q.floorHeight || '',
+      q.travelHeight || '',
+      (q.totalWithVatPerLift ?? p.unitWithVat ?? ''),
+      (q.totalWithVat ?? p.totalWithVat ?? ''),
+      (q.currency || p.currency || 'SAR')
+    ].map(v => `"${String(v).replace(/"/g,'""')}"`).join(',');
+  });
+
+  const csv = headers.join(',') + '\n' + rows.join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `rkl_quotes_${todayISO()}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+/* =========================================================
+   Print Preview (two modes)
+   1) Store offer HTML into rkl_last_offer (compat)
+   2) Open a new window with editable offer & print
+========================================================= */
+function buildOfferHTML(snapshot){
+  const p = snapshot.pricing;
+  const currency = p.currency || 'SAR';
+
+  const customerBlock = snapshot.customerDetails && Object.keys(snapshot.customerDetails).length
+    ? `
+      <div style="margin-top:6px;color:#1f2937;font-size:12px;line-height:1.5">
+        ${snapshot.customerDetails.contact_person ? `<div><b>Contact:</b> ${esc(snapshot.customerDetails.contact_person)}</div>`:''}
+        ${snapshot.customerDetails.mobile ? `<div><b>Mobile:</b> ${esc(snapshot.customerDetails.mobile)}</div>`:''}
+        ${snapshot.customerDetails.email ? `<div><b>Email:</b> ${esc(snapshot.customerDetails.email)}</div>`:''}
+        ${snapshot.customerDetails.cr_number ? `<div><b>CR:</b> ${esc(snapshot.customerDetails.cr_number)}</div>`:''}
+        ${snapshot.customerDetails.tax_number ? `<div><b>VAT:</b> ${esc(snapshot.customerDetails.tax_number)}</div>`:''}
+        ${snapshot.customerDetails.full_address ? `<div><b>Address:</b> ${esc(snapshot.customerDetails.full_address)}</div>`:''}
+      </div>
+    ` : '';
+
+  const rows = snapshot.sizeSelection?.rows || [];
+  const rowsHTML = rows.length ? rows.map(r => `
+    <tr>
+      <td>${r.no}</td>
+      <td>${esc(r.shaft || '—')}</td>
+      <td>${esc(r.cabin || '—')}</td>
+      <td>${esc(r.door || '—')}</td>
+      <td>${esc(r.pit || '—')}</td>
+      <td>${esc(r.oh || '—')}</td>
+      <td>${esc(String(r.fh || '—'))}</td>
+      <td>${esc(String(r.th || '—'))}</td>
+      <td>${esc(r.notes || '')}</td>
+    </tr>
+  `).join('') : `<tr><td colspan="9" style="text-align:center;color:#6b7280">No per-elevator rows.</td></tr>`;
+
+  // Very clean print template (editable section)
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>RKL Offer - ${esc(snapshot.id)}</title>
+  <style>
+    @page { size: A4; margin: 14mm; }
+    body{ font-family: Arial, sans-serif; color:#111827; }
+    .head{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
+    .logo{
+      width:56px;height:56px;border-radius:14px;
+      background: linear-gradient(135deg,#44d19d,#53d7ff);
+      box-shadow: 0 10px 24px rgba(68,209,157,.18);
+    }
+    h1{ font-size:16px; margin:0; }
+    .meta{ font-size:12px; color:#374151; margin-top:4px; line-height:1.6; }
+    .box{ border:1px solid #e5e7eb; border-radius:12px; padding:12px; margin-top:12px; }
+    table{ width:100%; border-collapse:collapse; margin-top:8px; font-size:12px; }
+    th,td{ border:1px solid #e5e7eb; padding:8px; vertical-align:top; text-align:left; }
+    th{ background:#f9fafb; }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; }
+    .pill{ display:inline-block; padding:6px 10px; border:1px solid #e5e7eb; border-radius:999px; font-size:12px; color:#374151; background:#fafafa; }
+    .btns{ margin-top:12px; display:flex; gap:10px; }
+    button{ padding:10px 12px; border-radius:10px; border:1px solid #e5e7eb; background:#111827; color:#fff; cursor:pointer; font-weight:700; }
+    button.secondary{ background:#fff; color:#111827; }
+    .editable{ outline: none; }
+    .small{ font-size:11px; color:#6b7280; line-height:1.6; }
+  </style>
+</head>
+<body>
+  <div class="head">
+    <div style="display:flex; gap:12px; align-items:flex-start;">
+      <div class="logo"></div>
+      <div>
+        <h1>RKL | Elevator Supply Offer (Draft)</h1>
+        <div class="meta">
+          <div><b>Quote No.:</b> ${esc(snapshot.id)}</div>
+          <div><b>Date:</b> ${esc(todayISO())}</div>
+          <div><b>Currency:</b> ${esc(currency)} &nbsp; <b>VAT:</b> ${esc(String(p.vatRate))}%</div>
+        </div>
+      </div>
+    </div>
+    <div class="pill">Print-ready • Editable</div>
+  </div>
+
+  <div class="box">
+    <div class="row" style="justify-content:space-between;">
+      <div style="flex:1;min-width:240px;">
+        <div><b>Customer:</b> ${esc(snapshot.customerName || '—')}</div>
+        <div><b>Project:</b> ${esc(snapshot.projectName || '—')}</div>
+        <div><b>Location:</b> ${esc(snapshot.projectLocation || '—')}</div>
+        ${customerBlock}
+      </div>
+      <div style="min-width:220px;">
+        <div class="small"><b>RKL Contact</b></div>
+        <div class="small">Tel/WhatsApp: 0114774021</div>
+        <div class="small">Email: sales@rkl.sa</div>
+        <div class="small">Web: www.rk-lifts.com</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="box">
+    <div><b>Technical Summary</b></div>
+    <div class="meta editable" id="editable" contenteditable="true">
+      Brand: ${esc(snapshot.brandLabel)}<br/>
+      Capacity: ${esc(String(snapshot.capacity))} kg<br/>
+      Speed: ${esc(String(snapshot.speed))} m/s<br/>
+      Stops: ${esc(String(snapshot.floors))}<br/>
+      Floor height (FH): ${esc(String(snapshot.floorHeight))} mm<br/>
+      Travel height (TH): ${esc(String(snapshot.travelHeight))} mm<br/>
+      Doors: ${esc(snapshot.doors || '—')}<br/>
+      Cabin design: ${esc(p.cabinDesignKey || '—')}
+    </div>
+
+    <div style="margin-top:10px;"><b>Per-Elevator Sizes</b></div>
+    <table>
+      <thead>
+        <tr>
+          <th>No.ELE</th><th>Shaft</th><th>Cabin</th><th>Door</th><th>Pit</th><th>OH</th><th>FH</th><th>TH</th><th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rowsHTML}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="box">
+    <div><b>Commercial Summary</b></div>
+    <table>
+      <tbody>
+        <tr><th style="width:40%;">Unit price (before VAT)</th><td>${formatCurrency(p.unitBeforeVat, currency)}</td></tr>
+        <tr><th>VAT per lift</th><td>${formatCurrency(p.vatAmountPerLift, currency)}</td></tr>
+        <tr><th>Unit price (with VAT)</th><td><b>${formatCurrency(p.unitWithVat, currency)}</b></td></tr>
+        <tr><th>Lifts count</th><td>${esc(String(p.liftsCount))}</td></tr>
+        <tr><th>Total (before VAT)</th><td>${formatCurrency(p.totalBeforeVat, currency)}</td></tr>
+        <tr><th>Total VAT</th><td>${formatCurrency(p.totalVat, currency)}</td></tr>
+        <tr><th>Total (with VAT)</th><td><b>${formatCurrency(p.totalWithVat, currency)}</b></td></tr>
+      </tbody>
+    </table>
+
+    <div class="small" style="margin-top:10px;">
+      Notes: ${esc(snapshot.notes || '—')}<br/>
+      This document is a draft offer generated from an internal tool and should be reviewed before official submission.
+    </div>
+  </div>
+
+  <div class="btns">
+    <button id="btnPrint">Print</button>
+    <button class="secondary" id="btnClose">Close</button>
+  </div>
+
+  <script>
+    const LS_KEY = '${LS_LAST_OFFER}';
+    const editable = document.getElementById('editable');
+
+    document.getElementById('btnPrint').onclick = () => {
+      try{
+        localStorage.setItem(LS_KEY, editable.innerHTML);
+      }catch(e){}
+      window.print();
+    };
+    document.getElementById('btnClose').onclick = () => window.close();
+  </script>
+</body>
+</html>`;
+}
+
+function openPrintPreviewFromSnapshot(snapshot){
+  if(!snapshot){
+    alert('Please calculate a quote first.');
+    return;
+  }
+
+  // Store compatibility keys
+  try{
+    localStorage.setItem(LS_LAST_OFFER, buildOfferHTML(snapshot));
+  }catch(e){}
+
+  const w = window.open('', '_blank');
+  if(!w){
+    alert('Popup blocked. Please allow popups for this page.');
+    return;
+  }
+  w.document.open();
+  w.document.write(buildOfferHTML(snapshot));
+  w.document.close();
+}
+
+/* =========================================================
+   Save current quote
+========================================================= */
+function saveCurrentQuote(){
+  if(!lastQuoteSnapshot){
+    alert('Calculate a quote first.');
+    return;
+  }
+
+  const quotes = loadStoredQuotes();
+  quotes.push(lastQuoteSnapshot);
+  saveQuotesToStorage(quotes);
+  renderQuotesTable();
+  alert('Saved to quotes registry.');
+}
+
+/* =========================================================
+   Print selected from registry
+========================================================= */
+function printSelectedOffer(){
+  const selected = document.querySelector('.quote-check:checked');
+  if(!selected){
+    alert('Select a quote from the registry first.');
+    return;
+  }
+
+  const idx = n(selected.getAttribute('data-index'));
+  const quotes = loadStoredQuotes();
+  const q = quotes[idx];
+  if(!q){
+    alert('Selected quote not found.');
+    return;
+  }
+
+  // Store compatibility keys for your other pages
+  try{
+    localStorage.setItem(LS_CURRENT_INDEX, String(idx));
+    localStorage.setItem(LS_LAST_OFFER, buildOfferHTML(q));
+  }catch(e){}
+
+  openPrintPreviewFromSnapshot(q);
+}
+
+/* =========================================================
+   Init events
+========================================================= */
+function initLock(){
+  const msg = document.getElementById('rklLockMsg');
+
+  document.getElementById('rklEnterBtn').onclick = ()=>{
+    const pass = document.getElementById('rklPass').value;
+    if(checkPassword(pass)){
+      msg.textContent = 'Unlocked successfully.';
+      msg.className = 'msg ok';
+      setPricingUnlocked(true);
+    }else{
+      msg.textContent = 'Wrong password.';
+      msg.className = 'msg err';
+    }
+  };
+
+  document.getElementById('rklClearBtn').onclick = ()=>{
+    document.getElementById('rklPass').value = '';
+    msg.textContent = '';
+    msg.className = 'msg';
+  };
+
+  document.getElementById('btnLockNow').onclick = ()=>{
+    setPricingUnlocked(false);
+    document.getElementById('rklPass').value = '';
+    msg.textContent = '';
+    msg.className = 'msg';
+  };
+
+  // start locked
+  setPricingUnlocked(false);
+}
+
+function init(){
+  initLock();
+
+  populateCustomerDropdown();
+  renderQuotesTable();
+
+  populateCapacity();
+  updateTravelHeight();
+
+  document.getElementById('customer_select').addEventListener('change', ()=>{
+    const v = document.getElementById('customer_select').value;
+    if(v === ''){
+      selectedCustomer = null;
+      renderCustomerDetails(null);
+      return;
+    }
+    const customers = loadStoredCustomers();
+    applyCustomerToForm(customers[n(v)]);
+  });
+
+  document.getElementById('capacity').addEventListener('change', ()=>{
+    populateSpeedForCapacity(document.getElementById('capacity').value);
+
+    // Auto add one row when capacity is selected (user-friendly)
+    ensureShaftTableVisible();
+    if(readElevatorRows().length === 0) addElevatorRow();
+  });
+
+  document.getElementById('floors').addEventListener('input', updateTravelHeight);
+  document.getElementById('floorHeight').addEventListener('input', updateTravelHeight);
+
+  // EN81 table actions
+  document.querySelectorAll('#en81Table tbody tr').forEach(tr=>{
+    const btn = tr.querySelector('button');
+    btn.onclick = ()=>{
+      const en81 = {
+        capacity: n(tr.getAttribute('data-capacity')),
+        cabin: tr.getAttribute('data-cabin'),
+        shaft: tr.getAttribute('data-shaft'),
+        door: tr.getAttribute('data-door'),
+        pit: tr.getAttribute('data-pit'),
+        oh: tr.getAttribute('data-oh')
+      };
+
+      // If capacity matches, good. If not, we still allow apply sizes.
+      applyEN81ToRows(en81);
+      alert(`EN81 sizes applied: Cabin ${en81.cabin}, Shaft ${en81.shaft}`);
+    };
+  });
+
+  // Per-elevator buttons
+  document.getElementById('addElevatorRow').onclick = ()=> addElevatorRow();
+  document.getElementById('clearElevatorRows').onclick = clearElevatorRows;
+
+  // Calculate
+  document.getElementById('calc-btn').onclick = ()=>{
+    const snap = calculateQuote();
+    if(!snap) return;
+    renderResults(snap);
+  };
+
+  // Reset
+  document.getElementById('reset-btn').onclick = ()=>{
+    setTimeout(()=>{
+      appliedEn81 = null;
+      lastQuoteSnapshot = null;
+      updateTravelHeight();
+      document.getElementById('quote_text').value = '';
+      document.getElementById('kpiTotal').textContent = '—';
+      document.getElementById('kpiUnit').textContent = '—';
+      document.getElementById('kpiTotalSub').textContent = '—';
+      document.getElementById('kpiUnitSub').textContent = '—';
+      document.getElementById('numbersHint').textContent = 'Select capacity & speed, then click Calculate Quote.';
+    }, 0);
+  };
+
+  // Copy
+  document.getElementById('copy-btn').onclick = async ()=>{
+    const v = document.getElementById('quote_text').value;
+    if(!v){ alert('Nothing to copy yet.'); return; }
+    try{
+      await navigator.clipboard.writeText(v);
+      alert('Copied.');
+    }catch(e){
+      // fallback
+      const ta = document.getElementById('quote_text');
+      ta.select();
+      document.execCommand('copy');
+      alert('Copied.');
+    }
+  };
+
+  // Save
+  document.getElementById('save-quote-btn').onclick = saveCurrentQuote;
+
+  // Export
+  document.getElementById('export-quotes-btn').onclick = exportQuotesCSV;
+
+  // Print selected
+  document.getElementById('printOfferButton').onclick = printSelectedOffer;
+
+  // Open print preview from current snapshot
+  document.getElementById('open-print-preview').onclick = ()=>{
+    if(!lastQuoteSnapshot){
+      alert('Calculate a quote first.');
+      return;
+    }
+    openPrintPreviewFromSnapshot(lastQuoteSnapshot);
+  };
+
+  // Scroll to registry
+  document.getElementById('btnScrollQuotes').onclick = ()=>{
+    document.getElementById('quotesWrap')?.scrollIntoView({behavior:'smooth', block:'start'});
+  };
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>
