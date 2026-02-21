@@ -690,7 +690,7 @@ th {
   <th>ماركة المصعد</th>
   <td class="bind_brand">—</td>
   <th>بلد المنشأ</th>
-  <td class="bind_origin">Italy</td>
+  <td class="bind_origin">—</td>
 </tr>
 
 <tr>
@@ -2794,11 +2794,30 @@ capCell.textContent = capacityToPersons(cap);
 
 </script>
 
-   <script>
+<script>
 
 document.addEventListener("DOMContentLoaded", function(){
 
-const brand = document.querySelector(".bind_brand")?.textContent || "";
+/* =============================
+   قراءة نوع المصعد الحقيقي
+============================= */
+
+let brand = "";
+
+/* قراءة من localStorage (الاختيار الحقيقي) */
+try{
+const quoteData = JSON.parse(localStorage.getItem("elevatorQuote") || "{}");
+brand = (quoteData.brand || "").toLowerCase();
+}catch(e){}
+
+/* إذا لم يجدها يأخذها من الجدول */
+if(!brand){
+brand = (document.querySelector(".bind_brand")?.textContent || "").toLowerCase();
+}
+
+/* =============================
+   تحديد الخلايا
+============================= */
 
 const originCell = document.querySelector(".bind_origin");
 const cityCell = document.querySelector(".bind_city_manufacture");
@@ -2808,7 +2827,8 @@ if(!originCell || !cityCell) return;
 /* =============================
    FUJI JAPAN
 ============================= */
-if(brand.toLowerCase().includes("fuji")){
+
+if(brand.includes("fuji")){
 
 originCell.textContent = "Japan";
 cityCell.textContent = "Wangou Industrial Zone";
@@ -2818,7 +2838,8 @@ cityCell.textContent = "Wangou Industrial Zone";
 /* =============================
    VERTILIFT ITALY
 ============================= */
-else if(brand.toLowerCase().includes("vertilift")){
+
+else if(brand.includes("vertilift")){
 
 originCell.textContent = "Italy";
 cityCell.textContent = "Wangou Industrial Zone";
@@ -2828,10 +2849,22 @@ cityCell.textContent = "Wangou Industrial Zone";
 /* =============================
    LOCAL SAUDI
 ============================= */
-else if(brand.toLowerCase().includes("local")){
+
+else if(brand.includes("local")){
 
 originCell.textContent = "Saudi Arabia";
 cityCell.textContent = "Riyadh";
+
+}
+
+/* =============================
+   Default fallback
+============================= */
+
+else{
+
+originCell.textContent = "-";
+cityCell.textContent = "-";
 
 }
 
@@ -2840,6 +2873,7 @@ cityCell.textContent = "Riyadh";
 </script>
 </body>
 </html>
+
 
 
 
