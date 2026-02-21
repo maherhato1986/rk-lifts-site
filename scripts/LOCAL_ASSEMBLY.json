@@ -7,8 +7,8 @@
 
   "models": [
     {
-      "code": "LA-MRL-320-0.4",
-      "capacityRange": "320-450",
+      "code": "LA-MRL-450-0.4",
+      "capacityRange": "450",
       "speedMps": 0.4,
       "baseFloors": 2,
       "basePriceSar": 19602,
@@ -19,8 +19,8 @@
       "notes": "Local Assembly – Saudi Arabia"
     },
     {
-      "code": "LA-MRL-320-1.0",
-      "capacityRange": "320-450",
+      "code": "LA-MRL-450-1.0",
+      "capacityRange": "450",
       "speedMps": 1.0,
       "baseFloors": 2,
       "basePriceSar": 19844,
