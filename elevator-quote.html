@@ -519,6 +519,18 @@ textarea{
     border: 1px solid #ddd;
     text-align: center;
 }
+    #quotes-table td,
+#quotes-table th {
+    max-width: 160px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#quotes-table td:hover {
+    white-space: normal;
+    background: #f0fdfa;
+}
 </style>
 
               </div>
@@ -662,7 +674,13 @@ textarea{
                     <button id="printOfferButton" type="button">
     طباعة عرض السعر
 </button>
-
+<!-- 🔍 مربع البحث -->
+<div style="margin:15px 0;">
+    <input type="text"
+           id="quoteSearchInput"
+           placeholder="🔍 ابحث برقم العرض أو اسم العميل أو المشروع..."
+           style="width:100%;padding:10px;border-radius:10px;border:1px solid #ddd;">
+</div>
                 </div>
 
                 <div class="table-wrapper">
@@ -1052,7 +1070,22 @@ const cols = [
     });
 }
 
+// 🔍 فلترة جدول العروض
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("quoteSearchInput");
 
+    if (searchInput) {
+        searchInput.addEventListener("keyup", function () {
+            const value = this.value.toLowerCase();
+            const rows = document.querySelectorAll("#quotes-table tbody tr");
+
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.includes(value) ? "" : "none";
+            });
+        });
+    }
+});
 
 
     // ========================== تعريف الماركات وملفات الأسعار ==========================
@@ -2431,6 +2464,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
