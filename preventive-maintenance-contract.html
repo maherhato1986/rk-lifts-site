@@ -22,7 +22,13 @@
   --text:#0f172a;
   --muted:#64748b;
 }
-
+.highlight-number{
+  background:#fff3cd;
+  padding:2px 6px;
+  border-radius:4px;
+  font-weight:700;
+  color:#000;
+}
 /* =====================================
    Base
 ===================================== */
@@ -977,7 +983,41 @@ const ar = `
 
 وبهذا تم توقيع هذا العقد بموافقة الطرفين، ويُعد نافذًا وملزمًا من تاريخ اعتماده.
 `;
+/* ==============================
+   ملحق (ب) المقاسات القياسية EN81
+================================ */
 
+### ملحق (ب): المقاسات القياسية المعتمدة حسب EN81
+
+تم تحديد المقاسات الفنية للمصعد وفق المعايير الأوروبية EN81 اعتمادًا على البيانات المدخلة في عرض السعر كما يلي:
+
+- الحمولة الاسمية: <span class="highlight-number">${capacity}</span> كجم  
+- عدد الطوابق: <span class="highlight-number">${floors}</span> طابق  
+- عدد المصاعد: <span class="highlight-number">${lifts}</span> مصعد  
+
+- ارتفاع الدور الواحد: <span class="highlight-number">${contract.floorHeight || '—'}</span> مم  
+- ارتفاع الرحلة الكلي: <span class="highlight-number">${contract.travelHeight || '—'}</span> مم  
+
+- أبعاد الكابينة (Cabin Size):  
+  <span class="highlight-number">
+  ${contract.cabinWidth || '—'} × ${contract.cabinDepth || '—'}
+  </span> مم  
+
+- أبعاد البئر (Shaft Size):  
+  <span class="highlight-number">
+  ${contract.shaftWidth || '—'} × ${contract.shaftDepth || '—'}
+  </span> مم  
+
+- عرض الباب:  
+  <span class="highlight-number">${contract.doorWidth || '—'}</span> مم  
+
+- عمق الحفرة (Pit):  
+  <span class="highlight-number">${contract.pit || '—'}</span> مم  
+
+- الارتفاع العلوي (Overhead):  
+  <span class="highlight-number">${contract.overhead || '—'}</span> مم  
+
+وتعتبر هذه المقاسات جزءًا من المواصفات الفنية للمصعد وفق المعايير القياسية EN81، وقد تم تحديدها بناءً على المساحة المتوفرة في المبنى ومتطلبات المشروع.
 
 /* ================== English Text ================== */
 const en = `
@@ -1768,6 +1808,13 @@ function openSupplyOfferPrint(contract) {
   --soft:#f8fafc;
   --brand:#0f766e;
 }
+.highlight-number{
+  background:#fff3cd;
+  padding:2px 6px;
+  border-radius:4px;
+  font-weight:700;
+  color:#000;
+}
 
 body{
   margin:0;
@@ -2158,7 +2205,13 @@ const iban       = 'SA1710000001400005531406';
   --brand:#0f766e;
   --brand2:#115e59;
 }
-
+.highlight-number{
+  background:#fff3cd;
+  padding:2px 6px;
+  border-radius:4px;
+  font-weight:700;
+  color:#000;
+}
 /* Base */
 html,body{ height:100%; }
 body{
@@ -2609,7 +2662,13 @@ function openAnnualContractOfferPrint(contract){
   --soft:#f8fafc;
   --brand:#0f766e;
 }
-
+.highlight-number{
+  background:#fff3cd;
+  padding:2px 6px;
+  border-radius:4px;
+  font-weight:700;
+  color:#000;
+}
 body{
   margin:0;
   font-family:"Cairo","Tajawal",Arial,sans-serif;
@@ -3256,6 +3315,13 @@ function openOnceVisitReportPrint(visit){
 :root{
   --ink:#111827; --muted:#6b7280; --line:#e5e7eb; --soft:#f8fafc;
   --brand:#0f766e; --brand2:#115e59;
+}
+.highlight-number{
+  background:#fff3cd;
+  padding:2px 6px;
+  border-radius:4px;
+  font-weight:700;
+  color:#000;
 }
 body{ font-family:"Cairo","Tajawal",Arial,sans-serif; font-size:14px; color:var(--ink); line-height:1.75; margin:0; }
 body::before{
