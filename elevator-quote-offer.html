@@ -685,17 +685,25 @@ th {
     </tr>
 
     <!-- الصف 2 -->
-    <tr>
-      <th>ماركة المصعد</th>
-      <td class="bind_brand">—</td>
-      <th>نوع الاستخدام</th>
-      <td class="bind_usage">Passenger Elevator</td>
-    </tr>
+   <!-- الصف 2 -->
+<tr>
+  <th>ماركة المصعد</th>
+  <td class="bind_brand">—</td>
+  <th>بلد المنشأ</th>
+  <td class="bind_origin">Italy</td>
+</tr>
+
+<tr>
+  <th>مدينة التصنيع</th>
+  <td>Wangou Industrial Zone</td>
+  <th>نوع الاستخدام</th>
+  <td class="bind_usage">Passenger Elevator</td>
+</tr>
 
     <!-- الصف 3 -->
     <tr>
       <th>عدد المصاعد</th>
-      <td class="bind_lifts">—</td>
+      <td class="bind_lifts lifts-text">—</td>
       <th>الحمولة الاسمية (kg)</th>
       <td class="bind_capacity">—</td>
     </tr>
@@ -943,7 +951,7 @@ th {
 
   <div class="partner-box">
     <img src="public/images/vertilift-logo.png" alt="VertiLift Italy">
-    <div class="partner-name">VertiLift – Italy</div>
+    <div class="partner-name">VertiLift – Italian Technology</div>
     <div class="partner-desc">مصاعد أوروبية – حلول حديثة</div>
   </div>
 </div>
@@ -2683,7 +2691,39 @@ document.addEventListener('DOMContentLoaded', () => {
 }
 </style>
 
+<script>
 
+function liftsToArabic(num){
+
+const words = {
+1:"واحد مصعد",
+2:"مصعدان",
+3:"ثلاثة مصاعد",
+4:"أربعة مصاعد",
+5:"خمسة مصاعد",
+6:"ستة مصاعد",
+7:"سبعة مصاعد",
+8:"ثمانية مصاعد",
+9:"تسعة مصاعد",
+10:"عشرة مصاعد"
+}
+
+return words[num] || num + " مصعد";
+}
+
+document.addEventListener("DOMContentLoaded", function(){
+
+const liftCell = document.querySelector(".bind_lifts");
+
+if(liftCell){
+const n = parseInt(liftCell.textContent);
+liftCell.textContent = liftsToArabic(n);
+}
+
+});
+
+</script>
 </body>
 </html>
+
 
