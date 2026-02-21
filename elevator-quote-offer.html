@@ -694,7 +694,7 @@ th {
 
     <!-- الصف 3 -->
     <tr>
-      <th>عدد المصاعد</th>
+     <td class="lift-count">0</td>
       <td class="bind_lifts">—</td>
       <th>الحمولة الاسمية (kg)</th>
       <td class="bind_capacity">—</td>
@@ -858,7 +858,7 @@ th {
           <tr>
             <th>المنطقة</th>
             <th>Region</th>
-            <th>عدد المصاعد</th>
+            <td class="lift-count">0</td>
             <th>Elevators</th>
           </tr>
         </thead>
@@ -1363,7 +1363,7 @@ All dimensions are subject to final site verification and approved shop drawings
   <thead>
     <tr>
       <th>الحمولة (kg)</th>
-      <th>عدد المصاعد</th>
+      <td class="lift-count">0</td>
       <th>مقاس الكابينة (mm)</th>
       <th>مقاس البئر (mm)</th>
       <th>عرض الباب (mm)</th>
@@ -2681,9 +2681,46 @@ font-weight:600;
 }
 </style>
 
+<script>
 
+document.addEventListener("DOMContentLoaded", function(){
+
+  // قراءة الحمولة من عرض السعر
+  const capacityElement = document.querySelector(".bind_capacity");
+
+  if(!capacityElement) return;
+
+  const capacity = parseInt(capacityElement.textContent.trim());
+
+  const rows = document.querySelectorAll("#en81-table tbody tr");
+
+  rows.forEach(row=>{
+
+    const rowCapacity = parseInt(row.dataset.capacity);
+
+    const countCell = row.querySelector(".lift-count");
+
+    if(rowCapacity === capacity){
+
+      countCell.textContent = "1";
+
+      row.style.background = "#f0fdf4";
+      row.style.fontWeight = "600";
+
+    }else{
+
+      countCell.textContent = "0";
+
+    }
+
+  });
+
+});
+
+</script>
 </body>
 </html>
+
 
 
 
