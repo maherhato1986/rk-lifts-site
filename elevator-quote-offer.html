@@ -2871,8 +2871,55 @@ cityCell.textContent = "-";
 });
 
 </script>
+
+   <script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+const brand = document.querySelector(".bind_brand")?.textContent || "";
+
+const rows = document.querySelectorAll(".spec-table tbody tr");
+
+/* خلايا المدد */
+const manufactureCell = rows[7]?.children[1]; // مدة التصنيع
+const shippingCell = rows[7]?.children[3];    // الشحن البحري
+const installCell = rows[8]?.children[1];     // التركيب
+const totalCell = rows[8]?.children[3];       // الاجمالي
+
+if(!manufactureCell || !shippingCell || !installCell || !totalCell) return;
+
+/* ======================================
+   LOCAL ASSEMBLY
+====================================== */
+
+if(brand.toLowerCase().includes("local")){
+
+manufactureCell.textContent = "30 – 45 يوم عمل";
+shippingCell.textContent = "لا يوجد شحن بحري (تجميع محلي)";
+installCell.textContent = "15 – 20 يوم عمل";
+totalCell.textContent = "45 – 65 يوم عمل";
+
+}
+
+/* ======================================
+   IMPORTED ELEVATORS (FUJI / VERTILIFT)
+====================================== */
+
+else{
+
+manufactureCell.textContent = "45 – 60 يوم عمل";
+shippingCell.textContent = "30 – 40 يوم عمل";
+installCell.textContent = "15 – 22 يوم عمل";
+totalCell.textContent = "90 – 122 يوم عمل";
+
+}
+
+});
+
+</script>
 </body>
 </html>
+
 
 
 
