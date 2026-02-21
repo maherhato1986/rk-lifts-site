@@ -2755,8 +2755,45 @@ stopsCell.textContent = stopsToArabic(s);
 });
 
 </script>
+
+   <script>
+
+function capacityToPersons(cap){
+
+const map = {
+450: 6,
+630: 8,
+800: 10,
+1000: 13,
+1275: 17,
+1600: 21
+};
+
+const persons = map[cap] || Math.round(cap / 75);
+
+return cap + " كغ (" + persons + " أشخاص)";
+}
+
+document.addEventListener("DOMContentLoaded", function(){
+
+const capCell = document.querySelector(".bind_capacity");
+
+if(capCell){
+
+let cap = parseInt(capCell.textContent);
+
+if(!isNaN(cap)){
+capCell.textContent = capacityToPersons(cap);
+}
+
+}
+
+});
+
+</script>
 </body>
 </html>
+
 
 
 
