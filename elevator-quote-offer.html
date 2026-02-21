@@ -694,8 +694,8 @@ th {
 </tr>
 
 <tr>
-  <th>مدينة التصنيع</th>
-  <td>Wangou Industrial Zone</td>
+  <th>مدينة التجميع للمعدات</th>
+  <td class="bind_city_manufacture">—</td>
   <th>نوع الاستخدام</th>
   <td class="bind_usage">Passenger Elevator</td>
 </tr>
@@ -768,7 +768,9 @@ th {
 
   </tbody>
 </table>
-
+<div id="local-spec-note" style="display:none; margin-top:8px; font-size:14px; color:#333; font-weight:600;">
+جميع مكونات المصعد مطابقة لكود البناء السعودي SBC ومعتمدة وفق متطلبات الدفاع المدني في المملكة العربية السعودية.
+</div>
   </div>
 <div style="margin-top: 15px; border-top: 2px solid #1e3a8a; padding-top: 10px; font-family: sans-serif;">
     
@@ -2791,8 +2793,54 @@ capCell.textContent = capacityToPersons(cap);
 });
 
 </script>
+
+   <script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+const brand = document.querySelector(".bind_brand")?.textContent || "";
+
+const originCell = document.querySelector(".bind_origin");
+const cityCell = document.querySelector(".bind_city_manufacture");
+
+if(!originCell || !cityCell) return;
+
+/* =============================
+   FUJI JAPAN
+============================= */
+if(brand.toLowerCase().includes("fuji")){
+
+originCell.textContent = "Japan";
+cityCell.textContent = "Wangou Industrial Zone";
+
+}
+
+/* =============================
+   VERTILIFT ITALY
+============================= */
+else if(brand.toLowerCase().includes("vertilift")){
+
+originCell.textContent = "Italy";
+cityCell.textContent = "Wangou Industrial Zone";
+
+}
+
+/* =============================
+   LOCAL SAUDI
+============================= */
+else if(brand.toLowerCase().includes("local")){
+
+originCell.textContent = "Saudi Arabia";
+cityCell.textContent = "Riyadh";
+
+}
+
+});
+
+</script>
 </body>
 </html>
+
 
 
 
