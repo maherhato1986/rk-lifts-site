@@ -713,7 +713,7 @@ th {
       <th>السرعة (m/s)</th>
       <td class="bind_speed">—</td>
       <th>عدد التوقفات (Stops)</th>
-      <td class="bind_stops">—</td>
+      <td class="bind_stops stops-text">—</td>
     </tr>
 
     <!-- الصف 5 -->
@@ -2723,7 +2723,40 @@ liftCell.textContent = liftsToArabic(n);
 });
 
 </script>
+   <script>
+
+function stopsToArabic(num){
+
+const words = {
+1:"توقف واحد",
+2:"توقفان",
+3:"ثلاثة توقفات",
+4:"أربعة توقفات",
+5:"خمسة توقفات",
+6:"ستة توقفات",
+7:"سبعة توقفات",
+8:"ثمانية توقفات",
+9:"تسعة توقفات",
+10:"عشرة توقفات"
+}
+
+return words[num] || num + " توقفات";
+}
+
+document.addEventListener("DOMContentLoaded", function(){
+
+const stopsCell = document.querySelector(".bind_stops");
+
+if(stopsCell){
+const s = parseInt(stopsCell.textContent);
+stopsCell.textContent = stopsToArabic(s);
+}
+
+});
+
+</script>
 </body>
 </html>
+
 
 
