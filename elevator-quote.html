@@ -1209,7 +1209,7 @@ function fillSpeedOptions() {
 
 function syncEN81ByCapacity(capacity) {
   // 1) حوّل قيمة السعة (حتى لو كانت Range) إلى رقم EN81 مناسب
-  // مثال: "320-450" => 450 (نأخذ الحد الأعلى)
+  // مثال: "450" => 450 (نأخذ الحد الأعلى)
   const nums = String(capacity || '').match(/\d+/g) || [];
   const capNum = nums.length ? Number(nums[nums.length - 1]) : 0; // آخر رقم = الحد الأعلى
   const capKey = capNum ? String(capNum) : String(capacity || '').trim();
@@ -2464,6 +2464,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
