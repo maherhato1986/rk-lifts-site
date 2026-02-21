@@ -4,8 +4,8 @@
   "exchangeRateToSAR": 3.75,
   "models": [
     {
-      "code": "VL-MRL-320-1.0",
-      "capacityKg": "320-450",
+      "code": "VL-MRL-450-1.0",
+      "capacityKg": "450",
       "speedMps": 1.0,
       "baseFloors": 2,
       "basePriceUsd": 8100,
@@ -15,8 +15,8 @@
       "notes": "FOB Shanghai"
     },
     {
-      "code": "VL-MRL-320-1.6",
-      "capacityKg": "320-450",
+      "code": "VL-MRL-450-1.6",
+      "capacityKg": "450",
       "speedMps": 1.6,
       "baseFloors": 2,
       "basePriceUsd": 8400,
@@ -26,8 +26,8 @@
       "notes": "FOB Shanghai"
     },
     {
-      "code": "VL-MRL-320-1.75",
-      "capacityKg": "320-450",
+      "code": "VL-MRL-450-1.75",
+      "capacityKg": "450",
       "speedMps": 1.75,
       "baseFloors": 2,
       "basePriceUsd": 8600,
@@ -140,3 +140,4 @@
     }
   ]
 }
+
