@@ -1483,7 +1483,46 @@ All dimensions are subject to final site verification and approved shop drawings
 
   </tbody>
 </table>
+<script>
 
+/* =========================================
+   EN81 AUTO MATCH WITH QUOTE DATA
+   يستخدم نفس أسماء القيم في جدول عروض الأسعار
+========================================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  const capacity = parseInt(document.querySelector(".bind_capacity")?.textContent || 0);
+  const pit = parseInt(document.querySelector('[data-bind="pit"]')?.textContent || 0);
+  const oh = parseInt(document.querySelector('[data-bind="oh"]')?.textContent || 0);
+
+  const rows = document.querySelectorAll("#en81-table tbody tr");
+
+  rows.forEach(row => {
+
+    const rowCapacity = parseInt(row.dataset.capacity || 0);
+    const rowPit = parseInt(row.dataset.pit || 0);
+    const rowOh = parseInt(row.dataset.oh || 0);
+
+    if (
+      rowCapacity === capacity ||
+      (rowPit === pit && rowOh === oh)
+    ) {
+
+      row.classList.add("en81-active");
+
+      const counter = row.querySelector(".en81-count");
+      if(counter){
+        counter.textContent = "✔";
+      }
+
+    }
+
+  });
+
+});
+
+</script>
 
 <p style="font-size:11px; color:#6b7280; margin-top:8px">
   جميع القيم الواردة في الجدول أعلاه هي قيم إرشادية وفق معيار EN81،
@@ -2647,6 +2686,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
 
 
 
