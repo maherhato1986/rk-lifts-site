@@ -694,7 +694,7 @@ th {
 
     <!-- الصف 3 -->
     <tr>
-     <td class="lift-count">0</td>
+      <th>عدد المصاعد</th>
       <td class="bind_lifts">—</td>
       <th>الحمولة الاسمية (kg)</th>
       <td class="bind_capacity">—</td>
@@ -858,7 +858,7 @@ th {
           <tr>
             <th>المنطقة</th>
             <th>Region</th>
-            <td class="lift-count">0</td>
+            <th>عدد المصاعد</th>
             <th>Elevators</th>
           </tr>
         </thead>
@@ -1363,7 +1363,7 @@ All dimensions are subject to final site verification and approved shop drawings
   <thead>
     <tr>
       <th>الحمولة (kg)</th>
-      <td class="lift-count">0</td>
+      <th>عدد المصاعد</th>
       <th>مقاس الكابينة (mm)</th>
       <th>مقاس البئر (mm)</th>
       <th>عرض الباب (mm)</th>
@@ -1483,40 +1483,7 @@ All dimensions are subject to final site verification and approved shop drawings
 
   </tbody>
 </table>
-<script>
 
-document.addEventListener("DOMContentLoaded", function(){
-
-  const lifts = window.selectedElevators || [];
-
-  const rows = document.querySelectorAll("#en81-table tbody tr");
-
-  rows.forEach(row => {
-
-    const capacity = parseInt(row.dataset.capacity || 0);
-
-    let count = 0;
-
-    lifts.forEach(lift=>{
-      if(parseInt(lift.capacity) === capacity){
-        count++;
-      }
-    });
-
-    const cell = row.querySelector(".lift-count");
-
-    if(cell){
-      cell.textContent = count;
-    }
-
-    if(count > 0){
-      row.classList.add("selected-row");
-    }
-
-  });
-
-});
-</script>
 
 <p style="font-size:11px; color:#6b7280; margin-top:8px">
   جميع القيم الواردة في الجدول أعلاه هي قيم إرشادية وفق معيار EN81،
@@ -2675,76 +2642,11 @@ document.addEventListener('DOMContentLoaded', () => {
 }
 
 }
-   .selected-row{
-background:#f0fdf4;
-font-weight:600;
-}
 </style>
 
-<script>
 
-document.addEventListener("DOMContentLoaded", function(){
-
-  // قراءة الحمولة من عرض السعر
-  const capacityElement = document.querySelector(".bind_capacity");
-
-  if(!capacityElement) return;
-
-  const capacity = parseInt(capacityElement.textContent.trim());
-
-  const rows = document.querySelectorAll("#en81-table tbody tr");
-
-  rows.forEach(row=>{
-
-    const rowCapacity = parseInt(row.dataset.capacity);
-
-    const countCell = row.querySelector(".lift-count");
-
-    if(rowCapacity === capacity){
-
-      countCell.textContent = "1";
-
-      row.style.background = "#f0fdf4";
-      row.style.fontWeight = "600";
-
-    }else{
-
-      countCell.textContent = "0";
-
-    }
-
-  });
-
-});
-
-</script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
