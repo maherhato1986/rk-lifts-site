@@ -875,7 +875,7 @@ const ar = `
 ويُشار إليه لاحقًا بـ (الطرف الثاني)
 
 ### تمهيد:
-نظرًا لرغبة الطرف الثاني في التعاقد على أعمال الصيانة الوقائية الدورية لعدد (${lifts}) مصعد/مصاعد ركاب،
+نظرًا لرغبة الطرف الثاني في التعاقد على أعمال الصيانة الوقائية الدورية لعدد (<span class="highlight-number">${lifts}</span>) مصعد
 من نوع (${brand})، تخدم مبنى (${buildingType}) الكائن في مدينة (${city})،
 وحيث إن الطرف الأول جهة متخصصة ومرخصة في أعمال صيانة المصاعد والسلالم الكهربائية،
 فقد اتفق الطرفان – وهما بكامل أهليتهما الشرعية والنظامية – على ما يلي:
@@ -925,7 +925,7 @@ const ar = `
     </tr>
     <tr>
       <td class="label total">إجمالي قيمة العقد شامل الضريبة</td>
-      <td class="value total">${calc.total.toFixed(2)} ريال سعودي</td>
+      <td class="value total"><span class="highlight-number">${calc.total.toFixed(2)}</span> ريال سعودي</td>
     </tr>
   </table>
 </div>
@@ -1000,7 +1000,7 @@ Project Name: (${projectName})
 Project Location: (${projectLocation})
 
 ### Preamble:
-Whereas the Second Party desires to engage the First Party for annual preventive maintenance services for (${lifts}) passenger elevator(s),
+Whereas the Second Party desires to engage the First Party for annual preventive maintenance services for(<span class="highlight-number">${lifts}</span>) مصعد passenger elevator(s),
 Brand (${brand}), serving a (${buildingType}) building located in (${city}),
 and whereas the First Party is a duly licensed and qualified elevator maintenance contractor,
 the parties hereby agree as follows:
@@ -1032,7 +1032,7 @@ The First Party shall supply lubricants, grease, and cleaning materials required
 Spare parts replacement is excluded from this contract and shall be quoted separately upon approval by the Second Party.
 
 ### Article (8): Contract Value
-The total annual contract value is SAR ${calc.total.toFixed(2)}, inclusive of 15% VAT, excluding spare parts.
+The total annual contract value is <span class="highlight-number">${calc.total.toFixed(2)}</span> ريال سعودي, inclusive of 15% VAT, excluding spare parts.
 
 ### Article (9): Contract Term
 This Agreement shall be valid for one calendar year from the commencement date and shall be automatically renewed unless terminated by written notice at least sixty (60) days prior to expiry.
@@ -3548,7 +3548,29 @@ function toggleOperationMode(){
     document.getElementById('operationMode').value = '';
   }
 }
+/* =====================================
+   Highlight Dynamic Numbers
+===================================== */
 
+.highlight-number{
+  background:#fff7cc;
+  padding:2px 6px;
+  border-radius:4px;
+  font-weight:800;
+  color:#000;
+  border:1px solid #facc15;
+}
+
+/* عند الطباعة يكون أوضح */
+@media print{
+
+  .highlight-number{
+    background:#ffe58f;
+    border:1px solid #f59e0b;
+    font-weight:900;
+  }
+
+}
 </script>
 
 
