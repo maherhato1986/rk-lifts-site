@@ -6,8 +6,8 @@
 "models": [
 
     {
-      "code": "FJ-MRL-320-0.4",
-      "capacityKg": "320-450",
+      "code": "FJ-MRL-450-0.4",
+      "capacityKg": "450",
       "speedMps": 0.4,
       "baseFloors": 2,
       "basePriceUsd": 5350,
@@ -17,8 +17,8 @@
       "notes": "FOB Shanghai"
     },
     {
-      "code": "FJ-MRL-320-1.0",
-      "capacityKg": "320-450",
+      "code": "FJ-MRL-450-1.0",
+      "capacityKg": "450",
       "speedMps": 1.0,
       "baseFloors": 2,
       "basePriceUsd": 5420,
