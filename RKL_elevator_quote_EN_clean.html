@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
    
 <style>
@@ -538,169 +538,6 @@ th {
   font-weight: bold;
 }
 
-
-
-/* =================================================
-   RKL PRO – UI/PRINT POLISH (2026)
-================================================= */
-:root{
-  --rkl-primary:#1e3a8a;
-  --rkl-secondary:#2563eb;
-  --rkl-accent:#16a34a;
-  --rkl-border:#e5e7eb;
-  --rkl-muted:#64748b;
-  --rkl-bg:#f8fafc;
-  --rkl-text:#111827;
-}
-
-html,body{ font-family: "Segoe UI", Arial, sans-serif; color:var(--rkl-text); }
-body{ line-height:1.65; }
-
-/* Page framing */
-.page{
-  background:#fff;
-  border:1px solid var(--rkl-border);
-  border-radius:12px;
-  box-shadow:0 10px 28px rgba(0,0,0,.08);
-}
-
-/* Header cleanup */
-.page-header{
-  border-bottom:2px solid var(--rkl-border);
-  padding-bottom:10px;
-  margin-bottom:14px;
-}
-.company-name{
-  font-weight:900;
-  letter-spacing:.3px;
-  color:var(--rkl-primary);
-}
-.company-sub{ color:var(--rkl-muted); }
-
-/* Titles */
-h1.main-title{
-  font-size:22px;
-  font-weight:900;
-  color:var(--rkl-primary);
-  letter-spacing:.4px;
-  margin:10px 0 18px;
-}
-.section-title{
-  font-weight:900;
-  font-size:14.5px;
-  margin:18px 0 10px;
-  color:var(--rkl-primary);
-  border-left:5px solid var(--rkl-secondary);
-  padding-left:10px;
-}
-.section-title.center{ text-align:center; border-left:none; border-bottom:2px solid var(--rkl-border); padding:0 0 8px 0; }
-
-/* Tables */
-table{
-  width:100%;
-  border-collapse:separate;
-  border-spacing:0;
-  font-size:12px;
-}
-th,td{
-  border:1px solid #d1d5db;
-  padding:7px 10px;
-  vertical-align:top;
-}
-th{
-  background:var(--rkl-bg);
-  color:var(--rkl-primary);
-  font-weight:800;
-}
-tbody tr:nth-child(even) td{ background:#fbfdff; }
-tbody tr:hover td{ background:#f3f7ff; }
-
-/* Inputs inside tables */
-#items-table input{
-  width:100%;
-  padding:7px 8px;
-  border:1px solid var(--rkl-border);
-  border-radius:8px;
-  font-size:12px;
-  outline:none;
-}
-#items-table input:focus{
-  border-color:var(--rkl-secondary);
-  box-shadow:0 0 0 3px rgba(37,99,235,.12);
-}
-#items-table{
-  border:2px solid var(--rkl-border);
-  border-radius:12px;
-  overflow:hidden;
-}
-#items-table thead th{
-  background:linear-gradient(0deg, #0f2f79, var(--rkl-primary));
-  color:#fff;
-  border-color:#0f2f79;
-}
-#items-table tfoot td{
-  background:#f8fafc;
-  font-weight:900;
-}
-
-/* Numeric alignment helpers */
-.num, .money{ text-align:right; font-variant-numeric: tabular-nums; }
-.row-total, .pay50, .pay25, .pay20, .pay5,
-.subtotalBefore, .subtotalAfter, .vatAmount, .grandTotal,
-#itemsSubtotal{
-  text-align:right;
-  font-variant-numeric: tabular-nums;
-  font-weight:900;
-}
-
-/* Buttons */
-button, .btn-print{
-  font-weight:800;
-  border-radius:10px;
-}
-.btn-print{
-  background:var(--rkl-primary);
-}
-.btn-print:hover{
-  background:var(--rkl-secondary);
-}
-
-/* Small notes */
-.small-note{ color:var(--rkl-muted); }
-
-/* Footer page number (works for screen + print as separate .page blocks) */
-body{ counter-reset: rklpage; }
-.page{ counter-increment: rklpage; position:relative; }
-.page::after{
-  content:"RKL Quotation • Page " counter(rklpage);
-  position:absolute;
-  left:15mm;
-  right:15mm;
-  bottom:10mm;
-  font-size:10px;
-  color:var(--rkl-muted);
-  border-top:1px solid var(--rkl-border);
-  padding-top:6px;
-}
-
-/* Covers: no footer line */
-.page.pdf-cover::after{ content:""; border-top:none; padding-top:0; }
-
-/* Print polish */
-@media print{
-  .page{
-    border:none !important;
-    border-radius:0 !important;
-    box-shadow:none !important;
-  }
-  .page::after{
-    left:15mm;
-    right:15mm;
-    bottom:8mm;
-  }
-  /* keep numbers readable */
-  th,td{ padding:6px 8px !important; }
-}
 
 </style>
 
@@ -2070,9 +1907,20 @@ const bind = (selector, value) => {
 /* =================================================
        LocalStorage
 ================================================= */
-const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
-const currentIndex = localStorage.getItem('rkl_current_quote_index');
-window.q = quotes[currentIndex ?? quotes.length - 1];
+// =================================================
+// Fast read: use selected quote snapshot to avoid heavy parsing (prevents page freeze)
+// =================================================
+let __q = null;
+try { __q = JSON.parse(localStorage.getItem('rkl_selected_quote') || 'null'); } catch(e) { __q = null; }
+
+if(!__q){
+  const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
+  const currentIndex = localStorage.getItem('rkl_current_quote_index');
+  __q = quotes[(currentIndex ?? (quotes.length - 1))] || null;
+}
+
+window.q = __q;
+
 
    /* ==========================================
        
@@ -2202,11 +2050,11 @@ function fillEN81CountsFromCurrentQuote(){
 
 
 if (!q) {
-  alert('    ');
+  alert('No quotation data was found on this device. Please generate or select a quotation first.');
 }
 
 /* 🔴    */
-highlightEN81Row();
+try { if (typeof highlightEN81Row === 'function') highlightEN81Row(); } catch(e) {}
 
 /* =================================================
    (1)   
@@ -3080,77 +2928,6 @@ totalCell.textContent = "90 – 122  ";
 });
 
 </script>
-
-<script>
-/* =================================================
-   RKL PRO – Number & Currency Formatting (Front-end only)
-   - Keeps the original calculation logic intact
-   - Formats visible numbers as: SAR 1,234,567.89
-================================================= */
-(function(){
-  const LOCALE = 'en-US';
-  const CURRENCY = 'SAR';
-
-  const toNumber = (txt) => {
-    if(!txt) return NaN;
-    const cleaned = String(txt).replace(/[^0-9.\-]/g,'');
-    if(cleaned.trim() === '') return NaN;
-    return Number(cleaned);
-  };
-
-  const formatMoney = (num) => {
-    if(!isFinite(num)) return null;
-    return `${CURRENCY} ` + num.toLocaleString(LOCALE, {minimumFractionDigits:2, maximumFractionDigits:2});
-  };
-
-  const formatPlain = (num) => {
-    if(!isFinite(num)) return null;
-    return num.toLocaleString(LOCALE);
-  };
-
-  const isMoneyCell = (el) => {
-    const t = (el.textContent || '').toUpperCase();
-    return t.includes('SAR') || el.classList.contains('money') || el.id === 'itemsSubtotal';
-  };
-
-  const formatElement = (el) => {
-    if(!el || el.closest('.pdf-cover')) return;
-    if(el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') return;
-
-    const n = toNumber(el.textContent);
-    if(!isFinite(n)) return;
-
-    const out = isMoneyCell(el) ? formatMoney(n) : formatPlain(n);
-    if(out) el.textContent = out;
-  };
-
-  const formatAll = () => {
-    const selectors = [
-      '#itemsSubtotal',
-      '.row-total',
-      '.pay50','.pay25','.pay20','.pay5',
-      '.subtotalBefore','.adjustmentAmount','.subtotalAfter',
-      '.vatAmount','.grandTotal'
-    ].join(',');
-
-    document.querySelectorAll(selectors).forEach(el => {
-      el.classList.add('money');
-      formatElement(el);
-    });
-  };
-
-  document.addEventListener('DOMContentLoaded', () => {
-    document.documentElement.setAttribute('lang','en');
-    document.documentElement.setAttribute('dir','ltr');
-
-    formatAll();
-
-    const obs = new MutationObserver(() => formatAll());
-    obs.observe(document.body, {subtree:true, childList:true, characterData:true});
-  });
-})();
-</script>
-
 </body>
 </html>
 
