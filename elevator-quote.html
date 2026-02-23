@@ -671,8 +671,12 @@ textarea{
                     <button type="button" class="btn btn-secondary" id="export-quotes-btn">
                         تصدير السجل إلى Excel (CSV)
                     </button>
-                    <button id="printOfferButton" type="button">
-    طباعة عرض السعر
+                    <button id="printOfferArabic" class="btn btn-secondary" type="button">
+طباعة العرض (عربي)
+</button>
+
+<button id="printOfferEnglish" class="btn btn-primary" type="button">
+Print Offer (English)
 </button>
 <!-- 🔍 مربع البحث -->
 <div style="margin:15px 0;">
@@ -1959,7 +1963,12 @@ oh: en81?.oh || '',
 
         }
 
-   document.getElementById("printOfferButton").addEventListener("click", function () {
+/* ===============================
+   PRINT OFFER (ARABIC)
+================================ */
+
+document.getElementById("printOfferArabic").addEventListener("click", function () {
+
     const selected = document.querySelector(".quote-check:checked");
 
     if (!selected) {
@@ -1969,13 +1978,33 @@ oh: en81?.oh || '',
 
     const index = selected.dataset.index;
 
-    // حفظ رقم العرض المختار
     localStorage.setItem("rkl_current_quote_index", index);
 
-    // فتح صفحة العرض
     window.open("elevator-quote-offer.html", "_blank");
+
 });
 
+
+/* ===============================
+   PRINT OFFER (ENGLISH)
+================================ */
+
+document.getElementById("printOfferEnglish").addEventListener("click", function () {
+
+    const selected = document.querySelector(".quote-check:checked");
+
+    if (!selected) {
+        alert("Please select one quote first");
+        return;
+    }
+
+    const index = selected.dataset.index;
+
+    localStorage.setItem("rkl_current_quote_index", index);
+
+    window.open("RKL_elevator_quote_EN_clean.html", "_blank");
+
+});
 
 
 
@@ -2464,6 +2493,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
