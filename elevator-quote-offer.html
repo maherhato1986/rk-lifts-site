@@ -489,20 +489,42 @@ th {
     height: auto !important;
   }
 
+ /* ===============================
+   PRINT FIXES + FINAL CONTACT PAGE
+=============================== */
+@media print {
+
+  /* ✅ منع طباعة أي صفحة فاضية */
+  .page:empty { display: none !important; }
+
+  /* ✅ قاعدة عامة للصفحات: كل صفحة تقطع بعد نفسها */
+  .page{
+    break-after: page;
+    page-break-after: always;
+  }
+
+  /* ✅ لا تعمل صفحة زيادة بعد آخر صفحة */
+  .page:last-child,
+  .page:last-of-type{
+    break-after: auto !important;
+    page-break-after: auto !important;
+  }
+
   /* ===============================
      FINAL CONTACT PAGE – FULL A4
   =============================== */
-
   .page.final-contact-page {
     width: 210mm !important;
     height: 297mm !important;
     min-height: 297mm !important;
 
+    /* ✅ نخليها تبدأ صفحة جديدة (هذا مطلوب) */
     page-break-before: always !important;
-    page-break-after: always !important;
-
     break-before: page !important;
-    break-after: page !important;
+
+    /* ❌ مهم جداً: لا تفرض قطع بعد الصفحة من هنا */
+    page-break-after: auto !important;
+    break-after: auto !important;
 
     padding: 20mm !important;
     box-sizing: border-box !important;
@@ -513,32 +535,30 @@ th {
 
     overflow: hidden !important;
   }
-/* ✅ لا تعمل صفحة زيادة بعد آخر صفحة */
-.page.final-contact-page{
-  page-break-after: auto !important;
-  break-after: auto !important;
-}
 
-/* ✅ ضمان: آخر .page لا يفرض break */
-.page:last-of-type{
-  page-break-after: auto !important;
-  break-after: auto !important;
-}
+  /* ✅ ضمان إضافي: إذا كانت final-contact-page هي آخر عنصر لا تعمل صفحة بعدها */
+  .page.final-contact-page:last-child,
+  .page.final-contact-page:last-of-type{
+    page-break-after: auto !important;
+    break-after: auto !important;
+  }
 
-}
+} /* end @media print */
 
+
+/* ✅ إبراز صف EN81 المختار */
 .en81-match {
   background: #e8f5e9 !important;
   border: 2px solid #2e7d32 !important;
-  font-weight: bold;
+  font-weight: bold !important;
 }
-   #annexC-table tr.annexC-active {
+
+/* ✅ إبراز صف ملحق (ج) المختار */
+#annexC-table tr.annexC-active {
   background: #e8f5e9 !important;
   border: 2px solid #2e7d32 !important;
-  font-weight: bold;
+  font-weight: bold !important;
 }
-
-
 </style>
 
 
@@ -2959,6 +2979,7 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 </body>
 </html>
+
 
 
 
