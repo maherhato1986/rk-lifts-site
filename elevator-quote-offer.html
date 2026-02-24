@@ -2426,17 +2426,50 @@ function syncEditableFieldsToStorage() {
 function printWithName() {
   syncEditableFieldsToStorage();
 
-  const quoteNo = document.querySelector('.bind_quote_number')?.textContent?.trim() || 'quotation';
+  // ===== 1) قراءة رقم العرض =====
+  const quoteNo =
+    document.querySelector('.bind_quote_number')?.textContent?.trim() ||
+    'quotation';
+
+  // تنظيف رقم العرض (إزالة الرموز الغريبة)
   const cleanNo = quoteNo.replace(/[^\w\d-]/g, '');
 
-  document.title = `RKL_Quotation_${cleanNo}`;
+  // ===== 2) قراءة الماركة / عدد المصاعد =====
+  const brand =
+    document.querySelector('.bind_brand')?.textContent?.trim() || '';
+
+  // لو عندك class مختلف لعدد المصاعد غيّره هنا فقط
+  const elevatorsRaw =
+    document.querySelector('.bind_elevators')?.textContent?.trim() || '1';
+
+  // تنظيف عدد المصاعد إلى رقم فقط
+  const elevators = (elevatorsRaw.match(/\d+/)?.[0]) || '1';
+
+  // ===== 3) تحديد نوع المصعد حسب الماركة =====
+  let type = 'ELEVATOR';
+
+  const b = brand.toLowerCase();
+
+  if (b.includes('fuji')) type = 'FUJI';
+  else if (b.includes('local')) type = 'LOCAL';
+  else if (b.includes('vertilift')) type = 'ITALY';
+  else if (b.includes('otis')) type = 'OTIS';
+  else if (b.includes('kone')) type = 'KONE';
+  else if (b.includes('schindler')) type = 'SCHINDLER';
+  else if (b.includes('mitsubishi')) type = 'MITSUBISHI';
+
+  // ===== 4) اسم الملف النهائي =====
+  // مثال: RKL_Quotation_FUJI_1ELE_Q-20260106-800
+  document.title = `RKL_Quotation_${type}_${elevators}ELE_${cleanNo}`;
+
+  // ===== 5) طباعة =====
   window.print();
 
+  // ===== 6) إعادة عنوان الصفحة بعد الطباعة =====
   setTimeout(() => {
     document.title = 'RKL Elevator Offer';
   }, 1000);
 }
-
 </script>
 
 
@@ -2926,6 +2959,7 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 </body>
 </html>
+
 
 
 
