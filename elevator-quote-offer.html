@@ -1384,6 +1384,74 @@ All dimensions are subject to final site verification and approved shop drawings
 <div class="section-title">
   ملحق (ب): جدول المقاسات القياسية المعتمدة حسب EN81
 </div>
+   <!-- ✅ Annex (B) | EN81 Selected Row (Bilingual) -->
+<div style="margin-top:10px">
+
+  <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:12px; margin-bottom:8px;">
+    <div style="font-weight:800; font-size:13px; color:#111827;">
+      ملحق (ب): البند المختار من جدول المقاسات القياسية حسب EN81
+      <div style="font-weight:600; font-size:11px; color:#6b7280; margin-top:3px;" dir="ltr">
+        Annex (B): Selected EN81 Standard Shaft & Cabin Dimensions
+      </div>
+    </div>
+
+    <div style="font-size:11px; color:#1e3a8a; font-weight:700;">
+      ✔ معتمد / Selected
+    </div>
+  </div>
+
+  <table id="en81-selected-table" class="standard-table" style="margin-top:6px">
+    <thead>
+      <tr>
+        <th>
+          الحمولة (kg)<br><span style="font-weight:500;color:#6b7280" dir="ltr">Capacity</span>
+        </th>
+        <th>
+          مقاس الكابينة (mm)<br><span style="font-weight:500;color:#6b7280" dir="ltr">Cabin</span>
+        </th>
+        <th>
+          مقاس البئر (mm)<br><span style="font-weight:500;color:#6b7280" dir="ltr">Shaft</span>
+        </th>
+        <th>
+          عرض الباب (mm)<br><span style="font-weight:500;color:#6b7280" dir="ltr">Door Width</span>
+        </th>
+        <th>
+          Pit (mm)<br><span style="font-weight:500;color:#6b7280" dir="ltr">Pit Depth</span>
+        </th>
+        <th>
+          OH (mm)<br><span style="font-weight:500;color:#6b7280" dir="ltr">Overhead</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="background:#f6fffa">
+        <td class="en81-sel-cap">—</td>
+        <td class="en81-sel-cabin">—</td>
+        <td class="en81-sel-shaft">—</td>
+        <td class="en81-sel-door">—</td>
+        <td class="en81-sel-pit">—</td>
+        <td class="en81-sel-oh">—</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ✅ Bilingual short explanation -->
+  <div style="margin-top:10px; padding:10px 12px; background:#f9fafb; border:1px solid #e5e7eb; border-radius:10px; font-size:11px; line-height:1.8;">
+    <div style="color:#111827;">
+      <strong style="color:#1e3a8a">شرح مختصر:</strong>
+      تم اختيار البند أعلاه تلقائيًا بناءً على الحمولة/المقاسات المذكورة في عرض السعر،
+      وفق معيار EN81-20/50. جميع القيم إرشادية وتخضع للاعتماد النهائي بعد معاينة الموقع
+      وإصدار المخططات التنفيذية (Shop Drawings).
+    </div>
+
+    <div dir="ltr" style="margin-top:8px; color:#374151;">
+      <strong style="color:#1e3a8a">Brief Explanation:</strong>
+      The above item is auto-selected based on the quoted capacity/dimensions in compliance with EN 81-20/50.
+      All values are indicative and subject to final site verification and approved shop drawings.
+    </div>
+  </div>
+
+</div>
 
 <table id="en81-table" class="standard-table">
   <thead>
@@ -2933,8 +3001,39 @@ totalCell.textContent = "90 – 122 يوم عمل";
 });
 
 </script>
+   <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  // اقرأ الصف الذي تم تمييزه بواسطة سكربت EN81 الحالي
+  const activeRow = document.querySelector("#en81-table tbody tr.en81-active");
+  const row = activeRow || document.querySelector("#en81-table tbody tr");
+  if(!row) return;
+
+  const tds = row.querySelectorAll("td");
+  // ترتيب جدولك الحالي: 0 capacity, 1 count, 2 cabin, 3 shaft, 4 door, 5 pit, 6 oh
+  const cap   = (tds[0]?.textContent || "—").trim();
+  const cabin = (tds[2]?.textContent || "—").trim();
+  const shaft = (tds[3]?.textContent || "—").trim();
+  const door  = (tds[4]?.textContent || "—").trim();
+  const pit   = (tds[5]?.textContent || "—").trim();
+  const oh    = (tds[6]?.textContent || "—").trim();
+
+  const set = (sel, val) => {
+    const el = document.querySelector(sel);
+    if(el) el.textContent = val;
+  };
+
+  set(".en81-sel-cap", cap);
+  set(".en81-sel-cabin", cabin);
+  set(".en81-sel-shaft", shaft);
+  set(".en81-sel-door", door);
+  set(".en81-sel-pit", pit);
+  set(".en81-sel-oh", oh);
+});
+</script>
 </body>
 </html>
+
 
 
 
