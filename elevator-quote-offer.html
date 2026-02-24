@@ -1741,7 +1741,7 @@ document.addEventListener("DOMContentLoaded", function () {
       <th style="width:10%">الكمية</th>
       <th style="width:20%">سعر الوحدة (SAR)</th>
       <th style="width:20%">الإجمالي (SAR)</th>
-      <th style="width:10%">✖</th>
+     
     </tr>
   </thead>
   <tbody>
@@ -1767,23 +1767,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <div style="margin-top:8px">
   <button type="button" onclick="addExtraRow()">➕ إضافة بند إضافي</button>
-</div>
-
-<!-- ===============================
-  7-2) تعديل السعر قبل الضريبة (اختياري)
-================================ -->
-<div class="price-adjust-section">
-
-  <div class="section-title">7-2) تعديل السعر قبل الضريبة (اختياري)</div>
-
-  <select id="adjustmentType">
-    <option value="none">بدون تعديل</option>
-    <option value="discount">خصم</option>
-    <option value="increase">زيادة</option>
-  </select>
-
-  <input type="number" id="adjustmentValue" placeholder="أدخل المبلغ">
-
 </div>
 
 
@@ -1817,29 +1800,8 @@ document.addEventListener("DOMContentLoaded", function () {
 <ol>
 
 <li>
-مدة تنفيذ المشروع تبدأ من تاريخ استلام الدفعة الأولى واعتماد المخططات
-والمقاسات النهائية من قبل الاستشاري أو المالك.
-</li>
-
-<li>
-يلتزم الطرف الأول بتوفير التغذية الكهربائية المناسبة (3 فاز – 380 فولت)
-وتنفيذ جميع الأعمال المدنية الخاصة بالبئر وفتحات الأبواب وفق المخططات المعتمدة.
-</li>
-
-<li>
 لا يتحمل الطرف الثاني أي مسؤولية عن التأخير الناتج عن:
 تأخر الدفعات، أو تأخر الأعمال المدنية، أو عدم جاهزية الموقع.
-</li>
-
-<li>
-في حال تأخر الدفعات المستحقة، يحق للطرف الثاني إيقاف الأعمال مؤقتًا
-دون تحمل أي مسؤولية عن الآثار الناتجة عن ذلك.
-</li>
-
-<li>
-لا يتحمل الطرف الثاني مسؤولية الأعطال الناتجة عن:
-سوء الاستخدام، أو العبث، أو تدخل جهات غير معتمدة،
-أو تقلبات الجهد الكهربائي غير المستقر.
 </li>
 
 <li>
@@ -1852,24 +1814,12 @@ document.addEventListener("DOMContentLoaded", function () {
 ما لم يتم النص عليها صراحةً في جدول البنود المالية.
 </li>
 
-<li>
-تخضع جميع المخططات التنفيذية لاعتماد نهائي من المكتب الفني للطرف الثاني
-قبل بدء التصنيع.
-</li>
-
-<li>
-في حال إلغاء المشروع بعد بدء التصنيع،
-يتم احتساب قيمة المواد المصنّعة وأي التزامات مالية قائمة.
-</li>
 
 <li>
 مدة سريان هذا العرض (30) يومًا من تاريخ الإصدار،
 ويُعد لاغيًا تلقائيًا بعد انتهاء المدة دون تعميد رسمي.
 </li>
 
-<li>
-تكون ولاية القضاء للمحاكم المختصة في المملكة العربية السعودية.
-</li>
 
 <li>
 يُعد توقيع هذا العرض بمثابة إقرار بمراجعة كافة البنود الفنية والمالية
@@ -1877,19 +1827,6 @@ document.addEventListener("DOMContentLoaded", function () {
 </li>
 
 </ol>
-
-</div> <!-- نهاية صفحة 7 -->
-
-<div class="page final-contact-page">
-
-
-    
-  <!-- Main Image -->
-  <div style="margin:15px 0;">
-    <img src="/public/images/final_page.png"
-         style="width:90%; height:130mm; object-fit:cover; border-radius:10px;">
-  </div>
-
 
   <!-- Contact Section -->
   <div style="border-top:2px solid #1e3a8a; padding-top:15px; display:flex; justify-content:space-between; align-items:center;">
@@ -1902,7 +1839,7 @@ document.addEventListener("DOMContentLoaded", function () {
     </div>    
 
   </div>
-
+ </div>
  </div>
 
 <!-- زر طباعة عام -->
@@ -2989,6 +2926,7 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 </body>
 </html>
+
 
 
 
