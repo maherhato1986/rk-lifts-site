@@ -386,23 +386,25 @@ th {
   }
 
   /* كل صفحة = ورقة A4 مستقلة */
-  .page {
-    width: 210mm !important;
-    min-height: 297mm !important;
-    margin: 0 !important;
-    padding: 15mm !important;
-    box-sizing: border-box !important;
+/* كل الصفحات */
+.page{
+  width:210mm !important;
+  min-height:297mm !important;
+  padding:15mm !important;
+  box-sizing:border-box !important;
+}
 
-    page-break-after: always !important;
-    break-after: page !important;
+/* كسر الصفحة فقط للصفحات التي قبل الأخيرة */
+.page:not(:last-child){
+  page-break-after: always !important;
+  break-after: page !important;
+}
 
-    display: block !important;
-    position: relative !important;
-    overflow: hidden !important;
-
-    box-shadow: none !important;
-  }
-
+/* منع صفحة فارغة بعد آخر صفحة */
+.page:last-child{
+  page-break-after: auto !important;
+  break-after: auto !important;
+}
   /* الغلاف */
   .pdf-cover {
     padding: 0 !important;
@@ -3201,6 +3203,7 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 </body>
 </html>
+
 
 
 
