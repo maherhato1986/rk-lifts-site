@@ -3199,8 +3199,55 @@ document.addEventListener("DOMContentLoaded", function () {
   set(".en81-sel-oh", oh);
 });
 </script>
+                   <script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+const brandName = document.querySelector(".bind_brand")?.textContent || "";
+
+/* تحديد اسم البراند */
+let brandValue = "FUJI";
+
+if (brandName.includes("FUJI")) {
+  brandValue = "FUJI";
+}
+else if (brandName.toLowerCase().includes("vertilift")) {
+  brandValue = "VERTILIFT";
+}
+else if (brandName.toLowerCase().includes("local")) {
+  brandValue = "LOCAL";
+}
+
+/* تعديل الجدول */
+const rows = document.querySelectorAll("table tbody tr");
+
+rows.forEach(row => {
+
+  const cells = row.querySelectorAll("td");
+
+  if(cells.length >= 5){
+
+    const brandCell = cells[3];
+    const supplierCell = cells[4];
+
+    if(
+      brandCell.textContent.trim() === "FUJI" &&
+      supplierCell.textContent.trim() === "FUJI"
+    ){
+      brandCell.textContent = brandValue;
+      supplierCell.textContent = brandValue;
+    }
+
+  }
+
+});
+
+});
+
+</script>
 </body>
 </html>
+
 
 
 
