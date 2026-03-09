@@ -1969,18 +1969,24 @@ oh: en81?.oh || '',
 
 document.getElementById("printOfferArabic").addEventListener("click", function () {
 
-    const selected = document.querySelector(".quote-check:checked");
+    const selected = document.querySelectorAll(".quote-check:checked");
 
-    if (!selected) {
-        alert("يرجى اختيار عرض سعر واحد من السجل أولاً");
+    if (selected.length === 0) {
+        alert("يرجى اختيار عرض سعر واحد على الأقل");
         return;
     }
 
-    const index = selected.dataset.index;
+    selected.forEach((checkbox, i) => {
 
-    localStorage.setItem("rkl_current_quote_index", index);
+        const index = checkbox.dataset.index;
 
-    window.open("elevator-quote-offer.html", "_blank");
+        localStorage.setItem("rkl_current_quote_index", index);
+
+        setTimeout(() => {
+            window.open("elevator-quote-offer.html", "_blank");
+        }, i * 300);
+
+    });
 
 });
 
@@ -2493,6 +2499,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
