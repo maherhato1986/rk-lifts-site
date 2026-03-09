@@ -2999,6 +2999,28 @@ function setText(selector, value){
   if (el) el.textContent = value;
 }
 
+   function generateMainItemDescription(q){
+  if (!q) return "—";
+
+  const lifts    = q.liftsCount || '—';
+  const brand    = q.brandLabel || q.brand || '—';
+  const machine  = q.machineType || '';
+  const capacity = q.capacity || '—';
+  const speed    = q.speed || '—';
+  const stops    = q.stops || q.floors || '—';
+  const project  = q.projectName || '—';
+  const location = q.projectLocation || '—';
+
+  return `
+توريد وتركيب وتشغيل عدد ${lifts} مصعد كهربائي
+من نوع ${brand}${machine ? ' – ' + machine : ''}
+بحمولة ${capacity} بسرعة ${speed}
+بعدد ${stops} وقفات
+لصالح مشروع ${project}
+في موقع ${location}
+وفق المواصفات الفنية المعتمدة في هذا العرض.
+  `.replace(/\n\s+/g, ' ').trim();
+}
 /* =========================================================
    Main
 ========================================================= */
@@ -3152,6 +3174,38 @@ document.addEventListener("DOMContentLoaded", function(){
   else if (brandKey === "local") brandValue = "LOCAL";
   else if (brandKey === "fuji") brandValue = "FUJI";
 
+     /* ---------------------------------
+     0) تعبئة وصف البند الرئيسي
+  --------------------------------- */
+  if (window.q) {
+    const descCell = document.querySelector(".auto-main-item");
+    if (descCell) {
+      descCell.textContent = generateMainItemDescription(window.q);
+    }
+
+    const qtyInput = document.querySelector("#items-table .qty");
+    if (qtyInput && (!qtyInput.value || Number(qtyInput.value) <= 1)) {
+      qtyInput.value = window.q.liftsCount || 1;
+    }
+
+    const unitInput = document.querySelector("#items-table .unit");
+    if (unitInput && (!unitInput.value || Number(unitInput.value) === 0)) {
+      unitInput.value =
+        Number(window.q.pricePerUnitBeforeVat || window.q.totalBeforeVatPerLift || 0).toFixed(2);
+    }
+
+    const rowTotalCell = document.querySelector("#items-table .row-total");
+    if (qtyInput && unitInput && rowTotalCell) {
+      const rowTotal = Number(qtyInput.value || 0) * Number(unitInput.value || 0);
+      rowTotalCell.textContent = rowTotal.toFixed(2);
+    }
+
+    const subtotalCell = document.getElementById("itemsSubtotal");
+    if (subtotalCell && qtyInput && unitInput) {
+      const subtotal = Number(qtyInput.value || 0) * Number(unitInput.value || 0);
+      subtotalCell.textContent = `SAR ${subtotal.toFixed(2)}`;
+    }
+  }
   const allRows = document.querySelectorAll("table tbody tr");
 
   allRows.forEach(row => {
@@ -3176,6 +3230,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 </body>
 </html>
+
 
 
 
