@@ -1824,57 +1824,7 @@ All dimensions are subject to final site verification and approved shop drawings
 
   </tbody>
 </table>
-<script>
 
-/* =========================================
-   EN81 AUTO MATCH WITH QUOTE DATA
-   يستخدم نفس أسماء القيم في جدول عروض الأسعار
-========================================= */
-
-document.addEventListener("DOMContentLoaded", function(){
-
-  const brand = (document.querySelector(".bind_brand")?.textContent || "").toLowerCase().trim();
-
-  const rows = document.querySelectorAll(".spec-table tbody tr");
-
-  /* الصف 8 و 9 في الجدول */
-  const manufactureCell = rows[7]?.children[1]; // مدة التصنيع
-  const shippingCell    = rows[7]?.children[3]; // مدة الشحن البحري
-  const installCell     = rows[8]?.children[1]; // مدة تركيب المصعد
-  const totalCell       = rows[8]?.children[3]; // إجمالي المدة
-
-  /* صف نظام التركيب */
-  const machineTypeCell = document.querySelector(".bind_machine_type");
-
-  if(!manufactureCell || !shippingCell || !installCell || !totalCell) return;
-
-  /* نوع النظام ثابت */
-  if (machineTypeCell) {
-    if (brand.includes("local")) {
-      machineTypeCell.textContent = "MRL – Local Assembly";
-    } else {
-      machineTypeCell.textContent = "MRL – Machine Room Less";
-    }
-  }
-
-  /* مدة التصنيع */
-  manufactureCell.textContent = "45 – 60 يوم عمل";
-
-  /* مدة التركيب */
-  installCell.textContent = "15 – 22 يوم عمل";
-
-  /* مدة الشحن */
-  if (brand.includes("local")) {
-    shippingCell.textContent = "لا يوجد شحن بحري (تجميع محلي)";
-    totalCell.textContent = "60 – 82 يوم عمل";
-  } else {
-    shippingCell.textContent = "45 – 65 يوم عمل";
-    totalCell.textContent = "105 – 147 يوم عمل";
-  }
-
-});
-
-</script>
 
 <p style="font-size:11px; color:#6b7280; margin-top:8px">
   جميع القيم الواردة في الجدول أعلاه هي قيم إرشادية وفق معيار EN81،
@@ -2198,15 +2148,7 @@ function generateMainItemDescription(q){
   `.replace(/\n\s+/g,' ').trim();
 }
 
-/* تعبئة البند الرئيسي */
-document.addEventListener("DOMContentLoaded", function(){
-  if(!q) return;
 
-  const descCell = document.querySelector('.auto-main-item');
-  if(descCell){
-    descCell.textContent = generateMainItemDescription(q);
-  }
-});
 
 
    /* =================================================
@@ -2509,10 +2451,7 @@ function renderEN81Diagram(){
   }
 }
 
-// شغّلها بعد تحميل الصفحة وربط q
-document.addEventListener("DOMContentLoaded", function(){
-  try { renderEN81Diagram(); } catch(e) {}
-});
+
 
  function escHtml(s){
     return String(s ?? '').replace(/[&<>"']/g, m => ({
@@ -2988,308 +2927,256 @@ document.addEventListener('DOMContentLoaded', () => {
 }
 </style>
 
+
 <script>
+/* =========================================================
+   RKL FINAL UNIFIED SCRIPT
+   ضع هذا السكربت مرة واحدة فقط قبل </body>
+   واحذف جميع سكربتات DOMContentLoaded المكررة القديمة
+========================================================= */
 
+/* -------------------------
+   Helpers
+------------------------- */
 function liftsToArabic(num){
-
-const words = {
-1:"واحد مصعد",
-2:"مصعدان",
-3:"ثلاثة مصاعد",
-4:"أربعة مصاعد",
-5:"خمسة مصاعد",
-6:"ستة مصاعد",
-7:"سبعة مصاعد",
-8:"ثمانية مصاعد",
-9:"تسعة مصاعد",
-10:"عشرة مصاعد"
+  const words = {
+    1: "واحد مصعد",
+    2: "مصعدان",
+    3: "ثلاثة مصاعد",
+    4: "أربعة مصاعد",
+    5: "خمسة مصاعد",
+    6: "ستة مصاعد",
+    7: "سبعة مصاعد",
+    8: "ثمانية مصاعد",
+    9: "تسعة مصاعد",
+    10: "عشرة مصاعد"
+  };
+  return words[num] || (num + " مصعد");
 }
-
-return words[num] || num + " مصعد";
-}
-
-document.addEventListener("DOMContentLoaded", function(){
-
-const liftCell = document.querySelector(".bind_lifts");
-
-if(liftCell){
-const n = parseInt(liftCell.textContent);
-liftCell.textContent = liftsToArabic(n);
-}
-
-});
-
-</script>
-   <script>
 
 function stopsToArabic(num){
-
-const words = {
-1:"توقف واحد",
-2:"توقفان",
-3:"ثلاثة توقفات",
-4:"أربعة توقفات",
-5:"خمسة توقفات",
-6:"ستة توقفات",
-7:"سبعة توقفات",
-8:"ثمانية توقفات",
-9:"تسعة توقفات",
-10:"عشرة توقفات"
+  const words = {
+    1: "توقف واحد",
+    2: "توقفان",
+    3: "ثلاثة توقفات",
+    4: "أربعة توقفات",
+    5: "خمسة توقفات",
+    6: "ستة توقفات",
+    7: "سبعة توقفات",
+    8: "ثمانية توقفات",
+    9: "تسعة توقفات",
+    10: "عشرة توقفات"
+  };
+  return words[num] || (num + " توقفات");
 }
-
-return words[num] || num + " توقفات";
-}
-
-document.addEventListener("DOMContentLoaded", function(){
-
-const stopsCell = document.querySelector(".bind_stops");
-
-if(stopsCell){
-const s = parseInt(stopsCell.textContent);
-stopsCell.textContent = stopsToArabic(s);
-}
-
-});
-
-</script>
-
-   <script>
 
 function capacityToPersons(cap){
-
-const map = {
-450: 6,
-630: 8,
-800: 10,
-1000: 13,
-1275: 17,
-1600: 21
-};
-
-const persons = map[cap] || Math.round(cap / 75);
-
-return cap + " كغ (" + persons + " أشخاص)";
-}
-
-document.addEventListener("DOMContentLoaded", function(){
-
-const capCell = document.querySelector(".bind_capacity");
-
-if(capCell){
-
-let cap = parseInt(capCell.textContent);
-
-if(!isNaN(cap)){
-capCell.textContent = capacityToPersons(cap);
-}
-
-}
-
-});
-
-</script>
-
-<script>
-
-document.addEventListener("DOMContentLoaded", function(){
-
-/* =============================
-   قراءة نوع المصعد الحقيقي
-============================= */
-
-let brand = "";
-
-/* قراءة من localStorage (الاختيار الحقيقي) */
-try{
-const quoteData = JSON.parse(localStorage.getItem("elevatorQuote") || "{}");
-brand = (quoteData.brand || "").toLowerCase();
-}catch(e){}
-
-/* إذا لم يجدها يأخذها من الجدول */
-if(!brand){
-brand = (document.querySelector(".bind_brand")?.textContent || "").toLowerCase();
-}
-
-/* =============================
-   تحديد الخلايا
-============================= */
-
-const originCell = document.querySelector(".bind_origin");
-const cityCell = document.querySelector(".bind_city_manufacture");
-
-if(!originCell || !cityCell) return;
-
-/* =============================
-   FUJI JAPAN
-============================= */
-
-if(brand.includes("fuji")){
-
-originCell.textContent = "Japan";
-cityCell.textContent = "Wangou Industrial Zone";
-
-}
-
-/* =============================
-   VERTILIFT ITALY
-============================= */
-
-else if(brand.includes("vertilift")){
-
-originCell.textContent = "Italy";
-cityCell.textContent = "Wangou Industrial Zone";
-
-}
-
-/* =============================
-   RKL - LOCAL SAUDI
-============================= */
-
-else if(brand.includes("local")){
-
-originCell.textContent = "Saudi Arabia";
-cityCell.textContent = "Riyadh";
-
-}
-
-/* =============================
-   Default fallback
-============================= */
-
-else{
-
-originCell.textContent = "-";
-cityCell.textContent = "-";
-
-}
-
-});
-
-</script>
-
-   <script>
-
-document.addEventListener("DOMContentLoaded", function(){
-
-const brand = document.querySelector(".bind_brand")?.textContent || "";
-
-const rows = document.querySelectorAll(".spec-table tbody tr");
-
-/* خلايا المدد */
-const manufactureCell = rows[7]?.children[1]; // مدة التصنيع
-const shippingCell = rows[7]?.children[3];    // الشحن البحري
-const installCell = rows[8]?.children[1];     // التركيب
-const totalCell = rows[8]?.children[3];       // الاجمالي
-
-if(!manufactureCell || !shippingCell || !installCell || !totalCell) return;
-
-/* ======================================
-   RKL - LOCAL ASSEMBLY
-====================================== */
-
-if(brand.toLowerCase().includes("local")){
-
-manufactureCell.textContent = "30 – 45 يوم عمل";
-shippingCell.textContent = "لا يوجد شحن بحري (تجميع محلي)";
-installCell.textContent = "15 – 20 يوم عمل";
-totalCell.textContent = "45 – 65 يوم عمل";
-
-}
-
-/* ======================================
-   IMPORTED ELEVATORS (FUJI / VERTILIFT)
-====================================== */
-
-else{
-
-manufactureCell.textContent = "45 – 60 يوم عمل";
-shippingCell.textContent = "30 – 40 يوم عمل";
-installCell.textContent = "15 – 22 يوم عمل";
-totalCell.textContent = "90 – 122 يوم عمل";
-
-}
-
-});
-
-</script>
-   <script>
-document.addEventListener("DOMContentLoaded", function () {
-
-  // اقرأ الصف الذي تم تمييزه بواسطة سكربت EN81 الحالي
-  const activeRow = document.querySelector("#en81-table tbody tr.en81-active");
-  const row = activeRow || document.querySelector("#en81-table tbody tr");
-  if(!row) return;
-
-  const tds = row.querySelectorAll("td");
-  // ترتيب جدولك الحالي: 0 capacity, 1 count, 2 cabin, 3 shaft, 4 door, 5 pit, 6 oh
-  const cap   = (tds[0]?.textContent || "—").trim();
-  const cabin = (tds[2]?.textContent || "—").trim();
-  const shaft = (tds[3]?.textContent || "—").trim();
-  const door  = (tds[4]?.textContent || "—").trim();
-  const pit   = (tds[5]?.textContent || "—").trim();
-  const oh    = (tds[6]?.textContent || "—").trim();
-
-  const set = (sel, val) => {
-    const el = document.querySelector(sel);
-    if(el) el.textContent = val;
+  const map = {
+    450: 6,
+    630: 8,
+    800: 10,
+    1000: 13,
+    1275: 17,
+    1600: 21
   };
+  const persons = map[cap] || Math.round(cap / 75);
+  return cap + " كغ (" + persons + " أشخاص)";
+}
 
-  set(".en81-sel-cap", cap);
-  set(".en81-sel-cabin", cabin);
-  set(".en81-sel-shaft", shaft);
-  set(".en81-sel-door", door);
-  set(".en81-sel-pit", pit);
-  set(".en81-sel-oh", oh);
-});
-</script>
-                   <script>
+function getBrandKey(){
+  const brandText = (document.querySelector(".bind_brand")?.textContent || "")
+    .toLowerCase()
+    .trim();
 
+  if (brandText.includes("vertilift")) return "vertilift";
+  if (brandText.includes("local")) return "local";
+  if (brandText.includes("fuji")) return "fuji";
+  return "";
+}
+
+function setText(selector, value){
+  const el = document.querySelector(selector);
+  if (el) el.textContent = value;
+}
+
+/* =========================================================
+   Main
+========================================================= */
 document.addEventListener("DOMContentLoaded", function(){
 
-const brandName = document.querySelector(".bind_brand")?.textContent || "";
+  const brandKey = getBrandKey();
 
-/* تحديد اسم البراند */
-let brandValue = "FUJI";
-
-if (brandName.includes("FUJI")) {
-  brandValue = "FUJI";
-}
-else if (brandName.toLowerCase().includes("vertilift")) {
-  brandValue = "VERTILIFT";
-}
-else if (brandName.toLowerCase().includes("local")) {
-  brandValue = "LOCAL";
-}
-
-/* تعديل الجدول */
-const rows = document.querySelectorAll("table tbody tr");
-
-rows.forEach(row => {
-
-  const cells = row.querySelectorAll("td");
-
-  if(cells.length >= 5){
-
-    const brandCell = cells[3];
-    const supplierCell = cells[4];
-
-    if(
-      brandCell.textContent.trim() === "FUJI" &&
-      supplierCell.textContent.trim() === "FUJI"
-    ){
-      brandCell.textContent = brandValue;
-      supplierCell.textContent = brandValue;
+  /* ---------------------------------
+     1) تحويل عدد المصاعد
+  --------------------------------- */
+  const liftCell = document.querySelector(".bind_lifts");
+  if (liftCell) {
+    const n = parseInt(liftCell.textContent);
+    if (!isNaN(n)) {
+      liftCell.textContent = liftsToArabic(n);
     }
-
   }
 
-});
+  /* ---------------------------------
+     2) تحويل عدد التوقفات
+  --------------------------------- */
+  const stopsCell = document.querySelector(".bind_stops");
+  if (stopsCell) {
+    const s = parseInt(stopsCell.textContent);
+    if (!isNaN(s)) {
+      stopsCell.textContent = stopsToArabic(s);
+    }
+  }
+
+  /* ---------------------------------
+     3) تحويل الحمولة إلى أشخاص
+  --------------------------------- */
+  const capCell = document.querySelector(".bind_capacity");
+  if (capCell) {
+    const cap = parseInt(capCell.textContent);
+    if (!isNaN(cap)) {
+      capCell.textContent = capacityToPersons(cap);
+    }
+  }
+
+  /* ---------------------------------
+     4) بلد المنشأ + مدينة التجميع
+  --------------------------------- */
+  const originCell = document.querySelector(".bind_origin");
+  const cityCell   = document.querySelector(".bind_city_manufacture");
+
+  if (originCell && cityCell) {
+    if (brandKey === "fuji") {
+      originCell.textContent = "Japan";
+      cityCell.textContent   = "Wangou Industrial Zone";
+    }
+    else if (brandKey === "vertilift") {
+      originCell.textContent = "Italy";
+      cityCell.textContent   = "Shanghai";
+    }
+    else if (brandKey === "local") {
+      originCell.textContent = "Saudi Arabia";
+      cityCell.textContent   = "Riyadh";
+    }
+    else {
+      originCell.textContent = "-";
+      cityCell.textContent   = "-";
+    }
+  }
+
+  /* ---------------------------------
+     5) بيانات الصفوف الثابتة في جدول
+        ثالثاً: بيانات المصاعد الخاصة بالمشروع
+  --------------------------------- */
+  const rows = document.querySelectorAll(".spec-table tbody tr");
+
+  const machineTypeCell = document.querySelector(".bind_machine_type");
+  const usageCell       = document.querySelector(".bind_usage");
+  const localSpecNote   = document.getElementById("local-spec-note");
+
+  const manufactureCell = rows[7]?.children[1]; // مدة التصنيع
+  const shippingCell    = rows[7]?.children[3]; // مدة الشحن البحري
+  const installCell     = rows[8]?.children[1]; // مدة تركيب المصعد
+  const totalCell       = rows[8]?.children[3]; // إجمالي المدة
+
+  if (usageCell) {
+    usageCell.textContent = "Passenger Elevator";
+  }
+
+  if (machineTypeCell) {
+    if (brandKey === "local") {
+      machineTypeCell.textContent = "MRL – Local Assembly";
+    } else {
+      machineTypeCell.textContent = "MRL – Machine Room Less";
+    }
+  }
+
+  if (manufactureCell) {
+    manufactureCell.textContent = "45 – 60 يوم عمل";
+  }
+
+  if (shippingCell) {
+    if (brandKey === "local") {
+      shippingCell.textContent = "لا يوجد شحن بحري (تجميع محلي)";
+    } else {
+      shippingCell.textContent = "45 – 65 يوم عمل";
+    }
+  }
+
+  if (installCell) {
+    installCell.textContent = "15 – 22 يوم عمل";
+  }
+
+  if (totalCell) {
+    if (brandKey === "local") {
+      totalCell.textContent = "60 – 82 يوم عمل";
+    } else {
+      totalCell.textContent = "105 – 147 يوم عمل";
+    }
+  }
+
+  if (localSpecNote) {
+    localSpecNote.style.display = (brandKey === "local") ? "block" : "none";
+  }
+
+  /* ---------------------------------
+     6) تعبئة صف EN81 المختار
+  --------------------------------- */
+  const activeRow = document.querySelector("#en81-table tbody tr.en81-active");
+  const en81Row = activeRow || document.querySelector("#en81-table tbody tr");
+
+  if (en81Row) {
+    const tds = en81Row.querySelectorAll("td");
+
+    const cap   = (tds[0]?.textContent || "—").trim();
+    const cabin = (tds[2]?.textContent || "—").trim();
+    const shaft = (tds[3]?.textContent || "—").trim();
+    const door  = (tds[4]?.textContent || "—").trim();
+    const pit   = (tds[5]?.textContent || "—").trim();
+    const oh    = (tds[6]?.textContent || "—").trim();
+
+    setText(".en81-sel-cap", cap);
+    setText(".en81-sel-cabin", cabin);
+    setText(".en81-sel-shaft", shaft);
+    setText(".en81-sel-door", door);
+    setText(".en81-sel-pit", pit);
+    setText(".en81-sel-oh", oh);
+  }
+
+  /* ---------------------------------
+     7) تعديل Brand / Supplier في جدول
+        Technical Specifications
+  --------------------------------- */
+  let brandValue = "FUJI";
+  if (brandKey === "vertilift") brandValue = "VERTILIFT";
+  else if (brandKey === "local") brandValue = "LOCAL";
+  else if (brandKey === "fuji") brandValue = "FUJI";
+
+  const allRows = document.querySelectorAll("table tbody tr");
+
+  allRows.forEach(row => {
+    const cells = row.querySelectorAll("td");
+    if (cells.length >= 5) {
+      const brandCell = cells[3];
+      const supplierCell = cells[4];
+
+      if (
+        brandCell.textContent.trim() === "FUJI" &&
+        supplierCell.textContent.trim() === "FUJI"
+      ) {
+        brandCell.textContent = brandValue;
+        supplierCell.textContent = brandValue;
+      }
+    }
+  });
 
 });
-
 </script>
+
+
 </body>
 </html>
+
 
 
 
