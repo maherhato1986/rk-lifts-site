@@ -1968,7 +1968,6 @@ oh: en81?.oh || '',
 ================================ */
 
 document.getElementById("printOfferArabic").addEventListener("click", function () {
-
     const selected = document.querySelectorAll(".quote-check:checked");
 
     if (selected.length === 0) {
@@ -1977,17 +1976,12 @@ document.getElementById("printOfferArabic").addEventListener("click", function (
     }
 
     selected.forEach((checkbox, i) => {
-
         const index = checkbox.dataset.index;
 
-        localStorage.setItem("rkl_current_quote_index", index);
-
         setTimeout(() => {
-            window.open("elevator-quote-offer.html", "_blank");
-        }, i * 300);
-
+            window.open(`elevator-quote-offer.html?quoteIndex=${encodeURIComponent(index)}`, "_blank");
+        }, i * 250);
     });
-
 });
 
 
@@ -2499,6 +2493,7 @@ calculateTravelHeight();
 
 </body>
 </html>
+
 
 
 
