@@ -2149,8 +2149,21 @@ const bind = (selector, value) => {
    تحميل عرض السعر من LocalStorage
 ================================================= */
 const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
-const currentIndex = localStorage.getItem('rkl_current_quote_index');
-window.q = quotes[currentIndex ?? quotes.length - 1];
+
+const params = new URLSearchParams(window.location.search);
+const currentIndexFromUrl = params.get('quoteIndex');
+
+const currentIndex =
+  currentIndexFromUrl !== null && currentIndexFromUrl !== ''
+    ? Number(currentIndexFromUrl)
+    : null;
+
+window.currentQuoteIndex = currentIndex;
+
+window.q =
+  currentIndex !== null && !Number.isNaN(currentIndex) && quotes[currentIndex]
+    ? quotes[currentIndex]
+    : quotes[quotes.length - 1];
 
    /* ==========================================
    توليد وصف البند الرئيسي تلقائياً
@@ -2663,8 +2676,8 @@ function renderPayments(q) {
 
 <script>
 function syncEditableFieldsToStorage() {
-  const index = localStorage.getItem('rkl_current_quote_index');
-  if (index === null) return;
+  const index = window.currentQuoteIndex;
+  if (index === null || index === undefined || Number.isNaN(index)) return;
 
   const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
   const q = quotes[index];
@@ -2877,8 +2890,8 @@ window.addEventListener('load', () => {
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
-  const index = localStorage.getItem('rkl_current_quote_index');
-  if (index === null) return;
+  const index = window.currentQuoteIndex;
+  if (index === null || index === undefined || Number.isNaN(index)) return;
 
   const quotes = JSON.parse(localStorage.getItem('rkl_quotes') || '[]');
   const q = quotes[index];
@@ -3269,6 +3282,7 @@ rows.forEach(row => {
 </script>
 </body>
 </html>
+
 
 
 
