@@ -755,22 +755,19 @@ th {
     </tr>
 
     <!-- الصف 7 -->
-    <tr>
-      <th>نوع الكابينة</th>
-      <td>ركاب</td>
-      <th>نظام التركيب</th>
-      <td class="bind_machine_type">
-        MRL – Machine Room Less
-      </td>
-    </tr>
+  <tr>
+  <th>نوع الكابينة</th>
+  <td>Gearless / VVVF</td>
+  <th>نظام التركيب</th>
+  <td class="bind_machine_type">MRL – Machine Room Less</td>
+</tr>
 
-    <!-- الصف 8 -->
-    <tr>
-      <th>مدة التصنيع في المصنع</th>
-      <td>45 – 60 يوم عمل</td>
-      <th>مدة الشحن البحري</th>
-      <td>30 – 40 يوم عمل</td>
-    </tr>
+<tr>
+  <th>مدة التصنيع في المصنع</th>
+  <td>45 – 60 يوم عمل</td>
+  <th>مدة الشحن البحري</th>
+  <td>45 – 65 يوم عمل</td>
+</tr>
 
     <!-- الصف 9 -->
     <tr>
@@ -1836,75 +1833,44 @@ All dimensions are subject to final site verification and approved shop drawings
 
 document.addEventListener("DOMContentLoaded", function(){
 
-/* =============================
-   قراءة نوع المصعد الحقيقي
-============================= */
+  const brand = (document.querySelector(".bind_brand")?.textContent || "").toLowerCase().trim();
 
-let brand = "";
+  const rows = document.querySelectorAll(".spec-table tbody tr");
 
-/* قراءة من localStorage */
-try{
-const quoteData = JSON.parse(localStorage.getItem("elevatorQuote") || "{}");
-brand = (quoteData.brand || "").toLowerCase();
-}catch(e){}
+  /* الصف 8 و 9 في الجدول */
+  const manufactureCell = rows[7]?.children[1]; // مدة التصنيع
+  const shippingCell    = rows[7]?.children[3]; // مدة الشحن البحري
+  const installCell     = rows[8]?.children[1]; // مدة تركيب المصعد
+  const totalCell       = rows[8]?.children[3]; // إجمالي المدة
 
-/* إذا لم يجدها يأخذها من الجدول */
-if(!brand){
-brand = (document.querySelector(".bind_brand")?.textContent || "").toLowerCase();
-}
+  /* صف نظام التركيب */
+  const machineTypeCell = document.querySelector(".bind_machine_type");
 
-/* =============================
-   تحديد الخلايا
-============================= */
+  if(!manufactureCell || !shippingCell || !installCell || !totalCell) return;
 
-const originCell = document.querySelector(".bind_origin");
-const cityCell = document.querySelector(".bind_city_manufacture");
+  /* نوع النظام ثابت */
+  if (machineTypeCell) {
+    if (brand.includes("local")) {
+      machineTypeCell.textContent = "MRL – Local Assembly";
+    } else {
+      machineTypeCell.textContent = "MRL – Machine Room Less";
+    }
+  }
 
-if(!originCell || !cityCell) return;
+  /* مدة التصنيع */
+  manufactureCell.textContent = "45 – 60 يوم عمل";
 
-/* =============================
-   FUJI JAPAN
-============================= */
+  /* مدة التركيب */
+  installCell.textContent = "15 – 22 يوم عمل";
 
-if(brand.includes("fuji")){
-
-originCell.textContent = "Japan";
-cityCell.textContent = "Wangou Industrial Zone";
-
-}
-
-/* =============================
-   VERTILIFT
-============================= */
-
-else if(brand.includes("vertilift")){
-
-originCell.textContent = "Italy";
-cityCell.textContent = "Shanghai";
-
-}
-
-/* =============================
-   RKL LOCAL
-============================= */
-
-else if(brand.includes("local")){
-
-originCell.textContent = "Saudi Arabia";
-cityCell.textContent = "Riyadh";
-
-}
-
-/* =============================
-   Default
-============================= */
-
-else{
-
-originCell.textContent = "-";
-cityCell.textContent = "-";
-
-}
+  /* مدة الشحن */
+  if (brand.includes("local")) {
+    shippingCell.textContent = "لا يوجد شحن بحري (تجميع محلي)";
+    totalCell.textContent = "60 – 82 يوم عمل";
+  } else {
+    shippingCell.textContent = "45 – 65 يوم عمل";
+    totalCell.textContent = "105 – 147 يوم عمل";
+  }
 
 });
 
@@ -3324,6 +3290,7 @@ rows.forEach(row => {
 </script>
 </body>
 </html>
+
 
 
 
