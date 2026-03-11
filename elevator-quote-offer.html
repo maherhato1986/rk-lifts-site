@@ -820,7 +820,7 @@ along with the model/type, brand, and approved supplier for each component.
 
 </div>
 
-<table style="width:100%;border-collapse:collapse;font-size:11px">
+<table id="tech-spec-table" style="width:100%;border-collapse:collapse;font-size:11px">
     <thead>
       <tr style="background:#f8fafc">
         <th style="border:1px solid #d1d5db;padding:6px 8px;">System</th>
@@ -3227,9 +3227,32 @@ document.addEventListener("DOMContentLoaded", function(){
 });
 </script>
 
+<script>
 
+document.addEventListener("DOMContentLoaded", function(){
+
+// كودك الموجود
+
+});
+
+
+// سكربت تعديل جدول FUJI
+document.addEventListener("DOMContentLoaded", function () {
+
+const brand = document.querySelector(".bind_brand")?.innerText || "";
+
+if(brand.includes("FUJI")){
+
+// هنا يوضع جدول FUJI المعدل
+
+}
+
+});
+
+</script>
 </body>
 </html>
+
 
 
 
