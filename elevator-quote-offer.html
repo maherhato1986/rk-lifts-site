@@ -3250,8 +3250,155 @@ if(brand.includes("FUJI")){
 });
 
 </script>
+
+                   <script>
+document.addEventListener("DOMContentLoaded", function () {
+  const brandElement = document.querySelector(".bind_brand");
+  const table = document.getElementById("tech-spec-table");
+
+  if (!brandElement || !table) return;
+
+  const brand = brandElement.innerText.trim().toUpperCase();
+
+  if (brand.includes("FUJI")) {
+    table.innerHTML = `
+      <thead>
+        <tr style="background:#f8fafc">
+          <th style="border:1px solid #d1d5db;padding:6px 8px;">System</th>
+          <th style="border:1px solid #d1d5db;padding:6px 8px;">Component</th>
+          <th style="border:1px solid #d1d5db;padding:6px 8px;">Model / Type</th>
+          <th style="border:1px solid #d1d5db;padding:6px 8px;">Brand</th>
+          <th style="border:1px solid #d1d5db;padding:6px 8px;">Supplier</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Traction System</td>
+          <td>Traction Machine</td>
+          <td>Gearless Permanent Magnet Machine</td>
+          <td>FUJI Electric</td>
+          <td>FUJI System</td>
+        </tr>
+        <tr>
+          <td>Control System</td>
+          <td>Main Controller</td>
+          <td>FUJI Microprocessor Control System</td>
+          <td>FUJI</td>
+          <td>FUJI</td>
+        </tr>
+        <tr>
+          <td>Control Board</td>
+          <td>CPU Control Board</td>
+          <td>MEGA-MCB</td>
+          <td>FUJI</td>
+          <td>FUJI</td>
+        </tr>
+        <tr>
+          <td>Control Board</td>
+          <td>Ceiling Board</td>
+          <td>MEGA-CTB-B</td>
+          <td>FUJI</td>
+          <td>FUJI</td>
+        </tr>
+        <tr>
+          <td>COP System</td>
+          <td>C.O.P Command Board</td>
+          <td>MEGA-CCB-A</td>
+          <td>FUJI</td>
+          <td>FUJI</td>
+        </tr>
+        <tr>
+          <td>Landing Call System</td>
+          <td>Landing Call Board</td>
+          <td>MEGA-HCB</td>
+          <td>FUJI</td>
+          <td>FUJI</td>
+        </tr>
+        <tr>
+          <td>Door Operator System</td>
+          <td>Door Operator</td>
+          <td>VVVF Door Operator</td>
+          <td>FUJI</td>
+          <td>FUJI</td>
+        </tr>
+        <tr>
+          <td>Door Operator System</td>
+          <td>Landing Door Device</td>
+          <td>Automatic Landing Door Lock</td>
+          <td>FUJI</td>
+          <td>FUJI</td>
+        </tr>
+        <tr>
+          <td>Safety Components</td>
+          <td>Safety Curtain</td>
+          <td>WECO-917</td>
+          <td>WECO</td>
+          <td>AVIRE</td>
+        </tr>
+        <tr>
+          <td>Safety Components</td>
+          <td>Governor</td>
+          <td>XSG</td>
+          <td>HUA HUI</td>
+          <td>HUA HUI</td>
+        </tr>
+        <tr>
+          <td>Safety Components</td>
+          <td>Safety Gear</td>
+          <td>QJ</td>
+          <td>HUA HUI</td>
+          <td>HUA HUI</td>
+        </tr>
+        <tr>
+          <td>Safety Components</td>
+          <td>Buffer</td>
+          <td>LA</td>
+          <td>LIAN</td>
+          <td>LIAN</td>
+        </tr>
+        <tr>
+          <td>Shaft Mechanics</td>
+          <td>Traveling Cable</td>
+          <td>TVVBP</td>
+          <td>BST</td>
+          <td>BST</td>
+        </tr>
+        <tr>
+          <td>Shaft Mechanics</td>
+          <td>Hoist Ropes</td>
+          <td>Φ10</td>
+          <td>TIANLUN</td>
+          <td>TIANLUN</td>
+        </tr>
+        <tr>
+          <td>Shaft Mechanics</td>
+          <td>Guide Rails</td>
+          <td>T75-1/B</td>
+          <td>RUNLIDA</td>
+          <td>ZHANG JIA GANG</td>
+        </tr>
+        <tr>
+          <td>Other Components</td>
+          <td>Car</td>
+          <td>Stainless Steel</td>
+          <td>FUJI</td>
+          <td>FUJI</td>
+        </tr>
+        <tr>
+          <td>Other Components</td>
+          <td>Car Door / Landing Door</td>
+          <td>Stainless Steel</td>
+          <td>FUJI</td>
+          <td>FUJI</td>
+        </tr>
+      </tbody>
+    `;
+  }
+});
+</script>
 </body>
 </html>
+
 
 
 
