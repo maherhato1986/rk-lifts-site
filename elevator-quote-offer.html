@@ -550,9 +550,9 @@ th {
 
 /* ✅ إبراز صف EN81 المختار */
 .en81-match {
-  background: #e8f5e9 !important;
-  border: 2px solid #2e7d32 !important;
-  font-weight: bold !important;
+  background: #e8f5e9 !important; /* لون خلفية أخضر فاتح */
+  border: 2px solid #2e7d32 !important; /* إطار أخضر غامق */
+  -webkit-print-color-adjust: exact;
 }
 
 /* ✅ إبراز صف ملحق (ج) المختار */
@@ -1367,24 +1367,71 @@ consultants, and regulatory authorities across the Kingdom.
  PAGE 5 | EN81 Layout & Dimensional Drawings (ONE PAGE)
 ================================================= -->
 <div class="page en81-page">
-
-  <!-- ================= HEADER ================= -->
   <div class="page-header">
     <img src="/public/images/logo.png" class="header-logo" alt="RKL Logo">
-
     <div class="header-text">
       <div class="company-name">RKL للمصاعد والسلالم الكهربائية</div>
-      <div class="company-sub">
-        السجل التجاري: 1010709355 – الرقم الضريبي: 302250422600003<br>
-        السليمانية – الرياض – هاتف: 0114774021 – WWW.RKL.SA
-      </div>
-    </div>
-
-    <div class="header-meta">
-      رقم العرض: <strong class="bind_quote_number">—</strong><br>
-      تاريخ العرض: <strong class="bind_offer_date">—</strong>
+      <div class="company-sub">الملحق الفني (ب): اختيار المقاسات القياسية وفق المواصفة EN 81-20</div>
     </div>
   </div>
+
+  <div class="section-title">ملحق (ب): البند المختار من جدول المقاسات القياسية (EN 81-20)</div>
+  
+  <div style="background: #f8fafc; border-right: 4px solid #1e3a8a; padding: 12px; margin-bottom: 20px;">
+    <p style="font-size: 12px; color: #1e3a8a; font-weight: bold; margin: 0;">
+       تم اختيار البند المظلل أدناه بناءً على "المساحات الحرة للأمان" و "الحمولة التصميمية" المطلوبة.
+    </p>
+    <p style="font-size: 11px; color: #64748b; margin-top: 4px;">
+      وفقاً لمتطلبات EN 81-20، يضمن هذا الاختيار توفير مساحات الملجأ (Refuge Spaces) الكافية فوق الكابينة وفي حفرة المصعد لسلامة الفنيين والمستخدمين.
+    </p>
+  </div>
+
+  <div class="en81-layout" style="display: flex; gap: 20px;">
+    
+    <div class="en81-table" style="flex: 1.5;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+        <thead>
+          <tr style="background: #1e3a8a; color: white; text-align: center;">
+            <th rowspan="2">الحمولة (kg)</th>
+            <th colspan="2">أبعاد الكابينة (mm)</th>
+            <th colspan="2">أبعاد البئر (mm)</th>
+            <th rowspan="2">فتحة الباب</th>
+          </tr>
+          <tr style="background: #2563eb; color: white; text-align: center;">
+            <th>العرض</th>
+            <th>العمق</th>
+            <th>العرض</th>
+            <th>العمق</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="en81-match" style="background: #f0fdf4; font-weight: bold; outline: 2px solid #16a34a;">
+            <td style="text-align:center">630 kg</td>
+            <td style="text-align:center">1100</td>
+            <td style="text-align:center">1400</td>
+            <td style="text-align:center">1650</td>
+            <td style="text-align:center">1800</td>
+            <td style="text-align:center">900 mm</td>
+          </tr>
+          <tr style="opacity: 0.6; background: #fafafa;">
+            <td style="text-align:center">800 kg</td>
+            <td style="text-align:center">1350</td>
+            <td style="text-align:center">1400</td>
+            <td style="text-align:center">1900</td>
+            <td style="text-align:center">1800</td>
+            <td style="text-align:center">900 mm</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="diagram-container" style="flex: 1; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px;">
+       <p style="font-size: 10px; font-weight: bold; text-align: center; color: #1e3a8a;">مخطط السلامة الإنشائية (EN 81-20 Layout)</p>
+       <div id="en81-svg-container">
+          </div>
+    </div>
+  </div>
+</div>
 
   <!-- ================= TITLE ================= -->
 <div class="section-title center" style="margin-top:10px; border-bottom: 2px solid #1e3a8a; padding-bottom: 5px;">
