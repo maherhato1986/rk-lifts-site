@@ -1472,7 +1472,6 @@ function previewPricing(){
 }
 
 
-
 function saveContract() {
   if (!customer) {
     alert('⚠️ يرجى اختيار العميل أولاً');
@@ -1496,18 +1495,8 @@ function saveContract() {
     alert('⚠️ يرجى تعبئة (اسم المشروع + موقع المشروع)');
     return;
   }
-const projectName     = (document.getElementById('projectName')?.value || '').trim();
-const projectLocation = (document.getElementById('projectLocation')?.value || '').trim();
 
-if(!projectName || !projectLocation){
-  alert('⚠️ يرجى تعبئة (اسم المشروع + موقع المشروع)');
-  return;
-}
-  /* =========================
-     تحقق حسب نوع الخدمة
-  ========================= */
   if (serviceType === 'annual') {
-
     const lang = document.getElementById('lang').value;
     const date = document.getElementById('contractDate').value;
 
@@ -1515,11 +1504,10 @@ if(!projectName || !projectLocation){
       alert('⚠️ يرجى تعبئة (اللغة + تاريخ العقد) للعقد السنوي');
       return;
     }
-
   } 
   else if (serviceType === 'once') {
-
     const onceRequired = ['onceVisitType','onceDate','onceIssue','oncePrice'];
+
     for (const id of onceRequired) {
       const el = document.getElementById(id);
       if (!el || !el.value) {
@@ -1527,10 +1515,8 @@ if(!projectName || !projectLocation){
         return;
       }
     }
-
   } 
   else if (serviceType === 'supply_install') {
-
     const supplyType = document.getElementById('supplyType')?.value || '';
     const supplyDate = document.getElementById('supplyDate')?.value || '';
 
@@ -1539,18 +1525,15 @@ if(!projectName || !projectLocation){
       return;
     }
 
-    /* تشغيل بدون قطع */
     if (supplyType === 'commission_only') {
       const op = document.getElementById('operationMode')?.value || '';
       if (!op) {
         alert('⚠️ يرجى تحديد هل التشغيل لأول مرة أم إعادة ضبط');
         return;
       }
-    } 
-    /* توريد / تركيب */
-    else {
+    } else {
       const desc = document.getElementById('supplyDescription')?.value || '';
-      const mat  = document.getElementById('supplyMaterialPrice')?.value || '';
+      const mat = document.getElementById('supplyMaterialPrice')?.value || '';
 
       if (!desc || !mat) {
         alert('⚠️ يرجى تعبئة وصف العمل وقيمة التوريد');
@@ -1559,28 +1542,22 @@ if(!projectName || !projectLocation){
     }
   }
 
-  /* =========================
-     ✅ تأكيد وجود معاينة/حسبة قبل الحفظ
-  ========================= */
   if (!window.finalCalcOverride || !window.finalCalcOverride.total) {
     alert('⚠️ يرجى الضغط على زر (📊 عرض الحسبة) قبل الحفظ');
     return;
   }
 
-  /* =========================
-     الحفظ
-  ========================= */
   try {
-
     const calc = window.finalCalcOverride || calculateTotal();
 
     const supplyTypeNow = (serviceType === 'supply_install')
       ? (document.getElementById('supplyType')?.value || '')
       : '';
-const elevatorType = document.getElementById('elevatorType')?.value || '';
-const brandSelect  = document.getElementById('brandSelect')?.value || '';
-const brandOther   = document.getElementById('brandOther')?.value || '';
-const building     = document.getElementById('building')?.value || '';
+
+    const elevatorType = document.getElementById('elevatorType')?.value || '';
+    const brandSelect  = document.getElementById('brandSelect')?.value || '';
+    const brandOther   = document.getElementById('brandOther')?.value || '';
+    const building     = document.getElementById('building')?.value || '';
 
     const contract = {
       id: (
@@ -1595,15 +1572,13 @@ const building     = document.getElementById('building')?.value || '';
       customer,
       lifts,
       projectName,
-projectLocation,
-     
-elevatorType,
-brandSelect,
-brandOther,
-capacity,
-floors,
-building,
-
+      projectLocation,
+      elevatorType,
+      brandSelect,
+      brandOther,
+      capacity,
+      floors,
+      building,
 
       total: Number(calc.total || 0).toFixed(2) + ' ريال',
 
@@ -1616,11 +1591,6 @@ building,
         isManual: !!calc.isManual
       },
 
-      /* =========================
-         بيانات حسب نوع الخدمة
-      ========================= */
-
-      // عقد سنوي
       lang: (serviceType === 'annual')
         ? document.getElementById('lang').value
         : 'ar',
@@ -1631,7 +1601,6 @@ building,
           ? document.getElementById('onceDate').value
           : document.getElementById('supplyDate').value,
 
-      // زيارة لمرة واحدة
       onceDetails: (serviceType === 'once') ? {
         visitType: document.getElementById('onceVisitType').value,
         visitDate: document.getElementById('onceDate').value,
@@ -1641,34 +1610,26 @@ building,
         priceBeforeVat: Number(document.getElementById('oncePrice').value || 0)
       } : null,
 
-      // توريد / تركيب / تشغيل
       supplyDetails: (serviceType === 'supply_install') ? {
         type: supplyTypeNow,
-
         operationMode:
           supplyTypeNow === 'commission_only'
             ? (document.getElementById('operationMode')?.value || null)
             : null,
-
         date: document.getElementById('supplyDate').value,
         stopped: document.getElementById('supplyStopped').value,
         description: document.getElementById('supplyDescription').value,
-
         material:
           supplyTypeNow === 'commission_only'
             ? 0
             : Number(document.getElementById('supplyMaterialPrice').value || 0),
-
         labor: Number(document.getElementById('supplyLaborPrice').value || 0),
-
         includeCommissioning:
           document.getElementById('includeCommissioning')?.checked || false,
-
         excludeFutureMaintenance:
           document.getElementById('excludeFutureMaintenance')?.checked || false
       } : null,
 
-      // محتوى العقد (فقط للعقد السنوي)
       content: (serviceType === 'annual')
         ? generateFullContractText()
         : ''
@@ -1679,10 +1640,7 @@ building,
     );
 
     contracts.push(contract);
-    localStorage.setItem(
-      'rkl_maintenance_contracts',
-      JSON.stringify(contracts)
-    );
+    localStorage.setItem('rkl_maintenance_contracts', JSON.stringify(contracts));
 
     renderContractsTable();
     alert('✅ تم الحفظ بنجاح وإضافته للسجل');
