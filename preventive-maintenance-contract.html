@@ -390,12 +390,13 @@ tbody tr:hover{
 
   <div class="grid">
     <div>
-   <select id="serviceType" onchange="toggleServiceType()">
-  <option value="annual" selected>عقد صيانة وقائية سنوي</option>
-  <option value="once">زيارة لمرة واحدة</option>
-  <option value="supply_install">توريد + تركيب + تشغيل قطع غيار</option>
-</select>
-
+      <label>نوع الخدمة</label>
+      <select id="serviceType" onchange="toggleServiceType()">
+        <option value="annual" selected>عقد صيانة وقائية سنوي</option>
+        <option value="once">زيارة لمرة واحدة</option>
+        <option value="supply_install">توريد + تركيب + تشغيل قطع غيار</option>
+      </select>
+    </div>
 
     <div>
       <label>ملاحظة</label>
@@ -983,41 +984,7 @@ const ar = `
 
 وبهذا تم توقيع هذا العقد بموافقة الطرفين، ويُعد نافذًا وملزمًا من تاريخ اعتماده.
 `;
-/* ==============================
-   ملحق (ب) المقاسات القياسية EN81
-================================ */
 
-### ملحق (ب): المقاسات القياسية المعتمدة حسب EN81
-
-تم تحديد المقاسات الفنية للمصعد وفق المعايير الأوروبية EN81 اعتمادًا على البيانات المدخلة في عرض السعر كما يلي:
-
-- الحمولة الاسمية: <span class="highlight-number">${capacity}</span> كجم  
-- عدد الطوابق: <span class="highlight-number">${floors}</span> طابق  
-- عدد المصاعد: <span class="highlight-number">${lifts}</span> مصعد  
-
-- ارتفاع الدور الواحد: <span class="highlight-number">${contract.floorHeight || '—'}</span> مم  
-- ارتفاع الرحلة الكلي: <span class="highlight-number">${contract.travelHeight || '—'}</span> مم  
-
-- أبعاد الكابينة (Cabin Size):  
-  <span class="highlight-number">
-  ${contract.cabinWidth || '—'} × ${contract.cabinDepth || '—'}
-  </span> مم  
-
-- أبعاد البئر (Shaft Size):  
-  <span class="highlight-number">
-  ${contract.shaftWidth || '—'} × ${contract.shaftDepth || '—'}
-  </span> مم  
-
-- عرض الباب:  
-  <span class="highlight-number">${contract.doorWidth || '—'}</span> مم  
-
-- عمق الحفرة (Pit):  
-  <span class="highlight-number">${contract.pit || '—'}</span> مم  
-
-- الارتفاع العلوي (Overhead):  
-  <span class="highlight-number">${contract.overhead || '—'}</span> مم  
-
-وتعتبر هذه المقاسات جزءًا من المواصفات الفنية للمصعد وفق المعايير القياسية EN81، وقد تم تحديدها بناءً على المساحة المتوفرة في المبنى ومتطلبات المشروع.
 
 /* ================== English Text ================== */
 const en = `
@@ -1514,18 +1481,20 @@ function saveContract() {
 
   const serviceType = document.getElementById('serviceType')?.value || 'annual';
 
-
-  /* =========================
-     بيانات مشتركة
-  ========================= */
-  const lifts    = document.getElementById('lifts').value;
+  const lifts = document.getElementById('lifts').value;
   const capacity = document.getElementById('capacity').value;
-  const floors   = document.getElementById('floors').value;
+  const floors = document.getElementById('floors').value;
+  const projectName = (document.getElementById('projectName')?.value || '').trim();
+  const projectLocation = (document.getElementById('projectLocation')?.value || '').trim();
 
   if (!lifts || !capacity || !floors) {
     alert('⚠️ يرجى تعبئة بيانات المصاعد الأساسية (عدد المصاعد، الحمولة، الطوابق)');
     return;
-  
+  }
+
+  if (!projectName || !projectLocation) {
+    alert('⚠️ يرجى تعبئة (اسم المشروع + موقع المشروع)');
+    return;
   }
 const projectName     = (document.getElementById('projectName')?.value || '').trim();
 const projectLocation = (document.getElementById('projectLocation')?.value || '').trim();
@@ -3493,30 +3462,38 @@ th{ background:var(--soft); width:35%; }
 
 
 <script>
-function toggleServiceType(){
-  const type = document.getElementById('serviceType').value;
+function toggleServiceType() {
+  const type = document.getElementById('serviceType')?.value || 'annual';
 
-  document.getElementById('annualBox').style.display = 'none';
-  document.getElementById('onceBox').style.display = 'none';
-  document.getElementById('supplyInstallBox').style.display = 'none';
+  document.getElementById('annualBox').style.display =
+    type === 'annual' ? 'block' : 'none';
 
-  if(type === 'annual'){
-    document.getElementById('annualBox').style.display = 'block';
-  }
+  document.getElementById('onceBox').style.display =
+    type === 'once' ? 'block' : 'none';
 
-  if(type === 'once'){
-    document.getElementById('onceBox').style.display = 'block';
-  }
-
-  if(type === 'supply_install'){
-    document.getElementById('supplyInstallBox').style.display = 'block';
-  }
+  document.getElementById('supplyInstallBox').style.display =
+    type === 'supply_install' ? 'block' : 'none';
 }
 
+function toggleOtherBrand() {
+  const val = document.getElementById('brandSelect')?.value || '';
+  document.getElementById('otherBrandBox').style.display =
+    val === 'Other' ? 'block' : 'none';
+}
+
+function toggleOperationMode() {
+  const val = document.getElementById('supplyType')?.value || '';
+  document.getElementById('operationModeBox').style.display =
+    val === 'commission_only' ? 'block' : 'none';
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   toggleServiceType();
+  toggleOtherBrand();
+  toggleOperationMode();
 });
+
+
 
   </script>
 <script>
@@ -3637,6 +3614,8 @@ function toggleOperationMode(){
   }
 
 }
+
+  
 </script>
 
 
