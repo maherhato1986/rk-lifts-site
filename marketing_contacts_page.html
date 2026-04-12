@@ -403,6 +403,49 @@ RKL Team</textarea>
 
   
   <script>
+
+    async function sendCampaignToN8n() {
+  const selected = getSelectedClients().filter(c => c.phone && c.consent);
+
+  if (!selected.length) {
+    showStatus('tableStatus', 'لا يوجد عملاء محددون لديهم رقم جوال وموافقة.', 'error');
+    return;
+  }
+
+  const webhookUrl = 'PUT_YOUR_N8N_WEBHOOK_URL_HERE';
+  const message = document.getElementById('messageTemplate').value.trim();
+
+  const payload = {
+    campaignName: 'RKL Marketing Campaign',
+    message,
+    clients: selected.map(c => ({
+      clientName: c.clientName || '',
+      contactPerson: c.contactPerson || '',
+      phone: String(c.phone || '').replace(/[^0-9]/g, '')
+    }))
+  };
+
+  try {
+    const res = await fetch(webhookUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+      throw new Error('Webhook request failed');
+    }
+
+    const data = await res.json().catch(() => ({}));
+    showStatus('tableStatus', 'تم إرسال الحملة إلى n8n بنجاح.', 'success');
+    console.log('n8n response:', data);
+  } catch (err) {
+    console.error(err);
+    showStatus('tableStatus', 'فشل إرسال البيانات إلى n8n.', 'error');
+  }
+}
     const STORAGE_KEY = 'rkl_marketing_clients';
     const SEED_CLIENTS = [
   {
