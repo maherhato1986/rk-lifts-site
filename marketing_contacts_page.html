@@ -356,6 +356,10 @@ RKL Team</textarea>
           <button class="btn-primary" onclick="sendEmailToSelected()">إرسال عبر البريد</button>
           <button class="btn-secondary" onclick="sendWhatsAppToSelected()">تجهيز واتساب</button>
           <button class="btn-secondary" onclick="exportClients()">تصدير CSV</button>
+
+          <button class="btn-secondary" onclick="loadSeedClients()">تحميل العملاء المرفقين</button>
+          <button class="btn-secondary" onclick="clearSeedClients()">تفريغ القائمة</button>
+
         </div>
 
         <p class="mini-note">
@@ -458,7 +462,494 @@ RKL Team</textarea>
 
       setClients(clients);
       resetForm(false);
+  
+    const SEED_CLIENTS = [
+  {
+    "clientName": "تاج الاتقان",
+    "contactPerson": "Hasan Eng",
+    "email": "",
+    "phone": "0530513772",
+    "city": "القطيف",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "فرع وزارة المالية بالقطيف"
+  },
+  {
+    "clientName": "مختبر وبنك الدم ومركز السموم",
+    "contactPerson": "Hosam Eng",
+    "email": "",
+    "phone": "0503446916",
+    "city": "سكاكا",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "الشؤون الصحية بسكاكا"
+  },
+  {
+    "clientName": "فيلا خاصة",
+    "contactPerson": "Ahmed Dr",
+    "email": "",
+    "phone": "0506271799",
+    "city": "",
+    "interest": "مصاعد فلل",
+    "consent": true,
+    "notes": "عميل خاص"
+  },
+  {
+    "clientName": "اطلالة القلعة",
+    "contactPerson": "Fathi Eng",
+    "email": "",
+    "phone": "0596565403",
+    "city": "عفيف",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "فرع وزارة المالية بعفيف"
+  },
+  {
+    "clientName": "الأعمال التطويرية",
+    "contactPerson": "Motasem Eng",
+    "email": "",
+    "phone": "0555308457",
+    "city": "القصيم",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "إسكان المدربين والمتدربين"
+  },
+  {
+    "clientName": "فيلا الفريح",
+    "contactPerson": "Fraih Mr",
+    "email": "",
+    "phone": "0505231145",
+    "city": "",
+    "interest": "مصاعد فلل",
+    "consent": true,
+    "notes": "فيلا خاصة"
+  },
+  {
+    "clientName": "مؤسسة حمد ابراهيم عبدالرحمن للمقاولات",
+    "contactPerson": "Omar Eng",
+    "email": "",
+    "phone": "0559613218",
+    "city": "",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "المعهد الصناعي الثانوي الثالث"
+  },
+  {
+    "clientName": "شركة وليد السمان كناز للمقاولات",
+    "contactPerson": "Mustafa Eng",
+    "email": "",
+    "phone": "0540430011",
+    "city": "الرياض",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "الكلية التقنية بالرياض ديراب"
+  },
+  {
+    "clientName": "شركة الزهراني للمقاولات",
+    "contactPerson": "محمد",
+    "email": "",
+    "phone": "0505271532",
+    "city": "المزاحمية",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "الكلية التقنية"
+  },
+  {
+    "clientName": "الشركة السعودية للتطوير العمراني",
+    "contactPerson": "Mohammad Eng",
+    "email": "",
+    "phone": "0553207897",
+    "city": "جدة",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "المعهد العالي التقني للبنات"
+  },
+  {
+    "clientName": "التجارات",
+    "contactPerson": "Belal Eng",
+    "email": "",
+    "phone": "0568917544",
+    "city": "",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "عدة مشاريع"
+  },
+  {
+    "clientName": "مؤسسة عبر للمقاولات",
+    "contactPerson": "سامح",
+    "email": "",
+    "phone": "0543694581",
+    "city": "",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مبنى التدريب الإلكتروني"
+  },
+  {
+    "clientName": "شركة افراس للتجارة والمقاولات",
+    "contactPerson": "Khaled Eng",
+    "email": "",
+    "phone": "0543330959",
+    "city": "",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "الأكاديمية السعودية للطيران المدني"
+  },
+  {
+    "clientName": "الموتورز",
+    "contactPerson": "Abubaker Eng",
+    "email": "",
+    "phone": "0567000059",
+    "city": "جدة",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "إسكان المتدربات"
+  },
+  {
+    "clientName": "سعودي بيج",
+    "contactPerson": "Mohammad Eng",
+    "email": "",
+    "phone": "0543553605",
+    "city": "مكة/خميس مشيط",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "عدة مشاريع تقنية وسياحية"
+  },
+  {
+    "clientName": "الكلية التقنية للبنات بينبع",
+    "contactPerson": "خلدون",
+    "email": "",
+    "phone": "0505487491",
+    "city": "ينبع",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مشروع قائم"
+  },
+  {
+    "clientName": "مؤسسة شموع المميزة للمقاولات",
+    "contactPerson": "رائد",
+    "email": "",
+    "phone": "0552683438",
+    "city": "مكة",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مبنى التدريب الإلكتروني"
+  },
+  {
+    "clientName": "شركة ثرب للتجارة والمقاولات",
+    "contactPerson": "أحمد",
+    "email": "",
+    "phone": "054008537",
+    "city": "الأحساء",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "المعهد السعودي للتقنيات الألمانية"
+  },
+  {
+    "clientName": "شركة الجفر للتجارة والمقاولات",
+    "contactPerson": "Sharif Eng",
+    "email": "",
+    "phone": "0561247247",
+    "city": "الأحساء/الدمام",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "عدة مشاريع تقنية"
+  },
+  {
+    "clientName": "إعمار الجنوب",
+    "contactPerson": "Ahmad Eng",
+    "email": "",
+    "phone": "0558500133",
+    "city": "خميس مشيط",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "عدة مشاريع"
+  },
+  {
+    "clientName": "الهلالية",
+    "contactPerson": "Abdulazeem Eng",
+    "email": "",
+    "phone": "0590118012",
+    "city": "محايل عسير/بلقرن",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "فرع وزارة المالية"
+  },
+  {
+    "clientName": "هامكو",
+    "contactPerson": "Amro Eng",
+    "email": "",
+    "phone": "0503920739",
+    "city": "نجران",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "إسكان المدربات بالكلية التقنية"
+  },
+  {
+    "clientName": "صحراء الوادي",
+    "contactPerson": "Ibrahim Eng",
+    "email": "",
+    "phone": "0532396403",
+    "city": "وادي الدواسر",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مشروع بلدية"
+  },
+  {
+    "clientName": "الراجحي للبناء والتعمير",
+    "contactPerson": "Saddam Eng",
+    "email": "",
+    "phone": "0550697001",
+    "city": "عبيدة",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "الكلية التقنية للبنين"
+  },
+  {
+    "clientName": "أجا الإمارات",
+    "contactPerson": "Mohammad Eng",
+    "email": "",
+    "phone": "0537296854",
+    "city": "صبيا",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "المعهد الصناعي الثانوي"
+  },
+  {
+    "clientName": "اليـاورة",
+    "contactPerson": "Hamada Eng",
+    "email": "",
+    "phone": "0551529214",
+    "city": "",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "الكلية التقنية للبنات"
+  },
+  {
+    "clientName": "اندكو",
+    "contactPerson": "Fares Eng",
+    "email": "",
+    "phone": "0542947454",
+    "city": "",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "المعهد الصناعي الثانوي"
+  },
+  {
+    "clientName": "بيت الهندسة",
+    "contactPerson": "Jamal Eng",
+    "email": "",
+    "phone": "0563996088",
+    "city": "جازان",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "دار رعاية المسنين"
+  },
+  {
+    "clientName": "بيت الهندسة",
+    "contactPerson": "Mahmoud Eng",
+    "email": "",
+    "phone": "0556082967",
+    "city": "جازان",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "دار رعاية الفتيات"
+  },
+  {
+    "clientName": "بيت الهندسة",
+    "contactPerson": "Waleed Eng",
+    "email": "",
+    "phone": "0542304903",
+    "city": "صامطة",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مكتب الضمان"
+  },
+  {
+    "clientName": "راك الجزيرة",
+    "contactPerson": "Ashraf Eng",
+    "email": "",
+    "phone": "0506928252",
+    "city": "المجاردة",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مكتب الضمان"
+  },
+  {
+    "clientName": "الهيكلية",
+    "contactPerson": "Mohammad Eng",
+    "email": "",
+    "phone": "0593930657",
+    "city": "عرعر",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "سكن المدربين والمتدربين للمعهد التقني للتعدين"
+  },
+  {
+    "clientName": "الهيكلية",
+    "contactPerson": "Erfan Eng",
+    "email": "",
+    "phone": "0565403911",
+    "city": "المزاحمية",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "سكن المدربين - الكلية التقنية للبنين"
+  },
+  {
+    "clientName": "ابراهيم الصالح",
+    "contactPerson": "Mr.Ibrahim",
+    "email": "",
+    "phone": "0555488272",
+    "city": "",
+    "interest": "مصاعد فلل",
+    "consent": true,
+    "notes": "فيلا خاصة"
+  },
+  {
+    "clientName": "عبدالعزيز وسعد المعجل للتجارة والاستثمار",
+    "contactPerson": "Jwan Eng",
+    "email": "",
+    "phone": "0504152638",
+    "city": "الرياض",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "جرير الجزيرة / مبنى تجاري شارع الأحساء"
+  },
+  {
+    "clientName": "القضيبي",
+    "contactPerson": "Ahmad Eng",
+    "email": "",
+    "phone": "0555004305",
+    "city": "الرياض/المزاحمية",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مستودع الوثائق / المعهد الفني الصناعي"
+  },
+  {
+    "clientName": "فيلا اللواء سفر الشهراني",
+    "contactPerson": "Brigade Safar",
+    "email": "",
+    "phone": "0505756475",
+    "city": "",
+    "interest": "مصاعد فلل",
+    "consent": true,
+    "notes": "فيلا خاصة"
+  },
+  {
+    "clientName": "راك الجزيرة",
+    "contactPerson": "Abdullah Eng",
+    "email": "",
+    "phone": "0569179308",
+    "city": "رابغ",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مكتب الضمان"
+  },
+  {
+    "clientName": "راك الجزيرة",
+    "contactPerson": "Abnouf Eng",
+    "email": "",
+    "phone": "0507326273",
+    "city": "أضم",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مكتب الضمان"
+  },
+  {
+    "clientName": "السليمي",
+    "contactPerson": "Waleed Eng",
+    "email": "",
+    "phone": "0503462375",
+    "city": "الأحساء",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مبنى شركة بالأحساء"
+  },
+  {
+    "clientName": "مؤسسة عبدالله عوض الجويحي للمقاولات",
+    "contactPerson": "Mohammad Eng",
+    "email": "",
+    "phone": "0504583862",
+    "city": "الأحساء",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مكتب الضمان الاجتماعي النسوي"
+  },
+  {
+    "clientName": "محمد الشيخ علي",
+    "contactPerson": "Nidal Eng",
+    "email": "",
+    "phone": "0550277435",
+    "city": "وادي الدواسر",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مبنى وزارة الزراعة"
+  },
+  {
+    "clientName": "المرحبي",
+    "contactPerson": "Mohammad Mr",
+    "email": "",
+    "phone": "0555671215",
+    "city": "القنفذة",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "إدارة التعليم"
+  },
+  {
+    "clientName": "المهري",
+    "contactPerson": "Sami Eng",
+    "email": "",
+    "phone": "",
+    "city": "أبها/المجاردة",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "عدة مشاريع صناعية وتقنية"
+  }
+];
+
+    function normalizePhone(phone) {
+      return String(phone || '').replace(/[^0-9]/g, '');
+    }
+
+    function loadSeedClients() {
+      const existing = getClients();
+      const seen = new Set(existing.map(c => `${(c.clientName||'').trim()}|${normalizePhone(c.phone)}|${(c.contactPerson||'').trim()}`));
+      let added = 0;
+
+      SEED_CLIENTS.forEach(client => {
+        const prepared = {
+          ...client,
+          phone: normalizePhone(client.phone),
+          createdAt: new Date().toISOString()
+        };
+        const key = `${(prepared.clientName||'').trim()}|${normalizePhone(prepared.phone)}|${(prepared.contactPerson||'').trim()}`;
+        if (!seen.has(key)) {
+          existing.push(prepared);
+          seen.add(key);
+          added++;
+        }
+      });
+
+      setClients(existing);
       renderTable();
+      showStatus('tableStatus', `تم تحميل ${added} عميل من الملف المرفق.`, 'success');
+    }
+
+    function clearSeedClients() {
+      if (!confirm('سيتم حذف جميع العملاء المحفوظين من هذه الصفحة فقط. هل تريد المتابعة؟')) return;
+      localStorage.removeItem(STORAGE_KEY);
+      renderTable();
+      showStatus('tableStatus', 'تم تفريغ قائمة العملاء.', 'success');
+    }
+
+    window.addEventListener('load', () => {
+      const existing = getClients();
+      if (!existing.length) {
+        loadSeedClients();
+      }
+    });
+
+
+    renderTable();
     }
 
     function resetForm(clearStatus = true) {
@@ -546,7 +1037,494 @@ RKL Team</textarea>
       const clients = getClients();
       clients.splice(index, 1);
       setClients(clients);
+  
+    const SEED_CLIENTS = [
+  {
+    "clientName": "تاج الاتقان",
+    "contactPerson": "Hasan Eng",
+    "email": "",
+    "phone": "0530513772",
+    "city": "القطيف",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "فرع وزارة المالية بالقطيف"
+  },
+  {
+    "clientName": "مختبر وبنك الدم ومركز السموم",
+    "contactPerson": "Hosam Eng",
+    "email": "",
+    "phone": "0503446916",
+    "city": "سكاكا",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "الشؤون الصحية بسكاكا"
+  },
+  {
+    "clientName": "فيلا خاصة",
+    "contactPerson": "Ahmed Dr",
+    "email": "",
+    "phone": "0506271799",
+    "city": "",
+    "interest": "مصاعد فلل",
+    "consent": true,
+    "notes": "عميل خاص"
+  },
+  {
+    "clientName": "اطلالة القلعة",
+    "contactPerson": "Fathi Eng",
+    "email": "",
+    "phone": "0596565403",
+    "city": "عفيف",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "فرع وزارة المالية بعفيف"
+  },
+  {
+    "clientName": "الأعمال التطويرية",
+    "contactPerson": "Motasem Eng",
+    "email": "",
+    "phone": "0555308457",
+    "city": "القصيم",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "إسكان المدربين والمتدربين"
+  },
+  {
+    "clientName": "فيلا الفريح",
+    "contactPerson": "Fraih Mr",
+    "email": "",
+    "phone": "0505231145",
+    "city": "",
+    "interest": "مصاعد فلل",
+    "consent": true,
+    "notes": "فيلا خاصة"
+  },
+  {
+    "clientName": "مؤسسة حمد ابراهيم عبدالرحمن للمقاولات",
+    "contactPerson": "Omar Eng",
+    "email": "",
+    "phone": "0559613218",
+    "city": "",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "المعهد الصناعي الثانوي الثالث"
+  },
+  {
+    "clientName": "شركة وليد السمان كناز للمقاولات",
+    "contactPerson": "Mustafa Eng",
+    "email": "",
+    "phone": "0540430011",
+    "city": "الرياض",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "الكلية التقنية بالرياض ديراب"
+  },
+  {
+    "clientName": "شركة الزهراني للمقاولات",
+    "contactPerson": "محمد",
+    "email": "",
+    "phone": "0505271532",
+    "city": "المزاحمية",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "الكلية التقنية"
+  },
+  {
+    "clientName": "الشركة السعودية للتطوير العمراني",
+    "contactPerson": "Mohammad Eng",
+    "email": "",
+    "phone": "0553207897",
+    "city": "جدة",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "المعهد العالي التقني للبنات"
+  },
+  {
+    "clientName": "التجارات",
+    "contactPerson": "Belal Eng",
+    "email": "",
+    "phone": "0568917544",
+    "city": "",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "عدة مشاريع"
+  },
+  {
+    "clientName": "مؤسسة عبر للمقاولات",
+    "contactPerson": "سامح",
+    "email": "",
+    "phone": "0543694581",
+    "city": "",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مبنى التدريب الإلكتروني"
+  },
+  {
+    "clientName": "شركة افراس للتجارة والمقاولات",
+    "contactPerson": "Khaled Eng",
+    "email": "",
+    "phone": "0543330959",
+    "city": "",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "الأكاديمية السعودية للطيران المدني"
+  },
+  {
+    "clientName": "الموتورز",
+    "contactPerson": "Abubaker Eng",
+    "email": "",
+    "phone": "0567000059",
+    "city": "جدة",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "إسكان المتدربات"
+  },
+  {
+    "clientName": "سعودي بيج",
+    "contactPerson": "Mohammad Eng",
+    "email": "",
+    "phone": "0543553605",
+    "city": "مكة/خميس مشيط",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "عدة مشاريع تقنية وسياحية"
+  },
+  {
+    "clientName": "الكلية التقنية للبنات بينبع",
+    "contactPerson": "خلدون",
+    "email": "",
+    "phone": "0505487491",
+    "city": "ينبع",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مشروع قائم"
+  },
+  {
+    "clientName": "مؤسسة شموع المميزة للمقاولات",
+    "contactPerson": "رائد",
+    "email": "",
+    "phone": "0552683438",
+    "city": "مكة",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مبنى التدريب الإلكتروني"
+  },
+  {
+    "clientName": "شركة ثرب للتجارة والمقاولات",
+    "contactPerson": "أحمد",
+    "email": "",
+    "phone": "054008537",
+    "city": "الأحساء",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "المعهد السعودي للتقنيات الألمانية"
+  },
+  {
+    "clientName": "شركة الجفر للتجارة والمقاولات",
+    "contactPerson": "Sharif Eng",
+    "email": "",
+    "phone": "0561247247",
+    "city": "الأحساء/الدمام",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "عدة مشاريع تقنية"
+  },
+  {
+    "clientName": "إعمار الجنوب",
+    "contactPerson": "Ahmad Eng",
+    "email": "",
+    "phone": "0558500133",
+    "city": "خميس مشيط",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "عدة مشاريع"
+  },
+  {
+    "clientName": "الهلالية",
+    "contactPerson": "Abdulazeem Eng",
+    "email": "",
+    "phone": "0590118012",
+    "city": "محايل عسير/بلقرن",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "فرع وزارة المالية"
+  },
+  {
+    "clientName": "هامكو",
+    "contactPerson": "Amro Eng",
+    "email": "",
+    "phone": "0503920739",
+    "city": "نجران",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "إسكان المدربات بالكلية التقنية"
+  },
+  {
+    "clientName": "صحراء الوادي",
+    "contactPerson": "Ibrahim Eng",
+    "email": "",
+    "phone": "0532396403",
+    "city": "وادي الدواسر",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مشروع بلدية"
+  },
+  {
+    "clientName": "الراجحي للبناء والتعمير",
+    "contactPerson": "Saddam Eng",
+    "email": "",
+    "phone": "0550697001",
+    "city": "عبيدة",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "الكلية التقنية للبنين"
+  },
+  {
+    "clientName": "أجا الإمارات",
+    "contactPerson": "Mohammad Eng",
+    "email": "",
+    "phone": "0537296854",
+    "city": "صبيا",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "المعهد الصناعي الثانوي"
+  },
+  {
+    "clientName": "اليـاورة",
+    "contactPerson": "Hamada Eng",
+    "email": "",
+    "phone": "0551529214",
+    "city": "",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "الكلية التقنية للبنات"
+  },
+  {
+    "clientName": "اندكو",
+    "contactPerson": "Fares Eng",
+    "email": "",
+    "phone": "0542947454",
+    "city": "",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "المعهد الصناعي الثانوي"
+  },
+  {
+    "clientName": "بيت الهندسة",
+    "contactPerson": "Jamal Eng",
+    "email": "",
+    "phone": "0563996088",
+    "city": "جازان",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "دار رعاية المسنين"
+  },
+  {
+    "clientName": "بيت الهندسة",
+    "contactPerson": "Mahmoud Eng",
+    "email": "",
+    "phone": "0556082967",
+    "city": "جازان",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "دار رعاية الفتيات"
+  },
+  {
+    "clientName": "بيت الهندسة",
+    "contactPerson": "Waleed Eng",
+    "email": "",
+    "phone": "0542304903",
+    "city": "صامطة",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مكتب الضمان"
+  },
+  {
+    "clientName": "راك الجزيرة",
+    "contactPerson": "Ashraf Eng",
+    "email": "",
+    "phone": "0506928252",
+    "city": "المجاردة",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مكتب الضمان"
+  },
+  {
+    "clientName": "الهيكلية",
+    "contactPerson": "Mohammad Eng",
+    "email": "",
+    "phone": "0593930657",
+    "city": "عرعر",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "سكن المدربين والمتدربين للمعهد التقني للتعدين"
+  },
+  {
+    "clientName": "الهيكلية",
+    "contactPerson": "Erfan Eng",
+    "email": "",
+    "phone": "0565403911",
+    "city": "المزاحمية",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "سكن المدربين - الكلية التقنية للبنين"
+  },
+  {
+    "clientName": "ابراهيم الصالح",
+    "contactPerson": "Mr.Ibrahim",
+    "email": "",
+    "phone": "0555488272",
+    "city": "",
+    "interest": "مصاعد فلل",
+    "consent": true,
+    "notes": "فيلا خاصة"
+  },
+  {
+    "clientName": "عبدالعزيز وسعد المعجل للتجارة والاستثمار",
+    "contactPerson": "Jwan Eng",
+    "email": "",
+    "phone": "0504152638",
+    "city": "الرياض",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "جرير الجزيرة / مبنى تجاري شارع الأحساء"
+  },
+  {
+    "clientName": "القضيبي",
+    "contactPerson": "Ahmad Eng",
+    "email": "",
+    "phone": "0555004305",
+    "city": "الرياض/المزاحمية",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مستودع الوثائق / المعهد الفني الصناعي"
+  },
+  {
+    "clientName": "فيلا اللواء سفر الشهراني",
+    "contactPerson": "Brigade Safar",
+    "email": "",
+    "phone": "0505756475",
+    "city": "",
+    "interest": "مصاعد فلل",
+    "consent": true,
+    "notes": "فيلا خاصة"
+  },
+  {
+    "clientName": "راك الجزيرة",
+    "contactPerson": "Abdullah Eng",
+    "email": "",
+    "phone": "0569179308",
+    "city": "رابغ",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مكتب الضمان"
+  },
+  {
+    "clientName": "راك الجزيرة",
+    "contactPerson": "Abnouf Eng",
+    "email": "",
+    "phone": "0507326273",
+    "city": "أضم",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مكتب الضمان"
+  },
+  {
+    "clientName": "السليمي",
+    "contactPerson": "Waleed Eng",
+    "email": "",
+    "phone": "0503462375",
+    "city": "الأحساء",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مبنى شركة بالأحساء"
+  },
+  {
+    "clientName": "مؤسسة عبدالله عوض الجويحي للمقاولات",
+    "contactPerson": "Mohammad Eng",
+    "email": "",
+    "phone": "0504583862",
+    "city": "الأحساء",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مكتب الضمان الاجتماعي النسوي"
+  },
+  {
+    "clientName": "محمد الشيخ علي",
+    "contactPerson": "Nidal Eng",
+    "email": "",
+    "phone": "0550277435",
+    "city": "وادي الدواسر",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مبنى وزارة الزراعة"
+  },
+  {
+    "clientName": "المرحبي",
+    "contactPerson": "Mohammad Mr",
+    "email": "",
+    "phone": "0555671215",
+    "city": "القنفذة",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "إدارة التعليم"
+  },
+  {
+    "clientName": "المهري",
+    "contactPerson": "Sami Eng",
+    "email": "",
+    "phone": "",
+    "city": "أبها/المجاردة",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "عدة مشاريع صناعية وتقنية"
+  }
+];
+
+    function normalizePhone(phone) {
+      return String(phone || '').replace(/[^0-9]/g, '');
+    }
+
+    function loadSeedClients() {
+      const existing = getClients();
+      const seen = new Set(existing.map(c => `${(c.clientName||'').trim()}|${normalizePhone(c.phone)}|${(c.contactPerson||'').trim()}`));
+      let added = 0;
+
+      SEED_CLIENTS.forEach(client => {
+        const prepared = {
+          ...client,
+          phone: normalizePhone(client.phone),
+          createdAt: new Date().toISOString()
+        };
+        const key = `${(prepared.clientName||'').trim()}|${normalizePhone(prepared.phone)}|${(prepared.contactPerson||'').trim()}`;
+        if (!seen.has(key)) {
+          existing.push(prepared);
+          seen.add(key);
+          added++;
+        }
+      });
+
+      setClients(existing);
       renderTable();
+      showStatus('tableStatus', `تم تحميل ${added} عميل من الملف المرفق.`, 'success');
+    }
+
+    function clearSeedClients() {
+      if (!confirm('سيتم حذف جميع العملاء المحفوظين من هذه الصفحة فقط. هل تريد المتابعة؟')) return;
+      localStorage.removeItem(STORAGE_KEY);
+      renderTable();
+      showStatus('tableStatus', 'تم تفريغ قائمة العملاء.', 'success');
+    }
+
+    window.addEventListener('load', () => {
+      const existing = getClients();
+      if (!existing.length) {
+        loadSeedClients();
+      }
+    });
+
+
+    renderTable();
       showStatus('tableStatus', 'تم حذف العميل.', 'success');
     }
 
@@ -634,6 +1612,493 @@ RKL Team</textarea>
       URL.revokeObjectURL(url);
       showStatus('tableStatus', 'تم تصدير الملف بنجاح.', 'success');
     }
+
+
+    const SEED_CLIENTS = [
+  {
+    "clientName": "تاج الاتقان",
+    "contactPerson": "Hasan Eng",
+    "email": "",
+    "phone": "0530513772",
+    "city": "القطيف",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "فرع وزارة المالية بالقطيف"
+  },
+  {
+    "clientName": "مختبر وبنك الدم ومركز السموم",
+    "contactPerson": "Hosam Eng",
+    "email": "",
+    "phone": "0503446916",
+    "city": "سكاكا",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "الشؤون الصحية بسكاكا"
+  },
+  {
+    "clientName": "فيلا خاصة",
+    "contactPerson": "Ahmed Dr",
+    "email": "",
+    "phone": "0506271799",
+    "city": "",
+    "interest": "مصاعد فلل",
+    "consent": true,
+    "notes": "عميل خاص"
+  },
+  {
+    "clientName": "اطلالة القلعة",
+    "contactPerson": "Fathi Eng",
+    "email": "",
+    "phone": "0596565403",
+    "city": "عفيف",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "فرع وزارة المالية بعفيف"
+  },
+  {
+    "clientName": "الأعمال التطويرية",
+    "contactPerson": "Motasem Eng",
+    "email": "",
+    "phone": "0555308457",
+    "city": "القصيم",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "إسكان المدربين والمتدربين"
+  },
+  {
+    "clientName": "فيلا الفريح",
+    "contactPerson": "Fraih Mr",
+    "email": "",
+    "phone": "0505231145",
+    "city": "",
+    "interest": "مصاعد فلل",
+    "consent": true,
+    "notes": "فيلا خاصة"
+  },
+  {
+    "clientName": "مؤسسة حمد ابراهيم عبدالرحمن للمقاولات",
+    "contactPerson": "Omar Eng",
+    "email": "",
+    "phone": "0559613218",
+    "city": "",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "المعهد الصناعي الثانوي الثالث"
+  },
+  {
+    "clientName": "شركة وليد السمان كناز للمقاولات",
+    "contactPerson": "Mustafa Eng",
+    "email": "",
+    "phone": "0540430011",
+    "city": "الرياض",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "الكلية التقنية بالرياض ديراب"
+  },
+  {
+    "clientName": "شركة الزهراني للمقاولات",
+    "contactPerson": "محمد",
+    "email": "",
+    "phone": "0505271532",
+    "city": "المزاحمية",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "الكلية التقنية"
+  },
+  {
+    "clientName": "الشركة السعودية للتطوير العمراني",
+    "contactPerson": "Mohammad Eng",
+    "email": "",
+    "phone": "0553207897",
+    "city": "جدة",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "المعهد العالي التقني للبنات"
+  },
+  {
+    "clientName": "التجارات",
+    "contactPerson": "Belal Eng",
+    "email": "",
+    "phone": "0568917544",
+    "city": "",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "عدة مشاريع"
+  },
+  {
+    "clientName": "مؤسسة عبر للمقاولات",
+    "contactPerson": "سامح",
+    "email": "",
+    "phone": "0543694581",
+    "city": "",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مبنى التدريب الإلكتروني"
+  },
+  {
+    "clientName": "شركة افراس للتجارة والمقاولات",
+    "contactPerson": "Khaled Eng",
+    "email": "",
+    "phone": "0543330959",
+    "city": "",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "الأكاديمية السعودية للطيران المدني"
+  },
+  {
+    "clientName": "الموتورز",
+    "contactPerson": "Abubaker Eng",
+    "email": "",
+    "phone": "0567000059",
+    "city": "جدة",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "إسكان المتدربات"
+  },
+  {
+    "clientName": "سعودي بيج",
+    "contactPerson": "Mohammad Eng",
+    "email": "",
+    "phone": "0543553605",
+    "city": "مكة/خميس مشيط",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "عدة مشاريع تقنية وسياحية"
+  },
+  {
+    "clientName": "الكلية التقنية للبنات بينبع",
+    "contactPerson": "خلدون",
+    "email": "",
+    "phone": "0505487491",
+    "city": "ينبع",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مشروع قائم"
+  },
+  {
+    "clientName": "مؤسسة شموع المميزة للمقاولات",
+    "contactPerson": "رائد",
+    "email": "",
+    "phone": "0552683438",
+    "city": "مكة",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مبنى التدريب الإلكتروني"
+  },
+  {
+    "clientName": "شركة ثرب للتجارة والمقاولات",
+    "contactPerson": "أحمد",
+    "email": "",
+    "phone": "054008537",
+    "city": "الأحساء",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "المعهد السعودي للتقنيات الألمانية"
+  },
+  {
+    "clientName": "شركة الجفر للتجارة والمقاولات",
+    "contactPerson": "Sharif Eng",
+    "email": "",
+    "phone": "0561247247",
+    "city": "الأحساء/الدمام",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "عدة مشاريع تقنية"
+  },
+  {
+    "clientName": "إعمار الجنوب",
+    "contactPerson": "Ahmad Eng",
+    "email": "",
+    "phone": "0558500133",
+    "city": "خميس مشيط",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "عدة مشاريع"
+  },
+  {
+    "clientName": "الهلالية",
+    "contactPerson": "Abdulazeem Eng",
+    "email": "",
+    "phone": "0590118012",
+    "city": "محايل عسير/بلقرن",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "فرع وزارة المالية"
+  },
+  {
+    "clientName": "هامكو",
+    "contactPerson": "Amro Eng",
+    "email": "",
+    "phone": "0503920739",
+    "city": "نجران",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "إسكان المدربات بالكلية التقنية"
+  },
+  {
+    "clientName": "صحراء الوادي",
+    "contactPerson": "Ibrahim Eng",
+    "email": "",
+    "phone": "0532396403",
+    "city": "وادي الدواسر",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مشروع بلدية"
+  },
+  {
+    "clientName": "الراجحي للبناء والتعمير",
+    "contactPerson": "Saddam Eng",
+    "email": "",
+    "phone": "0550697001",
+    "city": "عبيدة",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "الكلية التقنية للبنين"
+  },
+  {
+    "clientName": "أجا الإمارات",
+    "contactPerson": "Mohammad Eng",
+    "email": "",
+    "phone": "0537296854",
+    "city": "صبيا",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "المعهد الصناعي الثانوي"
+  },
+  {
+    "clientName": "اليـاورة",
+    "contactPerson": "Hamada Eng",
+    "email": "",
+    "phone": "0551529214",
+    "city": "",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "الكلية التقنية للبنات"
+  },
+  {
+    "clientName": "اندكو",
+    "contactPerson": "Fares Eng",
+    "email": "",
+    "phone": "0542947454",
+    "city": "",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "المعهد الصناعي الثانوي"
+  },
+  {
+    "clientName": "بيت الهندسة",
+    "contactPerson": "Jamal Eng",
+    "email": "",
+    "phone": "0563996088",
+    "city": "جازان",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "دار رعاية المسنين"
+  },
+  {
+    "clientName": "بيت الهندسة",
+    "contactPerson": "Mahmoud Eng",
+    "email": "",
+    "phone": "0556082967",
+    "city": "جازان",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "دار رعاية الفتيات"
+  },
+  {
+    "clientName": "بيت الهندسة",
+    "contactPerson": "Waleed Eng",
+    "email": "",
+    "phone": "0542304903",
+    "city": "صامطة",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مكتب الضمان"
+  },
+  {
+    "clientName": "راك الجزيرة",
+    "contactPerson": "Ashraf Eng",
+    "email": "",
+    "phone": "0506928252",
+    "city": "المجاردة",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مكتب الضمان"
+  },
+  {
+    "clientName": "الهيكلية",
+    "contactPerson": "Mohammad Eng",
+    "email": "",
+    "phone": "0593930657",
+    "city": "عرعر",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "سكن المدربين والمتدربين للمعهد التقني للتعدين"
+  },
+  {
+    "clientName": "الهيكلية",
+    "contactPerson": "Erfan Eng",
+    "email": "",
+    "phone": "0565403911",
+    "city": "المزاحمية",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "سكن المدربين - الكلية التقنية للبنين"
+  },
+  {
+    "clientName": "ابراهيم الصالح",
+    "contactPerson": "Mr.Ibrahim",
+    "email": "",
+    "phone": "0555488272",
+    "city": "",
+    "interest": "مصاعد فلل",
+    "consent": true,
+    "notes": "فيلا خاصة"
+  },
+  {
+    "clientName": "عبدالعزيز وسعد المعجل للتجارة والاستثمار",
+    "contactPerson": "Jwan Eng",
+    "email": "",
+    "phone": "0504152638",
+    "city": "الرياض",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "جرير الجزيرة / مبنى تجاري شارع الأحساء"
+  },
+  {
+    "clientName": "القضيبي",
+    "contactPerson": "Ahmad Eng",
+    "email": "",
+    "phone": "0555004305",
+    "city": "الرياض/المزاحمية",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مستودع الوثائق / المعهد الفني الصناعي"
+  },
+  {
+    "clientName": "فيلا اللواء سفر الشهراني",
+    "contactPerson": "Brigade Safar",
+    "email": "",
+    "phone": "0505756475",
+    "city": "",
+    "interest": "مصاعد فلل",
+    "consent": true,
+    "notes": "فيلا خاصة"
+  },
+  {
+    "clientName": "راك الجزيرة",
+    "contactPerson": "Abdullah Eng",
+    "email": "",
+    "phone": "0569179308",
+    "city": "رابغ",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مكتب الضمان"
+  },
+  {
+    "clientName": "راك الجزيرة",
+    "contactPerson": "Abnouf Eng",
+    "email": "",
+    "phone": "0507326273",
+    "city": "أضم",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مكتب الضمان"
+  },
+  {
+    "clientName": "السليمي",
+    "contactPerson": "Waleed Eng",
+    "email": "",
+    "phone": "0503462375",
+    "city": "الأحساء",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مبنى شركة بالأحساء"
+  },
+  {
+    "clientName": "مؤسسة عبدالله عوض الجويحي للمقاولات",
+    "contactPerson": "Mohammad Eng",
+    "email": "",
+    "phone": "0504583862",
+    "city": "الأحساء",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مكتب الضمان الاجتماعي النسوي"
+  },
+  {
+    "clientName": "محمد الشيخ علي",
+    "contactPerson": "Nidal Eng",
+    "email": "",
+    "phone": "0550277435",
+    "city": "وادي الدواسر",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "مبنى وزارة الزراعة"
+  },
+  {
+    "clientName": "المرحبي",
+    "contactPerson": "Mohammad Mr",
+    "email": "",
+    "phone": "0555671215",
+    "city": "القنفذة",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "إدارة التعليم"
+  },
+  {
+    "clientName": "المهري",
+    "contactPerson": "Sami Eng",
+    "email": "",
+    "phone": "",
+    "city": "أبها/المجاردة",
+    "interest": "صيانة المصاعد",
+    "consent": true,
+    "notes": "عدة مشاريع صناعية وتقنية"
+  }
+];
+
+    function normalizePhone(phone) {
+      return String(phone || '').replace(/[^0-9]/g, '');
+    }
+
+    function loadSeedClients() {
+      const existing = getClients();
+      const seen = new Set(existing.map(c => `${(c.clientName||'').trim()}|${normalizePhone(c.phone)}|${(c.contactPerson||'').trim()}`));
+      let added = 0;
+
+      SEED_CLIENTS.forEach(client => {
+        const prepared = {
+          ...client,
+          phone: normalizePhone(client.phone),
+          createdAt: new Date().toISOString()
+        };
+        const key = `${(prepared.clientName||'').trim()}|${normalizePhone(prepared.phone)}|${(prepared.contactPerson||'').trim()}`;
+        if (!seen.has(key)) {
+          existing.push(prepared);
+          seen.add(key);
+          added++;
+        }
+      });
+
+      setClients(existing);
+      renderTable();
+      showStatus('tableStatus', `تم تحميل ${added} عميل من الملف المرفق.`, 'success');
+    }
+
+    function clearSeedClients() {
+      if (!confirm('سيتم حذف جميع العملاء المحفوظين من هذه الصفحة فقط. هل تريد المتابعة؟')) return;
+      localStorage.removeItem(STORAGE_KEY);
+      renderTable();
+      showStatus('tableStatus', 'تم تفريغ قائمة العملاء.', 'success');
+    }
+
+    window.addEventListener('load', () => {
+      const existing = getClients();
+      if (!existing.length) {
+        loadSeedClients();
+      }
+    });
+
 
     renderTable();
   </script>
