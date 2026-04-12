@@ -400,69 +400,9 @@ RKL Team</textarea>
     </section>
   </div>
 
+  
   <script>
     const STORAGE_KEY = 'rkl_marketing_clients';
-    let editIndex = null;
-
-    function getClients() {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-    }
-
-    function setClients(data) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    }
-
-    function showStatus(id, msg, type = 'success') {
-      const box = document.getElementById(id);
-      box.className = `status ${type}`;
-      box.textContent = msg;
-      setTimeout(() => {
-        box.className = 'status';
-        box.textContent = '';
-      }, 3500);
-    }
-
-    function getFormData() {
-      return {
-        clientName: document.getElementById('clientName').value.trim(),
-        contactPerson: document.getElementById('contactPerson').value.trim(),
-        email: document.getElementById('email').value.trim(),
-        phone: document.getElementById('phone').value.trim(),
-        city: document.getElementById('city').value.trim(),
-        interest: document.getElementById('interest').value,
-        notes: document.getElementById('notes').value.trim(),
-        consent: document.getElementById('consent').checked,
-        createdAt: new Date().toISOString()
-      };
-    }
-
-    function saveClient() {
-      const data = getFormData();
-
-      if (!data.clientName) {
-        showStatus('formStatus', 'يرجى إدخال اسم العميل أو الشركة.', 'error');
-        return;
-      }
-
-      if (!data.email && !data.phone) {
-        showStatus('formStatus', 'يرجى إدخال بريد إلكتروني أو رقم جوال على الأقل.', 'error');
-        return;
-      }
-
-      const clients = getClients();
-
-      if (editIndex !== null) {
-        clients[editIndex] = { ...clients[editIndex], ...data };
-        editIndex = null;
-        showStatus('formStatus', 'تم تحديث بيانات العميل بنجاح.');
-      } else {
-        clients.unshift(data);
-        showStatus('formStatus', 'تم حفظ العميل بنجاح.');
-      }
-
-      setClients(clients);
-      resetForm(false);
-  
     const SEED_CLIENTS = [
   {
     "clientName": "تاج الاتقان",
@@ -903,53 +843,689 @@ RKL Team</textarea>
     "interest": "صيانة المصاعد",
     "consent": true,
     "notes": "عدة مشاريع صناعية وتقنية"
+  },
+  {
+    "clientName": "ÊÇÌ ÇäÇÊâÇæ",
+    "contactPerson": "Eng.Hasan",
+    "email": "",
+    "phone": "0530513772",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: áÑÙ èÒÇÑÉ ÇäåÇäêÉ ÈÇäâ×êá | Lifts Qty: 2",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:01.000Z"
+  },
+  {
+    "clientName": "ÇäÍÑêÊê",
+    "contactPerson": "Eng.Hosam",
+    "email": "",
+    "phone": "0503446916",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: åÎÊÈÑ èÈæã ÇäÏå èåÑãÒ ÇäÓåèå ÈÇäÔÄèæ ÇäÕÍêÉ ÈÓãÇãÇ | Lifts Qty: 8",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:02.000Z"
+  },
+  {
+    "clientName": "Ï.ÇäÌ×êäê",
+    "contactPerson": "Dr.Ahmed",
+    "email": "",
+    "phone": "0506271799",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: áêäÇ ÎÇÕÉ | Lifts Qty: 1",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:03.000Z"
+  },
+  {
+    "clientName": "Ç×äÇäÉ ÇäâÙäÉ",
+    "contactPerson": "Eng.Fathi",
+    "email": "",
+    "phone": "0596565403",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: áÑÙ èÒÇÑÉ ÇäåÇäêÉ ÈÙáêá | Lifts Qty: 2",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:04.000Z"
+  },
+  {
+    "clientName": "ÇäÃÙåÇä ÇäÊ×èêÑêÉ",
+    "contactPerson": "Eng.Motasem",
+    "email": "",
+    "phone": "0555308457",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: ÇÓãÇæ ÇäåÏÑÈêæ èÇäåÊÏÑÈêæ ääåÙçÏ ÇäÓÙèÏê ÇäÊâæê äÊÑÈêÉ ÇäÏèÇÌæ ÈÇäâÕêå | Lifts Qty: 18",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:05.000Z"
+  },
+  {
+    "clientName": "ÇäáÑêÍ",
+    "contactPerson": "Mr.Fraih",
+    "email": "",
+    "phone": "0505231145",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: áêäÇ ÎÇÕÉ | Lifts Qty: 1",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:06.000Z"
+  },
+  {
+    "clientName": "åÄÓÓÉ ÍåÏ ÇÈÑÇçêå ÙÈÏ ÇäÑÍåæ ääåâÇèäÇÊ",
+    "contactPerson": "Eng.Omar",
+    "email": "",
+    "phone": "0559613218",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: åÙçÏ ÇäÕæÇÙê ÇäËÇæèê ÇäËÇäË | Lifts Qty: 1",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:07.000Z"
+  },
+  {
+    "clientName": "ÔÑãÉ èäêÏ ÇäÓåÇæ ãæÇÒ",
+    "contactPerson": "Eng.Mustafa",
+    "email": "",
+    "phone": "0540430011",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: ÇäãäêÉ ÇäÊâæêÉ ÈÇäÑêÇÖ ÏêÑÇÈ | Lifts Qty: 5",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:08.000Z"
+  },
+  {
+    "clientName": "ÔÑãÉ ÇäÒçÑÇæê ääåâÇèäÇÊ",
+    "contactPerson": "å åÍåÏ",
+    "email": "",
+    "phone": "0505271532",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: ÇäãäêÉ ÇäÊâæêÉ ÈÇäåÒÇÍåêÉ | Lifts Qty: 5",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:09.000Z"
+  },
+  {
+    "clientName": "ÔÑãÉ Óãæ ÇäÙÑÈêÉ ääÇæÔÇÁ èÇäÊÙåêÑ",
+    "contactPerson": "",
+    "email": "",
+    "phone": "",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: åÈæê åãÊÈ ÇäÙåä ÈÇäåÌåÙÉ | Lifts Qty: 4",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:10.000Z"
+  },
+  {
+    "clientName": "ÇäÔÑãÉ ÇäÓÙèÏêÉ ääÊ×èêÑ ÇäÙåÑÇæê",
+    "contactPerson": "Eng.Mohammad",
+    "email": "",
+    "phone": "0553207897",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: ÇäåÙçÏ ÇäÙÇäê ÇäÊâæê ÇäËÇæê ääÈæÇÊ ÈÌÏÉ | Lifts Qty: 9",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:11.000Z"
+  },
+  {
+    "clientName": "ÇäÓÙèÏêÉ ääÊ×èêÑ ÇäÙåÑÇæê",
+    "contactPerson": "Eng.Mohammad",
+    "email": "",
+    "phone": "0553207897",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: ÇÓãÇæ ÇäåÏÑÈêæ èÇäåÊÏÑÈêæ èáæÏâ ÊÏÑêÈê ääåÙçÏ ÇäÓÙèÏê ääáæÏâÉ èÇäÓêÇÍÉ ÈÌÇÒÇæ | Lifts Qty: 7",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:12.000Z"
+  },
+  {
+    "clientName": "ÇäÊÌÇÑÇÊ",
+    "contactPerson": "Eng.Belal",
+    "email": "",
+    "phone": "0568917544",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: ÇÓãÇæ ÇäãäêÉ ÇäÊâæêÉ ääÈæÈæ èÇäÈæÇÊ ÈÇäèÌç | Lifts Qty: 10",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:13.000Z"
+  },
+  {
+    "clientName": "åÄÓÓÉ ÙÈÑ ääåâÇäÇèÊ",
+    "contactPerson": "å ÓÇåÍ",
+    "email": "",
+    "phone": "0543694581",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: åÈæé ÇäÊÏÑêÈ ÇäÇäãÊÑèæê | Lifts Qty: 2",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:16.000Z"
+  },
+  {
+    "clientName": "ÔÑãÉ ÇáÑÇÓ ääÊÌÇÑÉ èÇäåâÇèäÇÊ",
+    "contactPerson": "Eng.Khaled",
+    "email": "",
+    "phone": "0543330959",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: ÇäÃãÇÏêåêÉ ÇäÓÙèÏêÉ ää×êÑÇæ ÇäåÏæê | Lifts Qty: 8",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:17.000Z"
+  },
+  {
+    "clientName": "ÇäÏÑêÓ èÇäÍÕêæê",
+    "contactPerson": "Eng.Abubaker",
+    "email": "",
+    "phone": "0567000059",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: ÇÓãÇæ ÇäåÊÏÑÈÇÊ äÈÑæÇåÌ ÌæÑÇä åèÊèÑÒ ÈÌÏÉ | Lifts Qty: 6",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:18.000Z"
+  },
+  {
+    "clientName": "ÓÙèÏê ÈêÌç",
+    "contactPerson": "Eng.Mohammad",
+    "email": "",
+    "phone": "0543553605",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: ÇÓãÇæ ÇäåÏÑÈêæ èÇäåÏÑÈÇÊ ÈÇäãäêÉ ÇäÊâæêÉ  ääÈæêæ èÇäÈæÇÊ ÈåãÉ ÇäåãÑåÉ | Lifts Qty: 10",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:19.000Z"
+  },
+  {
+    "clientName": "ÇäåÈ×ê",
+    "contactPerson": "ÎäÏèæ",
+    "email": "",
+    "phone": "0505487491",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: ÇäãäêÉ ÇäÊâæêÉ ääÈæÇÊ ÈêæÈÙ | Lifts Qty: 3",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:21.000Z"
+  },
+  {
+    "clientName": "ÔÑãÉ åÍåÏ èÓäêåÇæ ÇäÙÓÇá",
+    "contactPerson": "",
+    "email": "",
+    "phone": "",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: åÈæé ÇÙÇÏÉ ÇäÊÃçêä èåÑãÒ ÇäÓãÑ | Lifts Qty: 6",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:22.000Z"
+  },
+  {
+    "clientName": "åÄÓÓÉ ÔåèÙ ÇäååêÒ ääåâÇèäÇÊ",
+    "contactPerson": "ÑÇÆÏ",
+    "email": "",
+    "phone": "0552683438",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: åÈæé ÇäÊÏÑêÈ ÇäÇäãÊÑèæê ÈåãÉ | Lifts Qty: 2",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:23.000Z"
+  },
+  {
+    "clientName": "ÔÑãÉ ËÑÈ ääÊÌÇÑÉ èÇäåâÇèäÇÊ",
+    "contactPerson": "ÇÍåÏ 054008537",
+    "email": "",
+    "phone": "",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: ÇäåÙçÏ ÇäÓÙèÏé ääÊâæêÇÊ ÇäÇäåÇæêÉ | Lifts Qty: 1",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:24.000Z"
+  },
+  {
+    "clientName": "ÔÑãÉ ÇäÌáÑ ääÊÌÇÑÉ èÇäåâÇèäÇÊ",
+    "contactPerson": "Eng.Sharif",
+    "email": "",
+    "phone": "0561247247",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: ÇäãäêÉ ÇäÊâæêÉ ääÈæêæ ÈÇäÇÍÓÇÁ | Lifts Qty: 6",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:25.000Z"
+  },
+  {
+    "clientName": "åÄÓÓÉ ÌèÑê ÇäÔÑâêÉ ääåâÇèäÇÊ",
+    "contactPerson": "",
+    "email": "",
+    "phone": "",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: åÈæé ÇäÊÏÑêÈ ÇäÇäãÊÑèæê ÈÇäâ×êá | Lifts Qty: 2",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:29.000Z"
+  },
+  {
+    "clientName": "ÅÙåÇÑ ÇäÌæèÈ",
+    "contactPerson": "Eng.Ahmad",
+    "email": "",
+    "phone": "0558500133",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: ÇäãäêÉ ÇäÊâæêÉ ääÈæÇÊ ÈÎåêÓ åÔê× | Lifts Qty: 5",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:30.000Z"
+  },
+  {
+    "clientName": "ÇäçäÇäêÉ",
+    "contactPerson": "Eng.Abdulazeem",
+    "email": "",
+    "phone": "0590118012",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: áÑÙ èÒÇÑÉ ÇäåÇäêÉ ÈåÍÇêä ÙÓêÑ | Lifts Qty: 2",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:32.000Z"
+  },
+  {
+    "clientName": "çÇåãè",
+    "contactPerson": "Eng.Amro",
+    "email": "",
+    "phone": "0503920739",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: ÇÓãÇæ ÇäåÏÑÈÇÊ ÈÇäãäêÉ ÇäÊâæêÉ ääÈæÇÊ ÈæÌÑÇæ(ãäêÇÊ ÇäÊåêÒ) | Lifts Qty: 15",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:34.000Z"
+  },
+  {
+    "clientName": "ÕÍÑÇÁ ÇäèÇÏê",
+    "contactPerson": "Eng.Ibrahim",
+    "email": "",
+    "phone": "0532396403",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: åÈæé ÇäÈäÏêÉ ÈèÇÏê ÇäÏèÇÓÑ | Lifts Qty: 3",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:35.000Z"
+  },
+  {
+    "clientName": "ÇäÑÇÌÍê ääÈæÇÁ èÇäÊÙåêÑ",
+    "contactPerson": "Eng.Saddam",
+    "email": "",
+    "phone": "0550697001",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: ÇäãäêÉ ÇäÊâæêÉ ääÈæêæ ÈÓÑÇÉ ÙÈêÏÉ | Lifts Qty: 7",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:36.000Z"
+  },
+  {
+    "clientName": "ÃÌÇ ÇäÇåÇÑÇÊ",
+    "contactPerson": "Eng.Mohammad",
+    "email": "",
+    "phone": "0537296854",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: ÇäåÙçÏ ÇäÕæÇÙê ÇäËÇæèê ÈÕÈêÇ | Lifts Qty: 1",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:37.000Z"
+  },
+  {
+    "clientName": "ÇäêÇåê",
+    "contactPerson": "Eng.Hamada",
+    "email": "",
+    "phone": "0551529214",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: ÇäãäêÉ ÇäÊâæêÉ ääÈæÇÊ ÈÔÑèÑÉ | Lifts Qty: 5",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:38.000Z"
+  },
+  {
+    "clientName": "ÇæÏãè",
+    "contactPerson": "Eng.Fares",
+    "email": "",
+    "phone": "0542947454",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: ÇäåÙçÏ ÇäÕæÇÙê ÇäËÇæèê | Lifts Qty: 2",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:39.000Z"
+  },
+  {
+    "clientName": "åÄÓÓÉ ÙÈÏ ÇäãÑêå ÇäËÈêÊê ääåâÇèäÇÊ",
+    "contactPerson": "",
+    "email": "",
+    "phone": "",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: ÇäåÙçÏ ÇäÕæÇÙê ÇäËÇæèê ÈÊæèåÉ | Lifts Qty: 1",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:40.000Z"
+  },
+  {
+    "clientName": "ÈêÊ ÇäçæÏÓÉ  Bayt Alhandasa",
+    "contactPerson": "Eng.Jamal",
+    "email": "",
+    "phone": "0563996088",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: ÏÇÑ ÑÙÇêÉ ÇäåÓæêæ ÈÌÇÒÇæ  Eldry care house in jazan | Lifts Qty: 6",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:01.000Z"
+  },
+  {
+    "clientName": "ÈêÊ ÇäçæÏÓÉ  Bayt Alhandasa",
+    "contactPerson": "Eng.Mahmoud",
+    "email": "",
+    "phone": "0556082967",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: ÏÇÑ ÑÙÇêÉ ÇäáÊêÇÊ ÈÌÇÒÇæ  Girls care house in Jazan | Lifts Qty: 5",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:02.000Z"
+  },
+  {
+    "clientName": "ÈêÊ ÇäçæÏÓÉ  Bayt Alhandasa",
+    "contactPerson": "Eng.Waleed",
+    "email": "",
+    "phone": "0542304903",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: åãÊÈ ÇäÖåÇæ ÈÕÇå×É  Insurance Office in Samtah | Lifts Qty: 1",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:03.000Z"
+  },
+  {
+    "clientName": "ÑÇã ÇäÌÒêÑÉ  Rak Aljazeera",
+    "contactPerson": "Eng.Ashraf",
+    "email": "",
+    "phone": "0506928252",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: åãÊÈ ÇäÖåÇæ ÈÇäåÌÇÑÏÉ  Insurance Office in Majardah | Lifts Qty: 1",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:04.000Z"
+  },
+  {
+    "clientName": "ÇäçêãäêÉ  AL-HAIKALYAH",
+    "contactPerson": "Eng.Mohammad",
+    "email": "",
+    "phone": "0593930657",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: ÅÓãÇæ ÇäåÏÑÈêæ è ÇäåÊÏÑÈêæ ääåÙçÏ ÇäÊâæê ääÊÙÏêæ ÈÙÑÙÑ Trainers and trainees Housing for  Mining Technical Institute | Lifts Qty: 15",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:05.000Z"
+  },
+  {
+    "clientName": "ÇäçêãäêÉ  AL-HAIKALYAH",
+    "contactPerson": "Eng.Erfan",
+    "email": "",
+    "phone": "0565403911",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: ÇÓãÇæ ÇäåÏÑÈêæ ÈÇäãäêÉ ÇäÊâæêÉ ääÈæêæ ÈÇäåÒÇÍåêÉ  Trainers Housing for Boys Technical College | Lifts Qty: 10",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:06.000Z"
+  },
+  {
+    "clientName": "ÇÈÑÇçêå ÇäÕÇäÍ IBRAHIM ALSALIH",
+    "contactPerson": "Mr.Ibahim",
+    "email": "",
+    "phone": "0555488272",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: áêäÇ ÎÇÕÉ  Private villa | Lifts Qty: 1",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:07.000Z"
+  },
+  {
+    "clientName": "áÑÙ ÇäÔÑãÉ ÇäåÊÍÏÉ ääÇæÔÇÁÇÊ ÇäåÏæêÉ United Co. for Civil Works",
+    "contactPerson": "Eng.Sami",
+    "email": "",
+    "phone": "",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: ÇæÔÇÁ ÏÇÑ ÇäÖêÇáÉ  Hospitality house at Riyadh | Lifts Qty: 3",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:08.000Z"
+  },
+  {
+    "clientName": "èÍÏÉ ÇäÍåÇêÉ ÇäÇÌÊåÇÙêÉ ÈÇäÑêÇÖ  Guard Unit at Riyadh",
+    "contactPerson": "",
+    "email": "",
+    "phone": "",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: èÍÏÉ ÇäÍåÇêÉ ÇäÇÌÊåÇÙêÉ ÈÇäÑêÇÖ  Guard Unit at Riyadh | Lifts Qty: 4",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:09.000Z"
+  },
+  {
+    "clientName": "ÔÑãÉ ÙÈÏÇäÙÒêÒ èÓÙÏ ÇäåÙÌä ääÊÌÇÑÉ èÇäÇÓÊËåÇÑ Almojil for Trading&Investment",
+    "contactPerson": "Eng.Jwan",
+    "email": "",
+    "phone": "0504152638",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: Íê ÇäÌÒêÑÉ åÌåÙ ÊÌÇÑê-åãÊÈÉ ÌÑêÑ Jarir Book Store-Aljazeera | Lifts Qty: 3",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:10.000Z"
+  },
+  {
+    "clientName": "ÇäâÖêÈê  AL-Qudaubi",
+    "contactPerson": "Eng.Ahmad",
+    "email": "",
+    "phone": "0555004305",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: åÓÊèÏÙ ÇäèËÇÆâ ÈÇäÑêÇÖ Documents Store | Lifts Qty: 1",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:12.000Z"
+  },
+  {
+    "clientName": "áêäÇ ÇääèÇÁ ÓáÑ ÇäÔçÑÇæê  Brigade Safar Alshahrani Villa",
+    "contactPerson": "Brigade Safar",
+    "email": "",
+    "phone": "0505756475",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: áêäÇ ÎÇÕÉ  Private villa | Lifts Qty: 1",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:14.000Z"
+  },
+  {
+    "clientName": "ÙÈÏÇäÈÇÓ× Abdulbaset",
+    "contactPerson": "",
+    "email": "",
+    "phone": "",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: áêäÇ ÎÇÕÉ  Private villa | Lifts Qty: 1",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:15.000Z"
+  },
+  {
+    "clientName": "ÙÈÏÇäåæÙå Abdulmenem",
+    "contactPerson": "",
+    "email": "",
+    "phone": "",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: áêäÇ ÎÇÕÉ  Private villa | Lifts Qty: 1",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:16.000Z"
+  },
+  {
+    "clientName": "ÈêÊ ÇäçæÏÓÉ  Bayt Alhandasa",
+    "contactPerson": "Eng.Juzian",
+    "email": "",
+    "phone": "0506679277",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: åãÊÈ ÇäÖåÇæ ÈÇääêË  Insurance Office in Layth | Lifts Qty: 1",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:17.000Z"
+  },
+  {
+    "clientName": "ÑÇã ÇäÌÒêÑÉ  Rak Aljazeera",
+    "contactPerson": "Eng.Abdullah",
+    "email": "",
+    "phone": "0569179308",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: åãÊÈ ÇäÖåÇæ ÈÑÇÈÚ  Insurance Office in Rabegh | Lifts Qty: 1",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:18.000Z"
+  },
+  {
+    "clientName": "ÑÇã ÇäÌÒêÑÉ  Rak Aljazeera",
+    "contactPerson": "Eng.Abnouf",
+    "email": "",
+    "phone": "0507326273",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: åãÊÈ ÇäÖåÇæ ÈÃÖå  Insurance Office in Adom | Lifts Qty: 1",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:19.000Z"
+  },
+  {
+    "clientName": "åÄÓÓÉ ÇäÍåÒê ääåâÇèäÇÊ  Alhamzi Est.",
+    "contactPerson": "",
+    "email": "",
+    "phone": "",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: åÄÓÓÉ ÑÙÇêÉ ÇäáÊêÇÊ ÈÇäåÏêæÉ ÇäåæèÑÉ  Girls care house in Madinah | Lifts Qty: 5",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:20.000Z"
+  },
+  {
+    "clientName": "ÇäÓäèåê AL-Saloumi",
+    "contactPerson": "Eng.Waleed",
+    "email": "",
+    "phone": "0503462375",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: åÈæé ÇäÔÑãÉ ÈÇäÇÍÓÇÁ  Company building at alahsa | Lifts Qty: 1",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:21.000Z"
+  },
+  {
+    "clientName": "åÄÓÓÉ ÙÈÏÇääç ÙèÖ ÇäÌèçê  ääåâÇèäÇÊ Aljouhi Contracting Co.",
+    "contactPerson": "Eng.Mohammad",
+    "email": "",
+    "phone": "0504583862",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: åãÊÈ ÇäÖåÇæ ÇäÇÌÊåÇÙê ÇäæÓèê ÈÇäÇÍÓÇÁ  Women Insurance Office in AlIhsa | Lifts Qty: 1",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:22.000Z"
+  },
+  {
+    "clientName": "åÍåÏ ÇäÔêÎ Ùäê  MOHAMED ALSHIEKH ALI",
+    "contactPerson": "Eng.Nidal",
+    "email": "",
+    "phone": "0550277435",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: åÈæé èÒÇÑÉ ÇäÒÑÇÙÉ ÈèÇÏê ÇäÏèÇÓÑ Agriculture Building at wadi adawasir | Lifts Qty: 1",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:23.000Z"
+  },
+  {
+    "clientName": "ÇäåÑÍÈê AL -MARHABI",
+    "contactPerson": "Mr.Mohammad",
+    "email": "",
+    "phone": "0555671215",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: åÈæé ÇÏÇÑÉ ÇäÊÑÈêÉ èÇäÊÙäêå ÈÇäâæáÐÉ management building of education ministry at alqonfoza | Lifts Qty: 3",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:24.000Z"
+  },
+  {
+    "clientName": "ÇäåçÑê  AL-Mohri",
+    "contactPerson": "",
+    "email": "",
+    "phone": "",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: ÇäåÙçÏ ÇäÕæÇÙê ÈÇäåÌÇÑÏÉ  Industrial Institute in Almajardah | Lifts Qty: 2",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:39.000Z"
+  },
+  {
+    "clientName": "ÇäåçÑê   AL-Mohri",
+    "contactPerson": "",
+    "email": "",
+    "phone": "",
+    "city": "",
+    "interest": "صيانة / تسويق",
+    "notes": "Project: åÙçÏ ÇäÈæÇÊ Girls Institute | Lifts Qty: 3",
+    "consent": true,
+    "createdAt": "2018-09-18T00:00:40.000Z"
   }
 ];
+    let editIndex = null;
+
+    function getClients() {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    }
+
+    function setClients(data) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function showStatus(id, msg, type = 'success') {
+      const box = document.getElementById(id);
+      box.className = `status ${type}`;
+      box.textContent = msg;
+      setTimeout(() => {
+        box.className = 'status';
+        box.textContent = '';
+      }, 3500);
+    }
 
     function normalizePhone(phone) {
       return String(phone || '').replace(/[^0-9]/g, '');
     }
 
-    function loadSeedClients() {
-      const existing = getClients();
-      const seen = new Set(existing.map(c => `${(c.clientName||'').trim()}|${normalizePhone(c.phone)}|${(c.contactPerson||'').trim()}`));
-      let added = 0;
-
-      SEED_CLIENTS.forEach(client => {
-        const prepared = {
-          ...client,
-          phone: normalizePhone(client.phone),
-          createdAt: new Date().toISOString()
-        };
-        const key = `${(prepared.clientName||'').trim()}|${normalizePhone(prepared.phone)}|${(prepared.contactPerson||'').trim()}`;
-        if (!seen.has(key)) {
-          existing.push(prepared);
-          seen.add(key);
-          added++;
-        }
-      });
-
-      setClients(existing);
-      renderTable();
-      showStatus('tableStatus', `تم تحميل ${added} عميل من الملف المرفق.`, 'success');
+    function getFormData() {
+      return {
+        clientName: document.getElementById('clientName').value.trim(),
+        contactPerson: document.getElementById('contactPerson').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        phone: normalizePhone(document.getElementById('phone').value.trim()),
+        city: document.getElementById('city').value.trim(),
+        interest: document.getElementById('interest').value,
+        notes: document.getElementById('notes').value.trim(),
+        consent: document.getElementById('consent').checked,
+        createdAt: new Date().toISOString()
+      };
     }
 
-    function clearSeedClients() {
-      if (!confirm('سيتم حذف جميع العملاء المحفوظين من هذه الصفحة فقط. هل تريد المتابعة؟')) return;
-      localStorage.removeItem(STORAGE_KEY);
-      renderTable();
-      showStatus('tableStatus', 'تم تفريغ قائمة العملاء.', 'success');
-    }
+    function saveClient() {
+      const data = getFormData();
 
-    window.addEventListener('load', () => {
-      const existing = getClients();
-      if (!existing.length) {
-        loadSeedClients();
+      if (!data.clientName) {
+        showStatus('formStatus', 'يرجى إدخال اسم العميل أو الشركة.', 'error');
+        return;
       }
-    });
 
+      if (!data.email && !data.phone) {
+        showStatus('formStatus', 'يرجى إدخال بريد إلكتروني أو رقم جوال على الأقل.', 'error');
+        return;
+      }
 
-    renderTable();
+      const clients = getClients();
+
+      if (editIndex !== null) {
+        clients[editIndex] = { ...clients[editIndex], ...data };
+        editIndex = null;
+        showStatus('formStatus', 'تم تحديث بيانات العميل بنجاح.');
+      } else {
+        clients.unshift(data);
+        showStatus('formStatus', 'تم حفظ العميل بنجاح.');
+      }
+
+      setClients(clients);
+      resetForm(false);
+      renderTable();
     }
 
     function resetForm(clearStatus = true) {
@@ -978,7 +1554,7 @@ RKL Team</textarea>
       tbody.innerHTML = '';
 
       const filtered = clients.filter(c => {
-        const text = `${c.clientName} ${c.contactPerson} ${c.email} ${c.phone} ${c.city} ${c.interest}`.toLowerCase();
+        const text = `${c.clientName || ''} ${c.contactPerson || ''} ${c.email || ''} ${c.phone || ''} ${c.city || ''} ${c.interest || ''} ${c.notes || ''}`.toLowerCase();
         return text.includes(q);
       });
 
@@ -988,7 +1564,13 @@ RKL Team</textarea>
       }
 
       filtered.forEach((client) => {
-        const originalIndex = clients.findIndex(item => item.createdAt === client.createdAt && item.clientName === client.clientName && item.email === client.email);
+        const originalIndex = clients.findIndex(item =>
+          item.createdAt === client.createdAt &&
+          item.clientName === client.clientName &&
+          (item.email || '') === (client.email || '') &&
+          normalizePhone(item.phone) === normalizePhone(client.phone)
+        );
+
         const row = document.createElement('tr');
         row.innerHTML = `
           <td><input type="checkbox" class="rowCheck" data-index="${originalIndex}"></td>
@@ -1037,494 +1619,7 @@ RKL Team</textarea>
       const clients = getClients();
       clients.splice(index, 1);
       setClients(clients);
-  
-    const SEED_CLIENTS = [
-  {
-    "clientName": "تاج الاتقان",
-    "contactPerson": "Hasan Eng",
-    "email": "",
-    "phone": "0530513772",
-    "city": "القطيف",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "فرع وزارة المالية بالقطيف"
-  },
-  {
-    "clientName": "مختبر وبنك الدم ومركز السموم",
-    "contactPerson": "Hosam Eng",
-    "email": "",
-    "phone": "0503446916",
-    "city": "سكاكا",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "الشؤون الصحية بسكاكا"
-  },
-  {
-    "clientName": "فيلا خاصة",
-    "contactPerson": "Ahmed Dr",
-    "email": "",
-    "phone": "0506271799",
-    "city": "",
-    "interest": "مصاعد فلل",
-    "consent": true,
-    "notes": "عميل خاص"
-  },
-  {
-    "clientName": "اطلالة القلعة",
-    "contactPerson": "Fathi Eng",
-    "email": "",
-    "phone": "0596565403",
-    "city": "عفيف",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "فرع وزارة المالية بعفيف"
-  },
-  {
-    "clientName": "الأعمال التطويرية",
-    "contactPerson": "Motasem Eng",
-    "email": "",
-    "phone": "0555308457",
-    "city": "القصيم",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "إسكان المدربين والمتدربين"
-  },
-  {
-    "clientName": "فيلا الفريح",
-    "contactPerson": "Fraih Mr",
-    "email": "",
-    "phone": "0505231145",
-    "city": "",
-    "interest": "مصاعد فلل",
-    "consent": true,
-    "notes": "فيلا خاصة"
-  },
-  {
-    "clientName": "مؤسسة حمد ابراهيم عبدالرحمن للمقاولات",
-    "contactPerson": "Omar Eng",
-    "email": "",
-    "phone": "0559613218",
-    "city": "",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "المعهد الصناعي الثانوي الثالث"
-  },
-  {
-    "clientName": "شركة وليد السمان كناز للمقاولات",
-    "contactPerson": "Mustafa Eng",
-    "email": "",
-    "phone": "0540430011",
-    "city": "الرياض",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "الكلية التقنية بالرياض ديراب"
-  },
-  {
-    "clientName": "شركة الزهراني للمقاولات",
-    "contactPerson": "محمد",
-    "email": "",
-    "phone": "0505271532",
-    "city": "المزاحمية",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "الكلية التقنية"
-  },
-  {
-    "clientName": "الشركة السعودية للتطوير العمراني",
-    "contactPerson": "Mohammad Eng",
-    "email": "",
-    "phone": "0553207897",
-    "city": "جدة",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "المعهد العالي التقني للبنات"
-  },
-  {
-    "clientName": "التجارات",
-    "contactPerson": "Belal Eng",
-    "email": "",
-    "phone": "0568917544",
-    "city": "",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "عدة مشاريع"
-  },
-  {
-    "clientName": "مؤسسة عبر للمقاولات",
-    "contactPerson": "سامح",
-    "email": "",
-    "phone": "0543694581",
-    "city": "",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "مبنى التدريب الإلكتروني"
-  },
-  {
-    "clientName": "شركة افراس للتجارة والمقاولات",
-    "contactPerson": "Khaled Eng",
-    "email": "",
-    "phone": "0543330959",
-    "city": "",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "الأكاديمية السعودية للطيران المدني"
-  },
-  {
-    "clientName": "الموتورز",
-    "contactPerson": "Abubaker Eng",
-    "email": "",
-    "phone": "0567000059",
-    "city": "جدة",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "إسكان المتدربات"
-  },
-  {
-    "clientName": "سعودي بيج",
-    "contactPerson": "Mohammad Eng",
-    "email": "",
-    "phone": "0543553605",
-    "city": "مكة/خميس مشيط",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "عدة مشاريع تقنية وسياحية"
-  },
-  {
-    "clientName": "الكلية التقنية للبنات بينبع",
-    "contactPerson": "خلدون",
-    "email": "",
-    "phone": "0505487491",
-    "city": "ينبع",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "مشروع قائم"
-  },
-  {
-    "clientName": "مؤسسة شموع المميزة للمقاولات",
-    "contactPerson": "رائد",
-    "email": "",
-    "phone": "0552683438",
-    "city": "مكة",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "مبنى التدريب الإلكتروني"
-  },
-  {
-    "clientName": "شركة ثرب للتجارة والمقاولات",
-    "contactPerson": "أحمد",
-    "email": "",
-    "phone": "054008537",
-    "city": "الأحساء",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "المعهد السعودي للتقنيات الألمانية"
-  },
-  {
-    "clientName": "شركة الجفر للتجارة والمقاولات",
-    "contactPerson": "Sharif Eng",
-    "email": "",
-    "phone": "0561247247",
-    "city": "الأحساء/الدمام",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "عدة مشاريع تقنية"
-  },
-  {
-    "clientName": "إعمار الجنوب",
-    "contactPerson": "Ahmad Eng",
-    "email": "",
-    "phone": "0558500133",
-    "city": "خميس مشيط",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "عدة مشاريع"
-  },
-  {
-    "clientName": "الهلالية",
-    "contactPerson": "Abdulazeem Eng",
-    "email": "",
-    "phone": "0590118012",
-    "city": "محايل عسير/بلقرن",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "فرع وزارة المالية"
-  },
-  {
-    "clientName": "هامكو",
-    "contactPerson": "Amro Eng",
-    "email": "",
-    "phone": "0503920739",
-    "city": "نجران",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "إسكان المدربات بالكلية التقنية"
-  },
-  {
-    "clientName": "صحراء الوادي",
-    "contactPerson": "Ibrahim Eng",
-    "email": "",
-    "phone": "0532396403",
-    "city": "وادي الدواسر",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "مشروع بلدية"
-  },
-  {
-    "clientName": "الراجحي للبناء والتعمير",
-    "contactPerson": "Saddam Eng",
-    "email": "",
-    "phone": "0550697001",
-    "city": "عبيدة",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "الكلية التقنية للبنين"
-  },
-  {
-    "clientName": "أجا الإمارات",
-    "contactPerson": "Mohammad Eng",
-    "email": "",
-    "phone": "0537296854",
-    "city": "صبيا",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "المعهد الصناعي الثانوي"
-  },
-  {
-    "clientName": "اليـاورة",
-    "contactPerson": "Hamada Eng",
-    "email": "",
-    "phone": "0551529214",
-    "city": "",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "الكلية التقنية للبنات"
-  },
-  {
-    "clientName": "اندكو",
-    "contactPerson": "Fares Eng",
-    "email": "",
-    "phone": "0542947454",
-    "city": "",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "المعهد الصناعي الثانوي"
-  },
-  {
-    "clientName": "بيت الهندسة",
-    "contactPerson": "Jamal Eng",
-    "email": "",
-    "phone": "0563996088",
-    "city": "جازان",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "دار رعاية المسنين"
-  },
-  {
-    "clientName": "بيت الهندسة",
-    "contactPerson": "Mahmoud Eng",
-    "email": "",
-    "phone": "0556082967",
-    "city": "جازان",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "دار رعاية الفتيات"
-  },
-  {
-    "clientName": "بيت الهندسة",
-    "contactPerson": "Waleed Eng",
-    "email": "",
-    "phone": "0542304903",
-    "city": "صامطة",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "مكتب الضمان"
-  },
-  {
-    "clientName": "راك الجزيرة",
-    "contactPerson": "Ashraf Eng",
-    "email": "",
-    "phone": "0506928252",
-    "city": "المجاردة",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "مكتب الضمان"
-  },
-  {
-    "clientName": "الهيكلية",
-    "contactPerson": "Mohammad Eng",
-    "email": "",
-    "phone": "0593930657",
-    "city": "عرعر",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "سكن المدربين والمتدربين للمعهد التقني للتعدين"
-  },
-  {
-    "clientName": "الهيكلية",
-    "contactPerson": "Erfan Eng",
-    "email": "",
-    "phone": "0565403911",
-    "city": "المزاحمية",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "سكن المدربين - الكلية التقنية للبنين"
-  },
-  {
-    "clientName": "ابراهيم الصالح",
-    "contactPerson": "Mr.Ibrahim",
-    "email": "",
-    "phone": "0555488272",
-    "city": "",
-    "interest": "مصاعد فلل",
-    "consent": true,
-    "notes": "فيلا خاصة"
-  },
-  {
-    "clientName": "عبدالعزيز وسعد المعجل للتجارة والاستثمار",
-    "contactPerson": "Jwan Eng",
-    "email": "",
-    "phone": "0504152638",
-    "city": "الرياض",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "جرير الجزيرة / مبنى تجاري شارع الأحساء"
-  },
-  {
-    "clientName": "القضيبي",
-    "contactPerson": "Ahmad Eng",
-    "email": "",
-    "phone": "0555004305",
-    "city": "الرياض/المزاحمية",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "مستودع الوثائق / المعهد الفني الصناعي"
-  },
-  {
-    "clientName": "فيلا اللواء سفر الشهراني",
-    "contactPerson": "Brigade Safar",
-    "email": "",
-    "phone": "0505756475",
-    "city": "",
-    "interest": "مصاعد فلل",
-    "consent": true,
-    "notes": "فيلا خاصة"
-  },
-  {
-    "clientName": "راك الجزيرة",
-    "contactPerson": "Abdullah Eng",
-    "email": "",
-    "phone": "0569179308",
-    "city": "رابغ",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "مكتب الضمان"
-  },
-  {
-    "clientName": "راك الجزيرة",
-    "contactPerson": "Abnouf Eng",
-    "email": "",
-    "phone": "0507326273",
-    "city": "أضم",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "مكتب الضمان"
-  },
-  {
-    "clientName": "السليمي",
-    "contactPerson": "Waleed Eng",
-    "email": "",
-    "phone": "0503462375",
-    "city": "الأحساء",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "مبنى شركة بالأحساء"
-  },
-  {
-    "clientName": "مؤسسة عبدالله عوض الجويحي للمقاولات",
-    "contactPerson": "Mohammad Eng",
-    "email": "",
-    "phone": "0504583862",
-    "city": "الأحساء",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "مكتب الضمان الاجتماعي النسوي"
-  },
-  {
-    "clientName": "محمد الشيخ علي",
-    "contactPerson": "Nidal Eng",
-    "email": "",
-    "phone": "0550277435",
-    "city": "وادي الدواسر",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "مبنى وزارة الزراعة"
-  },
-  {
-    "clientName": "المرحبي",
-    "contactPerson": "Mohammad Mr",
-    "email": "",
-    "phone": "0555671215",
-    "city": "القنفذة",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "إدارة التعليم"
-  },
-  {
-    "clientName": "المهري",
-    "contactPerson": "Sami Eng",
-    "email": "",
-    "phone": "",
-    "city": "أبها/المجاردة",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "عدة مشاريع صناعية وتقنية"
-  }
-];
-
-    function normalizePhone(phone) {
-      return String(phone || '').replace(/[^0-9]/g, '');
-    }
-
-    function loadSeedClients() {
-      const existing = getClients();
-      const seen = new Set(existing.map(c => `${(c.clientName||'').trim()}|${normalizePhone(c.phone)}|${(c.contactPerson||'').trim()}`));
-      let added = 0;
-
-      SEED_CLIENTS.forEach(client => {
-        const prepared = {
-          ...client,
-          phone: normalizePhone(client.phone),
-          createdAt: new Date().toISOString()
-        };
-        const key = `${(prepared.clientName||'').trim()}|${normalizePhone(prepared.phone)}|${(prepared.contactPerson||'').trim()}`;
-        if (!seen.has(key)) {
-          existing.push(prepared);
-          seen.add(key);
-          added++;
-        }
-      });
-
-      setClients(existing);
       renderTable();
-      showStatus('tableStatus', `تم تحميل ${added} عميل من الملف المرفق.`, 'success');
-    }
-
-    function clearSeedClients() {
-      if (!confirm('سيتم حذف جميع العملاء المحفوظين من هذه الصفحة فقط. هل تريد المتابعة؟')) return;
-      localStorage.removeItem(STORAGE_KEY);
-      renderTable();
-      showStatus('tableStatus', 'تم تفريغ قائمة العملاء.', 'success');
-    }
-
-    window.addEventListener('load', () => {
-      const existing = getClients();
-      if (!existing.length) {
-        loadSeedClients();
-      }
-    });
-
-
-    renderTable();
       showStatus('tableStatus', 'تم حذف العميل.', 'success');
     }
 
@@ -1576,7 +1671,7 @@ RKL Team</textarea>
 
       const client = selected[0];
       const msg = encodeURIComponent(buildMessage(client));
-      const phone = String(client.phone).replace(/[^0-9]/g, '');
+      const phone = normalizePhone(client.phone);
       window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
     }
 
@@ -1613,454 +1708,6 @@ RKL Team</textarea>
       showStatus('tableStatus', 'تم تصدير الملف بنجاح.', 'success');
     }
 
-
-    const SEED_CLIENTS = [
-  {
-    "clientName": "تاج الاتقان",
-    "contactPerson": "Hasan Eng",
-    "email": "",
-    "phone": "0530513772",
-    "city": "القطيف",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "فرع وزارة المالية بالقطيف"
-  },
-  {
-    "clientName": "مختبر وبنك الدم ومركز السموم",
-    "contactPerson": "Hosam Eng",
-    "email": "",
-    "phone": "0503446916",
-    "city": "سكاكا",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "الشؤون الصحية بسكاكا"
-  },
-  {
-    "clientName": "فيلا خاصة",
-    "contactPerson": "Ahmed Dr",
-    "email": "",
-    "phone": "0506271799",
-    "city": "",
-    "interest": "مصاعد فلل",
-    "consent": true,
-    "notes": "عميل خاص"
-  },
-  {
-    "clientName": "اطلالة القلعة",
-    "contactPerson": "Fathi Eng",
-    "email": "",
-    "phone": "0596565403",
-    "city": "عفيف",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "فرع وزارة المالية بعفيف"
-  },
-  {
-    "clientName": "الأعمال التطويرية",
-    "contactPerson": "Motasem Eng",
-    "email": "",
-    "phone": "0555308457",
-    "city": "القصيم",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "إسكان المدربين والمتدربين"
-  },
-  {
-    "clientName": "فيلا الفريح",
-    "contactPerson": "Fraih Mr",
-    "email": "",
-    "phone": "0505231145",
-    "city": "",
-    "interest": "مصاعد فلل",
-    "consent": true,
-    "notes": "فيلا خاصة"
-  },
-  {
-    "clientName": "مؤسسة حمد ابراهيم عبدالرحمن للمقاولات",
-    "contactPerson": "Omar Eng",
-    "email": "",
-    "phone": "0559613218",
-    "city": "",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "المعهد الصناعي الثانوي الثالث"
-  },
-  {
-    "clientName": "شركة وليد السمان كناز للمقاولات",
-    "contactPerson": "Mustafa Eng",
-    "email": "",
-    "phone": "0540430011",
-    "city": "الرياض",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "الكلية التقنية بالرياض ديراب"
-  },
-  {
-    "clientName": "شركة الزهراني للمقاولات",
-    "contactPerson": "محمد",
-    "email": "",
-    "phone": "0505271532",
-    "city": "المزاحمية",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "الكلية التقنية"
-  },
-  {
-    "clientName": "الشركة السعودية للتطوير العمراني",
-    "contactPerson": "Mohammad Eng",
-    "email": "",
-    "phone": "0553207897",
-    "city": "جدة",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "المعهد العالي التقني للبنات"
-  },
-  {
-    "clientName": "التجارات",
-    "contactPerson": "Belal Eng",
-    "email": "",
-    "phone": "0568917544",
-    "city": "",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "عدة مشاريع"
-  },
-  {
-    "clientName": "مؤسسة عبر للمقاولات",
-    "contactPerson": "سامح",
-    "email": "",
-    "phone": "0543694581",
-    "city": "",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "مبنى التدريب الإلكتروني"
-  },
-  {
-    "clientName": "شركة افراس للتجارة والمقاولات",
-    "contactPerson": "Khaled Eng",
-    "email": "",
-    "phone": "0543330959",
-    "city": "",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "الأكاديمية السعودية للطيران المدني"
-  },
-  {
-    "clientName": "الموتورز",
-    "contactPerson": "Abubaker Eng",
-    "email": "",
-    "phone": "0567000059",
-    "city": "جدة",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "إسكان المتدربات"
-  },
-  {
-    "clientName": "سعودي بيج",
-    "contactPerson": "Mohammad Eng",
-    "email": "",
-    "phone": "0543553605",
-    "city": "مكة/خميس مشيط",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "عدة مشاريع تقنية وسياحية"
-  },
-  {
-    "clientName": "الكلية التقنية للبنات بينبع",
-    "contactPerson": "خلدون",
-    "email": "",
-    "phone": "0505487491",
-    "city": "ينبع",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "مشروع قائم"
-  },
-  {
-    "clientName": "مؤسسة شموع المميزة للمقاولات",
-    "contactPerson": "رائد",
-    "email": "",
-    "phone": "0552683438",
-    "city": "مكة",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "مبنى التدريب الإلكتروني"
-  },
-  {
-    "clientName": "شركة ثرب للتجارة والمقاولات",
-    "contactPerson": "أحمد",
-    "email": "",
-    "phone": "054008537",
-    "city": "الأحساء",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "المعهد السعودي للتقنيات الألمانية"
-  },
-  {
-    "clientName": "شركة الجفر للتجارة والمقاولات",
-    "contactPerson": "Sharif Eng",
-    "email": "",
-    "phone": "0561247247",
-    "city": "الأحساء/الدمام",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "عدة مشاريع تقنية"
-  },
-  {
-    "clientName": "إعمار الجنوب",
-    "contactPerson": "Ahmad Eng",
-    "email": "",
-    "phone": "0558500133",
-    "city": "خميس مشيط",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "عدة مشاريع"
-  },
-  {
-    "clientName": "الهلالية",
-    "contactPerson": "Abdulazeem Eng",
-    "email": "",
-    "phone": "0590118012",
-    "city": "محايل عسير/بلقرن",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "فرع وزارة المالية"
-  },
-  {
-    "clientName": "هامكو",
-    "contactPerson": "Amro Eng",
-    "email": "",
-    "phone": "0503920739",
-    "city": "نجران",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "إسكان المدربات بالكلية التقنية"
-  },
-  {
-    "clientName": "صحراء الوادي",
-    "contactPerson": "Ibrahim Eng",
-    "email": "",
-    "phone": "0532396403",
-    "city": "وادي الدواسر",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "مشروع بلدية"
-  },
-  {
-    "clientName": "الراجحي للبناء والتعمير",
-    "contactPerson": "Saddam Eng",
-    "email": "",
-    "phone": "0550697001",
-    "city": "عبيدة",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "الكلية التقنية للبنين"
-  },
-  {
-    "clientName": "أجا الإمارات",
-    "contactPerson": "Mohammad Eng",
-    "email": "",
-    "phone": "0537296854",
-    "city": "صبيا",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "المعهد الصناعي الثانوي"
-  },
-  {
-    "clientName": "اليـاورة",
-    "contactPerson": "Hamada Eng",
-    "email": "",
-    "phone": "0551529214",
-    "city": "",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "الكلية التقنية للبنات"
-  },
-  {
-    "clientName": "اندكو",
-    "contactPerson": "Fares Eng",
-    "email": "",
-    "phone": "0542947454",
-    "city": "",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "المعهد الصناعي الثانوي"
-  },
-  {
-    "clientName": "بيت الهندسة",
-    "contactPerson": "Jamal Eng",
-    "email": "",
-    "phone": "0563996088",
-    "city": "جازان",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "دار رعاية المسنين"
-  },
-  {
-    "clientName": "بيت الهندسة",
-    "contactPerson": "Mahmoud Eng",
-    "email": "",
-    "phone": "0556082967",
-    "city": "جازان",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "دار رعاية الفتيات"
-  },
-  {
-    "clientName": "بيت الهندسة",
-    "contactPerson": "Waleed Eng",
-    "email": "",
-    "phone": "0542304903",
-    "city": "صامطة",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "مكتب الضمان"
-  },
-  {
-    "clientName": "راك الجزيرة",
-    "contactPerson": "Ashraf Eng",
-    "email": "",
-    "phone": "0506928252",
-    "city": "المجاردة",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "مكتب الضمان"
-  },
-  {
-    "clientName": "الهيكلية",
-    "contactPerson": "Mohammad Eng",
-    "email": "",
-    "phone": "0593930657",
-    "city": "عرعر",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "سكن المدربين والمتدربين للمعهد التقني للتعدين"
-  },
-  {
-    "clientName": "الهيكلية",
-    "contactPerson": "Erfan Eng",
-    "email": "",
-    "phone": "0565403911",
-    "city": "المزاحمية",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "سكن المدربين - الكلية التقنية للبنين"
-  },
-  {
-    "clientName": "ابراهيم الصالح",
-    "contactPerson": "Mr.Ibrahim",
-    "email": "",
-    "phone": "0555488272",
-    "city": "",
-    "interest": "مصاعد فلل",
-    "consent": true,
-    "notes": "فيلا خاصة"
-  },
-  {
-    "clientName": "عبدالعزيز وسعد المعجل للتجارة والاستثمار",
-    "contactPerson": "Jwan Eng",
-    "email": "",
-    "phone": "0504152638",
-    "city": "الرياض",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "جرير الجزيرة / مبنى تجاري شارع الأحساء"
-  },
-  {
-    "clientName": "القضيبي",
-    "contactPerson": "Ahmad Eng",
-    "email": "",
-    "phone": "0555004305",
-    "city": "الرياض/المزاحمية",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "مستودع الوثائق / المعهد الفني الصناعي"
-  },
-  {
-    "clientName": "فيلا اللواء سفر الشهراني",
-    "contactPerson": "Brigade Safar",
-    "email": "",
-    "phone": "0505756475",
-    "city": "",
-    "interest": "مصاعد فلل",
-    "consent": true,
-    "notes": "فيلا خاصة"
-  },
-  {
-    "clientName": "راك الجزيرة",
-    "contactPerson": "Abdullah Eng",
-    "email": "",
-    "phone": "0569179308",
-    "city": "رابغ",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "مكتب الضمان"
-  },
-  {
-    "clientName": "راك الجزيرة",
-    "contactPerson": "Abnouf Eng",
-    "email": "",
-    "phone": "0507326273",
-    "city": "أضم",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "مكتب الضمان"
-  },
-  {
-    "clientName": "السليمي",
-    "contactPerson": "Waleed Eng",
-    "email": "",
-    "phone": "0503462375",
-    "city": "الأحساء",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "مبنى شركة بالأحساء"
-  },
-  {
-    "clientName": "مؤسسة عبدالله عوض الجويحي للمقاولات",
-    "contactPerson": "Mohammad Eng",
-    "email": "",
-    "phone": "0504583862",
-    "city": "الأحساء",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "مكتب الضمان الاجتماعي النسوي"
-  },
-  {
-    "clientName": "محمد الشيخ علي",
-    "contactPerson": "Nidal Eng",
-    "email": "",
-    "phone": "0550277435",
-    "city": "وادي الدواسر",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "مبنى وزارة الزراعة"
-  },
-  {
-    "clientName": "المرحبي",
-    "contactPerson": "Mohammad Mr",
-    "email": "",
-    "phone": "0555671215",
-    "city": "القنفذة",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "إدارة التعليم"
-  },
-  {
-    "clientName": "المهري",
-    "contactPerson": "Sami Eng",
-    "email": "",
-    "phone": "",
-    "city": "أبها/المجاردة",
-    "interest": "صيانة المصاعد",
-    "consent": true,
-    "notes": "عدة مشاريع صناعية وتقنية"
-  }
-];
-
-    function normalizePhone(phone) {
-      return String(phone || '').replace(/[^0-9]/g, '');
-    }
-
     function loadSeedClients() {
       const existing = getClients();
       const seen = new Set(existing.map(c => `${(c.clientName||'').trim()}|${normalizePhone(c.phone)}|${(c.contactPerson||'').trim()}`));
@@ -2070,7 +1717,7 @@ RKL Team</textarea>
         const prepared = {
           ...client,
           phone: normalizePhone(client.phone),
-          createdAt: new Date().toISOString()
+          createdAt: client.createdAt || new Date().toISOString()
         };
         const key = `${(prepared.clientName||'').trim()}|${normalizePhone(prepared.phone)}|${(prepared.contactPerson||'').trim()}`;
         if (!seen.has(key)) {
@@ -2082,7 +1729,7 @@ RKL Team</textarea>
 
       setClients(existing);
       renderTable();
-      showStatus('tableStatus', `تم تحميل ${added} عميل من الملف المرفق.`, 'success');
+      showStatus('tableStatus', `تم تحميل ${added} عميل من الملفات المرفقة.`, 'success');
     }
 
     function clearSeedClients() {
@@ -2096,11 +1743,10 @@ RKL Team</textarea>
       const existing = getClients();
       if (!existing.length) {
         loadSeedClients();
+      } else {
+        renderTable();
       }
     });
-
-
-    renderTable();
   </script>
 </body>
 </html>
