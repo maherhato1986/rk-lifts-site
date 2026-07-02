@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RKL | Lead Capture CRM</title>
+  <link rel="icon" type="image/png" href="public/images/logo.png">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root{--primary:#0fb67a;--secondary:#0c2e28;--gold:#d4af37;--bg:#050706;--card:#111817;--muted:#a8b7b2;--line:rgba(255,255,255,.12);--danger:#ff6b6b}
+    *{box-sizing:border-box} body{margin:0;font-family:'Cairo',Arial,sans-serif;background:radial-gradient(circle at top,#12362f 0,#050706 42%,#000 100%);color:#fff;min-height:100vh} a{color:inherit}
+    header{position:sticky;top:0;z-index:20;background:rgba(0,0,0,.65);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+    .bar{max-width:1280px;margin:auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}.brand{display:flex;align-items:center;gap:12px;text-decoration:none}.brand img{height:48px;filter:drop-shadow(0 0 8px var(--primary))}.brand b{font-size:22px}.nav{display:flex;gap:12px;flex-wrap:wrap}.nav a,.btn{border:1px solid var(--line);background:rgba(255,255,255,.06);color:#fff;text-decoration:none;padding:10px 16px;border-radius:14px;font-weight:800;cursor:pointer;font-family:inherit}.btn.primary{background:linear-gradient(135deg,var(--primary),#078d60);border-color:transparent}.btn.gold{background:linear-gradient(135deg,var(--gold),#a77b12);color:#080808;border-color:transparent}.btn.danger{background:rgba(255,107,107,.12);border-color:rgba(255,107,107,.35);color:#ffd1d1}.btn:disabled{opacity:.45;cursor:not-allowed}
+    .hero{max-width:1280px;margin:0 auto;padding:56px 20px 24px;display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center}.hero h1{font-size:clamp(30px,5vw,58px);line-height:1.15;margin:0 0 18px;font-weight:900}.hero h1 span{color:var(--gold)}.hero p{color:var(--muted);font-size:18px;line-height:1.9;margin:0}.hero-card{background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:28px;padding:24px;box-shadow:0 24px 80px rgba(0,0,0,.35)}
+    .grid{max-width:1280px;margin:0 auto;padding:20px;display:grid;grid-template-columns:420px 1fr;gap:22px}.panel{background:rgba(17,24,23,.92);border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:0 18px 60px rgba(0,0,0,.28)}.panel h2{margin:0 0 14px;color:var(--gold);font-size:24px}.hint{color:var(--muted);font-size:14px;line-height:1.7}.drop{border:2px dashed rgba(15,182,122,.45);border-radius:22px;padding:24px;text-align:center;background:rgba(15,182,122,.06);transition:.2s}.drop.drag{background:rgba(15,182,122,.16);transform:scale(1.01)}.drop i{font-size:42px;color:var(--primary);margin-bottom:12px}.drop input{display:none}.preview{margin-top:14px;display:grid;gap:10px}.preview img{width:100%;max-height:220px;object-fit:contain;background:#000;border-radius:16px;border:1px solid var(--line)}
+    label{display:block;font-weight:800;margin:12px 0 6px}.input,textarea,select{width:100%;background:#08100f;border:1px solid var(--line);color:#fff;border-radius:14px;padding:12px 14px;font-family:inherit;outline:none}textarea{min-height:110px;resize:vertical;direction:ltr;text-align:left}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.status{margin-top:12px;color:var(--muted);font-size:14px;line-height:1.7}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:18px}table{width:100%;border-collapse:collapse;min-width:980px;background:rgba(0,0,0,.18)}th,td{padding:12px;border-bottom:1px solid var(--line);text-align:right;font-size:14px;vertical-align:top}th{color:var(--gold);background:rgba(255,255,255,.04);position:sticky;top:0}td small{color:var(--muted)}.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 10px;color:#dff7ef;background:rgba(15,182,122,.12);font-size:12px}.empty{text-align:center;color:var(--muted);padding:36px}.service-list{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px}.check{display:flex;align-items:center;gap:8px;background:#08100f;border:1px solid var(--line);border-radius:14px;padding:10px;font-size:14px}.check input{accent-color:var(--primary)}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;z-index:50;padding:18px}.modal.open{display:flex}.modal-card{width:min(760px,100%);max-height:90vh;overflow:auto;background:#0d1514;border:1px solid var(--line);border-radius:24px;padding:22px}.ltr{direction:ltr;text-align:left;white-space:pre-wrap;background:#06100e;border:1px solid var(--line);border-radius:16px;padding:14px;color:#e8fff7}
+    footer{max-width:1280px;margin:30px auto 0;padding:20px;color:var(--muted);text-align:center;border-top:1px solid var(--line)}
+    @media(max-width:950px){.hero,.grid{grid-template-columns:1fr}.row{grid-template-columns:1fr}.service-list{grid-template-columns:1fr}.nav{display:none}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <a class="brand" href="/"><img src="public/images/logo.png" alt="RKL"><b>RKL Lead CRM</b></a>
+    <div class="nav"><a href="/">الموقع الرئيسي</a><a href="#contacts">جهات الاتصال</a><a href="#upload">رفع كرت</a></div>
+  </div>
+</header>
+
+<section class="hero">
+  <div>
+    <h1>ارفع صورة كرت أو توقيع إيميل، وحوّلها مباشرة إلى <span>عميل محتمل</span></h1>
+    <p>صفحة داخلية لفريق RKL لاستخراج بيانات التواصل، حفظها محلياً، وتجهيز رسالة بريد إلكتروني أو واتساب بخدمات المصاعد والسلالم الكهربائية.</p>
+  </div>
+  <div class="hero-card">
+    <div class="pill"><i class="fa-solid fa-wand-magic-sparkles"></i> OCR + CRM + Email + WhatsApp</div>
+    <p class="hint" style="margin-top:14px">ملاحظة: الإرسال يتم عبر فتح تطبيق البريد أو واتساب من جهازك، حفاظاً على الأمان ومنع الإرسال العشوائي.</p>
+  </div>
+</section>
+
+<main class="grid">
+  <aside class="panel" id="upload">
+    <h2>1) رفع الصورة</h2>
+    <div class="drop" id="dropZone">
+      <i class="fa-solid fa-cloud-arrow-up"></i>
+      <h3>اسحب الصورة هنا أو اضغط للرفع</h3>
+      <p class="hint">يدعم صور الكروت، توقيع Outlook، Screenshot واتساب، أو صورة لوحة مشروع.</p>
+      <input id="imageInput" type="file" accept="image/*" />
+    </div>
+    <div class="preview" id="preview"></div>
+    <div class="actions">
+      <button class="btn primary" id="ocrBtn" disabled><i class="fa-solid fa-eye"></i> استخراج البيانات</button>
+      <button class="btn" id="clearImageBtn"><i class="fa-solid fa-rotate-right"></i> مسح الصورة</button>
+    </div>
+    <div class="status" id="ocrStatus">ارفع صورة أولاً.</div>
+
+    <h2 style="margin-top:26px">2) الخدمات المرسلة</h2>
+    <div class="service-list" id="services"></div>
+  </aside>
+
+  <section class="panel">
+    <h2>3) بيانات جهة الاتصال</h2>
+    <div class="row">
+      <div><label>اسم الشخص</label><input class="input" id="name" placeholder="مثال: Ahmed Bakr"></div>
+      <div><label>الشركة</label><input class="input" id="company" placeholder="مثال: Garah Co."></div>
+    </div>
+    <div class="row">
+      <div><label>المنصب</label><input class="input" id="title" placeholder="Procurement Manager"></div>
+      <div><label>نوع الجهة</label><select id="type"><option>Contractor</option><option>Consultant</option><option>MEP Contractor</option><option>Supplier</option><option>Client / Owner</option><option>Other</option></select></div>
+    </div>
+    <div class="row">
+      <div><label>البريد الإلكتروني</label><input class="input" id="email" placeholder="name@company.com" dir="ltr"></div>
+      <div><label>رقم الجوال / واتساب</label><input class="input" id="phone" placeholder="+9665XXXXXXXX" dir="ltr"></div>
+    </div>
+    <div class="row">
+      <div><label>الموقع / المدينة</label><input class="input" id="location" placeholder="Riyadh / Jeddah"></div>
+      <div><label>المشروع</label><input class="input" id="project" placeholder="Project name"></div>
+    </div>
+    <label>ملاحظات</label><textarea id="notes" placeholder="أي ملاحظات عن العميل أو المشروع"></textarea>
+    <label>النص المستخرج من الصورة</label><textarea id="rawText" placeholder="سيظهر هنا نص OCR" dir="ltr"></textarea>
+
+    <div class="actions">
+      <button class="btn primary" id="saveBtn"><i class="fa-solid fa-floppy-disk"></i> حفظ جهة الاتصال</button>
+      <button class="btn gold" id="emailBtn"><i class="fa-solid fa-envelope"></i> تجهيز إيميل</button>
+      <button class="btn primary" id="waBtn"><i class="fa-brands fa-whatsapp"></i> تجهيز واتساب</button>
+      <button class="btn" id="copyBtn"><i class="fa-solid fa-copy"></i> نسخ الرسالة</button>
+    </div>
+  </section>
+</main>
+
+<section class="panel" id="contacts" style="max-width:1280px;margin:0 auto 22px;">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px">
+    <h2 style="margin:0">قاعدة بيانات العملاء المحتملين</h2>
+    <div class="actions" style="margin:0">
+      <button class="btn" id="exportBtn"><i class="fa-solid fa-file-csv"></i> تصدير CSV</button>
+      <button class="btn danger" id="wipeBtn"><i class="fa-solid fa-trash"></i> حذف الكل</button>
+    </div>
+  </div>
+  <div class="table-wrap"><table><thead><tr><th>#</th><th>الاسم</th><th>الشركة</th><th>المنصب</th><th>النوع</th><th>الإيميل</th><th>الجوال</th><th>الموقع</th><th>المشروع</th><th>إجراءات</th></tr></thead><tbody id="contactsBody"></tbody></table></div>
+</section>
+
+<div class="modal" id="messageModal"><div class="modal-card"><h2 id="modalTitle">الرسالة</h2><div class="ltr" id="messageText"></div><div class="actions"><a class="btn primary" id="openAction" target="_blank" rel="noopener">فتح</a><button class="btn" id="modalCopy">نسخ</button><button class="btn danger" id="closeModal">إغلاق</button></div></div></div>
+
+<footer>RKL Elevators & Escalators · Riyadh, Saudi Arabia · Internal lead capture tool</footer>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const fields = ['name','company','title','type','email','phone','location','project','notes','rawText'];
+const serviceItems = [
+  'Elevator Supply & Installation','Elevator Modernization','Preventive Maintenance Contracts','Spare Parts Supply','WITTUR Door Solutions','Industrial & Goods Elevators','Panoramic Elevators','Emergency Technical Support'
+];
+let selectedImage = null;
+let contacts = JSON.parse(localStorage.getItem('rklContacts') || '[]');
+let activeMessage = '';
+
+$('services').innerHTML = serviceItems.map((s,i)=>`<label class="check"><input type="checkbox" checked value="${s}"> ${s}</label>`).join('');
+function getServices(){return [...document.querySelectorAll('#services input:checked')].map(x=>x.value)}
+function normalizePhone(v){return (v||'').replace(/[^0-9+]/g,'').replace(/^00/,'+')}
+function getForm(){const o={};fields.forEach(f=>o[f]=$(f).value.trim());o.phone=normalizePhone(o.phone);o.services=getServices();o.createdAt=new Date().toISOString();return o}
+function setForm(o){fields.forEach(f=>$(f).value=o[f]||'')}
+function saveContacts(){localStorage.setItem('rklContacts',JSON.stringify(contacts));renderContacts()}
+function renderContacts(){const body=$('contactsBody'); if(!contacts.length){body.innerHTML='<tr><td colspan="10" class="empty">لا توجد جهات اتصال محفوظة بعد.</td></tr>';return} body.innerHTML=contacts.map((c,i)=>`<tr><td>${i+1}</td><td>${c.name||'-'}</td><td>${c.company||'-'}</td><td>${c.title||'-'}</td><td><span class="pill">${c.type||'-'}</span></td><td dir="ltr">${c.email||'-'}</td><td dir="ltr">${c.phone||'-'}</td><td>${c.location||'-'}</td><td>${c.project||'-'}</td><td><button class="btn" onclick="loadContact(${i})">فتح</button> <button class="btn danger" onclick="deleteContact(${i})">حذف</button></td></tr>`).join('')}
+window.loadContact=i=>{setForm(contacts[i]);scrollTo({top:0,behavior:'smooth'})}; window.deleteContact=i=>{contacts.splice(i,1);saveContacts()};
+
+function buildMessage(c){const services=(c.services&&c.services.length?c.services:getServices()).map(s=>'• '+s).join('\n');return `Dear ${c.name || 'Eng.'},\n\nGreetings from RKL Elevators & Escalators.\n\nWe are pleased to introduce RKL as a specialized company in elevators and escalators in Saudi Arabia.\n\nOur services include:\n${services}\n\nWe would be pleased to support your current and upcoming projects with technical and commercial proposals.\n\nBest Regards,\nRKL Elevators & Escalators\nTel: +966 11 477 4021\nEmail: info@rk-lifts.com\nWebsite: https://rkl.sa`;}
+function showMessage(title,msg,url){activeMessage=msg;$('modalTitle').textContent=title;$('messageText').textContent=msg;$('openAction').href=url;$('messageModal').classList.add('open')}
+function parseText(text){const emails=[...text.matchAll(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi)].map(m=>m[0]);const phones=[...text.matchAll(/(?:\+|00)?\d[\d\s().-]{7,}\d/g)].map(m=>normalizePhone(m[0])).filter(p=>p.length>=8); if(emails[0]) $('email').value=emails[0]; if(phones[0]) $('phone').value=phones[0]; const lines=text.split(/\n|\r/).map(l=>l.trim()).filter(Boolean); if(!$('name').value && lines[0]) $('name').value=lines.find(l=>/^[A-Za-z .'-]{5,}$/.test(l))||lines[0]; const titleLine=lines.find(l=>/manager|engineer|procurement|estimation|director|surveyor|mechanical|general/i.test(l)); if(titleLine) $('title').value=titleLine; const companyLine=lines.find(l=>/company|contract|construction|l\.l\.c|co\.|trading|consult/i.test(l)); if(companyLine) $('company').value=companyLine;}
+
+$('dropZone').onclick=()=>$('imageInput').click();
+$('dropZone').ondragover=e=>{e.preventDefault();$('dropZone').classList.add('drag')};
+$('dropZone').ondragleave=()=>$('dropZone').classList.remove('drag');
+$('dropZone').ondrop=e=>{e.preventDefault();$('dropZone').classList.remove('drag');handleFile(e.dataTransfer.files[0])};
+$('imageInput').onchange=e=>handleFile(e.target.files[0]);
+function handleFile(file){if(!file)return;selectedImage=file;$('ocrBtn').disabled=false;const url=URL.createObjectURL(file);$('preview').innerHTML=`<img src="${url}" alt="preview">`;$('ocrStatus').textContent='الصورة جاهزة للاستخراج.'}
+$('clearImageBtn').onclick=()=>{selectedImage=null;$('ocrBtn').disabled=true;$('preview').innerHTML='';$('imageInput').value='';$('ocrStatus').textContent='ارفع صورة أولاً.'};
+$('ocrBtn').onclick=async()=>{if(!selectedImage)return;$('ocrStatus').textContent='جاري استخراج النص... قد يستغرق الأمر عدة ثواني.';try{const res=await Tesseract.recognize(selectedImage,'eng+ara',{logger:m=>{if(m.status)$('ocrStatus').textContent=`${m.status} ${m.progress?Math.round(m.progress*100)+'%':''}`}});const text=res.data.text||'';$('rawText').value=text;parseText(text);$('ocrStatus').textContent='تم الاستخراج. راجع البيانات قبل الحفظ أو الإرسال.'}catch(e){$('ocrStatus').textContent='تعذر استخراج النص. أدخل البيانات يدوياً.'}}
+$('saveBtn').onclick=()=>{const c=getForm(); if(!c.name&&!c.company&&!c.email&&!c.phone){alert('أدخل بيانات جهة الاتصال أولاً.');return} const duplicate=contacts.findIndex(x=>(c.email&&x.email===c.email)||(c.phone&&x.phone===c.phone)); if(duplicate>=0){contacts[duplicate]={...contacts[duplicate],...c,updatedAt:new Date().toISOString()}}else contacts.unshift(c); saveContacts(); alert('تم حفظ جهة الاتصال.')};
+$('emailBtn').onclick=()=>{const c=getForm(); const msg=buildMessage(c); const subject=encodeURIComponent('RKL Elevators & Escalators - Company Introduction'); const body=encodeURIComponent(msg); const to=encodeURIComponent(c.email||''); showMessage('نص الإيميل',msg,`mailto:${to}?subject=${subject}&body=${body}`)};
+$('waBtn').onclick=()=>{const c=getForm(); const msg=buildMessage(c); const phone=normalizePhone(c.phone).replace(/\+/,''); showMessage('نص الواتساب',msg, phone?`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`:`https://wa.me/?text=${encodeURIComponent(msg)}`)};
+$('copyBtn').onclick=async()=>{const msg=buildMessage(getForm()); await navigator.clipboard.writeText(msg); alert('تم نسخ الرسالة.')};
+$('modalCopy').onclick=async()=>{await navigator.clipboard.writeText(activeMessage);alert('تم النسخ.')};$('closeModal').onclick=()=>$('messageModal').classList.remove('open');
+$('exportBtn').onclick=()=>{const headers=['Name','Company','Title','Type','Email','Phone','Location','Project','Notes','Created At']; const rows=contacts.map(c=>[c.name,c.company,c.title,c.type,c.email,c.phone,c.location,c.project,c.notes,c.createdAt]); const csv=[headers,...rows].map(r=>r.map(v=>'"'+String(v||'').replace(/"/g,'""')+'"').join(',')).join('\n'); const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}); const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='rkl-leads.csv';a.click()};
+$('wipeBtn').onclick=()=>{if(confirm('حذف جميع جهات الاتصال المحفوظة على هذا الجهاز؟')){contacts=[];saveContacts()}};
+renderContacts();
+</script>
+</body>
+</html>
