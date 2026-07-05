@@ -3,215 +3,180 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <title>About RKL | Riyadh Key Lifts | مؤسسة آر كي ال للمصاعد</title>
-
-<meta name="description" content="RKL – Riyadh Key Lifts is a Saudi elevator and escalator company based in Riyadh. مؤسسة آر كي ال للمصاعد والسلالم الكهربائية متخصصة في تركيب وتحديث وصيانة المصاعد في المملكة العربية السعودية.">
-
+<meta name="description" content="RKL – Riyadh Key Lifts is a Saudi elevator and escalator company based in Riyadh, specialized in supply, installation, modernization, preventive maintenance and emergency elevator services across Saudi Arabia.">
 <link rel="icon" href="https://rkl.sa/public/images/logo.png">
-
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
+:root{
+  --bg:#070908;
+  --charcoal:#101413;
+  --charcoal-2:#171d1b;
+  --card:#111816;
+  --soft:#1f2926;
+  --line:rgba(255,255,255,.10);
+  --gold:#d4af37;
+  --gold-2:#f0d77a;
+  --green:#0fb67a;
+  --muted:#b8c3bf;
+  --white:#f7faf8;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
 body{
-font-family: Arial, sans-serif;
-background:#0c2e28;
-color:white;
-padding:60px 20px;
-line-height:1.8;
+  margin:0;
+  font-family:'Cairo',Arial,sans-serif;
+  color:var(--white);
+  background:
+    radial-gradient(circle at 80% 0%, rgba(212,175,55,.16), transparent 30%),
+    radial-gradient(circle at 10% 10%, rgba(15,182,122,.12), transparent 28%),
+    linear-gradient(135deg,#050605 0%,#101413 46%,#070908 100%);
+  line-height:1.85;
 }
-.container{
-max-width:1000px;
-margin:auto;
+a{color:var(--gold-2);text-decoration:none}
+.header{
+  position:sticky;top:0;z-index:10;
+  background:rgba(7,9,8,.82);
+  border-bottom:1px solid var(--line);
+  backdrop-filter:blur(18px);
 }
-h1,h2{
-color:#d4af37;
-}
-.section{
-margin-top:60px;
-}
-.contact-box{
-background:#0f3c35;
-padding:30px;
-border-radius:8px;
-margin-top:30px;
-}
-.review{
-background:#0f3c35;
-padding:20px;
-border-radius:8px;
-margin-bottom:20px;
-}
-a{
-color:#0fb67a;
-text-decoration:none;
-}
-strong{
-color:#ffffff;
-}
+.nav{max-width:1180px;margin:auto;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{display:flex;align-items:center;gap:12px;color:#fff;font-weight:900;letter-spacing:.3px}
+.brand img{width:44px;height:44px;object-fit:contain;filter:drop-shadow(0 0 12px rgba(212,175,55,.35))}
+.nav-links{display:flex;gap:10px;flex-wrap:wrap}
+.nav-links a{border:1px solid var(--line);padding:8px 14px;border-radius:999px;color:#dfe8e4;background:rgba(255,255,255,.04);font-weight:800;font-size:14px}
+.hero{max-width:1180px;margin:auto;padding:86px 22px 46px;display:grid;grid-template-columns:1.1fr .9fr;gap:32px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(212,175,55,.36);background:rgba(212,175,55,.08);color:var(--gold-2);padding:7px 14px;border-radius:999px;font-weight:900;font-size:14px;margin-bottom:18px}
+h1{font-size:clamp(34px,5.2vw,68px);line-height:1.08;margin:0 0 20px;font-weight:900;letter-spacing:-1px}
+h1 span{color:var(--gold)}
+.lead{font-size:18px;color:#d9e5e1;max-width:760px;margin:0 0 24px}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.btn{display:inline-flex;align-items:center;justify-content:center;border-radius:16px;padding:12px 18px;font-weight:900;border:1px solid var(--line)}
+.btn.primary{background:linear-gradient(135deg,var(--gold),#9c7414);color:#0a0a0a;border:0}
+.btn.secondary{background:rgba(255,255,255,.06);color:#fff}
+.hero-card{background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.035));border:1px solid var(--line);border-radius:30px;padding:26px;box-shadow:0 28px 90px rgba(0,0,0,.36)}
+.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+.metric{background:rgba(0,0,0,.24);border:1px solid var(--line);border-radius:20px;padding:18px}.metric b{display:block;color:var(--gold);font-size:28px}.metric small{color:var(--muted)}
+.container{max-width:1180px;margin:auto;padding:0 22px 70px}
+.section{margin-top:34px}
+.card{background:rgba(17,24,22,.88);border:1px solid var(--line);border-radius:28px;padding:30px;box-shadow:0 22px 70px rgba(0,0,0,.28)}
+h2{font-size:clamp(25px,3vw,38px);line-height:1.25;color:var(--gold);margin:0 0 18px;font-weight:900}
+h3{color:var(--gold-2);margin:0 0 8px;font-size:20px}
+p{margin:0 0 16px;color:#e6eeee}strong{color:#fff}.muted{color:var(--muted)}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.service,.project,.review{background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.025));border:1px solid var(--line);border-radius:22px;padding:20px}
+.service span,.project span{display:inline-flex;background:rgba(15,182,122,.12);color:#bff8e2;border:1px solid rgba(15,182,122,.25);border-radius:999px;padding:4px 10px;font-weight:900;font-size:12px;margin-bottom:12px}
+ul{padding-left:22px;margin:8px 0 0}li{margin:6px 0;color:#eaf2ef}.arabic{direction:rtl;text-align:right}.contact-box{background:linear-gradient(135deg,rgba(212,175,55,.12),rgba(15,182,122,.08));border:1px solid rgba(212,175,55,.24)}
+.contact-list{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.contact-item{background:rgba(0,0,0,.22);border:1px solid var(--line);border-radius:18px;padding:16px}.contact-item b{display:block;color:var(--gold-2)}
+.footer{text-align:center;color:var(--muted);border-top:1px solid var(--line);padding:26px 20px;background:rgba(0,0,0,.22)}
+@media(max-width:900px){.hero,.grid-3,.grid-2,.contact-list{grid-template-columns:1fr}.hero{padding-top:52px}.nav{align-items:flex-start;flex-direction:column}.metric-grid{grid-template-columns:1fr 1fr}}
 </style>
 </head>
-
 <body>
-<div class="container">
-
-<h1>About RKL – Riyadh Key Lifts</h1>
-
-<p><strong>RKL</strong> stands for <strong>Riyadh Key Lifts</strong>.</p>
-
-<p>
-RKL is a Saudi elevator and escalator company based in Riyadh, Kingdom of Saudi Arabia.
-We specialize in elevator installation, modernization, preventive maintenance, emergency services and technical consulting.
-</p>
-
-<p>
-RKL serves commercial towers, residential buildings, hospitals, educational facilities and governmental projects across Saudi Arabia.
-</p>
-
-<p>
-Official Company Name: <strong>RKL Lifts & Escalators</strong><br>
-Head Office: Riyadh – Saudi Arabia
-</p>
-
-<div class="section">
-<h2>من نحن – مؤسسة آر كي ال للمصاعد</h2>
-
-<p>
-مؤسسة آر كي ال للمصاعد والسلالم الكهربائية هي شركة سعودية مقرها مدينة الرياض،
-متخصصة في توريد وتركيب وتحديث وصيانة المصاعد والسلالم الكهربائية وفق أعلى المعايير الفنية العالمية.
-</p>
-
-<p>
-نقدم حلول متكاملة تشمل:
-</p>
-
-<ul>
-<li>توريد وتركيب المصاعد الجديدة</li>
-<li>تحديث أنظمة التحكم والكنترول</li>
-<li>عقود الصيانة الوقائية السنوية</li>
-<li>خدمة الطوارئ 24 ساعة</li>
-<li>تقييم وفحص المصاعد القائمة</li>
-</ul>
-
-</div>
-
-<div class="section contact-box">
-<h2>Contact Information | معلومات التواصل</h2>
-
-<p>
-📞 Phone: <strong>0114774021</strong><br>
-🌐 Website: <a href="https://rkl.sa">https://rkl.sa</a>
-</p>
-
-<p>
-📧 Admin: <a href="mailto:admin@rkl.sa">admin@rkl.sa</a><br>
-📧 Sales: <a href="mailto:sales@rkl.sa">sales@rkl.sa</a><br>
-📧 Engineering: <a href="mailto:engineering@rkl.sa">engineering@rkl.sa</a>
-</p>
-
-<p>
-Location: Riyadh, Saudi Arabia
-</p>
-
-</div>
-
-
- <div class="section">
-  <h2>Client Reviews | آراء العملاء</h2>
-
-  <!-- Arabic Reviews (5) -->
-  <div class="review">
-    <strong>أ. خالد العتيبي – مصاعد منازل (تركيب)</strong>
-    <p>
-      تعامل راقٍ وسرعة تنفيذ. تم توريد وتركيب مصعد منزلي لدينا مع شرح كامل لطريقة الاستخدام، والأهم أن الفريق التزم بالمقاسات والسلامة بشكل ممتاز.
-    </p>
+<header class="header">
+  <div class="nav">
+    <a class="brand" href="/"><img src="https://rkl.sa/public/images/logo.png" alt="RKL Logo"><span>RKL | Riyadh Key Lifts</span></a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="#services">Services</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+    </div>
   </div>
+</header>
 
-  <div class="review">
-    <strong>م. سعد الحربي – صيانة مصاعد شركة (عقد سنوي)</strong>
-    <p>
-      وقعنا عقد صيانة وقائية مع RKL لمصاعد الشركة، ومن أول شهر لاحظنا فرق واضح في الاستجابة والتنظيم والتقارير. صيانة احترافية وموثوقة.
-    </p>
+<section class="hero">
+  <div>
+    <div class="eyebrow">Saudi Elevator & Escalator Company</div>
+    <h1>Engineering safer movement for <span>Saudi Arabia’s buildings</span>.</h1>
+    <p class="lead"><strong>RKL – Riyadh Key Lifts</strong> is a Saudi elevator and escalator company based in Riyadh, providing professional supply, installation, modernization, preventive maintenance and emergency support for projects across the Kingdom.</p>
+    <p class="lead">We support contractors, consultants, developers, facility managers and building owners with practical engineering solutions, clear commercial proposals and responsive after-sales service.</p>
+    <div class="actions">
+      <a class="btn primary" href="mailto:admin@rkl.sa">Request a Proposal</a>
+      <a class="btn secondary" href="https://rkl.sa">Visit Main Website</a>
+    </div>
   </div>
-
-  <div class="review">
-    <strong>أ. نورة الدوسري – سلالم كهربائية (توريد وصيانة)</strong>
-    <p>
-      تم توريد سلالم كهربائية للموقع مع متابعة دقيقة حتى التشغيل. الصيانة الدورية ممتازة، وأي ملاحظة يتم التعامل معها بسرعة وبأسلوب محترم.
-    </p>
+  <div class="hero-card">
+    <h2>Built for serious projects</h2>
+    <p class="muted">From new installations to modernization and long-term maintenance contracts, RKL focuses on safety, reliability, documentation and professional site coordination.</p>
+    <div class="metric-grid">
+      <div class="metric"><b>24/7</b><small>Emergency technical support</small></div>
+      <div class="metric"><b>KSA</b><small>Projects across Saudi Arabia</small></div>
+      <div class="metric"><b>PM</b><small>Preventive maintenance planning</small></div>
+      <div class="metric"><b>MOD</b><small>Modernization & control upgrades</small></div>
+    </div>
   </div>
+</section>
 
-  <div class="review">
-    <strong>م. عبدالله القحطاني – تحديث كنترول مصعد (Modernization)</strong>
-    <p>
-      تحديث الكنترول والدوائر الكهربائية تم بشكل احترافي مع تحسين أداء المصعد وتقليل الأعطال. واضح إن عندهم خبرة قوية في التحديثات.
-    </p>
-  </div>
+<main class="container">
+  <section class="section card arabic">
+    <h2>من نحن – مؤسسة آر كي ال للمصاعد والسلالم الكهربائية</h2>
+    <p><strong>مؤسسة آر كي ال للمصاعد والسلالم الكهربائية</strong> هي شركة سعودية مقرها مدينة الرياض، تعمل في توريد وتركيب وتحديث وصيانة المصاعد والسلالم الكهربائية وفق معايير فنية عالية، وبأسلوب إداري واضح يناسب المشاريع التجارية والسكنية والصحية والتعليمية والحكومية.</p>
+    <p>نحن لا نقدم مصعدًا فقط، بل نقدم حلًا متكاملًا يبدأ من دراسة الموقع، مراجعة المقاسات، اختيار المواصفات المناسبة، توريد المكونات، الإشراف على التركيب، التشغيل، الاختبار، ثم خدمات ما بعد البيع والصيانة الوقائية.</p>
+    <p>هدفنا أن يشعر العميل أن المصعد جزء آمن وموثوق من المبنى، وليس مصدر أعطال أو تأخير أو مخاطر تشغيلية.</p>
+  </section>
 
-  <div class="review">
-    <strong>أ. فيصل الغامدي – مصاعد مبنى تجاري (توريد وتركيب)</strong>
-    <p>
-      تسعير واضح وتنفيذ منظم. تم توريد وتركيب المصاعد للمبنى التجاري مع الالتزام بالجدول الزمني، وخدمة ما بعد البيع ممتازة.
-    </p>
-  </div>
+  <section class="section grid-3" id="services">
+    <div class="service"><span>New Installations</span><h3>Elevator Supply & Installation</h3><p>Passenger, residential, panoramic, goods and industrial elevators with practical specifications matching site requirements and budget.</p></div>
+    <div class="service"><span>Modernization</span><h3>Control & Door Upgrades</h3><p>Upgrade controllers, door operators, safety circuits, displays and electrical systems to improve reliability and reduce repeated shutdowns.</p></div>
+    <div class="service"><span>Maintenance</span><h3>Preventive Maintenance Contracts</h3><p>Scheduled inspections, technical reports, emergency response and planned maintenance to extend equipment life and improve user safety.</p></div>
+    <div class="service"><span>Escalators</span><h3>Escalator Services</h3><p>Supply, maintenance, inspection and troubleshooting for escalators in commercial facilities, malls and public buildings.</p></div>
+    <div class="service"><span>Parts</span><h3>Spare Parts Supply</h3><p>Support for elevator spare parts, including door systems, controllers, contactors, UPS units, batteries and operational components.</p></div>
+    <div class="service"><span>Engineering</span><h3>Technical Consulting</h3><p>Site assessment, technical recommendations, budgetary quotations, compliance support and project coordination with contractors and consultants.</p></div>
+  </section>
 
-  <!-- English Reviews (3) -->
-  <div class="review">
-    <strong>Mr. Omar Al-Shehri – Residential Home Lift (Supply & Installation)</strong>
-    <p>
-      RKL supplied and installed our home elevator professionally. Clear communication, clean finishing, and reliable after-sales support.
-    </p>
-  </div>
+  <section class="section card" id="projects">
+    <h2>Project Experience | خبرات ومجالات مشاريعنا</h2>
+    <p>RKL works with different project environments where elevator safety, uptime and professional coordination are critical.</p>
+    <div class="grid-2">
+      <div class="project"><span>Commercial Buildings</span><h3>Towers, offices and mixed-use buildings</h3><p>Solutions for high daily traffic, reliable service, organized maintenance schedules and fast response for building management teams.</p></div>
+      <div class="project"><span>Residential</span><h3>Villas, apartments and compounds</h3><p>Comfortable, safe and clean elevator solutions for private homes and residential communities, with attention to finishing and quiet operation.</p></div>
+      <div class="project"><span>Healthcare & Education</span><h3>Hospitals, clinics and schools</h3><p>Priority on safety, uptime, accessibility and preventive maintenance because interruption in these facilities directly affects users.</p></div>
+      <div class="project"><span>Industrial & Goods</span><h3>Factories, warehouses and service areas</h3><p>Practical goods and industrial elevator solutions designed around load, operation cycle, shaft conditions and site usage.</p></div>
+    </div>
+  </section>
 
-  <div class="review">
-    <strong>Eng. Ahmed Al-Zahrani – Corporate Elevators (Preventive Maintenance)</strong>
-    <p>
-      We signed a preventive maintenance contract for our company elevators. Fast response, well-documented reports, and excellent technical service.
-    </p>
-  </div>
+  <section class="section card arabic">
+    <h2>لماذا يختار العملاء RKL؟</h2>
+    <ul>
+      <li>فريق فني يفهم واقع مواقع العمل ومتطلبات المقاولين والاستشاريين.</li>
+      <li>عروض فنية وتجارية واضحة تساعد العميل على اتخاذ القرار بثقة.</li>
+      <li>اهتمام بالسلامة، جودة التركيب، التوثيق، والتسليم المنظم.</li>
+      <li>قدرة على التعامل مع التحديثات، الأعطال المتكررة، ومشاكل الكنترول والأبواب.</li>
+      <li>خدمة ما بعد البيع والصيانة الوقائية بعقلية شريك طويل المدى.</li>
+    </ul>
+  </section>
 
-  <div class="review">
-    <strong>Ms. Lina Al-Rashid – Escalator Service (Maintenance & Emergency Support)</strong>
-    <p>
-      Great escalator maintenance service with quick emergency response. The team is professional and safety-focused.
-    </p>
-  </div>
+  <section class="section card contact-box" id="contact">
+    <h2>Contact Information | معلومات التواصل</h2>
+    <div class="contact-list">
+      <div class="contact-item"><b>Phone</b>0114774021</div>
+      <div class="contact-item"><b>Website</b><a href="https://rkl.sa">https://rkl.sa</a></div>
+      <div class="contact-item"><b>Admin Email</b><a href="mailto:admin@rkl.sa">admin@rkl.sa</a></div>
+      <div class="contact-item"><b>Engineering Email</b><a href="mailto:engineering@rkl.sa">engineering@rkl.sa</a></div>
+      <div class="contact-item"><b>Sales Email</b><a href="mailto:sales@rkl.sa">sales@rkl.sa</a></div>
+      <div class="contact-item"><b>Location</b>Riyadh, Saudi Arabia</div>
+    </div>
+  </section>
 
-</div>
+  <section class="section card">
+    <h2>Client Reviews | آراء العملاء</h2>
+    <div class="grid-2">
+      <div class="review arabic"><strong>م. سعد الحربي – عقد صيانة سنوي</strong><p>لاحظنا فرقًا واضحًا في الاستجابة والتنظيم والتقارير الفنية. تعامل احترافي واهتمام فعلي بتقليل الأعطال.</p></div>
+      <div class="review arabic"><strong>أ. فيصل الغامدي – مبنى تجاري</strong><p>تسعير واضح وتنفيذ منظم، مع متابعة جيدة حتى التشغيل وخدمة ما بعد البيع.</p></div>
+      <div class="review"><strong>Eng. Abdullah Al-Qahtani – Commercial Tower</strong><p>RKL delivered professional technical support, organized coordination and reliable after-sales service.</p></div>
+      <div class="review"><strong>Dr. Sami Al-Mutairi – Medical Facility</strong><p>Strong modernization work and attention to safety. The upgrade improved reliability and reduced shutdowns.</p></div>
+    </div>
+  </section>
 
-<div class="review">
-<strong>Eng. Abdullah Al-Qahtani – Commercial Tower Project</strong>
-<p>RKL delivered our elevators project with high professionalism and on-time completion. Excellent technical team and after-sales support.</p>
-</div>
+  <section class="section card">
+    <h2>RKL Elevator Services in Saudi Arabia</h2>
+    <p>RKL Elevator Company in Riyadh provides professional elevator installation, modernization, preventive maintenance, spare parts and emergency services across the Kingdom of Saudi Arabia. If you are searching for RKL Saudi, RKL Elevators Riyadh, Riyadh Key Lifts or RKL Lifts & Escalators, you are in the right place.</p>
+  </section>
+</main>
 
-<div class="review">
-<strong>Mr. Faisal Al-Harbi – Residential Compound</strong>
-<p>Reliable company with strong maintenance response. We highly recommend RKL for long-term elevator contracts.</p>
-</div>
-
-<div class="review">
-<strong>Dr. Sami Al-Mutairi – Medical Facility</strong>
-<p>Outstanding modernization work and control system upgrade. Safety standards were strictly followed.</p>
-</div>
-
-<div class="review">
-<strong>Mrs. Nora Al-Dossari – Educational Building</strong>
-<p>Professional communication and transparent pricing. The installation process was smooth and organized.</p>
-</div>
-
-<div class="review">
-<strong>Eng. Khaled Al-Anazi – Government Project</strong>
-<p>RKL is one of the most trusted elevator companies in Riyadh. Strong engineering support and quick emergency service.</p>
-</div>
-
-</div>
-
-<div class="section">
-<h2>RKL Elevator Services in Saudi Arabia</h2>
-<p>
-RKL Elevator Company in Riyadh provides professional elevator installation, modernization and maintenance services across the Kingdom of Saudi Arabia.
-If you are searching for RKL Saudi, RKL Elevators Riyadh or RKL Lifts & Escalators — you are in the right place.
-</p>
-</div>
-
-</div>
+<footer class="footer">RKL – Riyadh Key Lifts | Elevators & Escalators | Riyadh, Saudi Arabia</footer>
 </body>
 </html>
