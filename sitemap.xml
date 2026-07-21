@@ -19,9 +19,10 @@
     <priority>0.8</priority>
   </url>
   <url>
-  <loc>https://rkl.sa/wittur-agent-saudi-arabia.html</loc>
-  <changefreq>monthly</changefreq>
-  <priority>0.9</priority>
-</url>
+    <loc>https://rkl.sa/wittur-saudi-arabia.html</loc>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
 
 </urlset>
