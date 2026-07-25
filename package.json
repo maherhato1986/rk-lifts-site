@@ -3,9 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "fetch:images": "node scripts/upload-images.js"
+    "fetch:images": "node scripts/upload-images.js",
+    "check:portal": "node --check public/js/customer-portal.js && node --check api/portal/[...route].js"
   },
   "dependencies": {
+    "@supabase/supabase-js": "2.52.1",
     "node-fetch": "3.3.2"
   }
 }
