@@ -31,10 +31,13 @@
       "use": "@vercel/static"
     }
   ],
-  "rewrites": [
+  "routes": [
     {
-      "source": "/",
-      "destination": "/customer-portal.html"
+      "handle": "filesystem"
+    },
+    {
+      "src": "/",
+      "dest": "/customer-portal.html"
     }
   ]
 }
