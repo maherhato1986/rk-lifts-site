@@ -34,17 +34,7 @@
   "rewrites": [
     {
       "source": "/",
-      "has": [
-        {
-          "type": "host",
-          "value": "portal.rkl.sa"
-        }
-      ],
       "destination": "/customer-portal.html"
-    },
-    {
-      "source": "/",
-      "destination": "/index.html"
     }
   ]
 }
