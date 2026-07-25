@@ -33,11 +33,11 @@
   ],
   "routes": [
     {
-      "handle": "filesystem"
-    },
-    {
       "src": "/",
       "dest": "/customer-portal.html"
+    },
+    {
+      "handle": "filesystem"
     }
   ]
 }
