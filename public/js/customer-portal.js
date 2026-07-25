@@ -2,7 +2,7 @@
   const API_BASE = window.RKL_PORTAL_API || '/api/portal';
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
-  const state = { registrationId: null, user: null, session: null, requests: [], files: [] };
+  const state = { registrationId: null, smsRequired: false, user: null, session: null, requests: [], files: [] };
 
   async function api(path, options = {}) {
     const response = await fetch(`${API_BASE}${path}`, {
@@ -11,7 +11,7 @@
       ...options
     });
     const payload = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(payload.message || 'تعذر إكمال العملية. حاول مرة أخرى.');
+    if (!response.ok) throw new Error(payload.message || 'Unable to complete the request. Please try again.');
     return payload;
   }
 
@@ -43,12 +43,16 @@
     const form = new FormData(event.currentTarget);
     const data = Object.fromEntries(form.entries());
     const status = $('#registerMessage');
-    message(status, 'جاري إرسال رموز التحقق…');
+    message(status, 'Sending your verification code…');
     try {
       const result = await api('/auth/register/start', { method: 'POST', body: JSON.stringify(data) });
       state.registrationId = result.registrationId;
+      state.smsRequired = Boolean(result.smsRequired);
       $('#maskedEmail').textContent = maskEmail(data.email);
       $('#maskedPhone').textContent = maskPhone(data.phone);
+      $('#phoneDeliverySummary').classList.toggle('hidden', !state.smsRequired);
+      $('#phoneCodeField').classList.toggle('hidden', !state.smsRequired);
+      $('[name="phoneCode"]').required = state.smsRequired;
       showStep('verifyStep');
       message(status, '');
     } catch (error) {
@@ -60,7 +64,7 @@
     event.preventDefault();
     const data = Object.fromEntries(new FormData(event.currentTarget).entries());
     const status = $('#verifyMessage');
-    message(status, 'جاري التحقق وإنشاء الحساب…');
+    message(status, 'Verifying and creating your account…');
     try {
       const result = await api('/auth/register/verify', {
         method: 'POST',
@@ -76,7 +80,7 @@
     const status = $('#verifyMessage');
     try {
       await api('/auth/register/resend', { method: 'POST', body: JSON.stringify({ registrationId: state.registrationId }) });
-      message(status, 'تمت إعادة إرسال الرموز.');
+      message(status, 'A new verification code has been sent.');
     } catch (error) {
       message(status, error.message, true);
     }
@@ -86,10 +90,10 @@
     event.preventDefault();
     const data = Object.fromEntries(new FormData(event.currentTarget).entries());
     const status = $('#loginMessage');
-    message(status, 'جاري إرسال رمز الدخول…');
+    message(status, 'Sending your sign-in code…');
     try {
       await api('/auth/login/start', { method: 'POST', body: JSON.stringify(data) });
-      message(status, 'تم إرسال رمز الدخول. تحقق من وسيلة التواصل المسجلة.');
+      message(status, 'Your sign-in code has been sent to your registered contact method.');
     } catch (error) {
       message(status, error.message, true);
     }
@@ -100,8 +104,8 @@
     state.session = session;
     $('#authShell').classList.add('hidden');
     $('#portalApp').classList.remove('hidden');
-    const name = user?.name || 'عميل RKL';
-    const company = user?.company || 'الشركة';
+    const name = user?.name || 'RKL Client';
+    const company = user?.company || 'Company';
     $('#userName').textContent = name;
     $('#userCompany').textContent = company;
     $('#userInitials').textContent = name.split(' ').slice(0, 2).map(part => part[0]).join('');
@@ -112,9 +116,9 @@
   }
 
   const viewTitles = {
-    overview: 'نظرة عامة', requests: 'طلبات الخدمة', projects: 'المشاريع والمصاعد',
-    documents: 'الملفات والمخططات', quotes: 'عروض الأسعار',
-    reports: 'التقارير المعتمدة', profile: 'بيانات الحساب'
+    overview: 'Overview', requests: 'Service Requests', projects: 'Projects & Elevators',
+    documents: 'Files & Drawings', quotes: 'Quotations',
+    reports: 'Approved Reports', profile: 'Account Details'
   };
 
   $$('.sidebar nav button').forEach(button => button.addEventListener('click', () => {
@@ -145,11 +149,11 @@
     const attachments = formData.getAll('attachments').filter(file => file.size);
     const data = Object.fromEntries([...formData.entries()].filter(([key]) => key !== 'attachments'));
     const status = $('#requestMessage');
-    message(status, 'جاري تسجيل الطلب…');
+    message(status, 'Submitting your request…');
     try {
       const result = await api('/requests', { method: 'POST', body: JSON.stringify(data) });
       if (attachments.length) await uploadFiles(attachments, result.request.id);
-      message(status, `تم إرسال الطلب بنجاح. الرقم المرجعي: ${result.request.reference}`);
+      message(status, `Request submitted successfully. Reference: ${result.request.reference}`);
       state.requests.unshift(result.request);
       renderRequests();
       setTimeout(() => { dialog.close(); event.currentTarget.reset(); message(status, ''); }, 1800);
@@ -178,7 +182,7 @@
         body: JSON.stringify({ name: file.name, type: file.type, size: file.size, requestId })
       });
       const response = await fetch(ticket.uploadUrl, { method: 'PUT', headers: ticket.headers || {}, body: file });
-      if (!response.ok) throw new Error(`تعذر رفع الملف: ${file.name}`);
+      if (!response.ok) throw new Error(`Unable to upload file: ${file.name}`);
       const saved = await api('/files/complete', {
         method: 'POST',
         body: JSON.stringify({ fileId: ticket.fileId, requestId })
@@ -189,14 +193,14 @@
   }
 
   function renderFiles() {
-    $('#fileGrid').innerHTML = state.files.map(file => `<article class="file-card"><span>▤</span><div><b>${escapeHtml(file.name)}</b><small>${escapeHtml(file.status || 'تم الرفع')}</small></div></article>`).join('');
+    $('#fileGrid').innerHTML = state.files.map(file => `<article class="file-card"><span>▤</span><div><b>${escapeHtml(file.name)}</b><small>${escapeHtml(file.status || 'Uploaded')}</small></div></article>`).join('');
   }
 
   function renderRequests() {
     $('#openRequests').textContent = state.requests.filter(request => request.status !== 'closed').length;
     if (!state.requests.length) return;
     $('#requestsList').className = 'request-list';
-    $('#requestsList').innerHTML = state.requests.map(request => `<article><div><b>${escapeHtml(request.project)}</b><small>${escapeHtml(request.reference)}</small></div><span>${escapeHtml(request.statusLabel || 'جديد')}</span></article>`).join('');
+    $('#requestsList').innerHTML = state.requests.map(request => `<article><div><b>${escapeHtml(request.project_name || request.project || '')}</b><small>${escapeHtml(request.reference)}</small></div><span>${escapeHtml(request.statusLabel || request.status || 'New')}</span></article>`).join('');
   }
 
   function escapeHtml(value = '') {
@@ -212,11 +216,11 @@
         body: JSON.stringify({ name: $('#profileName').value, company: $('#profileCompany').value })
       });
       enterPortal(user.user);
-      button.textContent = 'تم الحفظ';
+      button.textContent = 'Saved';
     } catch (error) {
       alert(error.message);
     } finally {
-      setTimeout(() => { button.disabled = false; button.textContent = 'حفظ التعديلات'; }, 1300);
+      setTimeout(() => { button.disabled = false; button.textContent = 'Save changes'; }, 1300);
     }
   });
 
