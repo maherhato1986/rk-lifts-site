@@ -114,5 +114,16 @@ export default async function handler(req,res){
     if(path.startsWith('/assets/qr/')&&req.method==='GET'){const token=path.split('/').pop(),{data}=await database.from('assets').select('id,asset_code,kind,status,buildings(name,projects(name,city))').eq('qr_token',token).single();return data?reply(res,200,{asset:data}):reply(res,404,{message:'Invalid elevator QR code.'})}
     if(path==='/admin/queue'&&req.method==='GET'){const actor=await secured(req,res,database,['supervisor','admin']);if(!actor)return;const [{data:requests},{data:documents}]=await Promise.all([database.from('service_requests').select('*').in('status',['submitted','under_review']).order('created_at'),database.from('documents').select('*').in('status',['submitted','under_review']).order('created_at')]);return reply(res,200,{requests,documents})}
     return reply(res,404,{message:'API route not found.'})
-  }catch(error){console.error('RKL portal API error:',error);return reply(res,500,{message:error?.message?.startsWith('email delivery failed')?'Unable to send the verification email. Please contact RKL support.':'Unable to process the request. Please try again.'})}
+  }catch(error){
+    console.error('RKL portal API error:',error);
+    if(error?.message?.startsWith('email delivery failed:')){
+      const status=error.message.match(/email delivery failed:\s*(\d+)/)?.[1]||'unknown';
+      let reason='Email delivery configuration was rejected by the provider.';
+      if(error.message.includes('domain is not verified')||error.message.includes('verify a domain'))reason='The sending domain is not verified in Resend.';
+      else if(status==='401')reason='The Resend API key is invalid or inactive.';
+      else if(status==='403')reason='Resend rejected the sender address or domain.';
+      return reply(res,502,{message:`Unable to send the verification email. ${reason} (Resend ${status})`});
+    }
+    return reply(res,500,{message:'Unable to process the request. Please try again.'})
+  }
 }
