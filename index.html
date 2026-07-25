@@ -122,6 +122,14 @@ RKL | Elevator Company in Saudi Arabia |  RKL | WITTUR
     .glass-card { background: var(--glass); backdrop-filter: blur(15px); padding: 40px 25px; border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.1); max-width: 800px; z-index: 10; }
     .btn-main { background: linear-gradient(135deg, var(--accent-gold), #b8860b); color: #000 !important; padding: 15px 35px; border-radius: 50px; font-weight: 900; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3); transition: 0.3s; }
     .btn-main:hover { transform: scale(1.05); }
+    .hero-actions { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 14px; margin-top: 24px; }
+    .btn-profile {
+        color: #fff !important; padding: 14px 28px; border-radius: 50px; font-weight: 800;
+        text-decoration: none; display: inline-flex; align-items: center; gap: 10px;
+        border: 1px solid rgba(255,255,255,.42); background: rgba(0,0,0,.28);
+        backdrop-filter: blur(12px); transition: .3s;
+    }
+    .btn-profile:hover { border-color: var(--primary); background: rgba(15,182,122,.18); transform: translateY(-2px); }
 
     /* 4. شبكة إنجازاتنا الرقمية */
     #map-projects {
@@ -319,6 +327,8 @@ RKL | Elevator Company in Saudi Arabia |  RKL | WITTUR
         .services-container { grid-template-columns: 1fr; }
         nav { display: none; } /* يمكن إضافة قائمة همبرغر لاحقاً */
         .header-row { justify-content: center; }
+        .hero-actions { flex-direction: column; width: 100%; }
+        .hero-actions a { width: min(100%, 290px); justify-content: center; }
     }
 
     @media (max-width: 380px) {
@@ -396,7 +406,12 @@ RKL | Elevator Company in Saudi Arabia |  RKL | WITTUR
       <div style="color: var(--primary); margin-bottom: 15px; font-weight: 700;">حلول Fuji و Vertilift و WITTUR للمصاعد في السعودية</div>
       <h1><span style="color: var(--accent-gold);">Riyadh Key Lifts</span></h1>
       <p>نبتكر حلول التنقل الرأسي بأعلى معايير الأمان والجودة العالمية.</p>
-      <a href="https://rkl.sa/quote-request.html" class="btn-main">ابدأ مشروعك الآن</a>
+      <div class="hero-actions">
+        <a href="https://rkl.sa/quote-request.html" class="btn-main">ابدأ مشروعك الآن</a>
+        <a href="/company-profile.html" class="btn-profile" aria-label="Request and download the RKL company profile">
+          <i class="fas fa-file-pdf"></i> طلب بروفايل الشركة
+        </a>
+      </div>
     </div>
   </section>
 
