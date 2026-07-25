@@ -31,13 +31,20 @@
       "use": "@vercel/static"
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "handle": "filesystem"
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "portal.rkl.sa"
+        }
+      ],
+      "destination": "/customer-portal.html"
     },
     {
-      "src": "/",
-      "dest": "/index.html"
+      "source": "/",
+      "destination": "/index.html"
     }
   ]
 }
