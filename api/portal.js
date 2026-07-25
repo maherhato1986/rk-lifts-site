@@ -10,10 +10,11 @@ const hash=value=>crypto.createHash('sha256').update(`${value}:${process.env.OTP
 const equal=(value,stored)=>{const a=Buffer.from(hash(value)),b=Buffer.from(stored||'');return a.length===b.length&&crypto.timingSafeEqual(a,b)};
 const ref=()=>`RKL-SR-${new Date().toISOString().slice(0,10).replaceAll('-','')}-${crypto.randomInt(1000,10000)}`;
 
-async function sendEmail(to,otp){
+async function sendEmail(to,otp,purpose='register'){
+  const signingIn=purpose==='login';
   const response=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:`Bearer ${process.env.RESEND_API_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({
-    from:process.env.OTP_FROM_EMAIL||'RKL Portal <no-reply@rkl.sa>',to:[to],subject:'Your RKL verification code',
-    html:`<div style="font-family:Arial,sans-serif;text-align:center;padding:30px"><img src="https://rkl.sa/public/images/logo.png" width="80" alt="RKL"><h2>Verify your RKL account</h2><p>Use the code below to finish creating your account.</p><p style="font-size:32px;letter-spacing:8px;font-weight:bold">${otp}</p><p>This code expires in 10 minutes.</p></div>`
+    from:process.env.OTP_FROM_EMAIL||'RKL Portal <no-reply@rkl.sa>',to:[to],subject:signingIn?'Your RKL sign-in code':'Your RKL verification code',
+    html:`<div style="font-family:Arial,sans-serif;text-align:center;padding:30px"><img src="https://rkl.sa/public/images/logo.png" width="80" alt="RKL"><h2>${signingIn?'Sign in to the RKL Client Portal':'Verify your RKL account'}</h2><p>${signingIn?'Use the code below to sign in securely.':'Use the code below to finish creating your account.'}</p><p style="font-size:32px;letter-spacing:8px;font-weight:bold">${otp}</p><p>This code expires shortly. If you did not request it, you can ignore this email.</p></div>`
   })});if(!response.ok){const details=await response.text();throw new Error(`email delivery failed: ${response.status} ${details.slice(0,200)}`)}
 }
 async function sendSms(to,otp){
@@ -81,8 +82,31 @@ export default async function handler(req,res){
       return reply(res,201,{user:{name:profile.full_name,company:org.name,email:profile.email,phone:profile.phone},session:{accessToken:verified.session.access_token,refreshToken:verified.session.refresh_token,expiresAt:verified.session.expires_at}})
     }
     if(req.method==='POST'&&path==='/auth/login/start'){
-      const identity=String(req.body?.identity||'').trim(),credentials=identity.includes('@')?{email:identity}:{phone:`+966${phone(identity)}`};
-      const {error}=await database.auth.signInWithOtp(credentials);if(error)throw error;return reply(res,200,{message:'Your sign-in code has been sent.'})
+      const identity=String(req.body?.identity||'').trim().toLowerCase();
+      if(!identity.includes('@'))return reply(res,400,{message:'Mobile sign-in is not available yet. Please use your registered email address.'});
+      const {data:profile}=await database.from('profiles').select('id,email').ilike('email',identity).maybeSingle();
+      if(!profile)return reply(res,404,{message:'No client account was found for this email. Please create an account first.'});
+      const {data:link,error}=await database.auth.admin.generateLink({type:'magiclink',email:profile.email});if(error)throw error;
+      await sendEmail(profile.email,link.properties.email_otp,'login');
+      return reply(res,200,{email:profile.email,message:'Your sign-in code has been sent.'})
+    }
+    if(req.method==='POST'&&path==='/auth/login/verify'){
+      const email=String(req.body?.email||'').trim().toLowerCase(),loginCode=String(req.body?.code||'').replace(/\D/g,'');
+      if(!email||loginCode.length!==6)return reply(res,400,{message:'Enter the 6-digit code sent to your email.'});
+      const {data:verified,error}=await database.auth.verifyOtp({email,token:loginCode,type:'email'});if(error||!verified?.session)return reply(res,400,{message:'The sign-in code is incorrect or has expired.'});
+      const {data:profile}=await database.from('profiles').select('*').eq('id',verified.user.id).single();
+      if(!profile)return reply(res,403,{message:'This account is not connected to an RKL client profile.'});
+      const {data:org}=await database.from('organizations').select('name').eq('id',profile.organization_id).single();
+      return reply(res,200,{user:{name:profile.full_name,company:org?.name,email:profile.email,phone:profile.phone,role:profile.role},session:{accessToken:verified.session.access_token,refreshToken:verified.session.refresh_token,expiresAt:verified.session.expires_at}})
+    }
+    if(req.method==='POST'&&path==='/auth/refresh'){
+      const refreshToken=String(req.body?.refreshToken||'');
+      if(!refreshToken)return reply(res,401,{message:'No saved session was found.'});
+      const {data,error}=await database.auth.refreshSession({refresh_token:refreshToken});if(error||!data?.session)return reply(res,401,{message:'Your session has expired. Please sign in again.'});
+      return reply(res,200,{session:{accessToken:data.session.access_token,refreshToken:data.session.refresh_token,expiresAt:data.session.expires_at}})
+    }
+    if(req.method==='POST'&&path==='/auth/logout'){
+      return reply(res,200,{message:'Signed out.'})
     }
     if(path==='/me'){
       const actor=await secured(req,res,database);if(!actor)return;
