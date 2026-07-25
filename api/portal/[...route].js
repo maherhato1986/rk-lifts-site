@@ -92,7 +92,7 @@ export default async function handler(req,res){
     }
     if(req.method==='POST'&&path==='/auth/login/verify'){
       const email=String(req.body?.email||'').trim().toLowerCase(),loginCode=String(req.body?.code||'').replace(/\D/g,'');
-      if(!email||loginCode.length!==6)return reply(res,400,{message:'Enter the 6-digit code sent to your email.'});
+      if(!email||loginCode.length<6||loginCode.length>8)return reply(res,400,{message:'Enter the complete sign-in code sent to your email.'});
       const {data:verified,error}=await database.auth.verifyOtp({email,token:loginCode,type:'email'});if(error||!verified?.session)return reply(res,400,{message:'The sign-in code is incorrect or has expired.'});
       const {data:profile}=await database.from('profiles').select('*').eq('id',verified.user.id).single();
       if(!profile)return reply(res,403,{message:'This account is not connected to an RKL client profile.'});
