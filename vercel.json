@@ -3,7 +3,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/**/*.js",
+      "src": "api/portal.js",
       "use": "@vercel/node"
     },
     {
@@ -33,7 +33,15 @@
   ],
   "routes": [
     {
-      "src": "/",
+      "src": "^/api/portal/(.*)$",
+      "dest": "/api/portal.js?route=$1"
+    },
+    {
+      "src": "^/api/portal$",
+      "dest": "/api/portal.js"
+    },
+    {
+      "src": "^/$",
       "dest": "/customer-portal.html"
     },
     {
