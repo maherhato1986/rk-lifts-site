@@ -440,6 +440,34 @@
     const form = document.getElementById('profileRequest');
     const statusEl = document.getElementById('formStatus');
     const phoneEl = document.getElementById('clientPhone');
+    const portalSessionKey = 'rklPortalSession';
+
+    async function unlockForSignedInClient(){
+      if(!new URLSearchParams(location.search).has('portal')) return;
+      let session;
+      try{ session=JSON.parse(localStorage.getItem(portalSessionKey)||'null'); }catch(_){ session=null; }
+      if(!session?.accessToken) return;
+      const requestMe=token=>fetch('/api/portal/me',{headers:{Authorization:`Bearer ${token}`}});
+      try{
+        let response=await requestMe(session.accessToken);
+        if(response.status===401&&session.refreshToken){
+          const refreshed=await fetch('/api/portal/auth/refresh',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({refreshToken:session.refreshToken})});
+          if(refreshed.ok){
+            session=(await refreshed.json()).session;
+            localStorage.setItem(portalSessionKey,JSON.stringify(session));
+            response=await requestMe(session.accessToken);
+          }
+        }
+        if(!response.ok) return;
+        const {user}=await response.json();
+        document.getElementById('clientName').value=user?.name||'';
+        document.getElementById('companyName').value=user?.company||'';
+        document.getElementById('clientEmail').value=user?.email||'';
+        document.getElementById('clientPhone').value=user?.phone||'';
+        document.body.classList.add('unlocked');
+        fitProfile();
+      }catch(_){}
+    }
 
     phoneEl.addEventListener('input', () => {
       phoneEl.value = phoneEl.value.replace(/\D/g, '').replace(/^0+/, '').slice(0, 9);
@@ -459,6 +487,10 @@
     });
 
     function lockProfile(){
+      if(new URLSearchParams(location.search).has('portal')){
+        location.href='customer-portal.html';
+        return;
+      }
       document.body.classList.remove('unlocked');
       window.scrollTo({top:0,behavior:'smooth'});
     }
@@ -476,6 +508,7 @@
       }
     }
     window.addEventListener('resize', fitProfile);
+    unlockForSignedInClient();
   </script>
 </body>
 </html>
