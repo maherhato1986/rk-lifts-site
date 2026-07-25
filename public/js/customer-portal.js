@@ -2,12 +2,12 @@
   const API_BASE = window.RKL_PORTAL_API || '/api/portal';
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
-  const state = { registrationId: null, user: null, requests: [], files: [] };
+  const state = { registrationId: null, user: null, session: null, requests: [], files: [] };
 
   async function api(path, options = {}) {
     const response = await fetch(`${API_BASE}${path}`, {
       credentials: 'include',
-      headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+      headers: { 'Content-Type': 'application/json', ...(state.session?.accessToken ? { Authorization: `Bearer ${state.session.accessToken}` } : {}), ...(options.headers || {}) },
       ...options
     });
     const payload = await response.json().catch(() => ({}));
@@ -66,7 +66,7 @@
         method: 'POST',
         body: JSON.stringify({ registrationId: state.registrationId, ...data })
       });
-      enterPortal(result.user);
+      enterPortal(result.user, result.session);
     } catch (error) {
       message(status, error.message, true);
     }
@@ -95,8 +95,9 @@
     }
   });
 
-  function enterPortal(user) {
+  function enterPortal(user, session = state.session) {
     state.user = user;
+    state.session = session;
     $('#authShell').classList.add('hidden');
     $('#portalApp').classList.remove('hidden');
     const name = user?.name || 'عميل RKL';
