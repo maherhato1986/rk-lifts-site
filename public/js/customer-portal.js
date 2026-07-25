@@ -46,6 +46,9 @@
   }
 
   $$('[data-show]').forEach(button => button.addEventListener('click', () => showStep(button.dataset.show)));
+  const requestedView = new URLSearchParams(location.search).get('view');
+  if (requestedView === 'login') showStep('loginStep');
+  if (requestedView === 'register') showStep('registerStep');
   $$('input[inputmode="numeric"]').forEach(input => input.addEventListener('input', () => {
     input.value = input.value.replace(/\D/g, '').slice(0, Number(input.maxLength) || 9);
   }));
