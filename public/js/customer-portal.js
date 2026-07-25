@@ -1,8 +1,20 @@
 (() => {
   const API_BASE = window.RKL_PORTAL_API || '/api/portal';
+  const SESSION_KEY = 'rklPortalSession';
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
-  const state = { registrationId: null, smsRequired: false, user: null, session: null, requests: [], files: [] };
+  const state = { registrationId: null, smsRequired: false, loginEmail: '', user: null, session: null, requests: [], files: [] };
+
+  function saveSession(session) {
+    state.session = session || null;
+    if (session) localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    else localStorage.removeItem(SESSION_KEY);
+  }
+
+  function loadSession() {
+    try { return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); }
+    catch (_) { localStorage.removeItem(SESSION_KEY); return null; }
+  }
 
   async function api(path, options = {}) {
     const response = await fetch(`${API_BASE}${path}`, {
@@ -92,8 +104,38 @@
     const status = $('#loginMessage');
     message(status, 'Sending your sign-in code…');
     try {
-      await api('/auth/login/start', { method: 'POST', body: JSON.stringify(data) });
-      message(status, 'Your sign-in code has been sent to your registered contact method.');
+      const result = await api('/auth/login/start', { method: 'POST', body: JSON.stringify(data) });
+      state.loginEmail = result.email;
+      $('#loginMaskedEmail').textContent = maskEmail(result.email);
+      showStep('loginVerifyStep');
+      message(status, '');
+    } catch (error) {
+      message(status, error.message, true);
+    }
+  });
+
+  $('#loginVerifyForm').addEventListener('submit', async event => {
+    event.preventDefault();
+    const { code } = Object.fromEntries(new FormData(event.currentTarget).entries());
+    const status = $('#loginVerifyMessage');
+    message(status, 'Verifying your code…');
+    try {
+      const result = await api('/auth/login/verify', {
+        method: 'POST',
+        body: JSON.stringify({ email: state.loginEmail, code })
+      });
+      enterPortal(result.user, result.session);
+      await loadPortalData();
+    } catch (error) {
+      message(status, error.message, true);
+    }
+  });
+
+  $('#resendLoginCode').addEventListener('click', async () => {
+    const status = $('#loginVerifyMessage');
+    try {
+      await api('/auth/login/start', { method: 'POST', body: JSON.stringify({ identity: state.loginEmail }) });
+      message(status, 'A new sign-in code has been sent.');
     } catch (error) {
       message(status, error.message, true);
     }
@@ -101,7 +143,7 @@
 
   function enterPortal(user, session = state.session) {
     state.user = user;
-    state.session = session;
+    if (session) saveSession(session);
     $('#authShell').classList.add('hidden');
     $('#portalApp').classList.remove('hidden');
     const name = user?.name || 'RKL Client';
@@ -133,6 +175,7 @@
   $('#menuToggle').addEventListener('click', () => $('.sidebar').classList.toggle('open'));
   $('#logoutButton').addEventListener('click', async () => {
     try { await api('/auth/logout', { method: 'POST' }); } catch (_) {}
+    saveSession(null);
     location.href = 'customer-portal.html';
   });
 
@@ -224,19 +267,37 @@
     }
   });
 
+  async function loadPortalData() {
+    const [requests, files] = await Promise.all([api('/requests'), api('/files')]);
+    state.requests = requests.requests || [];
+    state.files = files.files || [];
+    renderRequests();
+    renderFiles();
+  }
+
   async function boot() {
+    state.session = loadSession();
+    if (!state.session) return;
     try {
-      const result = await api('/me');
+      let result;
+      try {
+        result = await api('/me');
+      } catch (error) {
+        if (!state.session?.refreshToken) throw error;
+        const refreshed = await api('/auth/refresh', {
+          method: 'POST',
+          body: JSON.stringify({ refreshToken: state.session.refreshToken })
+        });
+        saveSession(refreshed.session);
+        result = await api('/me');
+      }
       if (result.user) {
         enterPortal(result.user);
-        const [requests, files] = await Promise.all([api('/requests'), api('/files')]);
-        state.requests = requests.requests || [];
-        state.files = files.files || [];
-        renderRequests();
-        renderFiles();
+        await loadPortalData();
       }
     } catch (_) {
-      // A missing or expired session intentionally leaves the secure sign-in screen visible.
+      saveSession(null);
+      showStep('loginStep');
     }
   }
 
