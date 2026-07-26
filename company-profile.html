@@ -108,6 +108,18 @@
     .project-card div{padding:4mm}
     .project-card h3{font-size:9.5pt;margin:0 0 1mm}
     .project-card p{font-size:7.2pt;line-height:1.5;margin:0}
+    .cabin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4mm}
+    .cabin-grid.three{grid-template-columns:repeat(3,1fr)}
+    .cabin-card{position:relative;height:91mm;border-radius:4mm;overflow:hidden;background:var(--deep);border:1px solid var(--line)}
+    .cabin-card img{width:100%;height:100%;object-fit:cover}
+    .cabin-card:after{content:"";position:absolute;inset:auto 0 0;height:24mm;background:linear-gradient(0deg,rgba(3,20,17,.88),transparent)}
+    .cabin-code{position:absolute;z-index:2;left:3mm;bottom:3mm;padding:1.5mm 2.5mm;border-radius:20mm;background:rgba(255,255,255,.94);color:var(--deep);font-size:7pt;font-weight:800;letter-spacing:.6px}
+    .team-stack{display:grid;gap:7mm}
+    .team-card{display:grid;grid-template-columns:1.35fr .65fr;min-height:82mm;border:1px solid var(--line);border-radius:5mm;overflow:hidden;background:#fff}
+    .team-card img{width:100%;height:82mm;object-fit:cover}
+    .team-copy{padding:7mm 6mm;display:flex;flex-direction:column;justify-content:center}
+    .team-copy span{color:#087a54;text-transform:uppercase;letter-spacing:1.2px;font-size:7pt;font-weight:800;margin-bottom:2mm}
+    .team-copy p{font-size:8pt;margin:0}
     .timeline{position:relative;margin:8mm 0}
     .timeline:before{content:"";position:absolute;left:7mm;top:5mm;bottom:5mm;width:1px;background:#a8cdbf}
     .step{position:relative;padding:0 0 6mm 19mm}
@@ -281,8 +293,48 @@
 
       <section class="profile-page">
         <div class="page-inner">
+          <div class="page-header"><img src="public/images/logo.png" alt="RKL"><span>Cabin Design Collection</span></div>
+          <div class="eyebrow">05 · Available Cabin Finishes</div>
+          <h2>Cabin interiors shaped around the project identity.</h2>
+          <p>Selected contemporary cabin concepts available for project coordination. Finishes, colors, lighting, flooring, handrails and fixtures can be aligned with the approved technical and architectural requirements.</p>
+          <div class="cabin-grid">
+            <div class="cabin-card"><img src="public/images/cabin designs1.jpeg" alt="RKL cabin design C-01"><span class="cabin-code">C-01</span></div>
+            <div class="cabin-card"><img src="public/images/cabin designs2.jpeg" alt="RKL cabin design C-02"><span class="cabin-code">C-02</span></div>
+            <div class="cabin-card"><img src="public/images/cabin designs3.jpeg" alt="RKL cabin design C-03"><span class="cabin-code">C-03</span></div>
+            <div class="cabin-card"><img src="public/images/cabin designs4.jpeg" alt="RKL cabin design C-04"><span class="cabin-code">C-04</span></div>
+            <div class="cabin-card"><img src="public/images/cabin designs5.jpeg" alt="RKL cabin design C-05"><span class="cabin-code">C-05</span></div>
+            <div class="cabin-card"><img src="public/images/cabin designs6.jpeg" alt="RKL cabin design C-06"><span class="cabin-code">C-06</span></div>
+            <div class="cabin-card"><img src="public/images/cabin designs7.jpeg" alt="RKL cabin design C-07"><span class="cabin-code">C-07</span></div>
+            <div class="cabin-card"><img src="public/images/cabin designs8.jpeg" alt="RKL cabin design C-08"><span class="cabin-code">C-08</span></div>
+          </div>
+          <p class="caption">Concept images are indicative. Final materials, dimensions and component selections are subject to technical approval and the signed project scope.</p>
+          <div class="page-no">06</div>
+        </div>
+      </section>
+
+      <section class="profile-page">
+        <div class="page-inner">
+          <div class="page-header"><img src="public/images/logo.png" alt="RKL"><span>Cabin Design Collection</span></div>
+          <div class="eyebrow">05 · Available Cabin Finishes</div>
+          <h2>More choices for distinctive passenger experiences.</h2>
+          <p>Our cabin collection supports premium, modern and practical interior directions for residential, commercial, hospitality and public buildings.</p>
+          <div class="cabin-grid three">
+            <div class="cabin-card"><img src="public/images/cabin designs9.jpeg" alt="RKL cabin design C-09"><span class="cabin-code">C-09</span></div>
+            <div class="cabin-card"><img src="public/images/cabin designs10.jpeg" alt="RKL cabin design C-10"><span class="cabin-code">C-10</span></div>
+            <div class="cabin-card"><img src="public/images/cabin designs11.jpeg" alt="RKL cabin design C-11"><span class="cabin-code">C-11</span></div>
+            <div class="cabin-card"><img src="public/images/cabin designs12.jpeg" alt="RKL cabin design C-12"><span class="cabin-code">C-12</span></div>
+            <div class="cabin-card"><img src="public/images/cabin designs13.jpeg" alt="RKL cabin design C-13"><span class="cabin-code">C-13</span></div>
+            <div class="cabin-card"><img src="public/images/cabin designs14.jpeg" alt="RKL cabin design C-14"><span class="cabin-code">C-14</span></div>
+          </div>
+          <div class="quote">The selected cabin concept is coordinated with elevator capacity, applicable standards, project usage and the approved finishes schedule.</div>
+          <div class="page-no">07</div>
+        </div>
+      </section>
+
+      <section class="profile-page">
+        <div class="page-inner">
           <div class="page-header"><img src="public/images/logo.png" alt="RKL"><span>Market Sectors</span></div>
-          <div class="eyebrow">05 · Where We Work</div>
+          <div class="eyebrow">06 · Where We Work</div>
           <h2>Capability across diverse building types.</h2>
           <div class="grid-3">
             <div class="sector-card"><img src="public/images/sector-residential.jpg" alt="Residential"><div><h3>Residential</h3><span>Villas · Compounds · Apartments</span></div></div>
@@ -293,14 +345,14 @@
             <div class="sector-card"><img src="public/images/sector-multi.jpg" alt="Public projects"><div><h3>Public & Education</h3><span>Institutes · Colleges · Public facilities</span></div></div>
           </div>
           <div class="quote">Every sector has different passenger flows, duty cycles, accessibility needs and maintenance priorities. We configure the solution accordingly.</div>
-          <div class="page-no">06</div>
+          <div class="page-no">08</div>
         </div>
       </section>
 
       <section class="profile-page">
         <div class="page-inner">
           <div class="page-header"><img src="public/images/logo.png" alt="RKL"><span>Digital Achievements Network</span></div>
-          <div class="eyebrow">06 · Kingdom-wide Reach</div>
+          <div class="eyebrow">07 · Kingdom-wide Reach</div>
           <h2>A growing network of achievements across Saudi Arabia.</h2>
           <div class="map-layout">
             <img src="public/images/ksa-map.png" alt="Map of Saudi Arabia">
@@ -312,14 +364,14 @@
             </div>
           </div>
           <div class="quote">Interactive project coverage is available on <strong>rkl.sa</strong> through the RKL Digital Achievements Network.</div>
-          <div class="page-no">07</div>
+          <div class="page-no">09</div>
         </div>
       </section>
 
       <section class="profile-page">
         <div class="page-inner">
           <div class="page-header"><img src="public/images/logo.png" alt="RKL"><span>Selected Projects</span></div>
-          <div class="eyebrow">07 · Track Record</div>
+          <div class="eyebrow">08 · Track Record</div>
           <h2>Selected assignments from our project portfolio.</h2>
           <div class="project-grid">
             <div class="project-card"><img src="public/images/project-abanmi.jpg" alt="Abanmi project"><div><h3>Abanmi Endowment Facilities</h3><p>Elevator and escalator maintenance and vertical mobility support in Riyadh.</p></div></div>
@@ -330,14 +382,14 @@
             <div class="project-card"><img src="public/images/IMG-20251023-WA0068.jpg" alt="Elevator installation"><div><h3>Specialized Elevator Works</h3><p>Site-coordinated technical works, testing, repairs and component integration.</p></div></div>
           </div>
           <p class="caption">Project references are presented as a selected portfolio overview. Detailed scope and reference documentation are available upon formal request where permitted.</p>
-          <div class="page-no">08</div>
+          <div class="page-no">10</div>
         </div>
       </section>
 
       <section class="profile-page">
         <div class="page-inner">
           <div class="page-header"><img src="public/images/logo.png" alt="RKL"><span>Delivery Method</span></div>
-          <div class="eyebrow">08 · Project Lifecycle</div>
+          <div class="eyebrow">09 · Project Lifecycle</div>
           <h2>A disciplined path from concept to handover.</h2>
           <div class="grid-2">
             <div class="timeline">
@@ -350,14 +402,14 @@
             </div>
             <img class="photo tall" src="public/images/pexels-longa-1863736.jpg" alt="Modern building interior">
           </div>
-          <div class="page-no">09</div>
+          <div class="page-no">11</div>
         </div>
       </section>
 
       <section class="profile-page">
         <div class="page-inner">
           <div class="page-header"><img src="public/images/logo.png" alt="RKL"><span>Maintenance & Safety</span></div>
-          <div class="eyebrow">09 · Reliable Operation</div>
+          <div class="eyebrow">10 · Reliable Operation</div>
           <h2>Maintenance designed around uptime and traceability.</h2>
           <div class="grid-2">
             <img class="photo tall" src="public/images/team.jpg" alt="RKL technical team">
@@ -368,14 +420,35 @@
             </div>
           </div>
           <div class="quote">Safety requirements, inspection frequency and final scope are defined according to equipment condition, applicable requirements and the agreed maintenance contract.</div>
-          <div class="page-no">10</div>
+          <div class="page-no">12</div>
+        </div>
+      </section>
+
+      <section class="profile-page">
+        <div class="page-inner">
+          <div class="page-header"><img src="public/images/logo.png" alt="RKL"><span>Our People</span></div>
+          <div class="eyebrow">11 · Commercial & Technical Teams</div>
+          <h2>One coordinated team from first discussion to field support.</h2>
+          <p>Our commercial and technical functions work together to translate client requirements into clear proposals, coordinated execution and dependable after-sales service.</p>
+          <div class="team-stack">
+            <div class="team-card">
+              <img src="public/images/Sales_department.png" alt="RKL sales department">
+              <div class="team-copy"><span>Sales Department</span><h3>Clear commercial coordination</h3><p>Client requirements, site opportunities, solution guidance, quotations, follow-up and project handover coordination.</p></div>
+            </div>
+            <div class="team-card">
+              <img src="public/images/Technical_department.png" alt="RKL technical department">
+              <div class="team-copy"><span>Technical Department</span><h3>Disciplined field execution</h3><p>Surveys, installation, testing, preventive maintenance, troubleshooting, reporting and responsive technical support.</p></div>
+            </div>
+          </div>
+          <div class="quote">Commercial clarity and technical accountability remain connected throughout the customer journey.</div>
+          <div class="page-no">13</div>
         </div>
       </section>
 
       <section class="profile-page">
         <div class="page-inner">
           <div class="page-header"><img src="public/images/logo.png" alt="RKL"><span>Technology Ecosystem</span></div>
-          <div class="eyebrow">10 · Global Components, Local Support</div>
+          <div class="eyebrow">12 · Global Components, Local Support</div>
           <h2>Solutions supported by established elevator technologies.</h2>
           <p class="lead">RKL works with recognized elevator equipment and component solutions, selecting systems according to project requirements, availability, lifecycle support and approved technical specifications.</p>
           <div class="partner-row">
@@ -390,14 +463,14 @@
           </div>
           <div class="image-band"><img src="public/images/base.jpg" alt="Elevator design"><img src="public/images/wall-gold.png" alt="Gold cabin finish"><img src="public/images/wall-steel.png" alt="Steel cabin finish"></div>
           <p class="caption">Brand names and marks belong to their respective owners. Availability and final brand selection are subject to the approved project scope and commercial agreement.</p>
-          <div class="page-no">11</div>
+          <div class="page-no">14</div>
         </div>
       </section>
 
       <section class="profile-page">
         <div class="page-inner">
           <div class="page-header"><img src="public/images/logo.png" alt="RKL"><span>Why RKL</span></div>
-          <div class="eyebrow">11 · The RKL Advantage</div>
+          <div class="eyebrow">13 · The RKL Advantage</div>
           <h2>A practical partner for demanding vertical mobility projects.</h2>
           <div class="grid-2">
             <div class="card soft"><div class="icon">01</div><h3>Local Accountability</h3><p>A Riyadh-based team coordinating technical, commercial and field requirements.</p></div>
@@ -408,7 +481,7 @@
             <div class="card soft"><div class="icon">06</div><h3>Responsive Support</h3><p>Structured maintenance planning and escalation for operational requirements.</p></div>
           </div>
           <img class="photo" style="height:74mm;margin-top:7mm" src="public/images/project_02.jpg" alt="RKL elevator project">
-          <div class="page-no">12</div>
+          <div class="page-no">15</div>
         </div>
       </section>
 
@@ -430,7 +503,7 @@
             <div><p><strong>RKL Elevators & Escalators</strong><br>Riyadh Key Lifts</p><p class="legal">This profile is for general corporate presentation. Project references, quantities, specifications, warranties, response times and commercial commitments are governed only by the relevant signed agreement, approved technical submittals and official RKL documentation.</p></div>
             <img src="public/images/qr.png" alt="RKL website QR code">
           </div>
-          <div class="page-no" style="color:#96aaa2">13</div>
+          <div class="page-no" style="color:#96aaa2">16</div>
         </div>
       </section>
     </article>
