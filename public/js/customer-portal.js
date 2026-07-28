@@ -183,9 +183,23 @@
   });
 
   const dialog = $('#requestDialog');
-  $$('[data-open-request]').forEach(button => button.addEventListener('click', () => dialog.showModal()));
+  const requestType = $('#requestType');
+  function updateRequestFields() {
+    const type = requestType.value;
+    const isJob = type === 'job-application';
+    const isPartner = ['supplier-partnership', 'product-localization'].includes(type);
+    $('#cityFieldLabel').textContent = isPartner ? 'Country / City *' : isJob ? 'Current city *' : 'City *';
+    $('#projectFieldLabel').textContent = isJob ? 'Position applied for *' : isPartner ? 'Company / Brand name *' : 'Project name *';
+    $('#descriptionFieldLabel').textContent = isJob ? 'Experience, qualifications and message *' : isPartner ? 'Products, capabilities and partnership proposal *' : 'Request details and requirements *';
+    $('#attachmentFieldLabel').textContent = isJob ? 'Attach CV, certificates or portfolio' : isPartner ? 'Attach company profile, catalogues or certificates' : 'Attach drawings or images';
+    $('#unitsField').classList.toggle('hidden', isJob || isPartner);
+    if (isJob || isPartner) $('[name="units"]', dialog).value = '';
+  }
+  requestType.addEventListener('change', updateRequestFields);
+  $$('[data-open-request]').forEach(button => button.addEventListener('click', () => { updateRequestFields(); dialog.showModal(); }));
   $$('[data-service]').forEach(button => button.addEventListener('click', () => {
-    $('[name="service"]', dialog).value = button.dataset.service;
+    requestType.value = button.dataset.service;
+    updateRequestFields();
     dialog.showModal();
   }));
 
@@ -199,7 +213,9 @@
     try {
       const result = await api('/requests', { method: 'POST', body: JSON.stringify(data) });
       if (attachments.length) await uploadFiles(attachments, result.request.id);
-      message(status, `Request submitted successfully. Reference: ${result.request.reference}`);
+      message(status, result.emailNotification
+        ? `Request submitted successfully. A confirmation email was sent. Reference: ${result.request.reference}`
+        : `Request submitted successfully. Reference: ${result.request.reference}. Email confirmation is temporarily delayed.`);
       state.requests.unshift(result.request);
       renderRequests();
       setTimeout(() => { dialog.close(); event.currentTarget.reset(); message(status, ''); }, 1800);

@@ -10,13 +10,21 @@ const hash=value=>crypto.createHash('sha256').update(`${value}:${process.env.OTP
 const equal=(value,stored)=>{const a=Buffer.from(hash(value)),b=Buffer.from(stored||'');return a.length===b.length&&crypto.timingSafeEqual(a,b)};
 const ref=()=>`RKL-SR-${new Date().toISOString().slice(0,10).replaceAll('-','')}-${crypto.randomInt(1000,10000)}`;
 
+const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]));
+async function sendBrandedEmail({to,subject,heading,intro,details='',footer=''}){
+  const response=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:`Bearer ${process.env.RESEND_API_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({
+    from:process.env.OTP_FROM_EMAIL||'RKL Portal <no-reply@rkl.sa>',to:Array.isArray(to)?to:[to],subject,
+    html:`<div style="background:#f2f6f4;padding:30px 12px;font-family:Arial,sans-serif;color:#17352e"><div style="max-width:650px;margin:auto;background:#fff;border-radius:18px;overflow:hidden;border:1px solid #dce8e3"><div style="background:#07382e;padding:24px;text-align:center"><img src="https://rkl.sa/public/images/logo.png" width="76" alt="RKL"></div><div style="padding:30px"><h2 style="margin-top:0">${heading}</h2><p style="line-height:1.7;color:#52655f">${intro}</p>${details}<p style="margin-top:28px;line-height:1.7;color:#52655f">${footer}</p></div><div style="padding:16px 30px;background:#f5f8f7;color:#71817c;font-size:12px">RKL Elevators & Escalators · admin@rkl.sa · +966 11 477 4021</div></div></div>`
+  })});if(!response.ok){const body=await response.text();throw new Error(`email delivery failed: ${response.status} ${body.slice(0,200)}`)}
+}
 async function sendEmail(to,otp,purpose='register'){
   const signingIn=purpose==='login';
-  const response=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:`Bearer ${process.env.RESEND_API_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({
-    from:process.env.OTP_FROM_EMAIL||'RKL Portal <no-reply@rkl.sa>',to:[to],subject:signingIn?'Your RKL sign-in code':'Your RKL verification code',
-    html:`<div style="font-family:Arial,sans-serif;text-align:center;padding:30px"><img src="https://rkl.sa/public/images/logo.png" width="80" alt="RKL"><h2>${signingIn?'Sign in to the RKL Client Portal':'Verify your RKL account'}</h2><p>${signingIn?'Use the code below to sign in securely.':'Use the code below to finish creating your account.'}</p><p style="font-size:32px;letter-spacing:8px;font-weight:bold">${otp}</p><p>This code expires shortly. If you did not request it, you can ignore this email.</p></div>`
-  })});if(!response.ok){const details=await response.text();throw new Error(`email delivery failed: ${response.status} ${details.slice(0,200)}`)}
+  return sendBrandedEmail({to,subject:signingIn?'Your RKL sign-in code':'Your RKL verification code',heading:signingIn?'Sign in to the RKL Client Portal':'Verify your RKL account',intro:signingIn?'Use the code below to sign in securely.':'Use the code below to finish creating your account.',details:`<p style="font-size:32px;letter-spacing:8px;font-weight:bold;text-align:center">${escapeHtml(otp)}</p>`,footer:'This code expires shortly. If you did not request it, you can ignore this email.'})
 }
+const requestLabels={maintenance:'Maintenance contract',inspection:'Technical visit and condition report',modernization:'Elevator modernization',repair:'Repair or spare parts','new-elevator':'New elevator supply and installation',escalator:'Escalators','job-application':'Employment application','supplier-partnership':'Supplier / manufacturer introduction','product-localization':'Product localization or distribution proposal'};
+const requestDetails=(request,actor,organization)=>`<table style="width:100%;border-collapse:collapse;margin-top:22px">${[
+  ['Reference',request.reference],['Request type',requestLabels[request.kind]||request.kind],['Name',actor.profile.full_name],['Company / Organization',organization?.name||'—'],['Email',actor.profile.email],['Phone',`+966${actor.profile.phone}`],['City / Country',request.city],['Project / Position / Brand',request.project_name],['Units',request.units||'—'],['Submitted',new Date(request.created_at).toLocaleString('en-GB',{timeZone:'Asia/Riyadh'})]
+].map(([label,value])=>`<tr><td style="padding:9px;border-bottom:1px solid #e5ece9;color:#71817c;width:38%">${escapeHtml(label)}</td><td style="padding:9px;border-bottom:1px solid #e5ece9;font-weight:bold">${escapeHtml(value)}</td></tr>`).join('')}</table><div style="margin-top:20px;padding:16px;background:#f5f8f7;border-radius:10px;white-space:pre-wrap;line-height:1.7">${escapeHtml(request.description)}</div>`;
 async function sendSms(to,otp){
   const response=await fetch('https://el.cloud.unifonic.com/rest/SMS/messages',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({
     AppSid:process.env.UNIFONIC_APP_SID,SenderID:process.env.UNIFONIC_SENDER_ID||'RKL',Recipient:`966${to}`,Body:`RKL verification code: ${otp}. Valid for 10 minutes.`
@@ -116,7 +124,22 @@ export default async function handler(req,res){
     if(path==='/requests'){
       const actor=await secured(req,res,database);if(!actor)return;
       if(req.method==='GET'){const {data}=await database.from('service_requests').select('*').eq('organization_id',actor.profile.organization_id).order('created_at',{ascending:false});return reply(res,200,{requests:data||[]})}
-      if(req.method==='POST'){const b=req.body||{};if(!b.service||!b.project||!b.city||!b.description)return reply(res,400,{message:'Please complete all required request fields.'});const {data,error}=await database.from('service_requests').insert({organization_id:actor.profile.organization_id,created_by:actor.profile.id,kind:b.service,reference:ref(),city:b.city,project_name:b.project,units:b.units||null,description:b.description,priority:b.service==='emergency'?'emergency':'normal',response_due_at:new Date(Date.now()+(b.service==='emergency'?2:24)*3600000).toISOString()}).select().single();if(error)throw error;await audit(database,actor,'request_created','service_request',data.id);return reply(res,201,{request:data})}
+      if(req.method==='POST'){
+        const b=req.body||{};
+        if(!b.service||!b.project||!b.city||!b.description)return reply(res,400,{message:'Please complete all required request fields.'});
+        const {data,error}=await database.from('service_requests').insert({organization_id:actor.profile.organization_id,created_by:actor.profile.id,kind:b.service,reference:ref(),city:b.city,project_name:b.project,units:b.units||null,description:b.description,priority:b.service==='emergency'?'emergency':'normal',response_due_at:new Date(Date.now()+(b.service==='emergency'?2:24)*3600000).toISOString()}).select().single();
+        if(error)throw error;
+        await audit(database,actor,'request_created','service_request',data.id);
+        const {data:organization}=await database.from('organizations').select('name').eq('id',actor.profile.organization_id).single();
+        const details=requestDetails(data,actor,organization);
+        const notificationResults=await Promise.allSettled([
+          sendBrandedEmail({to:actor.profile.email,subject:`RKL request received · ${data.reference}`,heading:'We received your request',intro:`Thank you, ${escapeHtml(actor.profile.full_name)}. Your request has been registered successfully and our team will review it.`,details,footer:'Please keep the reference number for follow-up. We will contact you if additional information is required.'}),
+          sendBrandedEmail({to:process.env.PORTAL_NOTIFICATION_EMAIL||'admin@rkl.sa',subject:`New RKL portal request · ${data.reference} · ${requestLabels[data.kind]||data.kind}`,heading:'New portal request',intro:'A new request has been submitted through the RKL Client Portal.',details,footer:'Sign in to the portal administration queue to review and assign this request.'})
+        ]);
+        const emailNotification=notificationResults.every(result=>result.status==='fulfilled');
+        if(!emailNotification)console.error('Request email notification failed',notificationResults.filter(result=>result.status==='rejected').map(result=>result.reason?.message));
+        return reply(res,201,{request:data,emailNotification})
+      }
     }
     if(path==='/files'&&req.method==='GET'){const actor=await secured(req,res,database);if(!actor)return;const {data}=await database.from('documents').select('*').eq('organization_id',actor.profile.organization_id).order('created_at',{ascending:false});return reply(res,200,{files:(data||[]).map(x=>({...x,name:x.title}))})}
     if(path==='/files/upload-ticket'&&req.method==='POST'){

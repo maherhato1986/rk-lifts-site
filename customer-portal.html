@@ -136,6 +136,8 @@
               <button data-service="maintenance"><span>⌁</span><b>Maintenance contract</b><small>Preventive and emergency</small></button>
               <button data-service="inspection"><span>⌕</span><b>Technical visit</b><small>Inspection and condition report</small></button>
               <button data-service="modernization"><span>↻</span><b>Elevator modernization</b><small>Assessment and upgrade</small></button>
+              <button data-service="job-application"><span>♙</span><b>Employment application</b><small>Submit your CV and experience</small></button>
+              <button data-service="supplier-partnership"><span>◇</span><b>Supplier & manufacturer</b><small>Introduce products or partnership</small></button>
             </div>
           </article>
           <article class="panel profile-card">
@@ -174,13 +176,13 @@
     <form method="dialog" class="request-form" id="serviceRequestForm">
       <div class="dialog-head"><div><span class="eyebrow">RKL SERVICE REQUEST</span><h2>New Service Request</h2></div><button value="cancel" aria-label="Close">×</button></div>
       <div class="form-grid">
-        <label><span>Service type *</span><select name="service" required><option value="">Select a service</option><option value="new-elevator">New elevator supply and installation</option><option value="maintenance">Maintenance contract</option><option value="inspection">Technical visit and condition report</option><option value="modernization">Elevator modernization</option><option value="repair">Repair or spare parts</option><option value="escalator">Escalators</option></select></label>
-        <label><span>City *</span><input name="city" required></label>
-        <label><span>Project name *</span><input name="project" required></label>
-        <label><span>Number of elevators / escalators</span><input name="units" type="number" min="1"></label>
+        <label><span>Request type *</span><select name="service" id="requestType" required><option value="">Select a request type</option><optgroup label="Elevator & Escalator Services"><option value="new-elevator">New elevator supply and installation</option><option value="maintenance">Maintenance contract</option><option value="inspection">Technical visit and condition report</option><option value="modernization">Elevator modernization</option><option value="repair">Repair or spare parts</option><option value="escalator">Escalators</option></optgroup><optgroup label="Careers & Business Partnerships"><option value="job-application">Employment application</option><option value="supplier-partnership">Supplier / manufacturer introduction</option><option value="product-localization">Product localization or distribution proposal</option></optgroup></select></label>
+        <label><span id="cityFieldLabel">City *</span><input name="city" required></label>
+        <label><span id="projectFieldLabel">Project name *</span><input name="project" required></label>
+        <label id="unitsField"><span>Number of elevators / escalators</span><input name="units" type="number" min="1"></label>
       </div>
-      <label><span>Request details and requirements *</span><textarea name="description" rows="5" required></textarea></label>
-      <label class="dialog-upload"><span>Attach drawings or images</span><input name="attachments" type="file" multiple accept=".pdf,.dwg,.dxf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.zip"></label>
+      <label><span id="descriptionFieldLabel">Request details and requirements *</span><textarea name="description" rows="5" required></textarea></label>
+      <label class="dialog-upload"><span id="attachmentFieldLabel">Attach drawings or images</span><input name="attachments" type="file" multiple accept=".pdf,.dwg,.dxf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.zip"></label>
       <label class="check"><input name="accuracy" type="checkbox" required><span>I confirm that the submitted information is accurate and agree to be contacted by RKL about this request.</span></label>
       <div class="dialog-actions"><button value="cancel" class="secondary">Cancel</button><button type="submit" class="primary compact">Submit request</button></div>
       <p class="form-message" id="requestMessage"></p>
