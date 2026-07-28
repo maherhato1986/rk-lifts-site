@@ -196,8 +196,8 @@
     if (isJob || isPartner) $('[name="units"]', dialog).value = '';
   }
   requestType.addEventListener('change', updateRequestFields);
-  $('[data-open-request]').forEach(button => button.addEventListener('click', () => { updateRequestFields(); dialog.showModal(); }));
-  $('[data-service]').forEach(button => button.addEventListener('click', () => {
+  $$('[data-open-request]').forEach(button => button.addEventListener('click', () => { updateRequestFields(); dialog.showModal(); }));
+  $$('[data-service]').forEach(button => button.addEventListener('click', () => {
     requestType.value = button.dataset.service;
     updateRequestFields();
     dialog.showModal();
