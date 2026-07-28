@@ -87,7 +87,7 @@
     state.selected=item;
     $('#dialogReference').textContent=item.reference;
     $('#requestInfo').innerHTML=[
-      info('Client',item.client?.full_name),info('Email',item.client?.email),info('Mobile',item.client?.phone?`+966${item.client.phone}`:'—'),
+      info('Client',item.client?.full_name),info('Email',item.client?.email),info('Mobile',item.client?.phone?`+${item.client.phone}`:'—'),
       info('Company',item.organization?.name),info('Request type',labels[item.kind]||item.kind),info('City / Country',item.city),
       info('Project / Position / Brand',item.project_name),info('Units',item.units),info('Submitted',formatDate(item.created_at))
     ].join('');
