@@ -147,6 +147,10 @@
   function enterPortal(user, session = state.session) {
     state.user = user;
     if (session) saveSession(session);
+    if (user?.role === 'admin' || user?.role === 'supervisor') {
+      location.href = 'admin-dashboard.html';
+      return;
+    }
     $('#authShell').classList.add('hidden');
     $('#portalApp').classList.remove('hidden');
     const name = user?.name || 'RKL Client';
