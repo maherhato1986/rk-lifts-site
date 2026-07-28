@@ -90,11 +90,12 @@ export default async function handler(req,res){
       if(!equal(emailCode,p.email_code_hash)||(smsEnabled&&!equal(phoneCode,p.phone_code_hash))){await database.from('pending_registrations').update({attempts:p.attempts+1}).eq('id',p.id);return reply(res,400,{message:'The verification code is incorrect.'})}
       const {data:auth,error:authError}=await database.auth.admin.createUser({email:p.email,phone:`+966${p.phone}`,email_confirm:true,phone_confirm:smsEnabled});if(authError)throw authError;
       const {data:org,error:orgError}=await database.from('organizations').insert({name:p.company_name}).select().single();if(orgError)throw orgError;
-      const {data:profile,error:profileError}=await database.from('profiles').insert({id:auth.user.id,organization_id:org.id,full_name:p.full_name,email:p.email,phone:p.phone,role:'client_approver',email_verified_at:new Date().toISOString(),phone_verified_at:smsEnabled?new Date().toISOString():null}).select().single();if(profileError)throw profileError;
+      const portalRole=p.email.toLowerCase()===(process.env.ADMIN_EMAIL||'admin@rkl.sa').toLowerCase()?'admin':'client_approver';
+      const {data:profile,error:profileError}=await database.from('profiles').insert({id:auth.user.id,organization_id:org.id,full_name:p.full_name,email:p.email,phone:p.phone,role:portalRole,email_verified_at:new Date().toISOString(),phone_verified_at:smsEnabled?new Date().toISOString():null}).select().single();if(profileError)throw profileError;
       const {data:link,error:linkError}=await database.auth.admin.generateLink({type:'magiclink',email:p.email});if(linkError)throw linkError;
       const {data:verified,error:verifyError}=await database.auth.verifyOtp({token_hash:link.properties.hashed_token,type:'email'});if(verifyError)throw verifyError;
       await database.from('pending_registrations').delete().eq('id',p.id);await audit(database,{profile},'account_created','organization',org.id);
-      return reply(res,201,{user:{name:profile.full_name,company:org.name,email:profile.email,phone:profile.phone},session:{accessToken:verified.session.access_token,refreshToken:verified.session.refresh_token,expiresAt:verified.session.expires_at}})
+      return reply(res,201,{user:{name:profile.full_name,company:org.name,email:profile.email,phone:profile.phone,role:profile.role},session:{accessToken:verified.session.access_token,refreshToken:verified.session.refresh_token,expiresAt:verified.session.expires_at}})
     }
     if(req.method==='POST'&&path==='/auth/login/start'){
       const identity=String(req.body?.identity||'').trim().toLowerCase();
@@ -166,7 +167,54 @@ export default async function handler(req,res){
       await database.from('document_actions').insert({document_id:id,actor_id:actor.profile.id,action,note});await audit(database,actor,`document_${action}`,'document',id);return reply(res,200,{status:statuses[action]})
     }
     if(path.startsWith('/assets/qr/')&&req.method==='GET'){const token=path.split('/').pop(),{data}=await database.from('assets').select('id,asset_code,kind,status,buildings(name,projects(name,city))').eq('qr_token',token).single();return data?reply(res,200,{asset:data}):reply(res,404,{message:'Invalid elevator QR code.'})}
-    if(path==='/admin/queue'&&req.method==='GET'){const actor=await secured(req,res,database,['supervisor','admin']);if(!actor)return;const [{data:requests},{data:documents}]=await Promise.all([database.from('service_requests').select('*').in('status',['submitted','under_review']).order('created_at'),database.from('documents').select('*').in('status',['submitted','under_review']).order('created_at')]);return reply(res,200,{requests,documents})}
+    if(path==='/admin/queue'&&req.method==='GET'){
+      const actor=await secured(req,res,database,['supervisor','admin']);if(!actor)return;
+      const [{data:requests,error:requestError},{data:documents,error:documentError}]=await Promise.all([
+        database.from('service_requests').select('*').order('created_at',{ascending:false}),
+        database.from('documents').select('id,request_id,title,mime_type,size_bytes,status,created_at').not('request_id','is',null).order('created_at',{ascending:false})
+      ]);
+      if(requestError)throw requestError;if(documentError)throw documentError;
+      const creatorIds=[...new Set((requests||[]).map(item=>item.created_by).filter(Boolean))],organizationIds=[...new Set((requests||[]).map(item=>item.organization_id).filter(Boolean))],requestIds=(requests||[]).map(item=>String(item.id));
+      const [{data:profiles},{data:organizations},{data:history}]=await Promise.all([
+        creatorIds.length?database.from('profiles').select('id,full_name,email,phone').in('id',creatorIds):Promise.resolve({data:[]}),
+        organizationIds.length?database.from('organizations').select('id,name,cr_number,vat_number').in('id',organizationIds):Promise.resolve({data:[]}),
+        requestIds.length?database.from('audit_log').select('id,actor_id,entity_id,action,metadata,created_at').eq('entity_type','service_request').in('entity_id',requestIds).order('created_at',{ascending:false}):Promise.resolve({data:[]})
+      ]);
+      const profileMap=Object.fromEntries((profiles||[]).map(item=>[item.id,item])),organizationMap=Object.fromEntries((organizations||[]).map(item=>[item.id,item]));
+      const documentMap=(documents||[]).reduce((map,item)=>((map[item.request_id]??=[]).push(item),map),{}),historyMap=(history||[]).reduce((map,item)=>((map[item.entity_id]??=[]).push(item),map),{});
+      return reply(res,200,{requests:(requests||[]).map(item=>({...item,client:profileMap[item.created_by]||null,organization:organizationMap[item.organization_id]||null,documents:documentMap[item.id]||[],history:historyMap[String(item.id)]||[]}))})
+    }
+    if(path.match(/^\/admin\/documents\/[^/]+\/download$/)&&req.method==='GET'){
+      const actor=await secured(req,res,database,['supervisor','admin']);if(!actor)return;
+      const id=path.split('/')[3],{data:document,error}=await database.from('documents').select('id,title,storage_path').eq('id',id).single();
+      if(error||!document)return reply(res,404,{message:'Attachment not found.'});
+      const {data:signed,error:signedError}=await database.storage.from('client-files').createSignedUrl(document.storage_path,300,{download:document.title});
+      if(signedError)throw signedError;
+      await audit(database,actor,'admin_document_downloaded','document',document.id);
+      return reply(res,200,{url:signed.signedUrl,expiresIn:300})
+    }
+    if(path.match(/^\/admin\/requests\/[^/]+\/action$/)&&req.method==='POST'){
+      const actor=await secured(req,res,database,['supervisor','admin']);if(!actor)return;
+      const id=path.split('/')[3],body=req.body||{},allowedStatuses=['under_review','changes_requested','approved','rejected','closed'];
+      if(!allowedStatuses.includes(body.status))return reply(res,400,{message:'Select a valid request status.'});
+      const {data:request,error}=await database.from('service_requests').select('*').eq('id',id).single();
+      if(error||!request)return reply(res,404,{message:'Request not found.'});
+      const {data:client}=await database.from('profiles').select('id,full_name,email,phone').eq('id',request.created_by).single();
+      const {data:organization}=await database.from('organizations').select('name').eq('id',request.organization_id).single();
+      const previousStatus=request.status,closedAt=body.status==='closed'?new Date().toISOString():null;
+      const {data:updated,error:updateError}=await database.from('service_requests').update({status:body.status,closed_at:closedAt,updated_at:new Date().toISOString()}).eq('id',id).select().single();
+      if(updateError)throw updateError;
+      let emailSent=false;
+      if(client?.email){
+        try{
+          const details=requestDetails(updated,{profile:client},organization),safeMessage=escapeHtml(body.message||'Your request status has been updated.').replaceAll('\n','<br>');
+          await sendBrandedEmail({to:client.email,subject:`RKL request update · ${updated.reference}`,heading:'Update on your RKL request',intro:`Your request status is now: ${escapeHtml(body.status.replaceAll('_',' '))}.`,details:`${details}<div style="margin-top:20px;padding:16px;border-left:4px solid #0eaa72;background:#eef8f4;line-height:1.7">${safeMessage}</div>`,footer:'Reply to this email or sign in to the RKL Client Portal if you need further assistance.'});
+          emailSent=true
+        }catch(emailError){console.error('Admin response email failed',emailError.message)}
+      }
+      await audit(database,actor,'admin_request_response','service_request',id,{fromStatus:previousStatus,toStatus:body.status,message:String(body.message||''),emailSent});
+      return reply(res,200,{request:updated,emailSent})
+    }
     return reply(res,404,{message:'API route not found.'})
   }catch(error){
     console.error('RKL portal API error:',error);
