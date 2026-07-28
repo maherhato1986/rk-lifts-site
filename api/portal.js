@@ -53,8 +53,15 @@ export default async function handler(req,res){
     if(req.method==='POST'&&path==='/auth/register/start'){
       const {name,company,email,consent}=req.body||{},mobile=phone(req.body?.phone);
       if(!name||!company||!email||!consent||!/^5\d{8}$/.test(mobile))return reply(res,400,{message:'Please check all required fields and enter a valid Saudi mobile number.'});
+      const normalizedEmail=String(email).trim().toLowerCase();
+      const [{data:emailProfile},{data:phoneProfile}]=await Promise.all([
+        database.from('profiles').select('id').ilike('email',normalizedEmail).maybeSingle(),
+        database.from('profiles').select('id').eq('phone',mobile).maybeSingle()
+      ]);
+      if(emailProfile)return reply(res,409,{code:'EMAIL_ALREADY_REGISTERED',message:'This email address is already registered. Please sign in to your existing account. / هذا البريد الإلكتروني مسجل مسبقًا، يرجى تسجيل الدخول إلى حسابك الحالي.'});
+      if(phoneProfile)return reply(res,409,{code:'PHONE_ALREADY_REGISTERED',message:'This mobile number is already registered. Please sign in to your existing account or use another mobile number. / رقم الجوال مسجل مسبقًا، يرجى تسجيل الدخول إلى حسابك الحالي أو استخدام رقم آخر.'});
       const emailOtp=code(),phoneOtp=code();
-      const {data,error}=await database.from('pending_registrations').insert({full_name:name.trim(),company_name:company.trim(),email:email.toLowerCase(),phone:mobile,email_code_hash:hash(emailOtp),phone_code_hash:hash(phoneOtp),expires_at:new Date(Date.now()+600000).toISOString()}).select('id').single();
+      const {data,error}=await database.from('pending_registrations').insert({full_name:name.trim(),company_name:company.trim(),email:normalizedEmail,phone:mobile,email_code_hash:hash(emailOtp),phone_code_hash:hash(phoneOtp),expires_at:new Date(Date.now()+600000).toISOString()}).select('id').single();
       if(error)throw error;
       try{
         await sendEmail(email,emailOtp);
