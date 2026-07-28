@@ -1,10 +1,18 @@
 import crypto from 'node:crypto';
 import { createClient } from '@supabase/supabase-js';
+import { parsePhoneNumberFromString } from 'libphonenumber-js/max';
 
 const reply=(res,status,body)=>res.status(status).json(body);
 const db=()=>createClient(process.env.SUPABASE_URL,process.env.SUPABASE_SERVICE_ROLE_KEY,{auth:{persistSession:false}});
 const route=req=>`/${(Array.isArray(req.query.route)?req.query.route:[req.query.route]).filter(Boolean).join('/')}`;
-const phone=value=>String(value||'').replace(/\D/g,'').replace(/^966/,'').replace(/^0/,'');
+const supportedPhoneTypes=new Set(['MOBILE','FIXED_LINE','FIXED_LINE_OR_MOBILE']);
+const parseContactPhone=(value,country)=>{
+  const raw=String(value||'').trim(),region=String(country||'').trim().toUpperCase()||undefined;
+  const parsed=parsePhoneNumberFromString(raw,region);
+  if(!parsed?.isValid()||!supportedPhoneTypes.has(parsed.getType()))return null;
+  return {e164:parsed.number,digits:parsed.number.slice(1),type:parsed.getType(),isMobile:parsed.getType()==='MOBILE'};
+};
+const parseStoredPhone=value=>parseContactPhone(String(value||'').startsWith('+')?String(value):`+${value}`)||parseContactPhone(value,'SA');
 const code=()=>String(crypto.randomInt(100000,1000000));
 const hash=value=>crypto.createHash('sha256').update(`${value}:${process.env.OTP_PEPPER}`).digest('hex');
 const equal=(value,stored)=>{const a=Buffer.from(hash(value)),b=Buffer.from(stored||'');return a.length===b.length&&crypto.timingSafeEqual(a,b)};
@@ -23,11 +31,11 @@ async function sendEmail(to,otp,purpose='register'){
 }
 const requestLabels={maintenance:'Maintenance contract',inspection:'Technical visit and condition report',modernization:'Elevator modernization',repair:'Repair or spare parts','new-elevator':'New elevator supply and installation',escalator:'Escalators','job-application':'Employment application','supplier-partnership':'Supplier / manufacturer introduction','product-localization':'Product localization or distribution proposal'};
 const requestDetails=(request,actor,organization)=>`<table style="width:100%;border-collapse:collapse;margin-top:22px">${[
-  ['Reference',request.reference],['Request type',requestLabels[request.kind]||request.kind],['Name',actor.profile.full_name],['Company / Organization',organization?.name||'—'],['Email',actor.profile.email],['Phone',`+966${actor.profile.phone}`],['City / Country',request.city],['Project / Position / Brand',request.project_name],['Units',request.units||'—'],['Submitted',new Date(request.created_at).toLocaleString('en-GB',{timeZone:'Asia/Riyadh'})]
+  ['Reference',request.reference],['Request type',requestLabels[request.kind]||request.kind],['Name',actor.profile.full_name],['Company / Organization',organization?.name||'—'],['Email',actor.profile.email],['Phone',`+${actor.profile.phone}`],['City / Country',request.city],['Project / Position / Brand',request.project_name],['Units',request.units||'—'],['Submitted',new Date(request.created_at).toLocaleString('en-GB',{timeZone:'Asia/Riyadh'})]
 ].map(([label,value])=>`<tr><td style="padding:9px;border-bottom:1px solid #e5ece9;color:#71817c;width:38%">${escapeHtml(label)}</td><td style="padding:9px;border-bottom:1px solid #e5ece9;font-weight:bold">${escapeHtml(value)}</td></tr>`).join('')}</table><div style="margin-top:20px;padding:16px;background:#f5f8f7;border-radius:10px;white-space:pre-wrap;line-height:1.7">${escapeHtml(request.description)}</div>`;
 async function sendSms(to,otp){
   const response=await fetch('https://el.cloud.unifonic.com/rest/SMS/messages',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({
-    AppSid:process.env.UNIFONIC_APP_SID,SenderID:process.env.UNIFONIC_SENDER_ID||'RKL',Recipient:`966${to}`,Body:`RKL verification code: ${otp}. Valid for 10 minutes.`
+    AppSid:process.env.UNIFONIC_APP_SID,SenderID:process.env.UNIFONIC_SENDER_ID||'RKL',Recipient:String(to).replace(/^\+/,''),Body:`RKL verification code: ${otp}. Valid for 10 minutes.`
   })});if(!response.ok)throw new Error('sms delivery failed')
 }
 async function user(req,database){
@@ -51,26 +59,27 @@ export default async function handler(req,res){
   const database=db(),path=route(req),smsEnabled=Boolean(process.env.UNIFONIC_APP_SID);
   try{
     if(req.method==='POST'&&path==='/auth/register/start'){
-      const {name,company,email,consent}=req.body||{},mobile=phone(req.body?.phone);
-      if(!name||!company||!email||!consent||!/^5\d{8}$/.test(mobile))return reply(res,400,{message:'Please check all required fields and enter a valid Saudi mobile number.'});
+      const {name,company,email,consent}=req.body||{},contact=parseContactPhone(req.body?.phone,req.body?.phoneCountry);
+      if(!name||!company||!email||!consent||!contact)return reply(res,400,{message:'Enter a valid mobile or landline number for the selected country. / أدخل رقم جوال أو هاتف أرضي صحيحًا للدولة المختارة.'});
+      const mobile=contact.digits,phoneVerificationRequired=smsEnabled&&contact.isMobile;
       const normalizedEmail=String(email).trim().toLowerCase();
       const [{data:emailProfile},{data:phoneProfile}]=await Promise.all([
         database.from('profiles').select('id').ilike('email',normalizedEmail).maybeSingle(),
         database.from('profiles').select('id').eq('phone',mobile).maybeSingle()
       ]);
       if(emailProfile)return reply(res,409,{code:'EMAIL_ALREADY_REGISTERED',message:'This email address is already registered. Please sign in to your existing account. / هذا البريد الإلكتروني مسجل مسبقًا، يرجى تسجيل الدخول إلى حسابك الحالي.'});
-      if(phoneProfile)return reply(res,409,{code:'PHONE_ALREADY_REGISTERED',message:'This mobile number is already registered. Please sign in to your existing account or use another mobile number. / رقم الجوال مسجل مسبقًا، يرجى تسجيل الدخول إلى حسابك الحالي أو استخدام رقم آخر.'});
+      if(phoneProfile)return reply(res,409,{code:'PHONE_ALREADY_REGISTERED',message:'This phone number is already registered. Please sign in to your existing account or use another number. / رقم الهاتف مسجل مسبقًا، يرجى تسجيل الدخول إلى حسابك الحالي أو استخدام رقم آخر.'});
       const emailOtp=code(),phoneOtp=code();
       const {data,error}=await database.from('pending_registrations').insert({full_name:name.trim(),company_name:company.trim(),email:normalizedEmail,phone:mobile,email_code_hash:hash(emailOtp),phone_code_hash:hash(phoneOtp),expires_at:new Date(Date.now()+600000).toISOString()}).select('id').single();
       if(error)throw error;
       try{
         await sendEmail(email,emailOtp);
-        if(smsEnabled)await sendSms(mobile,phoneOtp);
+        if(phoneVerificationRequired)await sendSms(mobile,phoneOtp);
       }catch(deliveryError){
         await database.from('pending_registrations').delete().eq('id',data.id);
         throw deliveryError;
       }
-      return reply(res,200,{registrationId:data.id,smsRequired:smsEnabled})
+      return reply(res,200,{registrationId:data.id,smsRequired:phoneVerificationRequired})
     }
     if(req.method==='POST'&&path==='/auth/register/resend'){
       const {registrationId}=req.body||{};
@@ -79,19 +88,23 @@ export default async function handler(req,res){
       const emailOtp=code(),phoneOtp=code();
       const {error}=await database.from('pending_registrations').update({email_code_hash:hash(emailOtp),phone_code_hash:hash(phoneOtp),expires_at:new Date(Date.now()+600000).toISOString(),attempts:0}).eq('id',p.id);
       if(error)throw error;
+      const storedPhone=parseStoredPhone(p.phone),phoneVerificationRequired=smsEnabled&&storedPhone?.isMobile;
       await sendEmail(p.email,emailOtp);
-      if(smsEnabled)await sendSms(p.phone,phoneOtp);
-      return reply(res,200,{message:'A new verification code has been sent.',smsRequired:smsEnabled})
+      if(phoneVerificationRequired)await sendSms(p.phone,phoneOtp);
+      return reply(res,200,{message:'A new verification code has been sent.',smsRequired:phoneVerificationRequired})
     }
     if(req.method==='POST'&&path==='/auth/register/verify'){
       const {registrationId,emailCode,phoneCode}=req.body||{};
       const {data:p}=await database.from('pending_registrations').select('*').eq('id',registrationId).single();
       if(!p||new Date(p.expires_at)<new Date()||p.attempts>=5)return reply(res,400,{message:'The verification code has expired. Please request a new one.'});
-      if(!equal(emailCode,p.email_code_hash)||(smsEnabled&&!equal(phoneCode,p.phone_code_hash))){await database.from('pending_registrations').update({attempts:p.attempts+1}).eq('id',p.id);return reply(res,400,{message:'The verification code is incorrect.'})}
-      const {data:auth,error:authError}=await database.auth.admin.createUser({email:p.email,phone:`+966${p.phone}`,email_confirm:true,phone_confirm:smsEnabled});if(authError)throw authError;
+      const storedPhone=parseStoredPhone(p.phone),phoneVerificationRequired=smsEnabled&&storedPhone?.isMobile;
+      if(!storedPhone)return reply(res,400,{message:'The saved phone number is invalid. Please enter your details again.'});
+      if(!equal(emailCode,p.email_code_hash)||(phoneVerificationRequired&&!equal(phoneCode,p.phone_code_hash))){await database.from('pending_registrations').update({attempts:p.attempts+1}).eq('id',p.id);return reply(res,400,{message:'The verification code is incorrect.'})}
+      const authPhone=phoneVerificationRequired?{phone:storedPhone.e164,phone_confirm:true}:{};
+      const {data:auth,error:authError}=await database.auth.admin.createUser({email:p.email,email_confirm:true,...authPhone});if(authError)throw authError;
       const {data:org,error:orgError}=await database.from('organizations').insert({name:p.company_name}).select().single();if(orgError)throw orgError;
       const portalRole=p.email.toLowerCase()===(process.env.ADMIN_EMAIL||'admin@rkl.sa').toLowerCase()?'admin':'client_approver';
-      const {data:profile,error:profileError}=await database.from('profiles').insert({id:auth.user.id,organization_id:org.id,full_name:p.full_name,email:p.email,phone:p.phone,role:portalRole,email_verified_at:new Date().toISOString(),phone_verified_at:smsEnabled?new Date().toISOString():null}).select().single();if(profileError)throw profileError;
+      const {data:profile,error:profileError}=await database.from('profiles').insert({id:auth.user.id,organization_id:org.id,full_name:p.full_name,email:p.email,phone:p.phone,role:portalRole,email_verified_at:new Date().toISOString(),phone_verified_at:phoneVerificationRequired?new Date().toISOString():null}).select().single();if(profileError)throw profileError;
       const {data:link,error:linkError}=await database.auth.admin.generateLink({type:'magiclink',email:p.email});if(linkError)throw linkError;
       const {data:verified,error:verifyError}=await database.auth.verifyOtp({token_hash:link.properties.hashed_token,type:'email'});if(verifyError)throw verifyError;
       await database.from('pending_registrations').delete().eq('id',p.id);await audit(database,{profile},'account_created','organization',org.id);

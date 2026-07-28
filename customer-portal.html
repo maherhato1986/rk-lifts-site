@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@29.1.2/build/css/intlTelInput.css">
   <link rel="stylesheet" href="public/css/customer-portal.css">
 </head>
 <body>
@@ -41,7 +42,7 @@
             <label><span>Company / Organization *</span><input name="company" autocomplete="organization" required></label>
           </div>
           <label><span>Business email *</span><input name="email" type="email" autocomplete="email" required></label>
-          <label><span>Saudi mobile number *</span><div class="phone-input"><b>+966</b><input name="phone" inputmode="numeric" autocomplete="tel" placeholder="5XXXXXXXX" pattern="5[0-9]{8}" maxlength="9" required></div></label>
+          <label><span>Phone number (mobile or landline) *</span><input id="registrationPhone" name="phone" type="tel" autocomplete="tel" required><small class="field-help">Choose the country, then enter a valid local or international number. اختر الدولة ثم أدخل رقم جوال أو هاتف أرضي صحيحًا.</small></label>
           <label class="check"><input name="consent" type="checkbox" required><span>I agree that RKL may use my details to process requests and communicate about its services.</span></label>
           <button class="primary" type="submit">Send verification code</button>
           <p class="form-message" id="registerMessage" role="status"></p>
@@ -189,6 +190,7 @@
     </form>
   </dialog>
 
+  <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@29.1.2/build/js/intlTelInput.min.js" defer></script>
   <script src="public/js/customer-portal.js" defer></script>
 </body>
 </html>

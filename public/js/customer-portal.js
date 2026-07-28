@@ -42,14 +42,22 @@
   }
 
   function maskPhone(phone) {
-    return `+966 5*****${phone.slice(-3)}`;
+    const digits=String(phone||'').replace(/\D/g,'');
+    return digits?`+${digits.slice(0,Math.min(3,digits.length))} *****${digits.slice(-3)}`:'';
   }
 
   $$('[data-show]').forEach(button => button.addEventListener('click', () => showStep(button.dataset.show)));
   const requestedView = new URLSearchParams(location.search).get('view');
   if (requestedView === 'login') showStep('loginStep');
   if (requestedView === 'register') showStep('registerStep');
-  $$('input[inputmode="numeric"]').forEach(input => input.addEventListener('input', () => {
+  const phoneField=$('#registrationPhone');
+  const phoneInput=window.intlTelInput(phoneField,{
+    initialCountry:'sa',
+    separateDialCode:true,
+    allowedNumberTypes:['MOBILE','FIXED_LINE','FIXED_LINE_OR_MOBILE'],
+    loadUtils:()=>import('https://cdn.jsdelivr.net/npm/intl-tel-input@29.1.2/build/js/utils.js')
+  });
+  $('input[inputmode="numeric"]').forEach(input => input.addEventListener('input', () => {
     input.value = input.value.replace(/\D/g, '').slice(0, Number(input.maxLength) || 9);
   }));
 
@@ -58,8 +66,13 @@
     const form = new FormData(event.currentTarget);
     const data = Object.fromEntries(form.entries());
     const status = $('#registerMessage');
-    message(status, 'Sending your verification code…');
+    message(status, 'Checking your phone number…');
     try {
+      await phoneInput.promise;
+      if(!phoneInput.isValidNumber())throw new Error('Enter a valid mobile or landline number for the selected country. / أدخل رقم جوال أو هاتف أرضي صحيحًا للدولة المختارة.');
+      data.phone=phoneInput.getNumber();
+      data.phoneCountry=phoneInput.getSelectedCountryData().iso2.toUpperCase();
+      message(status, 'Sending your verification code…');
       const result = await api('/auth/register/start', { method: 'POST', body: JSON.stringify(data) });
       state.registrationId = result.registrationId;
       state.smsRequired = Boolean(result.smsRequired);
@@ -161,7 +174,7 @@
     $('#profileName').value = name;
     $('#profileCompany').value = company;
     $('#profileEmail').value = user?.email || '';
-    $('#profilePhone').value = user?.phone ? `+966${user.phone}` : '';
+    $('#profilePhone').value = user?.phone ? `+${user.phone}` : '';
   }
 
   const viewTitles = {
