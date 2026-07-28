@@ -54,7 +54,7 @@
   const phoneInput=window.intlTelInput(phoneField,{
     initialCountry:'sa',
     separateDialCode:true,
-    nationalMode:true,
+    allowedNumberTypes:['MOBILE','FIXED_LINE','FIXED_LINE_OR_MOBILE'],
     loadUtils:()=>import('https://cdn.jsdelivr.net/npm/intl-tel-input@29.1.2/build/js/utils.js')
   });
   $('input[inputmode="numeric"]').forEach(input => input.addEventListener('input', () => {
