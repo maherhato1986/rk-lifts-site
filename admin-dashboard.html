@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>RKL Admin Request Center</title>
+  <link rel="icon" href="public/images/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="public/css/admin-dashboard.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="admin-dashboard.html"><img src="public/images/logo.png" alt="RKL"><span><b>RKL</b><small>Admin Center</small></span></a>
+    <nav>
+      <button class="active"><i>▦</i><span>Request Center</span></button>
+      <a href="customer-portal.html"><i>↗</i><span>Client Portal</span></a>
+      <a href="executed-projects.html" target="_blank"><i>★</i><span>Executed Projects</span></a>
+    </nav>
+    <div class="admin-card"><span>ADMIN ACCOUNT</span><b id="adminName">RKL Administrator</b><small id="adminEmail">admin@rkl.sa</small><button id="signOut">Sign out</button></div>
+  </aside>
+
+  <main class="workspace">
+    <header class="topbar">
+      <button id="menuToggle" class="menu-toggle">☰</button>
+      <div><span class="kicker">RKL OPERATIONS</span><h1>Request Management Center</h1><p>Review, respond to and track all portal submissions.</p></div>
+      <button class="refresh" id="refreshButton">↻ Refresh</button>
+    </header>
+
+    <section class="stats">
+      <article><span class="green">◎</span><div><small>Total requests</small><b id="totalRequests">0</b></div></article>
+      <article><span class="gold">●</span><div><small>New requests</small><b id="newRequests">0</b></div></article>
+      <article><span class="blue">◷</span><div><small>Under review</small><b id="reviewRequests">0</b></div></article>
+      <article><span class="violet">▤</span><div><small>Attachments</small><b id="attachmentCount">0</b></div></article>
+    </section>
+
+    <section class="panel">
+      <div class="toolbar">
+        <div class="search"><span>⌕</span><input id="searchInput" placeholder="Search reference, client, company, project or city"></div>
+        <select id="typeFilter"><option value="">All request types</option></select>
+        <select id="statusFilter"><option value="">All statuses</option><option value="submitted">New</option><option value="under_review">Under review</option><option value="changes_requested">Information requested</option><option value="approved">Approved</option><option value="rejected">Rejected</option><option value="closed">Closed</option></select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Request</th><th>Client / Company</th><th>Type</th><th>Location</th><th>Submitted</th><th>Files</th><th>Status</th><th></th></tr></thead>
+          <tbody id="requestRows"></tbody>
+        </table>
+      </div>
+      <div class="empty hidden" id="emptyState"><span>▦</span><b>No matching requests</b><p>Try changing your search or filters.</p></div>
+    </section>
+  </main>
+
+  <dialog id="requestDialog">
+    <div class="dialog-head"><div><span class="kicker">REQUEST DETAILS</span><h2 id="dialogReference">—</h2></div><button id="closeDialog">×</button></div>
+    <div class="detail-grid">
+      <section>
+        <div class="info-grid" id="requestInfo"></div>
+        <article class="description"><small>REQUEST DETAILS</small><p id="requestDescription"></p></article>
+        <div class="attachments"><div class="section-title"><div><small>DOCUMENTS</small><h3>Attachments</h3></div><span id="fileCount">0 files</span></div><div id="attachmentList"></div></div>
+        <div class="history"><div class="section-title"><div><small>ACTIVITY</small><h3>Request history</h3></div></div><div id="historyList"></div></div>
+      </section>
+      <aside class="response-box">
+        <span class="kicker">ADMIN ACTION</span><h3>Update and respond</h3>
+        <label><span>Request status</span><select id="actionStatus"><option value="under_review">Under review</option><option value="changes_requested">Request more information</option><option value="approved">Approved</option><option value="rejected">Rejected</option><option value="closed">Closed</option></select></label>
+        <label><span>Message to client</span><textarea id="responseMessage" rows="8" placeholder="Write the response that will be emailed to the client..."></textarea></label>
+        <button class="primary" id="sendResponse">Save status & email client</button>
+        <p id="actionMessage"></p>
+        <small class="privacy">Attachments use private, time-limited download links. The response is saved in the audit history.</small>
+      </aside>
+    </div>
+  </dialog>
+
+  <script src="public/js/admin-dashboard.js" defer></script>
+</body>
+</html>
