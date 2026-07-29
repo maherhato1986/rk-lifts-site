@@ -122,13 +122,13 @@
 
   async function boot(){
     state.session=loadSession();
-    if(!state.session){location.href='customer-portal.html?view=login';return}
+    if(!state.session){location.href='customer-portal.html?view=admin';return}
     try{
       const result=await authenticatedApi('/me');
       if(!['admin','supervisor'].includes(result.user?.role)){location.href='customer-portal.html';return}
       state.user=result.user;$('#adminName').textContent=result.user.name;$('#adminEmail').textContent=result.user.email;
       await loadQueue();
-    }catch(_){saveSession(null);location.href='customer-portal.html?view=login'}
+    }catch(_){saveSession(null);location.href='customer-portal.html?view=admin'}
   }
 
   $('#searchInput').addEventListener('input',applyFilters);
@@ -138,6 +138,6 @@
   $('#sendResponse').addEventListener('click',sendResponse);
   $('#closeDialog').addEventListener('click',()=>$('#requestDialog').close());
   $('#menuToggle').addEventListener('click',()=>$('.sidebar').classList.toggle('open'));
-  $('#signOut').addEventListener('click',async()=>{try{await api('/auth/logout',{method:'POST'})}catch(_){}saveSession(null);location.href='customer-portal.html?view=login'});
+  $('#signOut').addEventListener('click',async()=>{try{await api('/auth/logout',{method:'POST'})}catch(_){}saveSession(null);location.href='customer-portal.html?view=admin'});
   boot();
 })();
