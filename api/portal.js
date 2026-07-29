@@ -199,11 +199,12 @@ export default async function handler(req,res){
     if(path.startsWith('/assets/qr/')&&req.method==='GET'){const token=path.split('/').pop(),{data}=await database.from('assets').select('id,asset_code,kind,status,buildings(name,projects(name,city))').eq('qr_token',token).single();return data?reply(res,200,{asset:data}):reply(res,404,{message:'Invalid elevator QR code.'})}
     if(path==='/admin/queue'&&req.method==='GET'){
       const actor=await secured(req,res,database,['supervisor','admin']);if(!actor)return;
-      const [{data:requests,error:requestError},{data:documents,error:documentError}]=await Promise.all([
+      const [{data:requests,error:requestError},{data:documents,error:documentError},{data:technicalSubmissions,error:technicalError}]=await Promise.all([
         database.from('service_requests').select('*').order('created_at',{ascending:false}),
-        database.from('documents').select('id,request_id,title,mime_type,size_bytes,status,created_at').not('request_id','is',null).order('created_at',{ascending:false})
+        database.from('documents').select('id,request_id,title,mime_type,size_bytes,status,created_at').not('request_id','is',null).order('created_at',{ascending:false}),
+        database.from('technician_submissions').select('*').order('submitted_at',{ascending:false})
       ]);
-      if(requestError)throw requestError;if(documentError)throw documentError;
+      if(requestError)throw requestError;if(documentError)throw documentError;if(technicalError)throw technicalError;
       const creatorIds=[...new Set((requests||[]).map(item=>item.created_by).filter(Boolean))],organizationIds=[...new Set((requests||[]).map(item=>item.organization_id).filter(Boolean))],requestIds=(requests||[]).map(item=>String(item.id));
       const [{data:profiles},{data:organizations},{data:history}]=await Promise.all([
         creatorIds.length?database.from('profiles').select('id,full_name,email,phone').in('id',creatorIds):Promise.resolve({data:[]}),
@@ -212,7 +213,16 @@ export default async function handler(req,res){
       ]);
       const profileMap=Object.fromEntries((profiles||[]).map(item=>[item.id,item])),organizationMap=Object.fromEntries((organizations||[]).map(item=>[item.id,item]));
       const documentMap=(documents||[]).reduce((map,item)=>((map[item.request_id]??=[]).push(item),map),{}),historyMap=(history||[]).reduce((map,item)=>((map[item.entity_id]??=[]).push(item),map),{});
-      return reply(res,200,{requests:(requests||[]).map(item=>({...item,client:profileMap[item.created_by]||null,organization:organizationMap[item.organization_id]||null,documents:documentMap[item.id]||[],history:historyMap[String(item.id)]||[]}))})
+      return reply(res,200,{requests:(requests||[]).map(item=>({...item,client:profileMap[item.created_by]||null,organization:organizationMap[item.organization_id]||null,documents:documentMap[item.id]||[],history:historyMap[String(item.id)]||[]})),technicalSubmissions:technicalSubmissions||[]})
+    }
+    if(path.match(/^\/admin\/technical\/[^/]+\/action$/)&&req.method==='POST'){
+      const actor=await secured(req,res,database,['supervisor','admin']);if(!actor)return;
+      const id=path.split('/')[3],body=req.body||{},allowedStatuses=['under_review','changes_requested','approved','rejected','closed'];
+      if(!allowedStatuses.includes(body.status))return reply(res,400,{message:'Select a valid technician submission status.'});
+      const {data:updated,error}=await database.from('technician_submissions').update({status:body.status,review_message:String(body.message||''),reviewed_by:actor.profile.id,reviewed_at:new Date().toISOString()}).eq('id',id).select().single();
+      if(error||!updated)return reply(res,404,{message:'Technician submission not found.'});
+      await audit(database,actor,'technician_submission_review','technician_submission',id,{toStatus:body.status,message:String(body.message||'')});
+      return reply(res,200,{submission:updated})
     }
     if(path.match(/^\/admin\/documents\/[^/]+\/download$/)&&req.method==='GET'){
       const actor=await secured(req,res,database,['supervisor','admin']);if(!actor)return;
