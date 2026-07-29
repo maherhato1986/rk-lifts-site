@@ -111,9 +111,26 @@ export default async function handler(req,res){
       return reply(res,201,{user:{name:profile.full_name,company:org.name,email:profile.email,phone:profile.phone,role:profile.role},session:{accessToken:verified.session.access_token,refreshToken:verified.session.refresh_token,expiresAt:verified.session.expires_at}})
     }
     if(req.method==='POST'&&path==='/auth/login/start'){
-      const identity=String(req.body?.identity||'').trim().toLowerCase();
+      const identity=String(req.body?.identity||'').trim().toLowerCase(),adminEmail=String(process.env.ADMIN_EMAIL||'admin@rkl.sa').trim().toLowerCase();
       if(!identity.includes('@'))return reply(res,400,{message:'Mobile sign-in is not available yet. Please use your registered email address.'});
-      const {data:profile}=await database.from('profiles').select('id,email').ilike('email',identity).maybeSingle();
+      let {data:profile}=await database.from('profiles').select('id,email').ilike('email',identity).maybeSingle();
+      if(!profile&&identity===adminEmail){
+        const {data:created,error:createError}=await database.auth.admin.createUser({email:adminEmail,email_confirm:true,app_metadata:{portal_role:'admin'}});
+        if(createError&&!String(createError.message||'').toLowerCase().includes('already'))throw createError;
+        let adminUser=created?.user;
+        if(!adminUser){
+          const {data:users,error:listError}=await database.auth.admin.listUsers({page:1,perPage:1000});if(listError)throw listError;
+          adminUser=(users?.users||[]).find(user=>String(user.email||'').toLowerCase()===adminEmail)
+        }
+        if(!adminUser)return reply(res,500,{message:'Unable to initialize the administrator account.'});
+        let {data:organization}=await database.from('organizations').select('id').eq('name','RKL Administration').maybeSingle();
+        if(!organization){
+          const {data:newOrganization,error:organizationError}=await database.from('organizations').insert({name:'RKL Administration'}).select('id').single();if(organizationError)throw organizationError;
+          organization=newOrganization
+        }
+        const {data:newProfile,error:profileError}=await database.from('profiles').upsert({id:adminUser.id,organization_id:organization.id,full_name:'RKL Administrator',email:adminEmail,role:'admin',email_verified_at:new Date().toISOString()},{onConflict:'id'}).select('id,email').single();
+        if(profileError)throw profileError;profile=newProfile
+      }
       if(!profile)return reply(res,404,{message:'No client account was found for this email. Please create an account first.'});
       const {data:link,error}=await database.auth.admin.generateLink({type:'magiclink',email:profile.email});if(error)throw error;
       await sendEmail(profile.email,link.properties.email_otp,'login');
