@@ -48,13 +48,24 @@
 
   $$('[data-show]').forEach(button => button.addEventListener('click', () => showStep(button.dataset.show)));
   const requestedView = new URLSearchParams(location.search).get('view');
-  if (requestedView === 'login') showStep('loginStep');
+  const isAdminEntry = requestedView === 'admin';
+  if (requestedView === 'login' || isAdminEntry) showStep('loginStep');
   if (requestedView === 'register') showStep('registerStep');
+  if (isAdminEntry) {
+    const adminEmailField = $('#loginForm [name="identity"]');
+    adminEmailField.value = 'admin@rkl.sa';
+    adminEmailField.readOnly = true;
+    $('#loginStep .step-label').textContent = 'ADMIN SIGN IN';
+    $('#loginStep h2').textContent = 'RKL Admin access';
+    $('#loginStep .muted').textContent = 'A secure one-time code will be sent to admin@rkl.sa.';
+  }
   const phoneField=$('#registrationPhone');
   const phoneInput=window.intlTelInput(phoneField,{
     initialCountry:'sa',
     separateDialCode:true,
-    allowedNumberTypes:['MOBILE','FIXED_LINE','FIXED_LINE_OR_MOBILE'],
+    nationalMode:true,
+    strictMode:true,
+    validationNumberTypes:['MOBILE','FIXED_LINE','FIXED_LINE_OR_MOBILE'],
     loadUtils:()=>import('https://cdn.jsdelivr.net/npm/intl-tel-input@29.1.2/build/js/utils.js')
   });
   $('input[inputmode="numeric"]').forEach(input => input.addEventListener('input', () => {
