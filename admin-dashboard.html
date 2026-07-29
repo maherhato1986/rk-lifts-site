@@ -9,13 +9,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="public/css/admin-dashboard.css">
+  <link rel="stylesheet" href="public/css/admin-dashboard.css?v=20260729-unified">
 </head>
 <body>
   <aside class="sidebar">
     <a class="brand" href="admin-dashboard.html"><img src="public/images/logo.png" alt="RKL"><span><b>RKL</b><small>Admin Center</small></span></a>
     <nav>
-      <button class="active"><i>▦</i><span>Request Center</span></button>
+      <button class="active" id="clientQueueNav"><i>▦</i><span>Client Requests</span></button>
+      <button id="technicalQueueNav"><i>⚙</i><span>Technician Submissions</span></button>
       <a href="customer-portal.html"><i>↗</i><span>Client Portal</span></a>
       <a href="executed-projects.html" target="_blank"><i>★</i><span>Executed Projects</span></a>
     </nav>
@@ -36,7 +37,12 @@
       <article><span class="violet">▤</span><div><small>Attachments</small><b id="attachmentCount">0</b></div></article>
     </section>
 
-    <section class="panel">
+    <div class="queue-tabs">
+      <button class="active" id="clientQueueTab">Client Requests <b id="clientQueueCount">0</b></button>
+      <button id="technicalQueueTab">Technician Reports & Requests <b id="technicalQueueCount">0</b></button>
+    </div>
+
+    <section class="panel" id="clientQueuePanel">
       <div class="toolbar">
         <div class="search"><span>⌕</span><input id="searchInput" placeholder="Search reference, client, company, project or city"></div>
         <select id="typeFilter"><option value="">All request types</option></select>
@@ -49,6 +55,21 @@
         </table>
       </div>
       <div class="empty hidden" id="emptyState"><span>▦</span><b>No matching requests</b><p>Try changing your search or filters.</p></div>
+    </section>
+
+    <section class="panel hidden" id="technicalQueuePanel">
+      <div class="toolbar">
+        <div class="search"><span>⌕</span><input id="technicalSearchInput" placeholder="Search reference, technician, project or city"></div>
+        <select id="technicalTypeFilter"><option value="">All technician submissions</option><option value="technical_report">Technical reports</option><option value="spare_parts">Spare parts</option><option value="expense">Expenses</option><option value="field_note">Field notes</option></select>
+        <select id="technicalStatusFilter"><option value="">All statuses</option><option value="submitted">New</option><option value="under_review">Under review</option><option value="changes_requested">Changes requested</option><option value="approved">Approved</option><option value="rejected">Rejected</option><option value="closed">Closed</option></select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Reference</th><th>Technician</th><th>Submission</th><th>Project / City</th><th>Submitted</th><th>Files</th><th>Status</th><th></th></tr></thead>
+          <tbody id="technicalRows"></tbody>
+        </table>
+      </div>
+      <div class="empty hidden" id="technicalEmptyState"><span>⚙</span><b>No technician submissions</b><p>New field reports and requests will appear here automatically.</p></div>
     </section>
   </main>
 
@@ -64,7 +85,7 @@
       <aside class="response-box">
         <span class="kicker">ADMIN ACTION</span><h3>Update and respond</h3>
         <label><span>Request status</span><select id="actionStatus"><option value="under_review">Under review</option><option value="changes_requested">Request more information</option><option value="approved">Approved</option><option value="rejected">Rejected</option><option value="closed">Closed</option></select></label>
-        <label><span>Message to client</span><textarea id="responseMessage" rows="8" placeholder="Write the response that will be emailed to the client..."></textarea></label>
+        <label><span id="responseLabel">Message to client</span><textarea id="responseMessage" rows="8" placeholder="Write a response or review note..."></textarea></label>
         <button class="primary" id="sendResponse">Save status & email client</button>
         <p id="actionMessage"></p>
         <small class="privacy">Attachments use private, time-limited download links. The response is saved in the audit history.</small>
@@ -72,6 +93,6 @@
     </div>
   </dialog>
 
-  <script src="public/js/admin-dashboard.js" defer></script>
+  <script src="public/js/admin-dashboard.js?v=20260729-unified" defer></script>
 </body>
 </html>
