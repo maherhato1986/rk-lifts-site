@@ -2,7 +2,7 @@
   const API_BASE = window.RKL_PORTAL_API || '/api/portal';
   const SESSION_KEY = 'rklPortalSession';
   const $ = selector => document.querySelector(selector);
-  const state = { session: null, user: null, requests: [], filtered: [], selected: null };
+  const state = { session: null, user: null, requests: [], filtered: [], technical: [], technicalFiltered: [], selected: null, selectedKind: 'client' };
   const labels = {
     'new-elevator':'New elevator','maintenance':'Maintenance contract','inspection':'Technical visit',
     'modernization':'Modernization','repair':'Repair / spare parts','escalator':'Escalators',
@@ -32,10 +32,13 @@
   }
 
   function updateStats(){
-    $('#totalRequests').textContent=state.requests.length;
-    $('#newRequests').textContent=state.requests.filter(x=>x.status==='submitted').length;
-    $('#reviewRequests').textContent=state.requests.filter(x=>x.status==='under_review').length;
-    $('#attachmentCount').textContent=state.requests.reduce((sum,x)=>sum+(x.documents?.length||0),0);
+    const all=[...state.requests,...state.technical];
+    $('#totalRequests').textContent=all.length;
+    $('#newRequests').textContent=all.filter(x=>x.status==='submitted').length;
+    $('#reviewRequests').textContent=all.filter(x=>x.status==='under_review').length;
+    $('#attachmentCount').textContent=state.requests.reduce((sum,x)=>sum+(x.documents?.length||0),0)+state.technical.reduce((sum,x)=>sum+(x.attachment_count||0),0);
+    $('#clientQueueCount').textContent=state.requests.length;
+    $('#technicalQueueCount').textContent=state.technical.length;
   }
   function populateTypes(){
     const types=[...new Set(state.requests.map(x=>x.kind))].sort();
@@ -63,13 +66,45 @@
     </tr>`).join('');
     document.querySelectorAll('[data-request-id]').forEach(button=>button.addEventListener('click',()=>openRequest(button.dataset.requestId)));
   }
+  const technicalTypeLabels={technical_report:'Technical report',spare_parts:'Spare parts request',expense:'Expense request',field_note:'Field note'};
+  function applyTechnicalFilters(){
+    const query=$('#technicalSearchInput').value.trim().toLowerCase(),type=$('#technicalTypeFilter').value,status=$('#technicalStatusFilter').value;
+    state.technicalFiltered=state.technical.filter(item=>{
+      const text=[item.reference,item.technician_name,item.technician_email,item.project,item.city,item.title].join(' ').toLowerCase();
+      return (!query||text.includes(query))&&(!type||item.submission_type===type)&&(!status||item.status===status);
+    });
+    renderTechnicalRows();
+  }
+  function renderTechnicalRows(){
+    $('#technicalEmptyState').classList.toggle('hidden',state.technicalFiltered.length>0);
+    $('#technicalRows').innerHTML=state.technicalFiltered.map(item=>`<tr>
+      <td><b>${escapeHtml(item.reference)}</b><small>${escapeHtml(item.title)}</small></td>
+      <td><b>${escapeHtml(item.technician_name)}</b><small>${escapeHtml(item.technician_email)}</small></td>
+      <td>${escapeHtml(technicalTypeLabels[item.submission_type]||item.submission_type)}</td>
+      <td><b>${escapeHtml(item.project||'—')}</b><small>${escapeHtml(item.city||'—')}</small></td>
+      <td>${escapeHtml(formatDate(item.submitted_at))}</td>
+      <td><b>${item.attachment_count||0}</b><small>attachments</small></td>
+      <td><span class="status ${escapeHtml(item.status)}">${escapeHtml(statusLabels[item.status]||item.status)}</span></td>
+      <td><button class="view-btn" data-technical-id="${escapeHtml(item.id)}">Review</button></td>
+    </tr>`).join('');
+    document.querySelectorAll('[data-technical-id]').forEach(button=>button.addEventListener('click',()=>openTechnical(button.dataset.technicalId)));
+  }
+  function showQueue(kind){
+    const technical=kind==='technical';
+    $('#clientQueuePanel').classList.toggle('hidden',technical);$('#technicalQueuePanel').classList.toggle('hidden',!technical);
+    $('#clientQueueTab').classList.toggle('active',!technical);$('#technicalQueueTab').classList.toggle('active',technical);
+    $('#clientQueueNav').classList.toggle('active',!technical);$('#technicalQueueNav').classList.toggle('active',technical);
+  }
+
   async function loadQueue(){
     $('#refreshButton').disabled=true;
     try{
       const result=await authenticatedApi('/admin/queue');
       state.requests=result.requests||[];
+      state.technical=result.technicalSubmissions||[];
       state.filtered=[...state.requests];
-      updateStats();populateTypes();applyFilters();
+      state.technicalFiltered=[...state.technical];
+      updateStats();populateTypes();applyFilters();applyTechnicalFilters();
     }catch(error){alert(error.message)}
     finally{$('#refreshButton').disabled=false}
   }
@@ -84,7 +119,8 @@
   }
   function openRequest(id){
     const item=state.requests.find(request=>request.id===id);if(!item)return;
-    state.selected=item;
+    state.selected=item;state.selectedKind='client';
+    $('#responseLabel').textContent='Message to client';$('#sendResponse').textContent='Save status & email client';
     $('#dialogReference').textContent=item.reference;
     $('#requestInfo').innerHTML=[
       info('Client',item.client?.full_name),info('Email',item.client?.email),info('Mobile',item.client?.phone?`+${item.client.phone}`:'—'),
@@ -101,6 +137,27 @@
     $('#actionMessage').textContent='';
     $('#requestDialog').showModal();
   }
+  function openTechnical(id){
+    const item=state.technical.find(submission=>submission.id===id);if(!item)return;
+    state.selected=item;state.selectedKind='technical';
+    const details=item.details||{};
+    $('#dialogReference').textContent=item.reference;
+    $('#requestInfo').innerHTML=[
+      info('Technician',item.technician_name),info('Email',item.technician_email),info('Submission type',technicalTypeLabels[item.submission_type]||item.submission_type),
+      info('Project',item.project),info('City',item.city),info('Submitted',formatDate(item.submitted_at)),
+      info('Risk',details.risk),info('Health score',details.healthScore!==undefined?`${details.healthScore}%`:'—'),info('Elevator',details.elevatorCode)
+    ].join('');
+    $('#requestDescription').textContent=JSON.stringify(details,null,2);
+    $('#fileCount').textContent=`${item.attachment_count||0} referenced files`;
+    $('#attachmentList').innerHTML='<div class="file-empty">Attachments remain protected in the RKL Field Service system. Open the technician system to review the original report and files.</div>';
+    $('#historyList').innerHTML=item.review_message?`<article class="history-item"><div><b>Admin review</b><p>${escapeHtml(item.review_message)}</p></div><time>${escapeHtml(formatDate(item.reviewed_at))}</time></article>`:'<div class="file-empty">No central review activity yet.</div>';
+    $('#actionStatus').value=item.status==='submitted'?'under_review':(['under_review','changes_requested','approved','rejected','closed'].includes(item.status)?item.status:'under_review');
+    $('#responseLabel').textContent='Review note to technician';
+    $('#responseMessage').value=item.review_message||'';$('#actionMessage').textContent='';
+    $('#sendResponse').textContent='Save technician review';
+    $('#requestDialog').showModal();
+  }
+
   async function downloadFile(id,button){
     button.disabled=true;button.textContent='Preparing…';
     try{const result=await authenticatedApi(`/admin/documents/${id}/download`);window.open(result.url,'_blank','noopener')}
@@ -112,8 +169,9 @@
     const button=$('#sendResponse'),status=$('#actionStatus').value,message=$('#responseMessage').value.trim();
     button.disabled=true;$('#actionMessage').textContent='Saving and sending…';
     try{
-      const result=await authenticatedApi(`/admin/requests/${state.selected.id}/action`,{method:'POST',body:JSON.stringify({status,message})});
-      $('#actionMessage').textContent=result.emailSent?'Status saved and email sent to the client.':'Status saved. Email delivery is temporarily delayed.';
+      const endpoint=state.selectedKind==='technical'?`/admin/technical/${state.selected.id}/action`:`/admin/requests/${state.selected.id}/action`;
+      const result=await authenticatedApi(endpoint,{method:'POST',body:JSON.stringify({status,message})});
+      $('#actionMessage').textContent=state.selectedKind==='technical'?'Technician review saved in the central queue.':(result.emailSent?'Status saved and email sent to the client.':'Status saved. Email delivery is temporarily delayed.');
       await loadQueue();
       setTimeout(()=>$('#requestDialog').close(),1200);
     }catch(error){$('#actionMessage').textContent=error.message}
@@ -134,6 +192,13 @@
   $('#searchInput').addEventListener('input',applyFilters);
   $('#typeFilter').addEventListener('change',applyFilters);
   $('#statusFilter').addEventListener('change',applyFilters);
+  $('#technicalSearchInput').addEventListener('input',applyTechnicalFilters);
+  $('#technicalTypeFilter').addEventListener('change',applyTechnicalFilters);
+  $('#technicalStatusFilter').addEventListener('change',applyTechnicalFilters);
+  $('#clientQueueTab').addEventListener('click',()=>showQueue('client'));
+  $('#technicalQueueTab').addEventListener('click',()=>showQueue('technical'));
+  $('#clientQueueNav').addEventListener('click',()=>showQueue('client'));
+  $('#technicalQueueNav').addEventListener('click',()=>showQueue('technical'));
   $('#refreshButton').addEventListener('click',loadQueue);
   $('#sendResponse').addEventListener('click',sendResponse);
   $('#closeDialog').addEventListener('click',()=>$('#requestDialog').close());
