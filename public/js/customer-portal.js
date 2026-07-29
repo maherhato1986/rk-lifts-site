@@ -68,7 +68,7 @@
     validationNumberTypes:['MOBILE','FIXED_LINE','FIXED_LINE_OR_MOBILE'],
     loadUtils:()=>import('https://cdn.jsdelivr.net/npm/intl-tel-input@29.1.2/build/js/utils.js')
   });
-  $('input[inputmode="numeric"]').forEach(input => input.addEventListener('input', () => {
+  document.querySelectorAll('input[inputmode="numeric"]').forEach(input => input.addEventListener('input', () => {
     input.value = input.value.replace(/\D/g, '').slice(0, Number(input.maxLength) || 9);
   }));
 
