@@ -128,7 +128,7 @@ export default async function handler(req,res){
           const {data:newOrganization,error:organizationError}=await database.from('organizations').insert({name:'RKL Administration'}).select('id').single();if(organizationError)throw organizationError;
           organization=newOrganization
         }
-        const {data:newProfile,error:profileError}=await database.from('profiles').upsert({id:adminUser.id,organization_id:organization.id,full_name:'RKL Administrator',email:adminEmail,role:'admin',email_verified_at:new Date().toISOString()},{onConflict:'id'}).select('id,email').single();
+        const {data:newProfile,error:profileError}=await database.from('profiles').upsert({id:adminUser.id,organization_id:organization.id,full_name:'RKL Administrator',email:adminEmail,phone:'+966114774021',role:'admin',email_verified_at:new Date().toISOString()},{onConflict:'id'}).select('id,email').single();
         if(profileError)throw profileError;profile=newProfile
       }
       if(!profile)return reply(res,404,{message:'No client account was found for this email. Please create an account first.'});
