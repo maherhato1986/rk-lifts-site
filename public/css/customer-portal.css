@@ -13,3 +13,5 @@ dialog{width:min(760px,calc(100% - 28px));border:0;border-radius:22px;padding:0;
 .sidebar nav button,.service-grid button{text-align:left}
 .sidebar nav em{margin-left:auto;margin-right:0}
 @media(max-width:850px){.sidebar{transform:translateX(-110%)}.sidebar.open{transform:none}.workspace{margin-left:0;margin-right:0}.auth-card{padding:26px 22px}}
+
+.phone-number-field{display:grid;grid-template-columns:minmax(190px,42%) 1fr;gap:10px;direction:ltr}.phone-number-field select,.phone-number-field input{width:100%;border:1px solid #ccd9d4;border-radius:12px;background:#fbfdfc;padding:13px 14px;outline:0}.phone-number-field select:focus,.phone-number-field input:focus{border-color:var(--green);box-shadow:0 0 0 4px rgba(14,170,114,.1)}@media(max-width:560px){.phone-number-field{grid-template-columns:1fr}.phone-number-field select{min-height:50px}}
