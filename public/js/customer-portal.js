@@ -47,27 +47,22 @@
   }
 
   $$('[data-show]').forEach(button => button.addEventListener('click', () => showStep(button.dataset.show)));
-  const requestedView = new URLSearchParams(location.search).get('view');
-  const isAdminEntry = requestedView === 'admin';
-  if (requestedView === 'login' || isAdminEntry) showStep('loginStep');
+  const entryParams = new URLSearchParams(location.search);
+  const requestedView = entryParams.get('view');
+  const requestedIdentity = String(entryParams.get('identity') || '').trim().toLowerCase();
+  const isAdminEntry = requestedView === 'admin' || requestedIdentity === 'admin@rkl.sa';
+  if (requestedView === 'login' || isAdminEntry || requestedIdentity) showStep('loginStep');
   if (requestedView === 'register') showStep('registerStep');
-  if (isAdminEntry) {
-    const adminEmailField = $('#loginForm [name="identity"]');
-    adminEmailField.value = 'admin@rkl.sa';
-    adminEmailField.readOnly = true;
-    $('#loginStep .step-label').textContent = 'ADMIN SIGN IN';
-    $('#loginStep h2').textContent = 'RKL Admin access';
-    $('#loginStep .muted').textContent = 'A secure one-time code will be sent to admin@rkl.sa.';
+  if (requestedIdentity || isAdminEntry) {
+    const identityField = $('#loginForm [name="identity"]');
+    identityField.value = isAdminEntry ? 'admin@rkl.sa' : requestedIdentity;
+    if (isAdminEntry) {
+      identityField.readOnly = true;
+      $('#loginStep .step-label').textContent = 'ADMIN SIGN IN';
+      $('#loginStep h2').textContent = 'RKL Admin access';
+      $('#loginStep .muted').textContent = 'A secure one-time code will be sent to admin@rkl.sa.';
+    }
   }
-  const phoneField=$('#registrationPhone');
-  const phoneInput=window.intlTelInput(phoneField,{
-    initialCountry:'sa',
-    separateDialCode:true,
-    nationalMode:true,
-    strictMode:true,
-    validationNumberTypes:['MOBILE','FIXED_LINE','FIXED_LINE_OR_MOBILE'],
-    loadUtils:()=>import('https://cdn.jsdelivr.net/npm/intl-tel-input@29.1.2/build/js/utils.js')
-  });
   document.querySelectorAll('input[inputmode="numeric"]').forEach(input => input.addEventListener('input', () => {
     input.value = input.value.replace(/\D/g, '').slice(0, Number(input.maxLength) || 9);
   }));
@@ -79,10 +74,11 @@
     const status = $('#registerMessage');
     message(status, 'Checking your phone number…');
     try {
-      await phoneInput.promise;
-      if(!phoneInput.isValidNumber())throw new Error('Enter a valid mobile or landline number for the selected country. / أدخل رقم جوال أو هاتف أرضي صحيحًا للدولة المختارة.');
-      data.phone=phoneInput.getNumber();
-      data.phoneCountry=phoneInput.getSelectedCountryData().iso2.toUpperCase();
+      const dialCode=$('#registrationDialCode').value;
+      const localDigits=String(data.phone||'').replace(/\D/g,'').replace(/^0+/,'');
+      if(localDigits.length<7||localDigits.length>14)throw new Error('Enter a valid local mobile or landline number. / أدخل رقم جوال أو هاتف أرضي محلي صحيحًا.');
+      data.phone=`${dialCode}${localDigits}`;
+      data.phoneCountry=dialCode;
       message(status, 'Sending your verification code…');
       const result = await api('/auth/register/start', { method: 'POST', body: JSON.stringify(data) });
       state.registrationId = result.registrationId;
