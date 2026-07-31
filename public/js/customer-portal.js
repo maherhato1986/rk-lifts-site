@@ -8,8 +8,8 @@
     document.head.appendChild(script);
   });
 
-  loadScript('https://raw.githubusercontent.com/maherhato1986/rk-lifts-site/96ce0daae289e33f1150194e7b7f068b27724563/public/js/customer-portal.js')
-    .then(() => loadScript('public/js/cabin-catalog.js?v=20260731-1'))
+  loadScript('https://cdn.jsdelivr.net/gh/maherhato1986/rk-lifts-site@96ce0daae289e33f1150194e7b7f068b27724563/public/js/customer-portal.js')
+    .then(() => loadScript('public/js/cabin-catalog.js?v=20260731-2'))
     .catch((error) => {
       console.error('RKL portal loader error:', error);
       const fallback = document.createElement('div');
