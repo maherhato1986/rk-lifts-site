@@ -136,6 +136,27 @@ textarea{
   min-height:110px;
   resize:vertical;
 }
+.field-help{
+  margin-top:8px;
+  padding:9px 11px;
+  border-right:3px solid var(--primary);
+  border-radius:8px;
+  background:#ecfdf5;
+  color:#475569;
+  font-size:11.5px;
+  line-height:1.7;
+}
+.section{
+  position:relative;
+}
+.section::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border:1px solid rgba(15,118,110,.03);
+  border-radius:16px;
+  pointer-events:none;
+}
 
 /* =====================================
    Buttons
@@ -471,8 +492,9 @@ tbody tr:hover{
       <div>
         <label>عدد الزيارات الدورية</label>
         <select id="visits">
-          <option value="monthly">زيارة شهرية</option>
-          <option value="bimonthly">زيارة كل شهرين</option>
+          <option value="quarterly" selected>4 زيارات سنويًا (زيارة كل 3 أشهر)</option>
+          <option value="bimonthly">6 زيارات سنويًا (زيارة كل شهرين)</option>
+          <option value="monthly">12 زيارة سنويًا (زيارة شهرية)</option>
         </select>
       </div>
 
@@ -495,9 +517,11 @@ tbody tr:hover{
       <div>
         <label>خدمة الطوارئ</label>
         <select id="emergency">
-          <option value="normal">أوقات الدوام</option>
-          <option value="extended">خارج الدوام (إضافي)</option>
+          <option value="standard" selected>طوارئ غير محدودة أثناء الدوام + دعم هاتفي مجاني بعد الدوام</option>
+          <option value="normal">طوارئ غير محدودة أثناء ساعات الدوام فقط</option>
+          <option value="extended">حضور ميداني خارج الدوام (بعرض منفصل)</option>
         </select>
+        <div class="field-help">الدوام الرسمي: الأحد إلى الخميس، 8:00 صباحًا - 5:00 مساءً، باستثناء العطلات الرسمية.</div>
       </div>
     </div>
 
@@ -1630,6 +1654,18 @@ function saveContract() {
           document.getElementById('excludeFutureMaintenance')?.checked || false
       } : null,
 
+      visits: (serviceType === 'annual')
+        ? (document.getElementById('visits')?.value || 'quarterly')
+        : null,
+      emergency: (serviceType === 'annual')
+        ? (document.getElementById('emergency')?.value || 'standard')
+        : null,
+      spareParts: (serviceType === 'annual')
+        ? (document.getElementById('spareParts')?.value || 'excluded')
+        : null,
+      training: (serviceType === 'annual')
+        ? (document.getElementById('training')?.value || 'yes')
+        : null,
       content: (serviceType === 'annual')
         ? generateFullContractText()
         : ''
@@ -2464,454 +2500,186 @@ ${
 }
 
 function openAnnualContractOfferPrint(contract){
-
   if(!contract || contract.serviceType !== 'annual'){
-    alert('❌ هذا ليس عقد صيانة سنوي');
+    alert('هذا السجل ليس عقد صيانة سنويًا');
     return;
   }
 
-  const calc     = contract.pricing || {};
+  const calc = contract.pricing || {};
   const customer = contract.customer || {};
-  const refNo    = contract.id || '—';
-  const date     = contract.date || '—';
-
-  // ✅ بيانات المشروع
-  const projectName     = contract.projectName || '—';
+  const refNo = contract.id || '—';
+  const date = contract.date || '—';
+  const projectName = contract.projectName || '—';
   const projectLocation = contract.projectLocation || '—';
+  const lifts = contract.lifts || '—';
 
-  // ✅ بيانات المصاعد (ثانياً) — من العقد (الجديد) أو fallback
-  const elevatorType = contract.elevatorType || '';
-  const brandSelect  = contract.brandSelect  || '';
-  const brandOther   = contract.brandOther   || '';
-  const capacityVal  = contract.capacity     || '';
-  const floorsVal    = contract.floors       || '';
-  const buildingVal  = contract.building     || '';
-
-  const elevatorTypeMap = {
-    passenger: 'ركاب',
-    service: 'خدمة',
-    panoramic: 'بانورامي'
-  };
-
-  const buildingMap = {
-    private: 'خاص',
-    government: 'حكومي'
-  };
-
+  const elevatorTypeMap = {passenger:'ركاب',service:'خدمة',panoramic:'بانورامي'};
+  const buildingMap = {private:'خاص',government:'حكومي'};
   const capacityMap = {
-    "3000":"150 – 320",
-    "3500":"350 – 550",
-    "4000":"600 – 900",
-    "4500":"901 – 1100",
-    "5000":"1101 – 1500",
-    "5500":"1501 – 1750"
+    "3000":"150 - 320 كجم","3500":"350 - 550 كجم","4000":"600 - 900 كجم",
+    "4500":"901 - 1100 كجم","5000":"1101 - 1500 كجم","5500":"1501 - 1750 كجم"
   };
+  const brand = contract.brandSelect === 'Other'
+    ? (contract.brandOther || '—')
+    : (contract.brandSelect || '—');
+  const elevatorType = elevatorTypeMap[contract.elevatorType] || contract.elevatorType || '—';
+  const building = buildingMap[contract.building] || contract.building || '—';
+  const capacity = capacityMap[String(contract.capacity || '')] || contract.capacity || '—';
+  const floors = contract.floors || '—';
 
-  const brand =
-    (brandSelect === 'Other')
-      ? (brandOther || '—')
-      : (brandSelect || '—');
+  const visitsVal = contract.visits || 'quarterly';
+  const visitsMap = {
+    quarterly:'أربع (4) زيارات دورية سنويًا، بواقع زيارة كل ثلاثة أشهر',
+    bimonthly:'ست (6) زيارات دورية سنويًا، بواقع زيارة كل شهرين',
+    monthly:'اثنتا عشرة (12) زيارة دورية سنويًا، بواقع زيارة كل شهر'
+  };
+  const visits = visitsMap[visitsVal] || visitsMap.quarterly;
+  const emergencyVal = contract.emergency || 'standard';
+  const emergencyMap = {
+    standard:'زيارات طوارئ غير محدودة أثناء الدوام الرسمي، ودعم فني هاتفي مجاني بعد الدوام',
+    normal:'زيارات طوارئ غير محدودة أثناء الدوام الرسمي فقط',
+    extended:'حضور ميداني خارج الدوام وفق عرض سعر منفصل'
+  };
+  const emergency = emergencyMap[emergencyVal] || emergencyMap.standard;
+  const training = contract.training === 'no' ? 'غير مشمول' : 'تدريب أساسي لموظف أو موظفين اثنين';
+  const spareParts = contract.spareParts === 'included'
+    ? 'مشمولة فقط وفق العرض الخاص المعتمد'
+    : 'غير مشمولة وتُسعّر بعرض مستقل بعد التقرير الفني';
 
-  const capacityText = capacityVal ? (capacityMap[String(capacityVal)] || capacityVal) : '—';
+  const money = n => Number(n || 0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const subtotal = Number(calc.subtotal || 0);
+  const vat = Number(calc.vat || subtotal * .15);
+  const total = Number(calc.total || subtotal + vat);
+  const unitPrice = Number(calc.pricePerLift || (Number(lifts) ? subtotal / Number(lifts) : 0));
+  const customerName = customer.customer_name || customer.name || '—';
 
-  // ✅ نطاق الصيانة (من العقد إن وُجد / أو من الصفحة كخيار احتياطي)
-  const savedVisits    = contract.visits || null;
-  const savedEmergency = contract.emergency || null;
-  const savedSpare     = contract.spareParts || null;
-  const savedTraining  = contract.training || null;
+  const w = window.open('','_blank');
+  if(!w){ alert('يرجى السماح بالنوافذ المنبثقة لطباعة العقد'); return; }
 
-  const visitsVal =
-    savedVisits ||
-    (document.getElementById('visits')?.value || 'monthly');
-
-  const emergencyVal =
-    savedEmergency ||
-    (document.getElementById('emergency')?.value || 'normal');
-
-  const sparePartsVal =
-    savedSpare ||
-    (document.getElementById('spareParts')?.value || 'excluded');
-
-  const trainingVal =
-    savedTraining ||
-    (document.getElementById('training')?.value || 'no');
-
-  const visits =
-    visitsVal === 'monthly'
-      ? '12 زيارة (زيارة شهرية)'
-      : '6 زيارات (كل شهرين)';
-
-  const emergency =
-  emergencyVal === 'extended'
-    ? 'خدمة طوارئ خارج أوقات الدوام (إضافي)'
-    : 'خدمة طوارئ خلال أوقات الدوام 3 زيارات مجانية بالسنة';
-
-  const spareParts =
-    sparePartsVal === 'included'
-      ? 'قطع الغيار مشمولة (بعرض خاص)'
-      : 'قطع الغيار غير مشمولة';
-
-  const training =
-    trainingVal === 'yes'
-      ? 'يشمل تدريب إنقاذ المحتجزين (1–2 موظف)'
-      : 'لا يشمل تدريب';
-
-  // ✅ أرقام مالية (قد تكون محفوظة كنص)
-  const money = (n) => (Number(n || 0)).toFixed(2);
-  const subtotalNum = Number(calc.subtotal || 0);
-  const vatNum      = Number(calc.vat || 0);
-  const totalNum    = Number(calc.total || 0);
-
-  // ✅ بيانات التحويل البنكي (RKL) — ثابتة
-  const bankName    = 'البنك الأهلي السعودي (SNB)';
-  const beneficiary = 'آر كي ال RKL للمصاعد والسلالم الكهربائية';
-  const customerNo  = '7023357804';
-  const accountNo   = '01400005531406';
-  const iban        = 'SA1710000001400005531406';
-
-  const w = window.open('', '_blank');
-
+  w.document.open();
   w.document.write(`<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>عرض سعر عقد صيانة وقائية سنوي - ${refNo}</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>عقد صيانة وقائية سنوي - ${refNo}</title>
 <style>
-*{ -webkit-print-color-adjust: exact; print-color-adjust: exact; box-sizing:border-box; }
-@page{ size:A4; margin:15mm; }
-
-:root{
-  --ink:#111827;
-  --muted:#6b7280;
-  --line:#e5e7eb;
-  --soft:#f8fafc;
-  --brand:#0f766e;
-}
-.highlight-number{
-  background:#fff3cd;
-  padding:2px 6px;
-  border-radius:4px;
-  font-weight:700;
-  color:#000;
-}
-body{
-  margin:0;
-  font-family:"Cairo","Tajawal",Arial,sans-serif;
-  font-size:14px;
-  color:var(--ink);
-  background:#fff;
-  line-height:1.75;
-}
-
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:url('/public/images/logo.png') center center / 360px no-repeat;
-  opacity:0.04;
-  z-index:-1;
-}
-
-.page{
-  outline:1.5px solid var(--brand);
-  outline-offset:-8px;
-  padding:16px 18px 22px;
-}
-
-.header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  border-bottom:2px solid var(--brand);
-  padding-bottom:10px;
-  gap:12px;
-}
-
-.header img{ width:46px; height:auto; }
-
-.header h1{
-  margin:0;
-  color:var(--brand);
-  font-size:18.5px;
-  font-weight:900;
-  text-align:center;
-  flex:1;
-}
-
-.meta{
-  margin-top:14px;
-  background:var(--soft);
-  border:1px solid var(--line);
-  border-radius:12px;
-  padding:12px 14px;
-  font-size:13.5px;
-}
-
-.meta-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px 16px;
-}
-
-.meta b{ color:var(--brand); }
-
-.section{
-  margin-top:14px;
-  border:1px solid var(--line);
-  border-radius:12px;
-  padding:12px 14px;
-  background:#fff;
-}
-
-.section h3{
-  margin:0 0 10px 0;
-  color:var(--brand);
-  font-size:15px;
-  font-weight:900;
-  border-bottom:1px solid var(--line);
-  padding-bottom:8px;
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:13.5px;
-}
-
-th,td{
-  border:1px solid var(--line);
-  padding:9px 10px;
-  vertical-align:top;
-}
-
-thead th{
-  background:var(--brand);
-  color:#fff;
-  font-weight:800;
-}
-
-tbody tr:nth-child(even){ background:#f9fafb; }
-
-.money{
-  text-align:left;
-  direction:ltr;
-  font-weight:800;
-}
-
-.summary{
-  background:#f0fdfa;
-  border:1px solid #99f6e4;
-}
-
-.summary .row{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  padding:6px 0;
-  border-bottom:1px dashed var(--line);
-}
-.summary .row:last-child{ border-bottom:none; }
-.summary .total{
-  font-size:15.5px;
-  color:var(--brand);
-  font-weight:900;
-}
-
-.note{
-  color:var(--muted);
-  font-size:12.5px;
-  margin-top:8px;
-}
-
-.footer{
-  margin-top:14px;
-  text-align:center;
-  font-size:11.5px;
-  color:var(--muted);
-  line-height:1.5;
-}
-
-.print-actions{
-  margin-top:12px;
-  text-align:center;
-}
-
-button{
-  background:var(--brand);
-  color:#fff;
-  border:none;
-  padding:10px 14px;
-  border-radius:10px;
-  font-weight:800;
-  cursor:pointer;
-}
-
-@media print{
-  .print-actions{ display:none; }
-}
+:root{--brand:#075f63;--dark:#043f43;--soft:#eaf4f4;--ink:#1d2935;--muted:#61717d;--line:#a8c2c4}
+*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+html,body{margin:0;background:#dfe5e7;color:var(--ink);font-family:"Cairo","Tajawal",Arial,sans-serif;font-size:9.1pt;line-height:1.42}
+.toolbar{position:sticky;top:0;z-index:10;padding:10px;text-align:center;background:#102e31}
+.toolbar button{border:0;border-radius:6px;padding:9px 20px;background:#fff;color:var(--dark);font-weight:800;cursor:pointer}
+.a4-page{position:relative;width:210mm;height:297mm;margin:10mm auto;padding:13mm 14mm 16mm;background:#fff;box-shadow:0 5px 20px #0002;overflow:hidden;break-after:page;page-break-after:always}
+.a4-page:last-child{break-after:auto;page-break-after:auto}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:15mm;border-bottom:2px solid var(--brand);padding-bottom:7px;margin-bottom:9px}
+.brand{display:flex;gap:9px;align-items:center}.brand img{width:17mm;height:17mm;object-fit:contain}.brand strong{display:block;color:var(--brand);font-size:17pt;line-height:1}.brand span{font-size:7.4pt;color:var(--muted)}
+.doc{text-align:left}.doc h1{margin:0;color:var(--dark);font-size:16pt;line-height:1.15}.doc small{color:var(--muted);font-size:7.3pt}
+h2{margin:8px 0 5px;color:var(--brand);font-size:10.6pt}
+p{margin:4px 0}ul{margin:4px 17px 6px 0;padding:0}li{margin:2.5px 0}
+.meta{display:grid;grid-template-columns:24mm 1fr 23mm 1fr;border:1px solid var(--line);margin-bottom:8px}
+.meta div{padding:5px 7px;border-left:1px solid #cedcdd;border-bottom:1px solid #cedcdd}.meta div:nth-child(4n){border-left:0}.meta div:nth-last-child(-n+4){border-bottom:0}.label{background:var(--soft);font-weight:800;color:var(--dark)}
+table{width:100%;border-collapse:collapse;margin:5px 0 7px;font-size:8.5pt}th{background:var(--brand);color:#fff;padding:5px;border:1px solid var(--brand)}td{padding:5px 6px;border:1px solid #bdd0d1;vertical-align:top}.center{text-align:center}.ltr{direction:ltr;text-align:left}.money{direction:ltr;text-align:left;white-space:nowrap}.soft{background:#f4f8f8;font-weight:700}
+.note{padding:7px 9px;margin:6px 0;border-right:3px solid var(--brand);background:var(--soft);font-size:8.2pt}
+.keep{break-inside:avoid;page-break-inside:avoid}
+.acceptance{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:7px}.sig{border:1px solid var(--line);min-height:48mm}.sig h3{margin:0;padding:6px 8px;background:var(--soft);color:var(--dark);font-size:9pt}.sig div{padding:9px;line-height:2}
+footer{position:absolute;right:14mm;left:14mm;bottom:7mm;display:flex;justify-content:space-between;border-top:1px solid var(--line);padding-top:4px;color:var(--muted);font-size:6.6pt;direction:ltr}
+@page{size:A4;margin:0}
+@media print{html,body{background:#fff}.toolbar{display:none!important}.a4-page{margin:0;box-shadow:none}}
 </style>
 </head>
-
 <body>
-  <div class="page">
+<div class="toolbar"><button onclick="window.print()">طباعة / حفظ PDF</button></div>
 
-    <div class="header">
-      <img src="/public/images/logo.png" alt="RKL">
-      <h1>عرض سعر عقد صيانة وقائية سنوي</h1>
-      <div style="width:46px"></div>
-    </div>
+<section class="a4-page">
+<header>
+  <div class="brand"><img src="/public/images/logo.png" alt="RKL"><div><strong>RKL</strong><b>آر كي ال للمصاعد والسلالم الكهربائية</b><span>السجل التجاري: 1010709355 | الرقم الضريبي: 302250422600003</span></div></div>
+  <div class="doc"><h1>عرض وعقد صيانة<br>وقائية سنوي</h1><small>رقم المرجع: ${refNo}</small></div>
+</header>
+<div class="meta">
+  <div class="label">العميل</div><div>${customerName}</div><div class="label">تاريخ الإصدار</div><div>${date}</div>
+  <div class="label">المشروع</div><div>${projectName}</div><div class="label">مدة الصلاحية</div><div>15 يومًا</div>
+  <div class="label">الموقع</div><div>${projectLocation}</div><div class="label">مدة العقد</div><div>12 شهرًا</div>
+</div>
+<p><b>الموضوع: عرض وعقد الصيانة الوقائية السنوية للمصاعد</b></p>
+<p>السادة/ ${customerName} المحترمين،</p>
+<p>يسر مؤسسة آر كي ال للمصاعد والسلالم الكهربائية تقديم عرضها لتنفيذ أعمال الصيانة الوقائية للمصاعد الموضحة أدناه، بهدف دعم التشغيل الآمن والموثوق والحد من الأعطال من خلال الفحص والضبط والتنظيف والتشحيم والاختبارات التشغيلية والدعم الفني.</p>
+<h2>1. بيانات المصاعد</h2>
+<table class="keep"><thead><tr><th>العدد</th><th>النوع</th><th>الماركة</th><th>الحمولة</th><th>الطوابق/الوقفات</th><th>نوع المبنى</th></tr></thead>
+<tbody><tr class="center"><td>${lifts}</td><td>${elevatorType}</td><td>${brand}</td><td>${capacity}</td><td>${floors}</td><td>${building}</td></tr></tbody></table>
+<h2>2. نطاق الصيانة المشمول</h2>
+<ul>
+<li>${visits}.</li>
+<li>فحص وضبط الكنترول والدرايف والمحرك والفرامل ودوائر الأمان والأبواب والأقفال والرولات والأدلة والحبال والبكرات والسكك والكبينة وحمل الموازن ومعدات غرفة الماكينة.</li>
+<li>التنظيف والضبط البسيط والاختبار التشغيلي والتشحيم الدوري. وتشمل الخدمة مواد التشحيم القياسية اللازمة للصيانة الدورية.</li>
+<li>${emergency}.</li>
+<li>${training} على التوعية الأساسية وإجراءات تحرير الركاب المصرح بها، وفق حالة الموقع ومتطلبات السلامة.</li>
+<li>إصدار تقرير خدمة بعد كل زيارة صيانة دورية وكل حضور طارئ ميداني.</li>
+</ul>
+<h2>3. العرض المالي</h2>
+<table class="keep"><thead><tr><th>#</th><th>الوصف</th><th>الكمية</th><th>سعر الوحدة</th><th>الإجمالي قبل الضريبة</th></tr></thead>
+<tbody><tr><td class="center">1</td><td>خدمة الصيانة الوقائية السنوية للمصاعد وفق النطاق والشروط الواردة في هذا العقد.</td><td class="center">${lifts}</td><td class="money">${money(unitPrice)} SAR</td><td class="money">${money(subtotal)} SAR</td></tr></tbody></table>
+<table class="keep" style="width:48%;margin-right:auto"><tr><td class="soft">الإجمالي قبل الضريبة</td><td class="money">${money(subtotal)} SAR</td></tr><tr><td class="soft">ضريبة القيمة المضافة 15%</td><td class="money">${money(vat)} SAR</td></tr><tr><td class="soft">الإجمالي شامل الضريبة</td><td class="money"><b>${money(total)} SAR</b></td></tr></table>
+<footer><span>RKL Lifts & Escalators | Riyadh | Tel: 0114774021 | admin@rkl.sa</span><span>Page 1 of 3</span></footer>
+</section>
 
-    <div class="meta">
-      <div class="meta-grid">
-        <div><b>العميل:</b> ${(customer.customer_name || customer.name || '—')}</div>
-        <div><b>رقم العرض:</b> ${refNo}</div>
+<section class="a4-page">
+<header>
+  <div class="brand"><img src="/public/images/logo.png" alt="RKL"><div><strong>RKL</strong><b>شروط وأحكام الصيانة الوقائية</b><span>CR: 1010709355 | VAT: 302250422600003</span></div></div>
+  <div class="doc"><h1>الشروط<br>والأحكام</h1><small>${refNo}</small></div>
+</header>
+<h2>4. شروط الدفع وبدء الخدمة</h2>
+<ul><li>100% دفعة مقدمة عند اعتماد العرض أو إصدار أمر الشراء.</li><li>تبدأ جدولة الخدمة ومدة العقد بعد استلام الدفعة وإشعار التحويل وإصدار خطة الزيارات.</li><li>مدة العقد اثنا عشر (12) شهرًا من تاريخ بدء الخدمة المؤكد.</li><li>تُعد الزيارة المجدولة مستخدمة إذا تعذر العمل بسبب قطع مستثناة أو أعطال خارجية أو عدم إتاحة الدخول أو عدم سلامة الموقع.</li></ul>
+<h2>5. شروط خدمة الطوارئ</h2>
+<div class="note"><b>ساعات الدوام الرسمي:</b> من الأحد إلى الخميس، من الساعة 8:00 صباحًا حتى 5:00 مساءً، باستثناء عطلة نهاية الأسبوع والعطلات الرسمية في المملكة العربية السعودية.</div>
+<ul>
+<li>خلال الدوام الرسمي: زيارات الطوارئ الميدانية غير محدودة ومشمولة دون رسوم خدمة أو حضور إضافية.</li>
+<li>خارج الدوام وعطلات نهاية الأسبوع والعطلات الرسمية: تقتصر الخدمة على الدعم الفني الهاتفي عن بعد من فريق المناوبة، دون رسوم خدمة أو اتصال إضافية.</li>
+<li>يقدم الفريق إرشادات الفحص الأولي الآمن لممثل العميل المعتمد لمحاولة إعادة التشغيل متى كان ذلك ممكنًا بصورة آمنة.</li>
+<li>إذا تعذر الحل عن بعد، يُرتب الحضور الميداني في أقرب وقت متاح خلال ساعات الدوام الرسمي.</li>
+<li>عند الحاجة إلى قطع أو مكونات أو مستهلكات متخصصة أو أعمال تصحيحية مستثناة، تصدر RKL تقريرًا فنيًا وعرض سعر مستقلًا عند الحاجة.</li>
+<li>لا يتم تنفيذ أي استبدال أو عمل مستثنى قبل موافقة العميل الكتابية.</li>
+<li>لا تشمل الزيارات غير المحدودة تكرار الحضور للعطل نفسه عند عدم اعتماد العميل للإصلاح أو الاستبدال الموصى به.</li>
+</ul>
+<div class="note"><b>توضيح مهم:</b> التغطية بعد ساعات الدوام هي دعم هاتفي عن بعد فقط ولا تشمل الحضور الميداني الفوري. تظل قطع الغيار والمكونات والمستهلكات والأعمال التصحيحية المستثناة بمقابل مالي بعد التقرير الفني وموافقة العميل.</div>
+<h2>6. الاستثناءات</h2>
+<ul>
+<li>${spareParts}.</li>
+<li>الإصلاحات التصحيحية والتحديثات وأعمال الاستبدال غير المذكورة صراحة ضمن نطاق العقد.</li>
+<li>الأعمال المدنية والإنشائية والكهربائية وأنظمة الحريق والاتصالات والتكييف والعزل المائي وأعمال المقاول.</li>
+<li>الأعطال الناتجة عن سوء الاستخدام أو العبث أو التحميل الزائد أو عدم استقرار الكهرباء أو انقطاعها أو تسرب المياه أو الغرق أو الحريق أو تدخل طرف غير مصرح.</li>
+<li>أعمال جهات الفحص الخارجية ما لم تُدرج كتابيًا.</li>
+</ul>
+<h2>7. ضوابط السلامة والتدريب</h2>
+<ul><li>يقتصر التدريب على التوعية الأساسية وإجراءات تحرير الركاب المصرح بها وفق التجهيزات بالموقع.</li><li>لا يجوز دخول البئر أو الحفرة أو سطح الكبينة أو غرفة الماكينة أو التعامل مع الكنترول إلا بواسطة أشخاص مؤهلين ومصرح لهم نظامًا.</li><li>إذا تعذر تطبيق إجراء آمن عن بعد، يعزل المصعد حتى حضور الفني المؤهل.</li></ul>
+<footer><span>RKL Lifts & Escalators | Riyadh | Tel: 0114774021 | admin@rkl.sa</span><span>Page 2 of 3</span></footer>
+</section>
 
-        <div><b>تاريخ العرض:</b> ${date}</div>
-        <div><b>نوع الخدمة:</b> صيانة وقائية سنوية</div>
-
-        <div><b>اسم المشروع:</b> ${projectName}</div>
-        <div><b>موقع المشروع:</b> ${projectLocation}</div>
-      </div>
-    </div>
-
-    <!-- ✅ ثانياً: بيانات المصاعد (تفصيلي) -->
-    <div class="section">
-      <h3>ثانياً: بيانات المصاعد</h3>
-      <table>
-        <tbody>
-          <tr>
-            <th style="width:28%">عدد المصاعد</th>
-            <td>${contract.lifts || '—'}</td>
-            <th style="width:28%">نوع المصعد</th>
-            <td>${elevatorType ? (elevatorTypeMap[elevatorType] || elevatorType) : '—'}</td>
-          </tr>
-          <tr>
-            <th>ماركة المصعد</th>
-            <td>${brand}</td>
-            <th>حمولة المصعد</th>
-            <td>${capacityText}</td>
-          </tr>
-          <tr>
-            <th>عدد الطوابق</th>
-            <td>${floorsVal || '—'}</td>
-            <th>نوع المبنى</th>
-            <td>${buildingVal ? (buildingMap[buildingVal] || buildingVal) : '—'}</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="note">* في حال كانت بعض الحقول غير متوفرة داخل العقود القديمة، سيتم عرض (—). احفظ عقد جديد لتظهر كامل البيانات.</div>
-    </div>
-
-    <!-- نطاق الصيانة -->
-    <div class="section">
-      <h3>نطاق الصيانة المشمولة</h3>
-      <table>
-        <tbody>
-          <tr><th style="width:30%">عدد الزيارات</th><td>${visits}</td></tr>
-          <tr><th>خدمة الطوارئ</th><td>${emergency}</td></tr>
-          <tr><th>قطع الغيار</th><td>${spareParts}</td></tr>
-          <tr><th>التدريب</th><td>${training}</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- ملخص مالي -->
-    <div class="section">
-      <h3>الملخص المالي</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>القيمة قبل الضريبة</th>
-            <th>ضريبة 15%</th>
-            <th>الإجمالي شامل الضريبة</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="money">${money(subtotalNum)} SAR</td>
-            <td class="money">${money(vatNum)} SAR</td>
-            <td class="money"><b>${money(totalNum)} SAR</b></td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="note">* جميع الأسعار بالريال السعودي وتشمل ضريبة القيمة المضافة 15% حسب الأنظمة.</div>
-    </div>
-
-    <!-- ✅ طريقة السداد والتحويل -->
-    <div class="section">
-      <h3>طريقة السداد والتحويل البنكي</h3>
-      <table>
-        <tbody>
-          <tr><th style="width:30%">شروط الدفع</th><td><b>100% دفعة مقدمة</b> عند اعتماد العرض/إصدار أمر الشراء، ويبدأ التنفيذ والجدولة بعد استلام التحويل وإشعار السداد.</td></tr>
-          <tr><th>البنك</th><td>${bankName}</td></tr>
-          <tr><th>اسم المستفيد</th><td>${beneficiary}</td></tr>
-          <tr><th>رقم العميل</th><td>${customerNo}</td></tr>
-          <tr><th>رقم الحساب</th><td>${accountNo}</td></tr>
-          <tr><th>الآيبان</th><td style="direction:ltr;text-align:left"><b>${iban}</b></td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- ✅ شروط وأحكام (موسّعة) -->
-    <div class="section">
-      <h3>الشروط والأحكام</h3>
-      <table>
-        <tbody>
-          <tr>
-            <th style="width:30%">سريان العرض</th>
-            <td>ساري لمدة (15) يومًا من تاريخ الإصدار ما لم يتم التعميد خلال المدة.</td>
-          </tr>
-          <tr>
-            <th>بدء الخدمة</th>
-            <td>تبدأ الخدمة بعد اعتماد العرض واستلام الدفعة وإصدار جدول الزيارات وفق نطاق العقد.</td>
-          </tr>
-          <tr>
-            <th>احتساب الزيارة</th>
-            <td>تُحسب الزيارة ضمن جدول الصيانة حتى في حال كان المصعد متوقفًا أو احتاج قطع غيار/أعمال إضافية غير مشمولة.</td>
-          </tr>
-          <tr>
-            <th>الاستثناءات</th>
-            <td>لا يشمل العقد توريد أو استبدال قطع الغيار وأي أعمال مدنية/كهربائية إضافية غير متوفرة بالموقع، وتُسعّر بعرض مستقل.</td>
-          </tr>
-          <tr>
-            <th>حدود المسؤولية</th>
-            <td>لا تتحمل المؤسسة الأعطال الناتجة عن سوء الاستخدام، العبث، التحميل الزائد، انقطاع الكهرباء، أو تدخل أطراف غير معتمدة.</td>
-          </tr>
-          <tr>
-            <th>التزامات العميل</th>
-            <td>توفير بيئة عمل آمنة، وتمكين فريقنا من الوصول لغرفة المكائن/الكنترول، وتوفير مصدر كهرباء مستقر أثناء الفحص.</td>
-          </tr>
-          <tr>
-            <th>الضريبة</th>
-            <td>ضريبة القيمة المضافة 15% محتسبة ضمن الإجمالي أعلاه وفق الأنظمة المعمول بها.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="footer">
-      آر كي ال RKL للمصاعد والسلالم الكهربائية<br>
-      السجل التجاري: 1010709355 – الرقم الضريبي: 302250422600003<br>
-      الرياض – السليمانية | هاتف: 0114774021 | البريد: admin@rk-lifts.com
-    </div>
-
-    <div class="print-actions">
-      <button onclick="window.print()">🖨️ طباعة عرض السعر</button>
-    </div>
-
-  </div>
+<section class="a4-page">
+<header>
+  <div class="brand"><img src="/public/images/logo.png" alt="RKL"><div><strong>RKL</strong><b>القبول والتعميد</b><span>CR: 1010709355 | VAT: 302250422600003</span></div></div>
+  <div class="doc"><h1>الشروط العامة<br>والتعميد</h1><small>${refNo}</small></div>
+</header>
+<h2>8. مسؤوليات العميل</h2>
+<ul><li>توفير وصول آمن ودون عوائق إلى المصاعد وغرف الماكينات والكنترول والبئر والمعدات ذات الصلة.</li><li>توفير بيئة عمل آمنة ومصدر كهرباء مستقر أثناء الفحص والصيانة.</li><li>تسمية ممثل مسؤول أو أكثر لتلقي الإرشاد الهاتفي خارج الدوام.</li><li>منع تدخل الأشخاص أو شركات الصيانة غير المصرح لهم في المعدات المشمولة.</li><li>الإبلاغ الفوري عن التشغيل غير الطبيعي وإيقاف الاستخدام إذا وُجد خطر على السلامة.</li><li>اعتماد وسداد القطع أو الأعمال المستثناة وفق عروض منفصلة عند الحاجة.</li></ul>
+<h2>9. الصلاحية والضريبة والشروط العامة</h2>
+<ul><li>يسري العرض لمدة 15 يومًا تقويميًا من تاريخ الإصدار.</li><li>تم احتساب ضريبة القيمة المضافة بنسبة 15% وفق الأنظمة السارية في المملكة.</li><li>تقتصر مسؤولية RKL على نطاق الصيانة الوارد صراحة في العقد.</li><li>أي تعديل أو طلب إضافي يخضع لعرض كتابي مستقل وموافقة العميل.</li><li>يصبح هذا العرض أساسًا تعاقديًا ملزمًا عند توقيعه أو إصدار أمر شراء رسمي بموجبه.</li></ul>
+<h2>10. بيانات التحويل البنكي</h2>
+<table class="keep"><tr><td class="soft">البنك</td><td>البنك الأهلي السعودي (SNB)</td></tr><tr><td class="soft">اسم المستفيد</td><td>آر كي ال RKL للمصاعد والسلالم الكهربائية</td></tr><tr><td class="soft">رقم العميل</td><td class="ltr">7023357804</td></tr><tr><td class="soft">رقم الحساب</td><td class="ltr">01400005531406</td></tr><tr><td class="soft">الآيبان</td><td class="ltr"><b>SA1710000001400005531406</b></td></tr></table>
+<h2>11. قبول العميل</h2>
+<p>نؤكد قبولنا لهذا العرض ونطاقه وأسعاره وشروط الدفع والاستثناءات وجميع الشروط والأحكام الواردة فيه.</p>
+<div class="acceptance keep">
+<div class="sig"><h3>عن مؤسسة آر كي ال للمصاعد والسلالم الكهربائية</h3><div>الاسم: ___________________________<br>الصفة: ___________________________<br>التوقيع: _________________________<br>التاريخ: _________________________<br>الختم:</div></div>
+<div class="sig"><h3>عن ${customerName}</h3><div>الاسم: ___________________________<br>الصفة: ___________________________<br>التوقيع: _________________________<br>التاريخ: _________________________<br>الختم:</div></div>
+</div>
+<div class="note" style="margin-top:10px"><b>RKL للمصاعد والسلالم الكهربائية</b><br>السجل التجاري: 1010709355 | الرقم الضريبي: 302250422600003<br>الرياض - السليمانية | هاتف: 0114774021 | admin@rkl.sa | www.rkl.sa</div>
+<p style="font-size:7.5pt;color:var(--muted)">يرجى التحقق من بيانات المشروع والقيم التجارية والحساب البنكي والمفوضين بالتوقيع قبل إصدار النسخة النهائية.</p>
+<footer><span>RKL Lifts & Escalators | Riyadh | Tel: 0114774021 | admin@rkl.sa</span><span>Page 3 of 3</span></footer>
+</section>
 </body>
 </html>`);
-
   w.document.close();
 }
 
-
-
-  
 function getBrandValue(){
   const brandSelect = document.getElementById('brandSelect').value;
   const brandOther  = document.getElementById('brandOther')?.value || '';
